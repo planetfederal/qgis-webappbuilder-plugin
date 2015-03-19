@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="/plugins/qgis2ol">
+    <file>icons/mapquestaerial.png</file>
+    <file>icons/mapquest.png</file>
+    <file>icons/osm.png</file>
+    <file>icons/watercolor.png</file>
+    <file>icons/toner.png</file>
+    <file>icons/export.png</file>
+    <file>icons/group.gif</file>
+    <file>icons/layer.png</file>
+    <file>icons/ol.png</file>
+    <file>icons/puzzle.png</file>
+    <file>icons/preview.gif</file>
+  </qresource>
+</RCC>

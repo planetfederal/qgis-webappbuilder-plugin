@@ -1,0 +1,7 @@
+jsbeautifier
+httplib2==0.8
+-e git+https://github.com/boundlessgeo/gsconfig.git#egg=gsconfig
+
+# test requirements
+
+
