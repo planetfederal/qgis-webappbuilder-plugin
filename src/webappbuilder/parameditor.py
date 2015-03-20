@@ -40,7 +40,10 @@ class ParametersEditorDialog(QtGui.QDialog):
     def okPressed(self):
         for i in xrange(self.mainItem.childCount()):
             item = self.mainItem.child(i)
-            self.params[item.name] = item.value()
+            if isinstance(self.params[item.name], tuple):
+                self.params[item.name] = (item.value(), self.params[item.name][1])
+            else:
+                self.params[item.name] = item.value()
         self.close()
 
     def cancelPressed(self):

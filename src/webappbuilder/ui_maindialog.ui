@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
-    <height>771</height>
+    <width>619</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,9 @@
     <normaloff>:/plugins/qgis2ol/icons/ol.png</normaloff>:/plugins/qgis2ol/icons/ol.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
@@ -498,16 +501,9 @@
          <string>Widgets</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Click to select widgets to include. Right click to customize widget</string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::RichText</enum>
-           </property>
-          </widget>
-         </item>
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <item row="1" column="0">
           <widget class="QToolButton" name="scaleBarButton">
            <property name="minimumSize">
@@ -550,6 +546,101 @@
             <bool>true</bool>
            </property>
            <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QToolButton" name="layersListButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Layers List</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QToolButton" name="fullScreenButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Full Screen</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
             <bool>true</bool>
            </property>
            <property name="toolButtonStyle">
@@ -612,57 +703,8 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="layersListButton">
-           <property name="minimumSize">
-            <size>
-             <width>134</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
-     border-radius: 10px;
-     border-color: beige;
-     font: bold 11px;
-     min-width: 100px;
-     max-widht: 100px;
-     padding: 15px;
- }
- QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
- }</string>
-           </property>
-           <property name="text">
-            <string>Layers List</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextUnderIcon</enum>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
-          <widget class="QToolButton" name="overviewButton">
+          <widget class="QToolButton" name="northArrowButton">
            <property name="minimumSize">
             <size>
              <width>134</width>
@@ -687,53 +729,7 @@
  }</string>
            </property>
            <property name="text">
-            <string>Overview Map</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextUnderIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QToolButton" name="fullScreenButton">
-           <property name="minimumSize">
-            <size>
-             <width>134</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
-     border-radius: 10px;
-     border-color: beige;
-     font: bold 11px;
-     min-width: 100px;
-     max-widht: 100px;
-     padding: 15px;
- }
- QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
- }</string>
-           </property>
-           <property name="text">
-            <string>Full Screen</string>
+            <string>North Arrow</string>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -799,8 +795,8 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QToolButton" name="northArrowButton">
+         <item row="2" column="3">
+          <widget class="QToolButton" name="zoomSliderButton">
            <property name="minimumSize">
             <size>
              <width>134</width>
@@ -825,7 +821,7 @@
  }</string>
            </property>
            <property name="text">
-            <string>North Arrow</string>
+            <string>Zoom Slider</string>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -839,6 +835,150 @@
            </property>
            <property name="checkable">
             <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QToolButton" name="cesiumButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>3D View</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QToolButton" name="searchButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Search</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QToolButton" name="textPanelButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Text panel</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -891,8 +1031,8 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
-          <widget class="QToolButton" name="zoomSliderButton">
+         <item row="4" column="1">
+          <widget class="QToolButton" name="geolocationButton">
            <property name="minimumSize">
             <size>
              <width>134</width>
@@ -917,7 +1057,7 @@
  }</string>
            </property>
            <property name="text">
-            <string>Zoom Slider</string>
+            <string>Geolocation</string>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -937,7 +1077,53 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="4" column="2">
+          <widget class="QToolButton" name="geocodingButton">
+           <property name="minimumSize">
+            <size>
+             <width>134</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Geocoding</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
           <widget class="QToolButton" name="exportAsImageButton">
            <property name="minimumSize">
             <size>
@@ -986,7 +1172,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="3" column="2">
           <widget class="QToolButton" name="mousePositionButton">
            <property name="minimumSize">
             <size>
@@ -1041,148 +1227,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="2">
-          <widget class="QToolButton" name="textPanelButton">
-           <property name="minimumSize">
-            <size>
-             <width>134</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
-     border-radius: 10px;
-     border-color: beige;
-     font: bold 11px;
-     min-width: 100px;
-     max-widht: 100px;
-     padding: 15px;
- }
- QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
- }</string>
-           </property>
-           <property name="text">
-            <string>Text panel</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextUnderIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QToolButton" name="cesiumButton">
-           <property name="minimumSize">
-            <size>
-             <width>134</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
-     border-radius: 10px;
-     border-color: beige;
-     font: bold 11px;
-     min-width: 100px;
-     max-widht: 100px;
-     padding: 15px;
- }
- QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
- }</string>
-           </property>
-           <property name="text">
-            <string>3D View</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextUnderIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QToolButton" name="attributesTableButton">
-           <property name="minimumSize">
-            <size>
-             <width>134</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
-     border-radius: 10px;
-     border-color: beige;
-     font: bold 11px;
-     min-width: 100px;
-     max-widht: 100px;
-     padding: 15px;
- }
- QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
- }</string>
-           </property>
-           <property name="text">
-            <string>Attributes Table</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextUnderIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
+         <item row="4" column="3">
           <widget class="QToolButton" name="editToolButton">
            <property name="minimumSize">
             <size>
@@ -1228,8 +1273,8 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QToolButton" name="searchButton">
+         <item row="5" column="2">
+          <widget class="QToolButton" name="attributesTableButton">
            <property name="minimumSize">
             <size>
              <width>134</width>
@@ -1254,7 +1299,7 @@
  }</string>
            </property>
            <property name="text">
-            <string>Search</string>
+            <string>Attributes Table</string>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -1269,15 +1314,25 @@
            <property name="checkable">
             <bool>true</bool>
            </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextUnderIcon</enum>
            </property>
           </widget>
          </item>
          <item row="6" column="1">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="5" column="1">
           <widget class="QToolButton" name="legendButton">
            <property name="minimumSize">
             <size>
@@ -1323,18 +1378,61 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
+         <item row="1" column="3">
+          <widget class="QToolButton" name="overviewButton">
+           <property name="minimumSize">
             <size>
-             <width>20</width>
-             <height>40</height>
+             <width>134</width>
+             <height>100</height>
             </size>
            </property>
-          </spacer>
+           <property name="styleSheet">
+            <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     min-width: 100px;
+     max-widht: 100px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+           </property>
+           <property name="text">
+            <string>Overview Map</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="4">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>&lt;b&gt;Click to select widgets to include. Right click to customize widget&lt;/b&gt;</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::RichText</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -1412,7 +1510,7 @@
               <item row="2" column="2">
                <widget class="QLineEdit" name="postgisDatabaseBox">
                 <property name="text">
-                 <string>geogig</string>
+                 <string>database</string>
                 </property>
                </widget>
               </item>
@@ -1578,7 +1676,7 @@
                 <item row="0" column="1">
                  <widget class="QLineEdit" name="filepathBox">
                   <property name="text">
-                   <string>d:\deploy</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -1680,6 +1778,20 @@
           <property name="spacing">
            <number>6</number>
           </property>
+          <item>
+           <widget class="QLabel" name="progressLabel">
+            <property name="text">
+             <string>progress</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QProgressBar" name="progressBar">
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
           <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">

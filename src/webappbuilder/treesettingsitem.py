@@ -30,6 +30,6 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(self._value, (int,float)):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
-            return (self.popupCombo.currentText(), self._value[1])
+            return self.popupCombo.currentText()
         else:
             return self.text(1)

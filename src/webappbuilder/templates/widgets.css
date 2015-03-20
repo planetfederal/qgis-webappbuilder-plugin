@@ -77,8 +77,8 @@
 
 /*Mouse position*/
 .ol-mouse-position {
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 70px;
   position: absolute;
   color: #fff;
   background-color: rgba(0,60,136,.5);
@@ -122,8 +122,8 @@
 
 /*North arrow*/
 .ol-rotate {
-  top: .5em;
-  right: .5em;
+  top: 10px;
+  right: 40;
   transition: opacity .25s;
 }
 
@@ -147,8 +147,8 @@
 
 /*Full screen*/
 .ol-full-screen {
-  right: .5em;
-  top: .5em;
+  right: 10px;
+  top: 10px;
 }
 
 button.ol-full-screen-false:after {
@@ -307,8 +307,8 @@ button.ol-full-screen-true:after {
 /*Layers list*/
 .layer-switcher {
     position: absolute;
-    top: 3.5em;
-    right: 0.5em;
+    top: 40px;
+    right: 5px;
     text-align: left;
 }
 
@@ -356,18 +356,18 @@ button.ol-full-screen-true:after {
 
 /*Text panel*/
 .inmap-panel {
-display: block;
-position: absolute;
-background-color: white;
-padding: 15px;
-border-radius: 0px;
-border: 1px solid #000000;
-top: 100px;
-left: 50px;   
-height: 500px;
-width: 300px;
-min-width: 100px;
-z-index: 1000     
+    display: block;
+    position: absolute;
+    background:rgba(255,255,255,0.7);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    top: 100px;
+    left: 50px;
+    height: 500px;
+    width: 300px;
+    min-width: 100px;
+    z-index: 100
 }
 
 /*3D view*/

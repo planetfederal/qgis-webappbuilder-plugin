@@ -41,7 +41,7 @@ var featureOverlay = new ol.FeatureOverlay({
         fill: new ol.style.Fill({
           color: 'rgba(255,0,0,0.1)'
         }),
-        })]          
+        })]
 });
 
 
@@ -62,8 +62,8 @@ var onPointerMove = function(evt) {
   map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     currentFeature = feature;
     currentFeatureKeys = currentFeature.getKeys();
-    var field = popupLayers[layersList.indexOf(layer) - 1];
-    if (field == NO_POPUP){          
+    var field = popupLayers[singleLayersList.indexOf(layer)];
+    if (field == NO_POPUP){
     }
     else if (field == ALL_FIELDS){
       for ( var i=0; i<currentFeatureKeys.length;i++) {
@@ -77,8 +77,8 @@ var onPointerMove = function(evt) {
       var value = feature.get(field);
       if (value){
         popupText = field + ': ' + value;
-      }  
-    }          
+      }
+    }
   });
 
   if (doHighlight){
@@ -97,7 +97,7 @@ var onPointerMove = function(evt) {
     if (popupText) {
       overlayPopup.setPosition(coord);
       content.innerHTML = popupText;
-      container.style.display = 'block';        
+      container.style.display = 'block';
     } else {
       container.style.display = 'none';
       closer.blur();
@@ -118,8 +118,8 @@ var onSingleClick = function(evt) {
   map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     currentFeature = feature;
     currentFeatureKeys = currentFeature.getKeys();
-    var field = popupLayers[layersList.indexOf(layer) - 1];
-    if (field == NO_POPUP){          
+    var field = popupLayers[singleLayersList.indexOf(layer)];
+    if (field == NO_POPUP){
     }
     else if (field == ALL_FIELDS){
       for ( var i=0; i<currentFeatureKeys.length;i++) {
@@ -133,14 +133,14 @@ var onSingleClick = function(evt) {
       var value = feature.get(field);
       if (value){
         popupText = field + ': '+ value;
-      }  
-    }          
+      }
+    }
   });
 
   if (popupText) {
       overlayPopup.setPosition(coord);
       content.innerHTML = popupText;
-      container.style.display = 'block';        
+      container.style.display = 'block';
   } else {
     container.style.display = 'none';
     closer.blur();

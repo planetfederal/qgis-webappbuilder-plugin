@@ -24,11 +24,15 @@ def createApp(appdef):
 		files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
 		for root, dirs, fs in os.walk(os.path.join(appdef["Deploy"]["App path"], "styles")):
 			for f in fs:
-				files.append(os.path.join(root, f))
+				if f.endswith("js"):
+					files.append(os.path.join(root, f))
 		for path in files:
-			beauty = jsbeautifier.beautify_file(path)
-			with open(path, "w") as f :
-				f.write(beauty)
+			try:
+				beauty = jsbeautifier.beautify_file(path)
+				with open(path, "w") as f :
+					f.write(beauty)
+			except:
+				pass #jsbeautifier gives some random errors sometimes due to imports
 	finally:
 		QApplication.restoreOverrideCursor()
 
@@ -52,9 +56,16 @@ def importPostgis(appdef):
 			if not schemaExists:
 				connector.createSchema(schema)
 				schemaExists = True
-			importLayerIntoPostgis(layer.layer, host, port, username, password, dbname, schema,
-								tablename = safeName(layer.layer.name())
-								)
+			tables = connector.getTables(schema=schema)
+			tablename = safeName(layer.layer.name())
+			print tables
+			tableExists = tablename in [t[1] for t in tables]
+			if tableExists:
+				connector.deleteTable([schema, tablename])
+			importLayerIntoPostgis(layer.layer, host, port, username, password,
+								dbname, schema, tablename)
+
+
 			print "Imported into PostGIS:" + layer.layer.name()
 
 def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename):
@@ -78,12 +89,22 @@ def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema
 	            ogr2ogr.SCHEMA: schema,
 	            ogr2ogr.GTYPE: geomtype,
 	            ogr2ogr.TABLE: tablename,
+	            ogr2ogr.A_SRS: "EPSG:3857",
 	            ogr2ogr.S_SRS: layer.crs().authid(),
-	            ogr2ogr.T_SRS: layer.crs().authid(),
+	            ogr2ogr.T_SRS: "EPSG:3857",
+	            ogr2ogr.DIM: 0,
 	            ogr2ogr.OVERWRITE: True,
 	            ogr2ogr.APPEND: False,
-	            ogr2ogr.SPAT: extent
+	            ogr2ogr.SPAT: extent,
+	            ogr2ogr.GT: '',
+	            ogr2ogr.SEGMENTIZE: '',
+	            ogr2ogr.SIMPLIFY: '',
+	            ogr2ogr.OPTIONS: '',
+	            ogr2ogr.PK: '',
+	            ogr2ogr.GEOCOLUMN: '',
+	            ogr2ogr.WHERE: ''
 	            }
+
 	alg = Processing.getAlgorithm("gdalogr:importvectorintopostgisdatabasenewconnection")
 	for name, value in params.iteritems():
 		param = alg.getParameterFromName(name)
@@ -130,7 +151,7 @@ def publishGeoserver(appdef):
 			if sld is not None:
 				catalog.create_style(name, sld, True)
 			if layer.type() == layer.VectorLayer:
-				if applayer.method == METHOD_WFS_POSTGIS:
+				if applayer.method == METHOD_WFS_POSTGIS or applayer.method == METHOD_WMS_POSTGIS:
 					if store is None:
 						store = catalog.create_datastore(dsName, workspace)
 						store.connection_parameters.update(
@@ -144,13 +165,16 @@ def publishGeoserver(appdef):
 													path,
 													workspace=workspace,
 													overwrite=True)
+				gslayer = catalog.get_layer(name)
+				r = gslayer.resource
+				r.dirty['srs'] = "EPSG:3857"
+				catalog.save(r)
 			elif layer.type() == layer.RasterLayer:
 				path = getDataFromLayer(layer)
 				catalog.create_coveragestore(name,
 				                          path,
 				                          workspace=workspace,
 				                          overwrite=True)
-			print sld
 			if sld is not None:
 				publishing = catalog.get_layer(name)
 				publishing.default_style = catalog.get_style(name)
@@ -172,7 +196,7 @@ def getDataFromLayer(layer):
 		}
 	return data
 
-epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
+epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
 
 def exportVectorLayer(layer):
 	settings = QSettings()
@@ -180,12 +204,17 @@ def exportVectorLayer(layer):
 	filename = unicode(layer.source())
 	destFilename = unicode(layer.name())
 	if not filename.lower().endswith("shp") or layer.crs().authid() != "EPSG:3857":
-
 		output = tempFilenameInTempFolder(destFilename + ".shp")
 		provider = layer.dataProvider()
-		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), epsg3587)
-		for feat in layer.getFeatures():
-			writer.addFeature(feat)
+		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), epsg3857)
+		crsTransform = QgsCoordinateTransform(layer.crs(), epsg3857)
+		outFeat = QgsFeature()
+		for f in layer.getFeatures():
+			geom = f.geometry()
+			geom.transform(crsTransform)
+			outFeat.setGeometry(geom)
+			outFeat.setAttributes(f.attributes())
+			writer.addFeature(outFeat)
 		del writer
 		return output
 	else:

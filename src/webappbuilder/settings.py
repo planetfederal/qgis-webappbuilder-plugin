@@ -25,8 +25,9 @@ baseCss = getCssFromTemplate(baseTemplate)
 
 widgetsParams = {"Text panel": {"HTML content":""},
           "Overview map": {"collapsed":True},
-          "Scale bar": {"units": ("metric", ("metric", "degrees", "imperial", "nautical", "us")),
-                        "minWidth": 64},
+          "Scale bar": {"minWidth": 64,
+                        "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
+                        },
           "Zoom controls": {"duration": 250, "zoomInLabel": "+", "zoomOutLabel": "-",
                            "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2},
           "Mouse position": {"coordinateFormat": "ol.coordinate.createStringXY(4)",

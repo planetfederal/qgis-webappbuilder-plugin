@@ -48,7 +48,12 @@ def writeOL(appdef):
             collapsed = str(widgets["Overview map"]["Params"]["collapsed"]).lower()
             controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
         if "Mouse position" in widgets:
-            controls.append("new ol.control.MousePosition(%s)" % json.dumps(widgets["Mouse position"]["Params"]))
+            coord = str(widgets["Mouse position"]["Params"]["coordinateFormat"])
+            s = json.dumps(widgets["Mouse position"]["Params"])
+            print s
+            print coord
+            s = s.replace('"%s"' % coord, coord)
+            controls.append("new ol.control.MousePosition(%s)" % s)
         if "Zoom to extent" in widgets:
             controls.append("new ol.control.ZoomToExtent()")
         if "Zoom slider" in widgets:
@@ -62,7 +67,7 @@ def writeOL(appdef):
         if "Attribution" in widgets:
             controls.append("new ol.control.Attribution()")
         if "Text panel" in widgets:
-            params = widgets["Text panel"]
+            params = widgets["Text panel"]["Params"]
             textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
         else:
             textPanel = ""
@@ -90,9 +95,9 @@ def writeOL(appdef):
         onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
         highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
         view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-        footer = ("<div class = 'footer'>%s</div>" % appdef["Settings"]["Footer text"]
+        footer = ('<div id="footer">%s</div>' % appdef["Settings"]["Footer text"]
                     if "Footer text" in appdef["Settings"] else "")
-        header = ("<div class = 'header'>%s</div>" % appdef["Settings"]["Header text"]
+        header = ('<div id="header">%s</div>' % appdef["Settings"]["Header text"]
                     if "Header text" in appdef["Settings"] else "")
         values = {"@TITLE@": appdef["Settings"]["Title"],
                   "@FOOTER@": footer,
@@ -187,6 +192,7 @@ def writeLayersAndGroups(appdef):
             noGroupList.append("lyr_" + safeName(layer.name()))
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in (groupList + noGroupList)])
+    singleLayersList = "var singleLayersList = [%s];" % ",".join(["lyr_%s" % safeName(layer.layer.name()) for layer in layers])
 
     path = os.path.join(folder, "layers", "layers.js")
     with codecs.open(path, "w","utf-8") as f:
@@ -195,6 +201,7 @@ def writeLayersAndGroups(appdef):
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersList + "\n")
+        f.write(singleLayersList + "\n")
 
 
 
@@ -208,6 +215,7 @@ def replaceInTemplate(template, values):
     return s
 
 def bounds(useCanvas, layers):
+    print useCanvas
     if useCanvas:
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapRenderer().destinationCrs()
@@ -215,6 +223,7 @@ def bounds(useCanvas, layers):
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
+            print "error"
             extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
     else:
         extent = None
@@ -241,7 +250,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max):
                     format: new ol.format.GeoJSON(),
                     loader: function(extent, resolution, projection) {
                         var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
-                            '&typename=%(typeName)s%(n)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(n)s' +
+                            '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(n)s' +
                             '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
                         $.ajax({
                             url: url,
@@ -374,16 +383,16 @@ def exportStyles(layers, folder, settings):
         defs = ""
         try:
             renderer = layer.rendererV2()
-            layer_transparency = layer.layerTransparency()
+            layerTransparency = layer.layerTransparency()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder, layer_transparency)
+                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder, layerTransparency)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder,layer_transparency)))
+                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder,layerTransparency)))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s[value]'''  % (safeName(layer.name()))
@@ -392,7 +401,7 @@ def exportStyles(layers, folder, settings):
                 defs += "var %s = [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,layer_transparency)
+                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,layerTransparency)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(), ran.upperValue(), symbolstyle))
                 defs += ",\n".join(ranges) + "];"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
@@ -479,12 +488,12 @@ def getRGBAColor(color, alpha):
     return '"rgba(%s)"' % ",".join([r, g, b, str(alpha)])
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
+def getSymbolAsStyle(symbol, stylesFolder, layerTransparency):
     styles = []
-    if layer_transparency == 0:
+    if layerTransparency == 0:
         alpha = symbol.alpha()
     else:
-        alpha = layer_transparency/float(100)
+        alpha = layerTransparency/float(100)
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
@@ -496,44 +505,35 @@ def getSymbolAsStyle(symbol, stylesFolder, layer_transparency):
             shutil.copy(sl.path(), path)
             style = "image: %s" % getIcon(path, sl.size())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
-
             # Check for old version
             if 'color' in props:
                 color = getRGBAColor(props["color"], alpha)
             else:
                 color = getRGBAColor(props["line_color"], alpha)
-
             if 'width' in props:
                 line_width = props["width"]
             else:
                 line_width = props["line_width"]
-
             if 'penstyle' in props:
                 line_style = props["penstyle"]
             else:
                 line_style = props["line_style"]
-
             style = "stroke: %s" % (getStrokeStyle(color, line_style != "solid", line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
-
             fillColor =  getRGBAColor(props["color"], alpha)
-
             # for old version
             if 'color_border' in props:
                 borderColor =  getRGBAColor(props["color_border"], alpha)
             else:
                 borderColor =  getRGBAColor(props["outline_color"], alpha)
-
             if 'style_border' in props:
                 borderStyle = props["style_border"]
             else:
                 borderStyle = props["outline_style"]
-
             if 'width_border' in props:
                 borderWidth = props["width_border"]
             else:
                 borderWidth = props["outline_width"]
-
             style = ('''stroke: %s,
                         fill: %s''' %
                     (getStrokeStyle(borderColor, borderStyle != "solid", borderWidth),
@@ -551,9 +551,9 @@ def getCircle(color):
                 (getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"), getFillStyle(color)))
 
 def getIcon(path, size):
-    size  = math.floor(float(size) * 3.8)
+    size  = float(size) * 0.005
     return '''new ol.style.Icon({
-                  size: [%(s)d, %(s)d],
+                  scale: %(s)f,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',

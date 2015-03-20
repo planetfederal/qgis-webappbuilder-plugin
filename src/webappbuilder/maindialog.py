@@ -16,6 +16,8 @@ from csseditor import CssEditorDialog
 import webbrowser
 from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
+from utils import METHOD_WMS, METHOD_WMS_POSTGIS
+from htmleditor import HtmlEditorDialog
 
 class Layer():
 
@@ -78,7 +80,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.cesiumButton: "3D view",
                         self.editToolButton: "Edit tool",
                         self.textPanelButton: "Text panel",
-                        self.exportAsImageButton: "Export as image"}
+                        self.exportAsImageButton: "Export as image",
+                        self.geolocationButton: "Geolocation",
+                        self.geocodingButton: "Geocoding"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
@@ -88,7 +92,11 @@ class MainDialog(QDialog, Ui_MainDialog):
                 cssAction = QAction("Edit widget CSS...", None)
                 cssAction.triggered.connect(lambda: self.editWidgetCss(name))
                 menu.addAction(cssAction)
-                paramsAction = QAction("Edit widget parameters...", None)
+                if name == "Text panel":
+                    s = "Edit panel content..."
+                else:
+                    s = "Edit widget parameters..."
+                paramsAction = QAction(s, None)
                 paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
                 paramsAction.setEnabled(name in widgetsParams)
                 menu.addAction(paramsAction)
@@ -111,9 +119,14 @@ class MainDialog(QDialog, Ui_MainDialog):
         baseCss["Footer"] = dlg.css
 
     def editWidgetParameters(self, widgetName):
-        dlg = ParametersEditorDialog(widgetsParams[widgetName])
-        dlg.exec_()
-        widgetsParams[widgetName] = dlg.params
+        if widgetName == "Text panel":
+            dlg = HtmlEditorDialog(widgetsParams[widgetName]["HTML content"])
+            dlg.exec_()
+            widgetsParams[widgetName]["HTML content"] = dlg.html
+        else:
+            dlg = ParametersEditorDialog(widgetsParams[widgetName])
+            dlg.exec_()
+            widgetsParams[widgetName] = dlg.params
 
     def editWidgetCss(self, widgetName):
         dlg = CssEditorDialog(widgetsCss.get(widgetName, ""))
@@ -132,29 +145,18 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populateLayers(self):
         skipType = [2]
-        groups = {}
-        rels = iface.legendInterface().groupLayerRelationship()
-        groupedLayers = []
-        for rel in rels:
-            groupName = rel[0]
-            if groupName != '':
-                groupLayers = rel[1]
-                groups[groupName] = []
-                for layerid in groupLayers:
-                    groups[groupName].append(QgsMapLayerRegistry.instance().mapLayer(layerid))
-                    groupedLayers.append(layerid)
-        for groupName, layers in groups.iteritems():
-            groupItem = TreeGroupItem(groupName, layers)
-            self.layersTree.addTopLevelItem(groupItem)
-            for layer in layers:
+        root = QgsProject.instance().layerTreeRoot()
+        for child in root.children():
+            if isinstance(child, QgsLayerTreeGroup):
+                layers = []
+                for subchild in child.children():
+                    if isinstance(subchild, QgsLayerTreeLayer):
+                        layers.append(subchild.layer())
+                item = TreeGroupItem(child.name(), layers, self.layersTree)
+                self.layersTree.addTopLevelItem(item)
+            elif isinstance(child, QgsLayerTreeLayer):
+                layer = child.layer()
                 if layer.type() not in skipType:
-                    item = TreeLayerItem(layer, self.layersTree)
-                    groupItem.addChild(item)
-
-        layers = iface.legendInterface().layers()
-        for layer in layers:
-            if layer.type() not in skipType:
-                if layer.id() not in groupedLayers:
                     item = TreeLayerItem(layer, self.layersTree)
                     self.layersTree.addTopLevelItem(item)
 
@@ -320,12 +322,17 @@ class MainDialog(QDialog, Ui_MainDialog):
 
 class TreeGroupItem(QTreeWidgetItem):
 
-    def __init__(self, name, layers):
+    def __init__(self, name, layers, layersTree):
         QTreeWidgetItem.__init__(self)
+        skipType = [2]
         self.layers = layers
         self.name = name
         self.setText(0, name)
         self.setIcon(0, groupIcon)
+        for layer in layers:
+            if layer.type() not in skipType:
+                item = TreeLayerItem(layer, layersTree)
+                self.addChild(item)
 
 class TreeLayerItem(QTreeWidgetItem):
 
@@ -364,17 +371,11 @@ class TreeLayerItem(QTreeWidgetItem):
             icon = layerIcon
         self.setIcon(0, icon)
         self.setCheckState(0, Qt.Checked)
+        self.visibleItem = QTreeWidgetItem(self)
+        self.visibleItem.setCheckState(0, Qt.Checked)
+        self.visibleItem.setText(0, "Visible on startup")
+        self.addChild(self.visibleItem)
         if layer.type() == layer.VectorLayer:
-            self.popupItem = QTreeWidgetItem(self)
-            self.popupItem.setText(0, "Info popup content")
-            self.popupCombo = QComboBox()
-            self.popupCombo.setStyleSheet(self.comboStyle)
-            options = ["No popup", "Show all attributes"]
-            options.extend(["FIELD:" + f.name() for f in self.layer.pendingFields()])
-            for option in options:
-                self.popupCombo.addItem(option)
-            self.addChild(self.popupItem)
-            tree.setItemWidget(self.popupItem, 1, self.popupCombo)
             if layer.providerType().lower() != "wfs":
                 self.connTypeItem = QTreeWidgetItem(self)
                 self.connTypeItem.setText(0, "Connect to this layer using")
@@ -385,9 +386,20 @@ class TreeLayerItem(QTreeWidgetItem):
                 for option in options:
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
+                self.connTypeCombo.currentIndexChanged.connect(self.connTypeChanged)
+            self.popupItem = QTreeWidgetItem(self)
+            self.popupItem.setText(0, "Info popup content")
+            self.popupCombo = QComboBox()
+            self.popupCombo.setStyleSheet(self.comboStyle)
+            options = ["No popup", "Show all attributes"]
+            options.extend(["FIELD:" + f.name() for f in self.layer.pendingFields()])
+            for option in options:
+                self.popupCombo.addItem(option)
+            self.addChild(self.popupItem)
+            tree.setItemWidget(self.popupItem, 1, self.popupCombo)
             if layer.geometryType() == QGis.Point:
                 self.clusterItem = QTreeWidgetItem(self)
-                self.clusterItem.setCheckState(0, Qt.Checked)
+                self.clusterItem.setCheckState(0, Qt.Unchecked)
                 self.clusterItem.setText(0, "Cluster points")
                 self.clusterDistanceItem = QTreeWidgetItem(self.clusterItem)
                 self.clusterDistanceItem.setText(0, "Cluster distance")
@@ -406,10 +418,17 @@ class TreeLayerItem(QTreeWidgetItem):
                 for option in options:
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
-        self.visibleItem = QTreeWidgetItem(self)
-        self.visibleItem.setCheckState(0, Qt.Checked)
-        self.visibleItem.setText(0, "Visible")
-        self.addChild(self.visibleItem)
+
+    def connTypeChanged(self):
+        current = self.connTypeCombo.currentIndex()
+        disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
+        try:
+            self.popupItem.setDisabled(disable)
+            self.popupCombo.setDisabled(disable)
+            self.clusterItem.setDisabled(disable)
+            self.clusterDistanceItem.setDisabled(disable)
+        except:
+            pass
 
     @property
     def popup(self):
