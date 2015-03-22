@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
-    <height>665</height>
+    <width>598</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
         </sizepolicy>
        </property>
        <property name="tabPosition">
-        <enum>QTabWidget::West</enum>
+        <enum>QTabWidget::North</enum>
        </property>
        <property name="tabShape">
         <enum>QTabWidget::Rounded</enum>
@@ -1791,19 +1791,6 @@
              <number>24</number>
             </property>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item>
            <widget class="QPushButton" name="buttonCreateApp">

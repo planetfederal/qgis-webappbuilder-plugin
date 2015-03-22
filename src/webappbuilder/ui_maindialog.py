@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Fri Mar 20 13:34:16 2015
+# Created: Fri Mar 20 17:28:53 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(619, 665)
+        MainDialog.resize(598, 686)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -41,7 +41,7 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tabPanel.sizePolicy().hasHeightForWidth())
         self.tabPanel.setSizePolicy(sizePolicy)
-        self.tabPanel.setTabPosition(QtGui.QTabWidget.West)
+        self.tabPanel.setTabPosition(QtGui.QTabWidget.North)
         self.tabPanel.setTabShape(QtGui.QTabWidget.Rounded)
         self.tabPanel.setElideMode(QtCore.Qt.ElideRight)
         self.tabPanel.setUsesScrollButtons(True)
@@ -880,8 +880,13 @@ class Ui_MainDialog(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        spacerItem6 = QtGui.QSpacerItem(40, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem6)
+        self.progressLabel = QtGui.QLabel(self.widget)
+        self.progressLabel.setObjectName(_fromUtf8("progressLabel"))
+        self.horizontalLayout_2.addWidget(self.progressLabel)
+        self.progressBar = QtGui.QProgressBar(self.widget)
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.horizontalLayout_2.addWidget(self.progressBar)
         self.buttonCreateApp = QtGui.QPushButton(self.widget)
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
@@ -974,6 +979,7 @@ class Ui_MainDialog(object):
         self.settingsTree.headerItem().setText(0, _translate("MainDialog", "Setting", None))
         self.settingsTree.headerItem().setText(1, _translate("MainDialog", "Value", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.settingsTab), _translate("MainDialog", "Settings", None))
+        self.progressLabel.setText(_translate("MainDialog", "progress", None))
         self.buttonCreateApp.setText(_translate("MainDialog", "Create App", None))
         self.buttonUpdate.setText(_translate("MainDialog", "Preview", None))
 

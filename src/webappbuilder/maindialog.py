@@ -108,6 +108,9 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         self.widgetButtons = widgetButtons
 
+        self.progressBar.setVisible(False)
+        self.progressLabel.setVisible(False)
+
     def editHeaderCss(self):
         dlg = CssEditorDialog(baseCss["Header"])
         dlg.exec_()
