@@ -56,7 +56,7 @@
         <attribute name="title">
          <string>Description</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_10">
+        <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
@@ -218,6 +218,37 @@
             </item>
            </layout>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>Popup style</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelEditPopupCss">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;edit&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Edit css&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <spacer name="verticalSpacer_4">
@@ -1791,6 +1822,19 @@
              <number>24</number>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <widget class="QPushButton" name="buttonCreateApp">

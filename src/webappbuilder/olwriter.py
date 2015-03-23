@@ -21,119 +21,118 @@ baseLayersJs  = {
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
-def writeOL(appdef):
-    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-    try:
-        folder = appdef["Deploy"]["App path"]
-        dst = os.path.join(folder, "resources")
+def writeOL(appdef, progress):
+    progress.setText("Creating local files (3/3)")
+    progress.setProgress(0)
+    folder = appdef["Deploy"]["App path"]
+    dst = os.path.join(folder, "resources")
+    if not os.path.exists(dst):
+        shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "base"), dst)
+    layers = appdef["Layers"]
+    exportLayers(layers, folder, progress)
+    exportStyles(layers, folder, appdef["Settings"])
+    writeLayersAndGroups(appdef)
+    geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    popupLayers = "popupLayers = [%s];" % ",".join(['%s' % str(layer.popup)
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    controls = []
+    widgets = appdef["Widgets"]
+    if "Scale bar" in widgets:
+        controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]["Params"]))
+    if "Layers list" in widgets:
+        controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]["Params"]))
+    if "Overview map" in widgets:
+        collapsed = str(widgets["Overview map"]["Params"]["collapsed"]).lower()
+        controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
+    if "Mouse position" in widgets:
+        coord = str(widgets["Mouse position"]["Params"]["coordinateFormat"])
+        s = json.dumps(widgets["Mouse position"]["Params"])
+        print s
+        print coord
+        s = s.replace('"%s"' % coord, coord)
+        controls.append("new ol.control.MousePosition(%s)" % s)
+    if "Zoom to extent" in widgets:
+        controls.append("new ol.control.ZoomToExtent()")
+    if "Zoom slider" in widgets:
+        controls.append("new ol.control.ZoomSlider()")
+    if "North arrow" in widgets:
+        controls.append("new ol.control.Rotate({autoHide: false})")
+    if "Full screen" in widgets:
+        controls.append("new ol.control.FullScreen()")
+    if "Zoom controls" in widgets:
+        controls.append("new ol.control.Zoom(%s)" % json.dumps(widgets["Zoom controls"]["Params"]))
+    if "Attribution" in widgets:
+        controls.append("new ol.control.Attribution()")
+    if "Text panel" in widgets:
+        params = widgets["Text panel"]["Params"]
+        textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
+    else:
+        textPanel = ""
+    if "3D view" in widgets:
+        cesium = '''var ol3d = new olcs.OLCesium({map: map});
+                    var scene = ol3d.getCesiumScene();
+                    var terrainProvider = new Cesium.CesiumTerrainProvider({
+                        url : '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
+                    });
+                    scene.terrainProvider = terrainProvider;
+                    map.addControl(new CesiumControl(ol3d))'''
+        cesiumImport = '''<script src="./resources/cesium/Cesium.js"></script>
+                        <script src="./resources/ol3cesium.js"></script>'''
+        dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "base"), dst)
-        layers = appdef["Layers"]
-        exportLayers(layers, folder)
-        exportStyles(layers, folder, appdef["Settings"])
-        writeLayersAndGroups(appdef)
-        geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
-                                for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-        styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
-                                for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-        popupLayers = "popupLayers = [%s];" % ",".join(['%s' % str(layer.popup)
-                                for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-        controls = []
-        widgets = appdef["Widgets"]
-        if "Scale bar" in widgets:
-            controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]["Params"]))
-        if "Layers list" in widgets:
-            controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]["Params"]))
-        if "Overview map" in widgets:
-            collapsed = str(widgets["Overview map"]["Params"]["collapsed"]).lower()
-            controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
-        if "Mouse position" in widgets:
-            coord = str(widgets["Mouse position"]["Params"]["coordinateFormat"])
-            s = json.dumps(widgets["Mouse position"]["Params"])
-            print s
-            print coord
-            s = s.replace('"%s"' % coord, coord)
-            controls.append("new ol.control.MousePosition(%s)" % s)
-        if "Zoom to extent" in widgets:
-            controls.append("new ol.control.ZoomToExtent()")
-        if "Zoom slider" in widgets:
-            controls.append("new ol.control.ZoomSlider()")
-        if "North arrow" in widgets:
-            controls.append("new ol.control.Rotate({autoHide: false})")
-        if "Full screen" in widgets:
-            controls.append("new ol.control.FullScreen()")
-        if "Zoom controls" in widgets:
-            controls.append("new ol.control.Zoom(%s)" % json.dumps(widgets["Zoom controls"]["Params"]))
-        if "Attribution" in widgets:
-            controls.append("new ol.control.Attribution()")
-        if "Text panel" in widgets:
-            params = widgets["Text panel"]["Params"]
-            textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
-        else:
-            textPanel = ""
-        if "3D view" in widgets:
-            cesium = '''var ol3d = new olcs.OLCesium({map: map});
-                        var scene = ol3d.getCesiumScene();
-                        var terrainProvider = new Cesium.CesiumTerrainProvider({
-                            url : '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
-                        });
-                        scene.terrainProvider = terrainProvider;
-                        map.addControl(new CesiumControl(ol3d))'''
-            cesiumImport = '''<script src="./resources/cesium/Cesium.js"></script>
-                            <script src="./resources/ol3cesium.js"></script>'''
-            dst = os.path.join(folder, "resources", "cesium")
-            if not os.path.exists(dst):
-                shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
-        else:
-            cesium = ""
-            cesiumImport = ""
+            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
+    else:
+        cesium = ""
+        cesiumImport = ""
 
-        mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers)
-        mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
-        maxZoom = int(appdef["Settings"]["Max zoom level"])
-        minZoom = int(appdef["Settings"]["Min zoom level"])
-        onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
-        highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
-        view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-        footer = ('<div id="footer">%s</div>' % appdef["Settings"]["Footer text"]
-                    if "Footer text" in appdef["Settings"] else "")
-        header = ('<div id="header">%s</div>' % appdef["Settings"]["Header text"]
-                    if "Header text" in appdef["Settings"] else "")
-        values = {"@TITLE@": appdef["Settings"]["Title"],
-                  "@FOOTER@": footer,
-                  "@HEADER@": header,
-                    "@STYLEVARS@": styleVars,
-                    "@GEOJSONVARS@": geojsonVars,
-                    "@CESIUMIMPORT@": cesiumImport,
-                    "@TEXTPANEL@": textPanel}
-        indexFilepath = os.path.join(folder, "index.html")
-        template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
-        with open(indexFilepath, "w") as f:
-            f.write(replaceInTemplate(template, values))
-        values = {"@BOUNDS@": mapbounds,
-                    "@CONTROLS@": ",".join(controls),
-                    "@POPUPLAYERS@": popupLayers,
-                    "@VIEW@": view,
-                    "@ONHOVER@": onHover,
-                    "@DOHIGHLIGHT@": highlight,
-                    "@CESIUM@": cesium}
-        indexJsFilepath = os.path.join(folder, "index.js")
-        template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
-        with open(indexJsFilepath, "w") as f:
-            f.write(replaceInTemplate(template, values))
-        widgetsCssFilepath = os.path.join(folder, "widgets.css")
-        with open(widgetsCssFilepath, "w") as f:
-            f.write(widgetsCss["General"])
-            for w in widgets:
-                f.write(widgets[w]["Css"])
-        baseCssFilepath = os.path.join(folder, "index.css")
-        with open(baseCssFilepath, "w") as f:
-            for css in baseCss:
-                f.write(baseCss.get(css, ""))
-            f.write(_contentCss(appdef))
-        return indexFilepath
-    finally:
-        QApplication.restoreOverrideCursor()
+    mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers)
+    mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
+    maxZoom = int(appdef["Settings"]["Max zoom level"])
+    minZoom = int(appdef["Settings"]["Min zoom level"])
+    onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
+    highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
+    view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+    footer = ('<div id="footer">%s</div>' % appdef["Settings"]["Footer text"]
+                if "Footer text" in appdef["Settings"] else "")
+    header = ('<div id="header">%s</div>' % appdef["Settings"]["Header text"]
+                if "Header text" in appdef["Settings"] else "")
+    values = {"@TITLE@": appdef["Settings"]["Title"],
+              "@FOOTER@": footer,
+              "@HEADER@": header,
+                "@STYLEVARS@": styleVars,
+                "@GEOJSONVARS@": geojsonVars,
+                "@CESIUMIMPORT@": cesiumImport,
+                "@TEXTPANEL@": textPanel}
+    indexFilepath = os.path.join(folder, "index.html")
+    template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
+    with open(indexFilepath, "w") as f:
+        f.write(replaceInTemplate(template, values))
+    values = {"@BOUNDS@": mapbounds,
+                "@CONTROLS@": ",".join(controls),
+                "@POPUPLAYERS@": popupLayers,
+                "@VIEW@": view,
+                "@ONHOVER@": onHover,
+                "@DOHIGHLIGHT@": highlight,
+                "@CESIUM@": cesium}
+    indexJsFilepath = os.path.join(folder, "index.js")
+    template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
+    with open(indexJsFilepath, "w") as f:
+        f.write(replaceInTemplate(template, values))
+    widgetsCssFilepath = os.path.join(folder, "widgets.css")
+    with open(widgetsCssFilepath, "w") as f:
+        f.write(widgetsCss["General"])
+        for w in widgets:
+            f.write(widgets[w]["Css"])
+    baseCssFilepath = os.path.join(folder, "index.css")
+    with open(baseCssFilepath, "w") as f:
+        for css in baseCss:
+            f.write(baseCss.get(css, ""))
+        f.write(_contentCss(appdef))
+    return indexFilepath
+
 
 def _contentCss(appdef):
     try:
@@ -250,7 +249,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max):
                     format: new ol.format.GeoJSON(),
                     loader: function(extent, resolution, projection) {
                         var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
-                            '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(n)s' +
+                            '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
                             '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
                         $.ajax({
                             url: url,

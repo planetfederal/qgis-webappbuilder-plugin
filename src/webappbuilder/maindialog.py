@@ -9,15 +9,14 @@ from collections import defaultdict
 from olwriter import writeOL
 from qgis.utils import iface
 from appcreator import createApp
-from functools import partial
 from settings import *
 from types import MethodType
-from csseditor import CssEditorDialog
+from texteditor import *
 import webbrowser
 from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
 from utils import METHOD_WMS, METHOD_WMS_POSTGIS
-from htmleditor import HtmlEditorDialog
+
 
 class Layer():
 
@@ -55,6 +54,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                      self.editHeaderCss)
         self.connect(self.labelEditFooterCss, SIGNAL("linkActivated(QString)"),
                      self.editFooterCss)
+        self.connect(self.labelEditPopupCss, SIGNAL("linkActivated(QString)"),
+                     self.editPopupCss)
         self.currentBaseLayerItem = self.mapQuestAerialButton
         self.mapQuestAerialButton.setChecked(True)
         self.baseLayerButtons = [self.mapQuestButton, self.mapQuestAerialButton, self.stamenTonerButton, self.stamenWatercolorButton, self.osmButton]
@@ -111,30 +112,45 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
 
+        class Progress():
+            def setText(_, text):
+                self.progressLabel.setText(text)
+                QApplication.processEvents()
+            def setProgress(_, i):
+                self.progressBar.setValue(i)
+                QApplication.processEvents()
+
+        self.progress = Progress()
+
     def editHeaderCss(self):
-        dlg = CssEditorDialog(baseCss["Header"])
+        dlg = TextEditorDialog(baseCss["Header"], CSS, "Header")
         dlg.exec_()
-        baseCss["Header"] = dlg.css
+        baseCss["Header"] = dlg.text
 
     def editFooterCss(self):
-        dlg = CssEditorDialog(baseCss["Footer"])
+        dlg = TextEditorDialog(baseCss["Footer"], CSS, "Footer")
         dlg.exec_()
-        baseCss["Footer"] = dlg.css
+        baseCss["Footer"] = dlg.text
+
+    def editPopupCss(self):
+        dlg = TextEditorDialog(baseCss["Popup"], CSS, "Popup")
+        dlg.exec_()
+        baseCss["Popup"] = dlg.text
 
     def editWidgetParameters(self, widgetName):
         if widgetName == "Text panel":
-            dlg = HtmlEditorDialog(widgetsParams[widgetName]["HTML content"])
+            dlg = TextEditorDialog(widgetsParams[widgetName]["HTML content"], HTML)
             dlg.exec_()
-            widgetsParams[widgetName]["HTML content"] = dlg.html
+            widgetsParams[widgetName]["HTML content"] = dlg.text
         else:
             dlg = ParametersEditorDialog(widgetsParams[widgetName])
             dlg.exec_()
             widgetsParams[widgetName] = dlg.params
 
     def editWidgetCss(self, widgetName):
-        dlg = CssEditorDialog(widgetsCss.get(widgetName, ""))
+        dlg = TextEditorDialog(widgetsCss.get(widgetName, ""), CSS, widgetName)
         dlg.exec_()
-        widgetsCss[widgetName] = dlg.css
+        widgetsCss[widgetName] = dlg.text
 
     def selectFilepath(self):
         folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
@@ -181,14 +197,49 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
+    def _run(self, f):
+        self.progressBar.setVisible(True)
+        self.progressLabel.setVisible(True)
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(0)
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            f()
+        finally:
+            self.progressBar.setVisible(False)
+            self.progressLabel.setVisible(False)
+            QApplication.restoreOverrideCursor()
+
     def updatePreview(self):
-        self.preview.settings().clearMemoryCaches()
         try:
             appdef = self.createAppDefinition(True)
-            path = "file:///" + writeOL(appdef).replace("\\","/")
+            path = self._run(lambda: writeOL(appdef, self.progress))
+            path = "file:///" + path.replace("\\","/")
             webbrowser.open_new(path)
         except WrongValueException:
             pass
+
+    def createApp(self):
+        try:
+            appdef = self.createAppDefinition()
+            if appdef["Deploy"]["GeoServer workspace"] == "":
+                appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
+            if appdef["Deploy"]["PostGIS schema"] == "":
+                appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
+            self._run(lambda: createApp(appdef, self.progress))
+            msgBox = QMessageBox()
+            msgBox.setWindowTitle("Web app creator")
+            msgBox.setText("App was correctly created and deployed")
+            msgBox.setInformativeText("Do you want to open it in a web browser?");
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setDefaultButton(QMessageBox.Yes);
+            ret = msgBox.exec_();
+            if ret == QMessageBox.Yes:
+                webbrowser.open_new("file://%s/index.html" % appdef["Deploy"]["App path"])
+        except WrongValueException:
+            pass
+
 
     def createAppDefinition(self, preview = False):
         layers, groups = self.getLayersAndGroups()
@@ -261,27 +312,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.tabPanel.setCurrentIndex(4)
             raise e
 
-
-    def createApp(self):
-        try:
-            appdef = self.createAppDefinition()
-            if appdef["Deploy"]["GeoServer workspace"] == "":
-                appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
-            if appdef["Deploy"]["PostGIS schema"] == "":
-                appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
-            createApp(appdef)
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle("Web app creator")
-            msgBox.setText("App was correctly created and deployed")
-            msgBox.setInformativeText("Do you want to open it in a web browser?");
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setDefaultButton(QMessageBox.Yes);
-            ret = msgBox.exec_();
-            if ret == QMessageBox.Yes:
-                webbrowser.open_new("file://%s/index.html" % appdef["Deploy"]["App path"])
-        except WrongValueException:
-            pass
 
     def getSettings(self):
         try:

@@ -12,14 +12,14 @@ from utils import *
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
 
-def createApp(appdef):
+def createApp(appdef, progress):
 	if not checkAppCanBeCreated():
 		return
 	QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	try:
-		importPostgis(appdef)
-		publishGeoserver(appdef)
-		writeOL(appdef)
+		importPostgis(appdef, progress)
+		publishGeoserver(appdef, progress)
+		writeOL(appdef, progress)
 		folder = appdef["Deploy"]["App path"]
 		files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
 		for root, dirs, fs in os.walk(os.path.join(appdef["Deploy"]["App path"], "styles")):
@@ -39,7 +39,9 @@ def createApp(appdef):
 def checkAppCanBeCreated():
 	return True
 
-def importPostgis(appdef):
+def importPostgis(appdef, progress):
+	progress.setText("Importing into PostGIS (1/3)")
+	progress.setProgress(0)
 	host = appdef["Deploy"]["PostGIS host"]
 	port = appdef["Deploy"]["PostGIS port"]
 	username = appdef["Deploy"]["PostGIS username"]
@@ -51,7 +53,7 @@ def importPostgis(appdef):
 	connector = PostGisDBConnector(uri)
 	schemas = connector.getSchemas()
 	schemaExists = schema in [s[1] for s in schemas]
-	for layer in appdef["Layers"]:
+	for i, layer in enumerate(appdef["Layers"]):
 		if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
 			if not schemaExists:
 				connector.createSchema(schema)
@@ -64,9 +66,7 @@ def importPostgis(appdef):
 				connector.deleteTable([schema, tablename])
 			importLayerIntoPostgis(layer.layer, host, port, username, password,
 								dbname, schema, tablename)
-
-
-			print "Imported into PostGIS:" + layer.layer.name()
+		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
 def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename):
 	extent = '{},{},{},{}'.format(
@@ -115,7 +115,16 @@ def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema
 			continue
 	AlgorithmExecutor.runalg(alg)
 
-def publishGeoserver(appdef):
+def publishGeoserver(appdef, progress):
+	usesGeoServer = False
+	for applayer in appdef["Layers"]:
+		if applayer.method != METHOD_FILE:
+			if applayer.layer.type() == applayer.layer.VectorLayer and applayer.layer.providerType().lower() != "wfs":
+				usesGeoServer = True
+	if not usesGeoServer:
+		return
+	progress.setText("Publishing to GeoServer (2/3)")
+	progress.setProgress(0)
 	geoserverUrl = appdef["Deploy"]["GeoServer url"] + "/rest"
 	geoserverPassword = appdef["Deploy"]["GeoServer password"]
 	geoserverUsername = appdef["Deploy"]["GeoServer username"]
@@ -143,7 +152,7 @@ def publishGeoserver(appdef):
 	except Exception:
 		pass
 	store = None
-	for applayer in appdef["Layers"]:
+	for i, applayer in enumerate(appdef["Layers"]):
 		layer = applayer.layer
 		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
 			name = safeName(layer.name())
@@ -179,7 +188,7 @@ def publishGeoserver(appdef):
 				publishing = catalog.get_layer(name)
 				publishing.default_style = catalog.get_style(name)
 				catalog.save(publishing)
-			print "Published to GeoServer: " + layer.name()
+		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
 
 def getDataFromLayer(layer):

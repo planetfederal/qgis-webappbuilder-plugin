@@ -39,14 +39,14 @@ def tempFilenameInTempFolder(basename):
     filename =  os.path.join(folder, basename)
     return filename
 
-def exportLayers(layers, folder):
+def exportLayers(layers, folder, progress):
     epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{4})([0-9]+)")
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
                          for i,it in enumerate(txt.split('"')))
-    for appLayer in layers:
+    for i, appLayer in enumerate(layers):
         if appLayer.method == METHOD_FILE:
             layer = appLayer.layer
             if layer.type() == layer.VectorLayer:
@@ -83,6 +83,7 @@ def exportLayers(layers, folder):
                     stderr=subprocess.STDOUT,
                     universal_newlines=False,
                     )
+        progress.setProgress(int(i*100.0/len(layers)))
 
 
 def safeName(name):

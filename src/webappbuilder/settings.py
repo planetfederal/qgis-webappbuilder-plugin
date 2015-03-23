@@ -1,7 +1,23 @@
 import os
 
-def getCssFromTemplate(template):
+def getAllCssForElement(elem):
+    allCss = {}
+    basePath = os.path.join(os.path.dirname(__file__), "templates")
+    templates = [os.path.join(basePath,o) for o in os.listdir(basePath)
+                 if os.path.isdir(os.path.join(basePath,o))]
+    for template in templates:
+        templateName = os.path.basename(template)
+        path = os.path.join(template, "widgets.css")
+        css = getCssFromTemplate(path)
+        if elem in css:
+            allCss[templateName] = css[elem]
+        path = os.path.join(template, "index.css")
+        css = getCssFromTemplate(path)
+        if elem in css:
+            allCss[templateName] = css[elem]
+    return allCss
 
+def getCssFromTemplate(template):
     with open(template) as f:
         lines = f.readlines()
     css = {}
@@ -16,14 +32,15 @@ def getCssFromTemplate(template):
         css[widget] = "".join(css[widget])
     return css
 
-widgetsTemplate = os.path.join(os.path.dirname(__file__), "templates", "widgets.css")
+widgetsTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "widgets.css")
 widgetsCss = getCssFromTemplate(widgetsTemplate)
 
-baseTemplate = os.path.join(os.path.dirname(__file__), "templates", "index.css")
+baseTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "index.css")
 baseCss = getCssFromTemplate(baseTemplate)
 
+defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
-widgetsParams = {"Text panel": {"HTML content":""},
+widgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
           "Overview map": {"collapsed":True},
           "Scale bar": {"minWidth": 64,
                         "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
