@@ -33,14 +33,16 @@ def getCssFromTemplate(template):
     return css
 
 widgetsTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "widgets.css")
-widgetsCss = getCssFromTemplate(widgetsTemplate)
+defaultWidgetsCss = getCssFromTemplate(widgetsTemplate)
+widgetsCss = dict(defaultWidgetsCss)
 
 baseTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "index.css")
-baseCss = getCssFromTemplate(baseTemplate)
+defaultBaseCss = getCssFromTemplate(baseTemplate)
+baseCss = dict(defaultBaseCss)
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
-widgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
+defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
           "Overview map": {"collapsed":True},
           "Scale bar": {"minWidth": 64,
                         "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
@@ -51,7 +53,9 @@ widgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
                              "projection": "EPSG:4326", "undefinedHTML": "&nbsp;"},
           "Layers list": {"tipLabel": "Layers"}}
 
-appSettings = {
+widgetsParams = dict(defaultWidgetsParams)
+
+defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
                 "Restrict to extent": False,
@@ -59,3 +63,5 @@ appSettings = {
                 "Min zoom level": 1,
                 "Show popups on hover": False,
                 "Highlight features on hover": False}
+
+appSettings = dict(defaultAppSettings)

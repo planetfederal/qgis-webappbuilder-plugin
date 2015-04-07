@@ -11,28 +11,36 @@ from geoserver.catalog import Catalog
 from utils import *
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
+import copy
+from json.encoder import JSONEncoder
+import json
 
-def createApp(appdef, progress):
+def createApp(appdef, deployData, folder, progress):
 	if not checkAppCanBeCreated():
 		return
 	QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	try:
-		importPostgis(appdef, progress)
-		publishGeoserver(appdef, progress)
-		writeOL(appdef, progress)
-		folder = appdef["Deploy"]["App path"]
+		if deployData:
+			importPostgis(appdef, progress)
+			publishGeoserver(appdef, progress)
+		writeOL(appdef, folder, deployData, progress)
 		files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
-		for root, dirs, fs in os.walk(os.path.join(appdef["Deploy"]["App path"], "styles")):
+		for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
 			for f in fs:
 				if f.endswith("js"):
 					files.append(os.path.join(root, f))
 		for path in files:
 			try:
 				beauty = jsbeautifier.beautify_file(path)
-				with open(path, "w") as f :
+				with open(path, "w") as f:
 					f.write(beauty)
 			except:
 				pass #jsbeautifier gives some random errors sometimes due to imports
+		projFile = QgsProject.instance().fileName()
+		if projFile:
+			appdefFile =  projFile + ".appdef"
+			print appdefFile
+			saveAppdef(appdef, appdefFile)
 	finally:
 		QApplication.restoreOverrideCursor()
 
@@ -235,8 +243,26 @@ def exportRasterLayer(layer):
 		output = tempFilenameInTempFolder(filename + ".tif")
 		writer = QgsRasterFileWriter(output)
 		writer.setOutputFormat("GTiff");
-		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), epsg3587)
+		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), epsg3857)
 		del writer
 		return output
 	else:
 		return unicode(layer.source())
+
+
+class DefaultEncoder(JSONEncoder):
+	def default(self, o):
+		return o.__dict__
+
+def saveAppdef(appdef, filename):
+	toSave = {k:v for k,v in appdef.iteritems()}
+	for group in toSave["Groups"]:
+		toSave["Groups"][group] = [layer.name() for layer in toSave["Groups"][group]]
+	layers = []
+	for layer in toSave["Layers"]:
+		layer.layer = layer.layer.name()
+		layers.append(layer)
+	toSave["Layers"] = layers
+	with open(filename, "w") as f:
+		f.write(json.dumps(toSave, sort_keys=True, indent=4, cls=DefaultEncoder))
+

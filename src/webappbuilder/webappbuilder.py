@@ -22,5 +22,10 @@ class WebAppBuilderPlugin:
         self.iface.removePluginMenu("Boundless", self.action)
 
     def run(self):
-        dlg = MainDialog()
+        appdef = None
+        projFile = QgsProject.instance().fileName()
+        if projFile:
+            pass
+
+        dlg = MainDialog(appdef)
         dlg.exec_()

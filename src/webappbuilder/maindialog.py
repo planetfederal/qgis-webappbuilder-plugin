@@ -41,15 +41,16 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     items = {}
 
-    def __init__(self):
+    def __init__(self, appdef):
         QDialog.__init__(self)
         self.setupUi(self)
         self.populateLayers()
         self.populateConfigParams()
-        self.buttonUpdate.clicked.connect(self.updatePreview)
+        self.buttonPreview.clicked.connect(self.updatePreview)
+        self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
         self.buttonCreateApp.clicked.connect(self.createApp)
-        self.buttonSelectFilepath.clicked.connect(self.selectFilepath)
         self.buttonSelectImgFilepath.clicked.connect(self.selectImgFilepath)
+        self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.connect(self.labelEditHeaderCss, SIGNAL("linkActivated(QString)"),
                      self.editHeaderCss)
         self.connect(self.labelEditFooterCss, SIGNAL("linkActivated(QString)"),
@@ -83,7 +84,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.textPanelButton: "Text panel",
                         self.exportAsImageButton: "Export as image",
                         self.geolocationButton: "Geolocation",
-                        self.geocodingButton: "Geocoding"}
+                        self.geocodingButton: "Geocoding",
+                        self.chartToolButton: "Chart tool"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
@@ -122,6 +124,19 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         self.progress = Progress()
 
+        if appdef is not None:
+            self.loadAppdef(appdef)
+
+    def customBaseLayers(self):
+        pass
+
+    def loadAppdef(self, appdef):
+        pass
+
+    def deployCheckChanged(self):
+        self.geoserverGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
+        self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
+
     def editHeaderCss(self):
         dlg = TextEditorDialog(baseCss["Header"], CSS, "Header")
         dlg.exec_()
@@ -152,10 +167,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         dlg.exec_()
         widgetsCss[widgetName] = dlg.text
 
-    def selectFilepath(self):
-        folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
-        if folder is None:
-            self.filepathBox.setText(folder)
 
     def selectImgFilepath(self):
         folder = QFileDialog.getOpenFileName(self, "Select header image file")
@@ -213,7 +224,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def updatePreview(self):
         try:
             appdef = self.createAppDefinition(True)
-            path = self._run(lambda: writeOL(appdef, self.progress))
+            path = self._run(lambda: writeOL(appdef, utils.tempFolder(), True, self.progress))
             path = "file:///" + path.replace("\\","/")
             webbrowser.open_new(path)
         except WrongValueException:
@@ -221,12 +232,12 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def createApp(self):
         try:
+            #folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
+            folder = "d:\\deploy"
+            if folder is None:
+                return
             appdef = self.createAppDefinition()
-            if appdef["Deploy"]["GeoServer workspace"] == "":
-                appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
-            if appdef["Deploy"]["PostGIS schema"] == "":
-                appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
-            self._run(lambda: createApp(appdef, self.progress))
+            self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
             msgBox = QMessageBox()
             msgBox.setWindowTitle("Web app creator")
             msgBox.setText("App was correctly created and deployed")
@@ -236,26 +247,33 @@ class MainDialog(QDialog, Ui_MainDialog):
             msgBox.setDefaultButton(QMessageBox.Yes);
             ret = msgBox.exec_();
             if ret == QMessageBox.Yes:
-                webbrowser.open_new("file://%s/index.html" % appdef["Deploy"]["App path"])
+                webbrowser.open_new("file://%s/index.html" % folder)
         except WrongValueException:
             pass
 
-
     def createAppDefinition(self, preview = False):
         layers, groups = self.getLayersAndGroups()
-        definition = {}
-        definition["Settings"] = self.getSettings()
-        definition["Base layers"] = self.getBaseLayers()
-        definition["Layers"] = layers
+        appdef = {}
+        appdef["Settings"] = self.getSettings()
+        appdef["Base layers"] = self.getBaseLayers()
+        appdef["Layers"] = layers
         if preview:
             for layer in layers:
                 providerType = layer.layer.providerType().lower()
                 if providerType not in ["wms", "wfs"]:
                     layer.method = utils.METHOD_FILE
-        definition["Groups"] = groups
-        definition["Widgets"] = self.getWidgets()
-        definition["Deploy"] = self.getDeployConfiguration(layers) if not preview else {"App path": utils.tempFolder()}
-        return definition
+        appdef["Groups"] = groups
+        appdef["Widgets"] = self.getWidgets()
+        deploy = not (self.checkBoxDeployData.isChecked() or preview)
+        if deploy:
+            appdef["Deploy"] = self.getDeployConfiguration(layers)
+            if appdef["Deploy"]["GeoServer workspace"] == "":
+                appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
+            if appdef["Deploy"]["PostGIS schema"] == "":
+                appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
+        else:
+            appdef["Deploy"] = {}
+        return appdef
 
     def getBaseLayers(self):
         layers = []
@@ -305,7 +323,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 "GeoServer username": self._getValue(self.geoserverUsernameBox, usesGeoServer),
                 "GeoServer password": self._getValue(self.geoserverPasswordBox, usesGeoServer),
                 "GeoServer workspace": self.geoserverWorkspaceBox.text().strip(),
-                "App path": self._getValue(self.filepathBox, True)
             }
             return params
         except WrongValueException, e:

@@ -21,17 +21,17 @@ baseLayersJs  = {
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
-def writeOL(appdef, progress):
+def writeOL(appdef, folder, writeLayersData, progress):
     progress.setText("Creating local files (3/3)")
     progress.setProgress(0)
-    folder = appdef["Deploy"]["App path"]
     dst = os.path.join(folder, "resources")
     if not os.path.exists(dst):
         shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "base"), dst)
     layers = appdef["Layers"]
-    exportLayers(layers, folder, progress)
+    if writeLayersData:
+        exportLayers(layers, folder, progress)
     exportStyles(layers, folder, appdef["Settings"])
-    writeLayersAndGroups(appdef)
+    writeLayersAndGroups(appdef, folder)
     geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
@@ -44,6 +44,10 @@ def writeOL(appdef, progress):
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]["Params"]))
     if "Layers list" in widgets:
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]["Params"]))
+    if "Chart tool" in widgets:
+        controls.append("new ol.control.ChartTool()")
+    if "Attributes table" in widgets:
+        controls.append("new ol.control.AttributesTable()")
     if "Overview map" in widgets:
         collapsed = str(widgets["Overview map"]["Params"]["collapsed"]).lower()
         controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
@@ -111,7 +115,7 @@ def writeOL(appdef, progress):
     with open(indexFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
     values = {"@BOUNDS@": mapbounds,
-                "@CONTROLS@": ",".join(controls),
+                "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
                 "@VIEW@": view,
                 "@ONHOVER@": onHover,
@@ -154,12 +158,11 @@ def _contentCss(appdef):
     }''' % (footerHeight + headerHeight, footerHeight)
     return css
 
-def writeLayersAndGroups(appdef):
+def writeLayersAndGroups(appdef, folder):
     baseLayers = appdef["Base layers"]
     print baseLayers
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
-    folder = deploy["App path"]
     groups = appdef["Groups"]
     baseLayer = baseLayerGroup % ",".join([baseLayersJs[b] for b in baseLayers])
     layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
@@ -193,8 +196,11 @@ def writeLayersAndGroups(appdef):
     layersList = "var layersList = [%s];" % ",".join([layer for layer in (groupList + noGroupList)])
     singleLayersList = "var singleLayersList = [%s];" % ",".join(["lyr_%s" % safeName(layer.layer.name()) for layer in layers])
 
-    path = os.path.join(folder, "layers", "layers.js")
-    with codecs.open(path, "w","utf-8") as f:
+    path = os.path.join(folder, "layers")
+    if not QDir(path).exists():
+        QDir().mkpath(path)
+    filename = os.path.join(path, "layers.js")
+    with codecs.open(filename, "w","utf-8") as f:
         f.write(baseLayer + "\n")
         f.write(layerVars + "\n")
         f.write(groupVars + "\n")
