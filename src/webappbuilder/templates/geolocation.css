@@ -1,0 +1,13 @@
+/*Basic*/
+.geolocation-control {
+  top: 130px;
+  left: .5em;
+}
+
+.geolocation-control button {
+    float: right;
+    background-image: url('data:image/png;base64,R0lGODlhEAAQALMAAJmZzMzM/2aZzJnM/2bM/8DAwPf3583NzczMzAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAUALAAAAAAQABAAQARVsMhJqxzCYMPFMB4VCAJyGAdCBtVYnulqScFgs9aIGAApAAYVrqDj+YDCWe02azqJPd9vOOntaoHgj4I5jD6YwCF0EXgFBI1ATJZYDVgtIBc9Up+WCAA7') /*logo.png*/;
+    background-repeat: no-repeat;
+    background-position: 2px;
+    border: none;
+}

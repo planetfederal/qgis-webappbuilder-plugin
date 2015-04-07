@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Apr 01 12:33:46 2015
+# Created: Tue Apr 07 15:31:39 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(598, 714)
+        MainDialog.resize(598, 769)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -63,20 +63,6 @@ class Ui_MainDialog(object):
         self.groupHeader.setObjectName(_fromUtf8("groupHeader"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.groupHeader)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-        self.label_16 = QtGui.QLabel(self.groupHeader)
-        self.label_16.setObjectName(_fromUtf8("label_16"))
-        self.verticalLayout_4.addWidget(self.label_16)
-        self.horizontalLayout_3 = QtGui.QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(0)
-        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
-        self.imgFilepathBox = QtGui.QLineEdit(self.groupHeader)
-        self.imgFilepathBox.setText(_fromUtf8(""))
-        self.imgFilepathBox.setObjectName(_fromUtf8("imgFilepathBox"))
-        self.horizontalLayout_3.addWidget(self.imgFilepathBox)
-        self.buttonSelectImgFilepath = QtGui.QToolButton(self.groupHeader)
-        self.buttonSelectImgFilepath.setObjectName(_fromUtf8("buttonSelectImgFilepath"))
-        self.horizontalLayout_3.addWidget(self.buttonSelectImgFilepath)
-        self.verticalLayout_4.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         self.label_4 = QtGui.QLabel(self.groupHeader)
@@ -679,9 +665,9 @@ class Ui_MainDialog(object):
         self.editToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.editToolButton.setObjectName(_fromUtf8("editToolButton"))
         self.gridLayout_3.addWidget(self.editToolButton, 4, 3, 1, 1)
-        self.searchButton = QtGui.QToolButton(self.widgetsTab)
-        self.searchButton.setMinimumSize(QtCore.QSize(134, 100))
-        self.searchButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.measureToolButton = QtGui.QToolButton(self.widgetsTab)
+        self.measureToolButton.setMinimumSize(QtCore.QSize(134, 100))
+        self.measureToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -696,13 +682,12 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.searchButton.setIcon(icon6)
-        self.searchButton.setIconSize(QtCore.QSize(32, 32))
-        self.searchButton.setCheckable(True)
-        self.searchButton.setChecked(False)
-        self.searchButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.searchButton.setObjectName(_fromUtf8("searchButton"))
-        self.gridLayout_3.addWidget(self.searchButton, 5, 0, 1, 1)
+        self.measureToolButton.setIcon(icon6)
+        self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
+        self.measureToolButton.setCheckable(True)
+        self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.measureToolButton.setObjectName(_fromUtf8("measureToolButton"))
+        self.gridLayout_3.addWidget(self.measureToolButton, 5, 0, 1, 1)
         self.legendButton = QtGui.QToolButton(self.widgetsTab)
         self.legendButton.setMinimumSize(QtCore.QSize(134, 100))
         self.legendButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -773,7 +758,7 @@ class Ui_MainDialog(object):
         self.chartToolButton.setObjectName(_fromUtf8("chartToolButton"))
         self.gridLayout_3.addWidget(self.chartToolButton, 5, 3, 1, 1)
         spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem6, 6, 1, 1, 1)
+        self.gridLayout_3.addItem(spacerItem6, 6, 0, 1, 1)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
         self.suiteTab = QtGui.QWidget()
         self.suiteTab.setObjectName(_fromUtf8("suiteTab"))
@@ -929,8 +914,6 @@ class Ui_MainDialog(object):
         self.label_3.setText(_translate("MainDialog", "Title", None))
         self.titleBox.setText(_translate("MainDialog", "My Web App", None))
         self.groupHeader.setTitle(_translate("MainDialog", "Header", None))
-        self.label_16.setText(_translate("MainDialog", "Background image", None))
-        self.buttonSelectImgFilepath.setText(_translate("MainDialog", "...", None))
         self.label_4.setText(_translate("MainDialog", "Text", None))
         self.labelEditHeaderCss.setText(_translate("MainDialog", "<a href=\'css\'>Edit css</a>", None))
         self.groupFooter.setTitle(_translate("MainDialog", "Footer", None))
@@ -965,7 +948,7 @@ class Ui_MainDialog(object):
         self.geolocationButton.setText(_translate("MainDialog", "Geolocation", None))
         self.geocodingButton.setText(_translate("MainDialog", "Geocoding", None))
         self.editToolButton.setText(_translate("MainDialog", "Edit Tool", None))
-        self.searchButton.setText(_translate("MainDialog", "Search", None))
+        self.measureToolButton.setText(_translate("MainDialog", "Measure Tool", None))
         self.legendButton.setText(_translate("MainDialog", "Legend", None))
         self.attributesTableButton.setText(_translate("MainDialog", "Attributes Table", None))
         self.chartToolButton.setText(_translate("MainDialog", "Chart tool", None))

@@ -1,10 +1,10 @@
 import os
 
 elements = ["Attributes table", "Attribution", "Full screen", "Layers list", "Legend",
-           "Mouse position", "North arrow", "Overview map", "Scale bar", "Search button",
+           "Mouse position", "North arrow", "Overview map", "Scale bar",
            "Zoom controls", "Zoom slider", "Zoom to extent", "3D view", "Edit tool",
-           "Text panel", "Export as image", "Geolocation", "Geocoding", "Chart tool",
-           "Header", "Footer", "General", "Popup"]
+           "Text panel", "Export as image", "Measure tool", "Geolocation", "Geocoding",
+           "Chart tool", "Header", "Footer", "General", "Popup"]
 
 def getAllCssForElement(elem):
     path = os.path.join(os.path.dirname(__file__), "templates", elem.replace(" ", "-").lower() + ".css")

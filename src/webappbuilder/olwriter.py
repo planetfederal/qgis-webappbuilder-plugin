@@ -53,6 +53,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
         controls.append("new ol.control.ChartTool()")
     if "Export as image" in widgets:
         controls.append("new ol.control.SaveAsPng()")
+    if "Geolocation" in widgets:
+        controls.append("new ol.control.Geolocation()")
     if "Attributes table" in widgets:
         controls.append("new ol.control.AttributesTable()")
     if "Overview map" in widgets:
@@ -143,6 +145,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
         for w in widgets:
             f.write(widgets[w]["Css"])
     return indexFilepath
+
 
 
 def _contentCss(appdef):

@@ -58,6 +58,30 @@ ol.inherits(ol.control.SaveAsPng, ol.control.Control);
 
 //=======================================================
 
+ol.control.Geolocation = function() {
+
+  var button = document.createElement('button');
+
+  var geolocate = function(e){
+    
+  };
+
+  button.addEventListener('click', geolocate, false);
+  button.addEventListener('touchstart', geolocate, false);
+
+  var element = document.createElement('div');
+  element.className = 'geolocation-control ol-unselectable ol-control';
+  element.appendChild(button);
+
+  ol.control.Control.call(this, {
+    element: element,
+  });
+
+};
+ol.inherits(ol.control.Geolocation, ol.control.Control);
+
+//=======================================================
+
 ol.control.AttributesTable = function(opt_options) {
 
     var options = opt_options || {};

@@ -1,10 +1,7 @@
 /*Basic*/
 .savepng-control {
-  top: 85px;
-  left: .5em;
-}
-.ol-touch .savepng-control {
   top: 100px;
+  left: .5em;
 }
 
 .savepng-control button {

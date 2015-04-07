@@ -10,6 +10,10 @@ var overlayPopup = new ol.Overlay({
   element: container
 });
 
+var view = new ol.View({
+    @VIEW@
+  })
+
 var map = new ol.Map({
   controls: [
     @CONTROLS@
@@ -18,9 +22,7 @@ var map = new ol.Map({
   renderer: 'canvas',
   overlays: [overlayPopup],
   layers: layersList,
-  view: new ol.View({
-    @VIEW@
-  })
+  view: view
 });
 map.getView().fitExtent(@BOUNDS@, map.getSize());
 

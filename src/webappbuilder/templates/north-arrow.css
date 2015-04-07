@@ -1,7 +1,7 @@
 /*Basic*/
 .ol-rotate {
-  top: 10px;
-  right: 40;
+  top: .5em;
+  left: 40px;
   transition: opacity .25s;
 }
 

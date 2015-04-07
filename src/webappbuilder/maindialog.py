@@ -50,7 +50,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
         self.buttonCreateApp.clicked.connect(self.createApp)
-        self.buttonSelectImgFilepath.clicked.connect(self.selectImgFilepath)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.connect(self.labelEditHeaderCss, SIGNAL("linkActivated(QString)"),
                      self.editHeaderCss)
@@ -76,7 +75,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.northArrowButton: "North arrow",
                         self.overviewButton: "Overview map",
                         self.scaleBarButton: "Scale bar",
-                        self.searchButton: "Search button",
                         self.zoomControlsButton: "Zoom controls",
                         self.zoomSliderButton: "Zoom slider",
                         self.zoomToExtentButton: "Zoom to extent",
@@ -85,6 +83,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.textPanelButton: "Text panel",
                         self.exportAsImageButton: "Export as image",
                         self.geolocationButton: "Geolocation",
+                        self.measureToolButton: "Measure tool",
                         self.geocodingButton: "Geocoding",
                         self.chartToolButton: "Chart tool"}
 
@@ -167,12 +166,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         dlg = TextEditorDialog(cssStyles.get(widgetName, ""), CSS, widgetName)
         dlg.exec_()
         cssStyles[widgetName] = dlg.text
-
-
-    def selectImgFilepath(self):
-        folder = QFileDialog.getOpenFileName(self, "Select header image file")
-        if folder is None:
-            self.imgFilepathBox.setText(folder)
 
     def populateLayers(self):
         skipType = [2]
