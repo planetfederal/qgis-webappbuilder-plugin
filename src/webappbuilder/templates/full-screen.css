@@ -1,0 +1,13 @@
+/*Basic*/
+.ol-full-screen {
+  right: 10px;
+  top: 10px;
+}
+
+button.ol-full-screen-false:after {
+  content: "\2194";
+}
+
+button.ol-full-screen-true:after {
+  content: "\00d7";
+}

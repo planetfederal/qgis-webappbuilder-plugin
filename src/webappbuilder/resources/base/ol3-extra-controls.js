@@ -3,7 +3,6 @@ ol.control.CesiumControl = function(ol3d) {
   var button = document.createElement('button');
   button.innerHTML = '3D';
 
-  var this_ = this;
   var enable3DView = function(e) {
     if (ol3d.getEnabled()){
         ol3d.setEnabled(false)
@@ -28,6 +27,34 @@ ol.control.CesiumControl = function(ol3d) {
 
 };
 ol.inherits(ol.control.CesiumControl, ol.control.Control);
+
+//=======================================================
+
+ol.control.SaveAsPng = function() {
+
+  var button = document.createElement('button');
+
+  var saveAsPng = function(e){
+    map.once('postcompose', function(event) {
+      var canvas = event.context.canvas;
+      button.href = canvas.toDataURL('image/png');
+    });
+    map.renderSync()
+  };
+
+  button.addEventListener('click', saveAsPng, false);
+  button.addEventListener('touchstart', saveAsPng, false);
+
+  var element = document.createElement('div');
+  element.className = 'savepng-control ol-unselectable ol-control';
+  element.appendChild(button);
+
+  ol.control.Control.call(this, {
+    element: element,
+  });
+
+};
+ol.inherits(ol.control.SaveAsPng, ol.control.Control);
 
 //=======================================================
 

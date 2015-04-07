@@ -1,0 +1,10 @@
+/*Basic*/
+.ol-mouse-position {
+  top: 10px;
+  right: 70px;
+  position: absolute;
+  color: #fff;
+  background-color: rgba(0,60,136,.5);
+  padding: 2px 10px;
+  border-radius: 5px;
+}

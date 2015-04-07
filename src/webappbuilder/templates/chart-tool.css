@@ -1,0 +1,29 @@
+/*Basic*/
+.chart-tool {
+    position: absolute;
+    top: 140px;
+    right: 5px;
+    text-align: left;
+}
+
+.chart-tool button {
+    float: right;
+    width: 38px;
+    height: 38px;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAFJ0lEQVR42mL8//8/Ay0BQAAxMdAYAAQQC4g4ZC/F8IORmSFTwpfhISs/A/v/vxgK//znYFDiOMCgzHGY4dd/VrDYv3//GLh5uKvUddTTObg4+BkYGBleP3958+7Ne2XAkDm4e/pvBoAAYiHWJcyMvxie/DRm4GF+ziDKegdoIQsD0BBrA1OTei09Pbbfv/4wMDExMahp/DH78e1304N795xB7gIIIKKDiJHhH8MfBk6G698CGF7/VmVgYQQbKMPJwcP28d0Xhk/vPzN8ePuR4ee3vwycXDyqwKjlBOkDCCAm0iLsD8NfBlaGa98CwZYwAy358+cPw7+/v4HB9QeM//z5BaT/Ah0EAQABhBJEONMT0Dn/fv1i+P/vPyNI1W8mrv8PmSwY+LkfAg3/xfAbaMlfIAb7FBhMoLiBAYAAYkEEAQPDX0agJBAzIEcy0HBGZmZ3PkPdSjYhATmQ0K93Hx99vs5c/u2P0I//QAv+IlnAxMgIdMg/BpgXAAIIbAHIQ1z/fjOkfTjL0Cpsy/ALmKLYoJb8+/1LREDXeqKEV6A6zOL/jCyKTExrJ/6/+WPxn79/GX7//s3w9y/UUUALkH0AEEBwH4AMdf9ym4EFaEiTiAOYD0mu/8XZ+ITU/rz5zPD3+zeIKzm5Gdh4hdSAvhMHufwPsgXQ5AuLA4AAQomDz0zsDM5f7zGw/v/HUC/qCMwbLMAoBbro909gHHxjAAUH2IBfTCCfgV37589voA9+wS34D9QLimSQHAgABBBGKgJZYvftAUPzq30MPP9+MfwBxsl/UEr5CbIEioHs/3//QC34w/Dr929wMMEwchABBBDWZAq25PsDhtK3Rxl+A4PqH8iCXz+Q8Hegpb/BwQD2AdBSkC9A+BfIN0hBBBBALEiJBZjk/isAmbKgqPrwn+2T5deHF0w5lf7d/gssEoDh/w9oGDge//xl+A8Nor+//zL8+YVw9X+g2v9/EUEEEEAsMMNZWBlT5c0FJnBLcnCBSth/P/4xfDj9apHwr2+Tr/8BppWf31n+wywAGgCxDBEHMAv+/WNGCSKAAAJb8A9YkgnIsOdKyrBx/QCWKf+AFnLyMDGwq3CH/7nBdAkYod/+/vjGBw53sA/+AIPoFzitg+KACSncQcGDHEQAAcQCzWWsQFeLfHj7A5hhgBkLCH8yA4V//mFnYmLkBwbH338/vkK8Di75WMGpiBHqAwZgHMDqFaa/TCipCCCAWKB5g+Hvr78Mvz79BsUDNMsDFX/9DZYEBc2/78CI/Qe1gOk3MA4gcuAcDOLDLAAVFX8RQQQQQCyw3Pf31z+GHx+BSRAqB7KA5RvEEJBr//78BikCwKaAUhYkT/wBx8cfuAWMTED1//+BfQcCAAEE8QFQAJSHfnz4ywCrQUG++geMD2BOg+SDHz/AmQgiyYzwAdCC/4xIFoDLImAiYYD4FiCAIKmIlY3h39dPDL9+AEtMqM2MIBbQxb8F/0HSOONfuCEgC0DFA7CQAJakP4AOZESxACTGwgSuDhgAAghswWPHKC7xvUv+ffvxieE/0PuwwpsdSGoI8bCd///rP8ev//ACHZwMgCZK8+qy/ft9Hhj5bIhyCAhZ//P9M1WMA9nwGSCAQOoYNm7bfkJNVsr87+/fmFUlK9u/7/8YmNBbH6AwZmVm/vfn33cmeNkMi1hmFoZH958d8Pb1dAQIILAPfn/7+vH91x/fgGn5B0ZV+eMXMxMk8P9jSIGTAiNGC4GJ6Q/H959fwWYBBBgAmO7QoeaTUSEAAAAASUVORK5CYII=') /*logo.png*/;    
+    background-repeat: no-repeat;
+    background-position: 2px;
+    border: none;
+}
+
+.chart-tool button:hover {
+    background-color: white;
+}
+
+.chart-tool .panel {
+    display: none;
+}
+
+.chart-tool.shown .panel {
+    display: block;
+}

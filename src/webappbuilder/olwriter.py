@@ -46,6 +46,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]["Params"]))
     if "Chart tool" in widgets:
         controls.append("new ol.control.ChartTool()")
+    if "Export as image" in widgets:
+        controls.append("new ol.control.SaveAsPng()")
     if "Attributes table" in widgets:
         controls.append("new ol.control.AttributesTable()")
     if "Overview map" in widgets:
@@ -125,16 +127,15 @@ def writeOL(appdef, folder, writeLayersData, progress):
     template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
     with open(indexJsFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
-    widgetsCssFilepath = os.path.join(folder, "widgets.css")
-    with open(widgetsCssFilepath, "w") as f:
-        f.write(widgetsCss["General"])
+    cssFilepath = os.path.join(folder, "webapp.css")
+    with open(cssFilepath, "w") as f:
+        f.write(_contentCss(appdef))
+        f.write(cssStyles["General"])
+        f.write(appdef["Settings"]["Footer css"])
+        f.write(appdef["Settings"]["Header css"])
+        f.write(appdef["Settings"]["Popup css"])
         for w in widgets:
             f.write(widgets[w]["Css"])
-    baseCssFilepath = os.path.join(folder, "index.css")
-    with open(baseCssFilepath, "w") as f:
-        for css in baseCss:
-            f.write(baseCss.get(css, ""))
-        f.write(_contentCss(appdef))
     return indexFilepath
 
 

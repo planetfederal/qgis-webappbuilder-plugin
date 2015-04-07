@@ -1,0 +1,12 @@
+/*Basic*/
+.ol-zoom-extent {
+  top: 4.643em;
+  left: .5em;
+}
+
+.ol-zoom-extent button {
+  line-height: 1.4em;
+}
+.ol-zoom-extent button:after {
+  content: "E";
+}

@@ -1,44 +1,48 @@
 import os
 
-def getAllCssForElement(elem):
-    allCss = {}
-    basePath = os.path.join(os.path.dirname(__file__), "templates")
-    templates = [os.path.join(basePath,o) for o in os.listdir(basePath)
-                 if os.path.isdir(os.path.join(basePath,o))]
-    for template in templates:
-        templateName = os.path.basename(template)
-        path = os.path.join(template, "widgets.css")
-        css = getCssFromTemplate(path)
-        if elem in css:
-            allCss[templateName] = css[elem]
-        path = os.path.join(template, "index.css")
-        css = getCssFromTemplate(path)
-        if elem in css:
-            allCss[templateName] = css[elem]
-    return allCss
+elements = ["Attributes table", "Attribution", "Full screen", "Layers list", "Legend",
+           "Mouse position", "North arrow", "Overview map", "Scale bar", "Search button",
+           "Zoom controls", "Zoom slider", "Zoom to extent", "3D view", "Edit tool",
+           "Text panel", "Export as image", "Geolocation", "Geocoding", "Chart tool",
+           "Header", "Footer", "General", "Popup"]
 
-def getCssFromTemplate(template):
-    with open(template) as f:
-        lines = f.readlines()
-    css = {}
-    widget = None
-    for line in lines:
-        if line.startswith("/*"):
-            widget = line.strip()[2:-2]
-            css[widget] = []
-        elif widget is not None:
-            css[widget].append(line)
-    for widget in css:
-        css[widget] = "".join(css[widget])
+def getAllCssForElement(elem):
+    path = os.path.join(os.path.dirname(__file__), "templates", elem.replace(" ", "-").lower() + ".css")
+    try:
+        css = getCssFromFile(path)
+    except:
+        return None
     return css
 
-widgetsTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "widgets.css")
-defaultWidgetsCss = getCssFromTemplate(widgetsTemplate)
-widgetsCss = dict(defaultWidgetsCss)
+def getCssFromFile(filename):
+    with open(filename) as f:
+        lines = f.readlines()
+    css = {}
+    style = None
+    for line in lines:
+        if line.startswith("/*"):
+            style = line.strip()[2:-2]
+            css[style] = []
+        elif style is not None:
+            css[style].append(line)
+    for style in css:
+        css[style] = "".join(css[style])
+    return css
 
-baseTemplate = os.path.join(os.path.dirname(__file__), "templates", "basic", "index.css")
-defaultBaseCss = getCssFromTemplate(baseTemplate)
-baseCss = dict(defaultBaseCss)
+def getDefaultCss():
+    css = {}
+    for e in elements:
+        elemCss = getAllCssForElement(e)
+        if elemCss:
+            if "Basic" in elemCss:
+                css[e] = elemCss["Basic"]
+            else:
+                css[e] = elemCss[elemCss.keys()[0]]
+    return css
+
+
+defaultCssStyles = getDefaultCss()
+cssStyles = dict(defaultCssStyles)
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 

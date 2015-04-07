@@ -1,0 +1,8 @@
+/*Basic*/
+.enable3d-control {
+  top: 65px;
+  left: .5em;
+}
+.ol-touch .enable3d-control {
+  top: 80px;
+}

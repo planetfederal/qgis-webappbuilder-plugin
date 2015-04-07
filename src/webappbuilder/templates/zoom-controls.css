@@ -1,0 +1,12 @@
+/*Basic*/
+.ol-zoom {
+  top: .5em;
+  left: .5em;
+}
+.ol-zoom .ol-zoom-in {
+  border-radius: 2px 2px 0 0;
+}
+
+.ol-zoom .ol-zoom-out {
+  border-radius: 0 0 2px 2px;
+}

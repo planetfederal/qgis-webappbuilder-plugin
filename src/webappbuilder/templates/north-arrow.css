@@ -1,0 +1,11 @@
+/*Basic*/
+.ol-rotate {
+  top: 10px;
+  right: 40;
+  transition: opacity .25s;
+}
+
+.ol-rotate.ol-hidden {
+  opacity: 0;
+  display: none;
+}
