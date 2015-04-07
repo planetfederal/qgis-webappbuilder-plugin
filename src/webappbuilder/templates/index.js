@@ -24,6 +24,63 @@ var map = new ol.Map({
 });
 map.getView().fitExtent(@BOUNDS@, map.getSize());
 
+var selectInteraction = new ol.interaction.Select({
+  layers: function(layer){
+    return selectableLayersList.indexOf(layer) != -1;
+  },
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(255, 100, 50, 0.3)'
+    }),
+    stroke: new ol.style.Stroke({
+        width: 2,
+        color: 'rgba(255, 100, 50, 0.8)'
+    }),
+    image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+            color: 'rgba(255, 100, 50, 0.5)'
+        }),
+        stroke: new ol.style.Stroke({
+            width: 2, 
+            color: 'rgba(255, 100, 50, 0.8)'
+        }),
+        radius: 7
+    })
+  }),
+  addCondition: ol.events.condition.platformModifierKeyOnly,
+  removeCondition: ol.events.condition.platformModifierKeyOnly 
+});
+map.addInteraction(selectInteraction);
+
+var dragBoxInteraction = new ol.interaction.DragBox({
+  condition: @DRAGBOXCONDITION@,
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: [0, 0, 255, 1]
+    })
+  })
+});
+map.addInteraction(dragBoxInteraction);
+
+var selectedFeatures = selectInteraction.getFeatures();
+dragBoxInteraction.on('boxend', function(e) {
+  var extent = dragBoxInteraction.getGeometry().getExtent();
+  for (i = 0; i < selectableLayersList.length; i++){
+    source = selectableLayersList[i].getSource()
+    source.forEachFeatureIntersectingExtent(extent, function(feature) {
+      selectedFeatures.push(feature);
+    });
+  }
+  
+});
+
+dragBoxInteraction.on('boxstart', function(e) {
+  selectedFeatures.clear();
+});
+map.on('click', function() {
+  selectedFeatures.clear();
+});
+
 @CESIUM@
 
 var NO_POPUP = 0

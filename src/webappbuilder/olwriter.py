@@ -21,6 +21,11 @@ baseLayersJs  = {
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
+dragBoxConditions = {"Not enabled": "ol.events.condition.never",
+                     "Using Alt key": "ol.events.condition.altKeyOnly",
+                     "Using Shift key": "ol.events.condition.shiftKeyOnly",
+                     "Without using additional key": "ol.events.condition.noModifierKeys"}
+
 def writeOL(appdef, folder, writeLayersData, progress):
     progress.setText("Creating local files (3/3)")
     progress.setProgress(0)
@@ -122,7 +127,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
                 "@VIEW@": view,
                 "@ONHOVER@": onHover,
                 "@DOHIGHLIGHT@": highlight,
-                "@CESIUM@": cesium}
+                "@CESIUM@": cesium,
+                "@DRAGBOXCONDITION@": dragBoxConditions[appdef["Settings"]["Select by rectangle"]]}
     indexJsFilepath = os.path.join(folder, "index.js")
     template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
     with open(indexJsFilepath, "w") as f:
@@ -196,6 +202,8 @@ def writeLayersAndGroups(appdef, folder):
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in (groupList + noGroupList)])
     singleLayersList = "var singleLayersList = [%s];" % ",".join(["lyr_%s" % safeName(layer.layer.name()) for layer in layers])
+    selectableLayersList = "var selectableLayersList = [%s];" % ",".join(
+                            ["lyr_%s" % safeName(layer.layer.name()) for layer in layers if layer.allowSelection])
 
     path = os.path.join(folder, "layers")
     if not QDir(path).exists():
@@ -208,6 +216,7 @@ def writeLayersAndGroups(appdef, folder):
         f.write(visibility + "\n")
         f.write(layersList + "\n")
         f.write(singleLayersList + "\n")
+        f.write(selectableLayersList + "\n")
 
 
 

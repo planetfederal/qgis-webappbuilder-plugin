@@ -66,6 +66,7 @@ defaultAppSettings = {
                 "Max zoom level": 28,
                 "Min zoom level": 1,
                 "Show popups on hover": False,
-                "Highlight features on hover": False}
+                "Highlight features on hover": False,
+                "Select by rectangle": ("Not enabled", ("Not enabled", "Using Alt key", "Using Shift key", "Without using additional key"))}
 
 appSettings = dict(defaultAppSettings)

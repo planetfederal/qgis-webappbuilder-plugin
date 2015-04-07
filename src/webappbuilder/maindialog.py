@@ -20,12 +20,13 @@ from utils import METHOD_WMS, METHOD_WMS_POSTGIS
 
 class Layer():
 
-    def __init__(self, layer, visible, popup, method, clusterDistance):
+    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection):
         self.layer = layer
         self.visible = visible
         self.popup = popup
         self.method = method
         self.clusterDistance = clusterDistance
+        self.allowSelection = allowSelection
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -448,6 +449,10 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.popupCombo.addItem(option)
             self.addChild(self.popupItem)
             tree.setItemWidget(self.popupItem, 1, self.popupCombo)
+            self.allowSelectionItem = QTreeWidgetItem(self)
+            self.allowSelectionItem.setCheckState(0, Qt.Checked)
+            self.allowSelectionItem.setText(0, "Allow selection on this layer")
+            self.addChild(self.allowSelectionItem)
             if layer.geometryType() == QGis.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
@@ -492,6 +497,10 @@ class TreeLayerItem(QTreeWidgetItem):
         return popup
 
     @property
+    def allowSelection(self):
+        return self.allowSelectionItem.checkState(0) == Qt.Checked
+
+    @property
     def visible(self):
         return self.visibleItem.checkState(0) == Qt.Checked
 
@@ -518,6 +527,6 @@ class TreeLayerItem(QTreeWidgetItem):
             raise WrongValueException()
 
     def appLayer(self):
-        return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance)
+        return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)
 
 
