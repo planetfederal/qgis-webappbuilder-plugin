@@ -9,7 +9,7 @@ from collections import defaultdict
 from olwriter import writeOL
 from qgis.utils import iface
 from appcreator import createApp
-from settings import *
+import settings
 from types import MethodType
 from texteditor import *
 import webbrowser
@@ -47,19 +47,15 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.setupUi(self)
         self.populateLayers()
         self.populateConfigParams()
+        self.populateThemes()
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
-        self.connect(self.labelEditHeaderCss, SIGNAL("linkActivated(QString)"),
-                     self.editHeaderCss)
-        self.connect(self.labelEditFooterCss, SIGNAL("linkActivated(QString)"),
-                     self.editFooterCss)
-        self.connect(self.labelEditPopupCss, SIGNAL("linkActivated(QString)"),
-                     self.editPopupCss)
         self.currentBaseLayerItem = self.mapQuestAerialButton
         self.mapQuestAerialButton.setChecked(True)
-        self.baseLayerButtons = [self.mapQuestButton, self.mapQuestAerialButton, self.stamenTonerButton, self.stamenWatercolorButton, self.osmButton]
+        self.baseLayerButtons = [self.mapQuestButton, self.mapQuestAerialButton,
+                self.stamenTonerButton, self.stamenWatercolorButton, self.osmButton]
         self.baseLayers = {self.mapQuestButton: "MapQuest roads",
                             self.mapQuestAerialButton: "MapQuest aerial",
                             self.stamenTonerButton: "Stamen toner",
@@ -92,13 +88,10 @@ class MainDialog(QDialog, Ui_MainDialog):
             if event.button() == Qt.RightButton :
                 name = widgetButtons[selfb]
                 menu = QMenu()
-                cssAction = QAction("Edit widget CSS...", None)
-                cssAction.triggered.connect(lambda: self.editWidgetCss(name))
-                menu.addAction(cssAction)
                 if name == "Text panel":
                     s = "Edit panel content..."
                 else:
-                    s = "Edit widget parameters..."
+                    s = "Edit parameters..."
                 paramsAction = QAction(s, None)
                 paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
                 paramsAction.setEnabled(name in widgetsParams)
@@ -134,8 +127,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         for button, widgetName in self.widgetButtons.iteritems():
             if widgetName in appdef["Widgets"]:
                 button.setChecked(True)
-                cssStyles[widgetName] = appdef["Widgets"][widgetName]["Css"]
-                for paramName, value in appdef["Widgets"][widgetName]["Params"].iteritems():
+                for paramName, value in appdef["Widgets"][widgetName].iteritems():
                     if isinstance(value, tuple):
                         widgetsParams[widgetName][paramName][0] = value
                     else:
@@ -143,30 +135,33 @@ class MainDialog(QDialog, Ui_MainDialog):
         for name in self.settingsItems:
             if name in appdef["Settings"]:
                 self.settingsItems[name].setValue(appdef["Settings"][name])
-        cssStyles["Footer"] = appdef["Settings"]["Footer css"]
-        cssStyles["Popup"] = appdef["Settings"]["Popup css"]
-        cssStyles["Header"] = appdef["Settings"]["Header css"]
-
-
+        theme = appdef["Settings"]["Theme"]["Name"]
+        for button, themeName in self.themesButtons.iteritems():
+            if themeName == theme:
+                button.click()
+        settings.currentCss = appdef["Settings"]["Theme"]["Css"]
+        items = []
+        for i in xrange(self.layersTree.topLevelItemCount()):
+            item = self.layersTree.topLevelItem(i)
+            if isinstance(item, TreeLayerItem):
+                items.append(item)
+            else:
+                for j in xrange(item.childCount()):
+                    subitem = item.child(j)
+                    items.append(subitem)
+        layers = {lay["layer"]: lay for lay in appdef["Layers"]}
+        for item in items:
+            if item.layer.name() in layers:
+                item.setCheckState(0, Qt.Checked)
+                layer = layers[item.layer.name()]
+                item.setValues(layer["visible"], layer["popup"], layer["method"],
+                               layer["clusterDistance"], layer["allowSelection"])
+            else:
+                item.setCheckState(0, Qt.Unchecked)
 
     def deployCheckChanged(self):
         self.geoserverGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
         self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
-
-    def editHeaderCss(self):
-        dlg = TextEditorDialog(cssStyles["Header"], CSS, "Header")
-        dlg.exec_()
-        cssStyles["Header"] = dlg.text
-
-    def editFooterCss(self):
-        dlg = TextEditorDialog(cssStyles["Footer"], CSS, "Footer")
-        dlg.exec_()
-        cssStyles["Footer"] = dlg.text
-
-    def editPopupCss(self):
-        dlg = TextEditorDialog(cssStyles["Popup"], CSS, "Popup")
-        dlg.exec_()
-        cssStyles["Popup"] = dlg.text
 
     def editWidgetParameters(self, widgetName):
         if widgetName == "Text panel":
@@ -178,10 +173,38 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg.exec_()
             widgetsParams[widgetName] = dlg.params
 
-    def editWidgetCss(self, widgetName):
-        dlg = TextEditorDialog(cssStyles.get(widgetName, ""), CSS, widgetName)
-        dlg.exec_()
-        cssStyles[widgetName] = dlg.text
+    def populateThemes(self):
+        self.themesButtons = {}
+        themes = [k for k in settings.themes.keys() if k != "basic"]
+        if "basic" in settings.themes:
+            themes.insert(0, "basic")
+        for i, theme in enumerate(themes):
+            button = QtGui.QToolButton()
+            icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".png"))
+            button.setIcon(icon)
+            button.setText(theme)
+            button.setIconSize(QtCore.QSize(80, 80))
+            button.setCheckable(True)
+            button.setChecked(i == 0)
+            button.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+            button.setStyleSheet('''QToolButton {
+                background-color: #bbbbbb; border-style: outset; border-width: 2px;
+                border-radius: 10px; border-color: beige; font: bold;
+                min-width: 100px; max-width: 250px; padding:10px;}
+                QToolButton:checked { background-color: #9ABEED; border-style: inset;}''')
+            def clicked(button):
+                for b in self.themesButtons:
+                    b.setChecked(False)
+                button.setChecked(True)
+                settings.currentTheme = button.text()
+                settings.currentCss = settings.themes[button.text()]
+
+            button.clicked.connect(partial(clicked, button))
+            row = i / 2
+            col = i % 2
+            self.gridLayoutThemes.addWidget(button, row, col, 1, 1)
+            self.themesButtons[button] = theme
+
 
     def populateLayers(self):
         skipType = [2]
@@ -300,7 +323,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 for k, v, in params.iteritems():
                     if isinstance(v, tuple):
                         params[k] = v[0]
-                widgets[name] = {"Params": params, "Css": cssStyles.get(name,"")}
+                widgets[name] = params
         return widgets
 
     def _getValue(self, textbox, mandatory):
@@ -346,14 +369,14 @@ class MainDialog(QDialog, Ui_MainDialog):
         except WrongValueException, e:
             self.tabPanel.setCurrentIndex(0)
             raise e
-        parameters = {"Title": title}
-        if self.groupFooter.isChecked():
-            parameters.update({"Footer text": self.footerTextBox.toPlainText().strip(),
-                      "Footer css": cssStyles["Footer"]})
-        if self.groupHeader.isChecked():
-            parameters.update({"Header text": self.headerTextBox.toPlainText().strip(),
-                      "Header css": cssStyles["Header"]})
-        parameters.update({"Popup css": cssStyles["Popup"]})
+        for b in self.themesButtons:
+            if b.isChecked():
+                themeName = b.text()
+                break
+        parameters = {"Title": title,
+                      "Theme": {"Name": themeName,
+                                "Css": currentCss}
+                      } #TODO: Theme
         try:
             for param, item in self.settingsItems.iteritems():
                 parameters[param] = item.value()
@@ -533,6 +556,9 @@ class TreeLayerItem(QTreeWidgetItem):
             return f
         except:
             raise WrongValueException()
+
+    def setValues(self, visible, popup, method, clusterDistance, allowSelection):
+        pass
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)

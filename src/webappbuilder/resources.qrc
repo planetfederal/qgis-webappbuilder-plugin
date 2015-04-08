@@ -2,6 +2,7 @@
   <qresource prefix="/plugins/qgis2ol">
     <file>icons/mapquestaerial.png</file>
     <file>icons/mapquest.png</file>
+    <file>themes/basic/basic.png</file>
     <file>icons/osm.png</file>
     <file>icons/watercolor.png</file>
     <file>icons/toner.png</file>

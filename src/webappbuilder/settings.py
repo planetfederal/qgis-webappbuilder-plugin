@@ -1,48 +1,36 @@
 import os
 
-elements = ["Attributes table", "Attribution", "Full screen", "Layers list", "Legend",
-           "Mouse position", "North arrow", "Overview map", "Scale bar",
-           "Zoom controls", "Zoom slider", "Zoom to extent", "3D view", "Edit tool",
-           "Text panel", "Export as image", "Measure tool", "Geolocation", "Geocoding",
-           "Chart tool", "Header", "Footer", "General", "Popup"]
+def loadThemes():
+    allCss = {}
+    basePath = os.path.join(os.path.dirname(__file__), "themes")
+    templates = [os.path.join(basePath,o) for o in os.listdir(basePath)
+                 if os.path.isdir(os.path.join(basePath,o))]
+    for template in templates:
+        themeName = os.path.basename(template)
+        path = os.path.join(template, themeName + ".css")
+        with open(path) as f:
+            allCss[themeName] = "".join(f.readlines())
+    return allCss
 
-def getAllCssForElement(elem):
-    path = os.path.join(os.path.dirname(__file__), "templates", elem.replace(" ", "-").lower() + ".css")
-    try:
-        css = getCssFromFile(path)
-    except:
-        return None
-    return css
-
-def getCssFromFile(filename):
+def splitCssElements(s):
     with open(filename) as f:
-        lines = f.readlines()
+        lines = s.splitlines()
     css = {}
-    style = None
+    element = None
     for line in lines:
         if line.startswith("/*"):
-            style = line.strip()[2:-2]
-            css[style] = []
-        elif style is not None:
-            css[style].append(line)
-    for style in css:
-        css[style] = "".join(css[style])
-    return css
-
-def getDefaultCss():
-    css = {}
-    for e in elements:
-        elemCss = getAllCssForElement(e)
-        if elemCss:
-            if "Basic" in elemCss:
-                css[e] = elemCss["Basic"]
-            else:
-                css[e] = elemCss[elemCss.keys()[0]]
+            element = line.strip()[2:-2]
+            css[element] = []
+        elif element is not None:
+            css[element].append(line)
+    for element in css:
+        css[element] = "".join(css[element])
     return css
 
 
-defaultCssStyles = getDefaultCss()
-cssStyles = dict(defaultCssStyles)
+themes = loadThemes()
+currentTheme = "basic" if "basic" in themes else themes.keys()[0]
+currentCss =  themes[currentTheme]
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 

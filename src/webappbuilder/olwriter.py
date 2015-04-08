@@ -37,34 +37,22 @@ def writeOL(appdef, folder, writeLayersData, progress):
         exportLayers(layers, folder, progress)
     exportStyles(layers, folder, appdef["Settings"])
     writeLayersAndGroups(appdef, folder)
-    geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-    styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     popupLayers = "popupLayers = [%s];" % ",".join(['%s' % str(layer.popup)
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     controls = []
     widgets = appdef["Widgets"]
     if "Scale bar" in widgets:
-        controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]["Params"]))
+        controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
-        controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]["Params"]))
-    if "Chart tool" in widgets:
-        controls.append("new ol.control.ChartTool()")
-    if "Export as image" in widgets:
-        controls.append("new ol.control.SaveAsPng()")
+        controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]))
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
-    if "Attributes table" in widgets:
-        controls.append("new ol.control.AttributesTable()")
     if "Overview map" in widgets:
-        collapsed = str(widgets["Overview map"]["Params"]["collapsed"]).lower()
+        collapsed = str(widgets["Overview map"]["collapsed"]).lower()
         controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
     if "Mouse position" in widgets:
-        coord = str(widgets["Mouse position"]["Params"]["coordinateFormat"])
-        s = json.dumps(widgets["Mouse position"]["Params"])
-        print s
-        print coord
+        coord = str(widgets["Mouse position"]["coordinateFormat"])
+        s = json.dumps(widgets["Mouse position"])
         s = s.replace('"%s"' % coord, coord)
         controls.append("new ol.control.MousePosition(%s)" % s)
     if "Zoom to extent" in widgets:
@@ -76,14 +64,9 @@ def writeOL(appdef, folder, writeLayersData, progress):
     if "Full screen" in widgets:
         controls.append("new ol.control.FullScreen()")
     if "Zoom controls" in widgets:
-        controls.append("new ol.control.Zoom(%s)" % json.dumps(widgets["Zoom controls"]["Params"]))
+        controls.append("new ol.control.Zoom(%s)" % json.dumps(widgets["Zoom controls"]))
     if "Attribution" in widgets:
         controls.append("new ol.control.Attribution()")
-    if "Text panel" in widgets:
-        params = widgets["Text panel"]["Params"]
-        textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
-    else:
-        textPanel = ""
     if "3D view" in widgets:
         cesium = '''var ol3d = new olcs.OLCesium({map: map});
                     var scene = ol3d.getCesiumScene();
@@ -92,14 +75,11 @@ def writeOL(appdef, folder, writeLayersData, progress):
                     });
                     scene.terrainProvider = terrainProvider;
                     map.addControl(new CesiumControl(ol3d))'''
-        cesiumImport = '''<script src="./resources/cesium/Cesium.js"></script>
-                        <script src="./resources/ol3cesium.js"></script>'''
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
     else:
         cesium = ""
-        cesiumImport = ""
 
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers)
     mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
@@ -108,21 +88,6 @@ def writeOL(appdef, folder, writeLayersData, progress):
     onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
     highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
     view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
-    footer = ('<div id="footer">%s</div>' % appdef["Settings"]["Footer text"]
-                if "Footer text" in appdef["Settings"] else "")
-    header = ('<div id="header">%s</div>' % appdef["Settings"]["Header text"]
-                if "Header text" in appdef["Settings"] else "")
-    values = {"@TITLE@": appdef["Settings"]["Title"],
-              "@FOOTER@": footer,
-              "@HEADER@": header,
-                "@STYLEVARS@": styleVars,
-                "@GEOJSONVARS@": geojsonVars,
-                "@CESIUMIMPORT@": cesiumImport,
-                "@TEXTPANEL@": textPanel}
-    indexFilepath = os.path.join(folder, "index.html")
-    template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
-    with open(indexFilepath, "w") as f:
-        f.write(replaceInTemplate(template, values))
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
@@ -135,42 +100,56 @@ def writeOL(appdef, folder, writeLayersData, progress):
     template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
     with open(indexJsFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
+
+    writeWebApp(appdef, folder)
+
+def writeWebApp(appdef, folder):
+    layers = appdef["Layers"]
+    widgets = appdef["Widgets"]
+    theme = appdef["Settings"]["Theme"]["Name"]
+    tools = []
+    if "Export as image" in widgets:
+        tools.append('<li><button onclick="saveAsPng()" type="button">Export as image</button></li>')
+    if "Geocoding" in widgets:
+        tools.append('<li><input type="text" onclick="search()" id="geocoding-search" class="searchbox"><button type="button">Search</button>')
+    if "Attributes table" in widgets:
+        tools.append('<li><button onclick="showAttributesTable()" type="button">Attributes table</button></li>')
+    if "Text panel" in widgets:
+        params = widgets["Text panel"]
+        textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
+    else:
+        textPanel = ""
+    geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    if "3D view" in widgets:
+        cesiumImport = '''<script src="./resources/cesium/Cesium.js"></script>
+                        <script src="./resources/ol3cesium.js"></script>'''
+        dst = os.path.join(folder, "resources", "cesium")
+        if not os.path.exists(dst):
+            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
+    else:
+        cesiumImport = ""
+    values = {"@TITLE@": appdef["Settings"]["Title"],
+                "@STYLEVARS@": styleVars,
+                "@GEOJSONVARS@": geojsonVars,
+                "@CESIUMIMPORT@": cesiumImport,
+                "@TEXTPANEL@": textPanel,
+                "@TOOLBAR": "\n".join(tools)}
+    indexFilepath = os.path.join(folder, "index.html")
+    template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
+    with open(indexFilepath, "w") as f:
+        f.write(replaceInTemplate(template, values))
+
     cssFilepath = os.path.join(folder, "webapp.css")
     with open(cssFilepath, "w") as f:
-        f.write(_contentCss(appdef))
-        f.write(cssStyles["General"])
-        f.write(appdef["Settings"]["Footer css"])
-        f.write(appdef["Settings"]["Header css"])
-        f.write(appdef["Settings"]["Popup css"])
-        for w in widgets:
-            f.write(widgets[w]["Css"])
+        f.write(appdef["Settings"]["Theme"]["Css"])
     return indexFilepath
 
 
-
-def _contentCss(appdef):
-    try:
-        footerCss = appdef["Settings"]["Footer css"]
-        footerHeight = int(re.findall(u"height:.*?(\d+).*?;", footerCss)[0])
-    except Exception, e:
-        footerHeight = 0
-    try:
-        headerCss = appdef["Settings"]["Header css"]
-        headerHeight = int(re.findall(u"height:.*?(\d+).*?;", headerCss)[0])
-    except Exception, e:
-        headerHeight = 0
-    print headerHeight, footerHeight
-    css = '''#content {
-        width: 100%%;
-        height: calc(100%% - %ipx);
-        position:fixed;
-        bottom: %ipx;
-    }''' % (footerHeight + headerHeight, footerHeight)
-    return css
-
 def writeLayersAndGroups(appdef, folder):
     baseLayers = appdef["Base layers"]
-    print baseLayers
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
     groups = appdef["Groups"]

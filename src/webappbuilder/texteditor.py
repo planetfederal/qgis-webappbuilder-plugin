@@ -1,7 +1,7 @@
 from PyQt4.Qsci import QsciScintilla, QsciLexerCSS, QsciLexerHTML
 from PyQt4 import QtGui, QtCore
 from qgis.core import *
-from settings import getAllCssForElement
+from settings import *
 from functools import partial
 
 CSS = 0

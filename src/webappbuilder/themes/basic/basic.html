@@ -10,6 +10,7 @@
     <script src="./resources/ol.js"></script>
     <script src="./resources/ol3-layerswitcher.js"></script>
     <script src="./resources/ol3-extra-controls.js"></script>
+    <script src="./resources/tools.js"></script>
     @CESIUMIMPORT@
     @GEOJSONVARS@
     @STYLEVARS@
@@ -17,7 +18,8 @@
     <title>@TITLE@</title>
   </head>
   <body>
-    @HEADER@
+    <div id="header"><h2>@TITLE@</h2></div>
+    <div id="toolbar"><ul>@TOOLBAR@</ul></div>
     <div id="content">
       <div id="map">
         <div id="popup" class="ol-popup">
@@ -26,8 +28,8 @@
         </div>
         @TEXTPANEL@
       </div>
+      <div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>
     </div>
-    @FOOTER@
     <script src="./resources/jquery.min.js"></script>
     <script src="./index.js"></script>
   </body>
