@@ -39,7 +39,6 @@ def createApp(appdef, deployData, folder, progress):
 		projFile = QgsProject.instance().fileName()
 		if projFile:
 			appdefFile =  projFile + ".appdef"
-			print appdefFile
 			saveAppdef(appdef, appdefFile)
 	finally:
 		QApplication.restoreOverrideCursor()
@@ -265,4 +264,14 @@ def saveAppdef(appdef, filename):
 	toSave["Layers"] = layers
 	with open(filename, "w") as f:
 		f.write(json.dumps(toSave, sort_keys=True, indent=4, cls=DefaultEncoder))
+
+def loadAppdef(filename):
+	try:
+		with open(filename) as f:
+			data = json.load(f)
+		return data
+	except Exception, e:
+		print e
+		return None
+
 

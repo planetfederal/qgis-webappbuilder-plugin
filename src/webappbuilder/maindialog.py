@@ -131,7 +131,23 @@ class MainDialog(QDialog, Ui_MainDialog):
         pass
 
     def loadAppdef(self, appdef):
-        pass
+        for button, widgetName in self.widgetButtons.iteritems():
+            if widgetName in appdef["Widgets"]:
+                button.setChecked(True)
+                cssStyles[widgetName] = appdef["Widgets"][widgetName]["Css"]
+                for paramName, value in appdef["Widgets"][widgetName]["Params"].iteritems():
+                    if isinstance(value, tuple):
+                        widgetsParams[widgetName][paramName][0] = value
+                    else:
+                        widgetsParams[widgetName][paramName] = value
+        for name in self.settingsItems:
+            if name in appdef["Settings"]:
+                self.settingsItems[name].setValue(appdef["Settings"][name])
+        cssStyles["Footer"] = appdef["Settings"]["Footer css"]
+        cssStyles["Popup"] = appdef["Settings"]["Popup css"]
+        cssStyles["Header"] = appdef["Settings"]["Header css"]
+
+
 
     def deployCheckChanged(self):
         self.geoserverGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
@@ -280,11 +296,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         widgets = {}
         for button, name in self.widgetButtons.iteritems():
             if button.isChecked():
-                widgetParams = widgetsParams.get(name, {}).copy()
-                for k, v, in widgetParams.iteritems():
+                params = widgetsParams.get(name, {}).copy()
+                for k, v, in params.iteritems():
                     if isinstance(v, tuple):
-                        widgetParams[k] = v[0]
-                widgets[name] = {"Params": widgetParams, "Css": cssStyles.get(name,"")}
+                        params[k] = v[0]
+                widgets[name] = {"Params": params, "Css": cssStyles.get(name,"")}
         return widgets
 
     def _getValue(self, textbox, mandatory):
@@ -336,8 +352,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                       "Footer css": cssStyles["Footer"]})
         if self.groupHeader.isChecked():
             parameters.update({"Header text": self.headerTextBox.toPlainText().strip(),
-                      "Header css": cssStyles["Header"],
-                      "Header image": self.imgFilepathBox.text().strip()})
+                      "Header css": cssStyles["Header"]})
         parameters.update({"Popup css": cssStyles["Popup"]})
         try:
             for param, item in self.settingsItems.iteritems():

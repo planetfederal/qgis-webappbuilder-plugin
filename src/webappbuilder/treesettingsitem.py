@@ -33,3 +33,6 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.popupCombo.currentText()
         else:
             return self.text(1)
+
+    def setValue(self, value):
+        pass

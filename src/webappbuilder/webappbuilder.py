@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 import resources_rc
 from maindialog import MainDialog
+from appcreator import loadAppdef
 
 
 class WebAppBuilderPlugin:
@@ -15,7 +16,6 @@ class WebAppBuilderPlugin:
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
-
         self.iface.addPluginToMenu("Boundless", self.action)
 
     def unload(self):
@@ -25,7 +25,12 @@ class WebAppBuilderPlugin:
         appdef = None
         projFile = QgsProject.instance().fileName()
         if projFile:
-            pass
-
+            ret = QMessageBox.question(self.iface.mainWindow(), "Web app builder",
+                                          "This project has been already published as a web app.\n"
+                                          "Do you want to reload app configuration?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if ret == QMessageBox.Yes:
+                appdefFile =  projFile + ".appdef"
+                appdef = loadAppdef(appdefFile)
         dlg = MainDialog(appdef)
         dlg.exec_()
