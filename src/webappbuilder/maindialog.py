@@ -529,7 +529,10 @@ class TreeLayerItem(QTreeWidgetItem):
 
     @property
     def allowSelection(self):
-        return self.allowSelectionItem.checkState(0) == Qt.Checked
+        try:
+            return self.allowSelectionItem.checkState(0) == Qt.Checked
+        except:
+            return False
 
     @property
     def visible(self):
