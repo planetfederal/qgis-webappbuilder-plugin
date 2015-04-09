@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Apr 08 12:05:17 2015
+# Created: Thu Apr 09 15:16:00 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -702,30 +702,6 @@ class Ui_MainDialog(object):
         self.editToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.editToolButton.setObjectName(_fromUtf8("editToolButton"))
         self.gridLayout_3.addWidget(self.editToolButton, 7, 1, 1, 1)
-        self.downloadLayerButton = QtGui.QToolButton(self.widgetsTab)
-        self.downloadLayerButton.setMinimumSize(QtCore.QSize(134, 100))
-        self.downloadLayerButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.downloadLayerButton.setIcon(icon6)
-        self.downloadLayerButton.setIconSize(QtCore.QSize(32, 32))
-        self.downloadLayerButton.setCheckable(True)
-        self.downloadLayerButton.setChecked(False)
-        self.downloadLayerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.downloadLayerButton.setObjectName(_fromUtf8("downloadLayerButton"))
-        self.gridLayout_3.addWidget(self.downloadLayerButton, 7, 2, 1, 1)
         self.legendButton = QtGui.QToolButton(self.widgetsTab)
         self.legendButton.setMinimumSize(QtCore.QSize(134, 100))
         self.legendButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -748,7 +724,9 @@ class Ui_MainDialog(object):
         self.legendButton.setCheckable(True)
         self.legendButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.legendButton.setObjectName(_fromUtf8("legendButton"))
-        self.gridLayout_3.addWidget(self.legendButton, 8, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.legendButton, 7, 2, 1, 1)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem6, 8, 0, 1, 1)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
         self.suiteTab = QtGui.QWidget()
         self.suiteTab.setObjectName(_fromUtf8("suiteTab"))
@@ -836,8 +814,8 @@ class Ui_MainDialog(object):
         self.gridLayout.addWidget(self.label_5, 3, 0, 1, 1)
         self.horizontalLayout.addLayout(self.gridLayout)
         self.verticalLayout_8.addWidget(self.geoserverGroupBox)
-        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_8.addItem(spacerItem6)
+        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem7)
         self.checkBoxDeployData = QtGui.QCheckBox(self.suiteTab)
         self.checkBoxDeployData.setObjectName(_fromUtf8("checkBoxDeployData"))
         self.verticalLayout_8.addWidget(self.checkBoxDeployData)
@@ -845,8 +823,8 @@ class Ui_MainDialog(object):
         self.label_9.setStyleSheet(_fromUtf8("color: rgb(163, 163, 163);"))
         self.label_9.setObjectName(_fromUtf8("label_9"))
         self.verticalLayout_8.addWidget(self.label_9)
-        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_8.addItem(spacerItem7)
+        spacerItem8 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem8)
         self.tabPanel.addTab(self.suiteTab, _fromUtf8(""))
         self.settingsTab = QtGui.QWidget()
         self.settingsTab.setObjectName(_fromUtf8("settingsTab"))
@@ -880,8 +858,8 @@ class Ui_MainDialog(object):
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.horizontalLayout_2.addWidget(self.progressBar)
-        spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem8)
+        spacerItem9 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem9)
         self.buttonCreateApp = QtGui.QPushButton(self.widget)
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
@@ -936,7 +914,6 @@ class Ui_MainDialog(object):
         self.geocodingButton.setText(_translate("MainDialog", "Geocoding", None))
         self.measureToolButton.setText(_translate("MainDialog", "Measure Tool", None))
         self.editToolButton.setText(_translate("MainDialog", "Edit Tool", None))
-        self.downloadLayerButton.setText(_translate("MainDialog", "Download layer", None))
         self.legendButton.setText(_translate("MainDialog", "Legend", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Widgets", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))

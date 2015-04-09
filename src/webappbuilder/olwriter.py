@@ -108,17 +108,34 @@ def writeWebApp(appdef, folder):
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
     tools = []
-    if "Export as image" in widgets:
-        tools.append('<li><button onclick="saveAsPng()" type="button">Export as image</button></li>')
+    mappanels = []
     if "Geocoding" in widgets:
-        tools.append('<li><input type="text" onclick="search()" id="geocoding-search" class="searchbox"><button type="button">Search</button>')
+        tools.append('''<div class="navbar-form navbar-right">
+                          <div class="input-group">
+                              <input type="text" id="geocoding-search" class="form-control" placeholder="Search placename...">
+                              <div class="input-group-btn">
+                                  <button class="btn btn-default" onclick="searchAddress()"><i class="glyphicon glyphicon-search"></i></button>
+                              </div>
+                          </div>
+                        </div>''');
+        mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
+    if "Export as image" in widgets:
+        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</button>')
     if "Attributes table" in widgets:
-        tools.append('<li><button onclick="showAttributesTable()" type="button">Attributes table</button></li>')
+        tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i> Attributes table</a></li>')
     if "Text panel" in widgets:
         params = widgets["Text panel"]
-        textPanel = '<div class="inmap-panel">%s</div>' % params["HTML content"]
-    else:
-        textPanel = ""
+        mappanels.append('<div class="inmap-panel">%s</div>' % params["HTML content"])
+    if "Measure tool" in widgets:
+        tools.append('''<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Measure <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                              <li><a onclick="measureTool('distance')" href="#">Distance</a></li>
+                              <li><a onclick="measureTool('area')" href="#">Area</a></li>
+                              <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
+                            </ul>
+                          </li>''')
+
     geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
@@ -135,8 +152,8 @@ def writeWebApp(appdef, folder):
                 "@STYLEVARS@": styleVars,
                 "@GEOJSONVARS@": geojsonVars,
                 "@CESIUMIMPORT@": cesiumImport,
-                "@TEXTPANEL@": textPanel,
-                "@TOOLBAR": "\n".join(tools)}
+                "@MAPPANELS@": "\n".join(mappanels),
+                "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
     with open(indexFilepath, "w") as f:

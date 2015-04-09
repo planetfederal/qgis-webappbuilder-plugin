@@ -24,7 +24,7 @@ ol.control.LayerSwitcher = function(opt_options) {
     element.appendChild(button);
 
     this.panel = document.createElement('div');
-    this.panel.className = 'panel';
+    this.panel.className = 'layer-switcher-panel';
     element.appendChild(this.panel);
 
     var this_ = this;
