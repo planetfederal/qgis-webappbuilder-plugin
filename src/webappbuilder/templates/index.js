@@ -64,9 +64,10 @@ var dragBoxInteraction = new ol.interaction.DragBox({
 });
 map.addInteraction(dragBoxInteraction);
 
-var selectedFeatures = selectInteraction.getFeatures();
+
 dragBoxInteraction.on('boxend', function(e) {
   var extent = dragBoxInteraction.getGeometry().getExtent();
+  var selectedFeatures = selectInteraction.getFeatures();  
   for (i = 0; i < selectableLayersList.length; i++){
     source = selectableLayersList[i].getSource()
     source.forEachFeatureIntersectingExtent(extent, function(feature) {
@@ -77,11 +78,15 @@ dragBoxInteraction.on('boxend', function(e) {
 });
 
 dragBoxInteraction.on('boxstart', function(e) {
-  selectedFeatures.clear();
+    var selectedFeatures = selectInteraction.getFeatures();
+    selectedFeatures.clear();
 });
+
 map.on('click', function() {
-  selectedFeatures.clear();
+    var selectedFeatures = selectInteraction.getFeatures();
+    selectedFeatures.clear();
 });
+
 
 @CESIUM@
 
@@ -205,6 +210,7 @@ var onSingleClick = function(evt) {
     closer.blur();
   }
 };
+
 
 map.on('pointermove', function(evt) {
   onPointerMove(evt);

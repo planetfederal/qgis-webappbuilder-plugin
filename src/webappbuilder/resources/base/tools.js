@@ -18,23 +18,32 @@ showAttributesTable = function() {
         return                    
     }
 
-    this.mapListeners = [];
     this.selectedRowIndices = [];
 
-    this.renderPanel = function() {
-        interactions = map.getInteractions();
-        this.selectInteraction = null;
-        for (i = 0; i < interactions.length; i++){
-            if (typeof interactions[i] === "ol.interaction.Select"){
-                this.selectInteraction = interactions[i];
-                break;
+    this.toggleRowSelection = function(clas, evt){
+        feature = evt.element;
+        title = this.currentLayer.get('title');
+        idx = this.currentLayer.getSource().getFeatures().indexOf(feature);        
+        if (idx != -1){
+            var row = this.table.getElementsByTagName("tr")[idx]; 
+            row.className = clas;
+            if (clas != "row-selected"){
+                arrayIdx = this.selectedRowIndices.indexOf(idx)
+                this.selectedRowIndices.splice(arrayIdx, 1);
             }
-        }        
+            else{
+                this.selectedRowIndices.push(idx);
+            }
+        }
+    };
+    selectInteraction.getFeatures().on('add', function(evt){this.toggleRowSelection("row-selected", evt)}, this);
+    selectInteraction.getFeatures().on('remove', function(evt){this.toggleRowSelection("row-unselected", evt)}, this);
+
+
+    this.renderPanel = function() {     
         this.formContainer = document.createElement("form");
         this.formContainer.className = "form-inline"
         this.panel.appendChild(this.formContainer)
-        /*text = document.createTextNode("Layer: ");
-        this.container.appendChild(text);*/
         this.createSelector(map);
         this.createButtons();
         var p = document.createElement('p');
@@ -50,7 +59,7 @@ showAttributesTable = function() {
         this_ = this;
         zoomTo = document.createElement("button");
         zoomTo.setAttribute("type", "button");
-        zoomTo.innerHTML = "Zoom to selected";
+        zoomTo.innerHTML = '<i class="glyphicon glyphicon-search"></i> Zoom to selected';
         zoomTo.className = "btn btn-default"
         zoomTo.onclick = function(){
             features = this_.currentLayer.getSource().getFeatures();
@@ -64,13 +73,14 @@ showAttributesTable = function() {
         this.formContainer.appendChild(zoomTo)
         clear =  document.createElement("button")
         clear.setAttribute("type", "button")
-        clear.innerHTML = "Clear selected"
+        clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected'
         clear.className = "btn btn-default"
         clear.onclick = function(){
-            this_.selectedRowIndices = []
-            var rows = this_.table.getElementsByTagName("tr");    
-            for (var i = 0; i < rows.length; i++) {
-                rows[i].className = "row-unselected";
+            var rows = this_.table.getElementsByTagName("tr");
+            var sel = this_.selectedRowIndices.slice();
+            for (var i = 0; i < sel.length; i++) {
+                feature = this_.currentLayer.getSource().getFeatures()[sel[i]];
+                selectInteraction.getFeatures().remove(feature);
             }
         };
         this.formContainer.appendChild(clear);
@@ -108,33 +118,46 @@ showAttributesTable = function() {
         }
 
         this_ = this
+        selectedFeatures = selectInteraction.getFeatures().getArray();
         this.currentLayer.getSource().forEachFeature(function(feature){
             keys = feature.getKeys();
             row = this_.table.insertRow(-1);  
+            if (feature in selectedFeatures){
+                row.className = "row-selected";
+            }
+            else{
+                row.className = "row-unselected" ;
+            }
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] != 'geometry') {
                     var cell = row.insertCell(-1);
-                    cell.innerHTML = feature.get(keys[j]);                
+                    cell.innerHTML = feature.get(keys[j]);
+
                 }            
             }
         });
 
-        var rows = this.table.getElementsByTagName("tr");    
-        for (var i = 0; i < rows.length; i++) {
-            (function (idx) {
-                rows[idx].addEventListener("click", 
-                    function () {
-                        if (this.className != "row-selected"){
-                            this.className = "row-selected"
-                            this_.selectedRowIndices.push(idx)
-                        }
-                        else{
-                            arrayIdx = this_.selectedRowIndices.indexOf(idx)
-                            this_.selectedRowIndices.splice(arrayIdx, 1)
-                            this.className = "row-unselected"   
-                        }
-                    }, false);
-            })(i);
+        if (selectableLayersList.indexOf(this.currentLayer) != -1){
+            var rows = this.table.getElementsByTagName("tr");    
+            for (var i = 0; i < rows.length; i++) {
+                (function (idx) {
+                    rows[idx].addEventListener("click", 
+                        function () {
+                            feature = this_.currentLayer.getSource().getFeatures()[idx];
+                            if (this.className != "row-selected"){
+                                //this.className = "row-selected";
+                                //this_.selectedRowIndices.push(idx);
+                                selectInteraction.getFeatures().push(feature);
+                            }
+                            else{
+                                //arrayIdx = this_.selectedRowIndices.indexOf(idx)
+                                //this_.selectedRowIndices.splice(arrayIdx, 1);
+                                //this.className = "row-unselected" ;                            
+                                selectInteraction.getFeatures().remove(feature);
+                            }
+                        }, false);
+                })(i);
+            }
         }
         this.tablePanel.appendChild(this.table);
     };
@@ -203,7 +226,6 @@ searchAddress = function(){
         $('#geocoding-results').empty();
         if (items.length != 0) {
             $('<ul/>', {
-                'class': 'my-new-list',
                 html: items.join('')
             }).appendTo('#geocoding-results');
         } else {

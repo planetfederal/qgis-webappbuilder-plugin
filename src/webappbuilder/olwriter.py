@@ -121,6 +121,8 @@ def writeWebApp(appdef, folder):
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</button>')
+    if "Chart tool" in widgets:
+        tools.append('<li><a onclick="showChartTool()" href="#" id="chart-tool"><i class="glyphicon glyphicon-stats"></i> Chart tool</button>')
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i> Attributes table</a></li>')
     if "Text panel" in widgets:
