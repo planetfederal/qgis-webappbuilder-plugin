@@ -30,25 +30,7 @@ var selectInteraction = new ol.interaction.Select({
   layers: function(layer){
     return selectableLayersList.indexOf(layer) != -1;
   },
-  style: new ol.style.Style({
-    fill: new ol.style.Fill({
-        color: 'rgba(255, 100, 50, 0.3)'
-    }),
-    stroke: new ol.style.Stroke({
-        width: 2,
-        color: 'rgba(255, 100, 50, 0.8)'
-    }),
-    image: new ol.style.Circle({
-        fill: new ol.style.Fill({
-            color: 'rgba(255, 100, 50, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-            width: 2, 
-            color: 'rgba(255, 100, 50, 0.8)'
-        }),
-        radius: 7
-    })
-  }),
+  style: @SELECTIONSTYLE@,
   addCondition: ol.events.condition.platformModifierKeyOnly,
   removeCondition: ol.events.condition.platformModifierKeyOnly 
 });
@@ -95,17 +77,9 @@ var ALL_FIELDS = 1
 
 @POPUPLAYERS@
 
-var featureOverlay = new ol.FeatureOverlay({
+var highlightStyle = new ol.highlightStyle({
   map: map,
-  style: [new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: '#f00',
-          width: 1
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255,0,0,0.1)'
-        }),
-        })]
+  style: [@HIGHLIGHTSTYLE@]
 });
 
 
@@ -148,10 +122,10 @@ var onPointerMove = function(evt) {
   if (doHighlight){
     if (currentFeature !== highlight) {
       if (highlight) {
-        featureOverlay.removeFeature(highlight);
+        highlightStyle.removeFeature(highlight);
       }
       if (currentFeature) {
-        featureOverlay.addFeature(currentFeature);
+        highlightStyle.addFeature(currentFeature);
       }
       highlight = currentFeature;
     }

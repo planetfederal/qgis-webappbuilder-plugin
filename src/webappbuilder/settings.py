@@ -13,19 +13,25 @@ def loadThemes():
     return allCss
 
 def splitCssElements(s):
-    with open(filename) as f:
-        lines = s.splitlines()
+    lines = s.splitlines()
     css = {}
     element = None
     for line in lines:
-        if line.startswith("/*"):
+        if line.strip().startswith("/*"):
             element = line.strip()[2:-2]
             css[element] = []
         elif element is not None:
             css[element].append(line)
     for element in css:
-        css[element] = "".join(css[element])
+        css[element] = "\n".join(css[element])
     return css
+
+def joinElements(els):
+    s = ""
+    for el, css in els.iteritems():
+        s += "\n\n/*%s*/\n" % el
+        s += css
+    return s
 
 
 themes = loadThemes()
@@ -47,6 +53,36 @@ defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
 
 widgetsParams = dict(defaultWidgetsParams)
 
+selectedFeaturesStyle = '''new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(255, 100, 50, 0.3)'
+    }),
+    stroke: new ol.style.Stroke({
+        width: 2,
+        color: 'rgba(255, 100, 50, 0.8)'
+    }),
+    image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+            color: 'rgba(255, 100, 50, 0.5)'
+        }),
+        stroke: new ol.style.Stroke({
+            width: 2,
+            color: 'rgba(255, 100, 50, 0.8)'
+        }),
+        radius: 7
+    })
+  })'''
+
+highlightedFeaturesStyle = '''new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255,0,0,0.1)'
+    }),
+    })'''
+
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
@@ -55,6 +91,8 @@ defaultAppSettings = {
                 "Min zoom level": 1,
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
-                "Select by rectangle": ("Not enabled", ("Not enabled", "Using Alt key", "Using Shift key", "Without using additional key"))}
+                "Select by rectangle": ("Not enabled", ("Not enabled", "Using Alt key", "Using Shift key", "Without using additional key")),
+                "Style for selected features": selectedFeaturesStyle,
+                "Style for highlighted features": highlightedFeaturesStyle}
 
 appSettings = dict(defaultAppSettings)

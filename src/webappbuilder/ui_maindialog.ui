@@ -110,7 +110,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="configureThemeButton">
+          <widget class="QPushButton" name="buttonConfigureTheme">
            <property name="text">
             <string>Configure theme...</string>
            </property>

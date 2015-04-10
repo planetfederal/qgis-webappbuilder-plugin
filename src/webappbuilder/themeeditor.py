@@ -1,29 +1,30 @@
-from PyQt4.Qsci import QsciScintilla, QsciLexerCSS, QsciLexerHTML,\
-    QsciLexerJavaScript
+from PyQt4.Qsci import QsciScintilla, QsciLexerCSS
 from PyQt4 import QtGui, QtCore
 from qgis.core import *
-from settings import *
-from functools import partial
+import settings
 
-CSS = 0
-HTML = 1
-JSON = 2
 
-class TextEditorDialog(QtGui.QDialog):
+class ThemeEditorDialog(QtGui.QDialog):
 
-    def __init__(self, text, textType, parent = None):
-        super(TextEditorDialog, self).__init__(parent)
+    def __init__(self, parent = None):
+        super(ThemeEditorDialog, self).__init__(parent)
 
-        self.text = text
+        self.styles = settings.splitCssElements(settings.currentCss)
+        self.currentItem = None
 
-        self.resize(600, 350)
+        self.resize(600, 600)
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
                                                 QtCore.Qt.WindowMinMaxButtonsHint)
-        self.setWindowTitle("Editor")
+        self.setWindowTitle("Edit Theme")
 
         layout = QtGui.QVBoxLayout()
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.editor = TextEditorWidget(text, textType)
+        self.list = QtGui.QListWidget()
+        self.list.addItems(self.styles.keys())
+        self.list.sortItems(True)
+        self.list.itemSelectionChanged.connect(self.selectionChanged)
+        layout.addWidget(self.list)
+        self.editor = TextEditorWidget()
         layout.addWidget(self.editor)
         layout.addWidget(buttonBox)
         self.setLayout(layout)
@@ -31,12 +32,15 @@ class TextEditorDialog(QtGui.QDialog):
         buttonBox.accepted.connect(self.okPressed)
         buttonBox.rejected.connect(self.cancelPressed)
 
-    def openText(self, event):
-        QtGui.QToolButton.mousePressEvent(self.button, event)
 
+    def selectionChanged(self):
+        if self.currentItem:
+            self.styles[self.currentItem.text()] = self.editor.text()
+        self.currentItem = self.list.currentItem()
+        self.editor.setText(self.styles[self.currentItem.text()])
 
     def okPressed(self):
-        self.text = self.editor.text()
+        settings.currentCss = settings.joinElements(self.styles)
         self.close()
 
     def cancelPressed(self):
@@ -47,7 +51,7 @@ class TextEditorDialog(QtGui.QDialog):
 class TextEditorWidget(QsciScintilla):
     ARROW_MARKER_NUM = 8
 
-    def __init__(self, text, textType, parent=None):
+    def __init__(self, parent=None):
         super(TextEditorWidget, self).__init__(parent)
 
         font = QtGui.QFont()
@@ -68,16 +72,11 @@ class TextEditorWidget(QsciScintilla):
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
 
-        if textType == CSS:
-            lexer = QsciLexerCSS()
-        elif textType == JSON:
-            lexer =QsciLexerJavaScript()
-        else:
-            lexer = QsciLexerHTML()
+        lexer = QsciLexerCSS()
+
         lexer.setDefaultFont(font)
         self.setLexer(lexer)
         self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
 
-        self.setText(text)
 
 

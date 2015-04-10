@@ -11,11 +11,13 @@ from qgis.utils import iface
 from appcreator import createApp
 import settings
 from types import MethodType
-from texteditor import *
 import webbrowser
 from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
 from utils import METHOD_WMS, METHOD_WMS_POSTGIS
+from themeeditor import ThemeEditorDialog
+from functools import partial
+from texteditor import TextEditorDialog, HTML
 
 
 class Layer():
@@ -48,6 +50,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateLayers()
         self.populateConfigParams()
         self.populateThemes()
+        self.buttonConfigureTheme.clicked.connect(self.configureTheme)
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
         self.buttonCreateApp.clicked.connect(self.createApp)
@@ -94,7 +97,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     s = "Edit parameters..."
                 paramsAction = QAction(s, None)
                 paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
-                paramsAction.setEnabled(name in widgetsParams)
+                paramsAction.setEnabled(name in settings.widgetsParams)
                 menu.addAction(paramsAction)
                 point = selfb.mapToGlobal(event.pos())
                 menu.exec_(point)
@@ -123,15 +126,19 @@ class MainDialog(QDialog, Ui_MainDialog):
     def customBaseLayers(self):
         pass
 
+    def configureTheme(self):
+        dlg = ThemeEditorDialog()
+        dlg.exec_()
+
     def loadAppdef(self, appdef):
         for button, widgetName in self.widgetButtons.iteritems():
             if widgetName in appdef["Widgets"]:
                 button.setChecked(True)
                 for paramName, value in appdef["Widgets"][widgetName].iteritems():
                     if isinstance(value, tuple):
-                        widgetsParams[widgetName][paramName][0] = value
+                        settings.widgetsParams[widgetName][paramName][0] = value
                     else:
-                        widgetsParams[widgetName][paramName] = value
+                        settings.widgetsParams[widgetName][paramName] = value
         for name in self.settingsItems:
             if name in appdef["Settings"]:
                 self.settingsItems[name].setValue(appdef["Settings"][name])
@@ -165,13 +172,13 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def editWidgetParameters(self, widgetName):
         if widgetName == "Text panel":
-            dlg = TextEditorDialog(widgetsParams[widgetName]["HTML content"], HTML)
+            dlg = TextEditorDialog(settings.widgetsParams[widgetName]["HTML content"], HTML)
             dlg.exec_()
-            widgetsParams[widgetName]["HTML content"] = dlg.text
+            settings.widgetsParams[widgetName]["HTML content"] = dlg.text
         else:
-            dlg = ParametersEditorDialog(widgetsParams[widgetName])
+            dlg = ParametersEditorDialog(settings.widgetsParams[widgetName])
             dlg.exec_()
-            widgetsParams[widgetName] = dlg.params
+            settings.widgetsParams[widgetName] = dlg.params
 
     def populateThemes(self):
         self.themesButtons = {}
@@ -179,14 +186,14 @@ class MainDialog(QDialog, Ui_MainDialog):
         if "basic" in settings.themes:
             themes.insert(0, "basic")
         for i, theme in enumerate(themes):
-            button = QtGui.QToolButton()
+            button = QToolButton()
             icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".png"))
             button.setIcon(icon)
             button.setText(theme)
-            button.setIconSize(QtCore.QSize(80, 80))
+            button.setIconSize(QSize(80, 80))
             button.setCheckable(True)
             button.setChecked(i == 0)
-            button.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             button.setStyleSheet('''QToolButton {
                 background-color: #bbbbbb; border-style: outset; border-width: 2px;
                 border-radius: 10px; border-color: beige; font: bold;
@@ -231,7 +238,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.settingsItems = defaultdict(dict)
         item = QTreeWidgetItem()
         item.setText(0, "Settings")
-        for param, value in appSettings.iteritems():
+        for param, value in settings.appSettings.iteritems():
             subitem = TreeSettingItem(item, self.settingsTree, param, value)
             item.addChild(subitem)
             self.settingsItems[param] = subitem
@@ -319,7 +326,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         widgets = {}
         for button, name in self.widgetButtons.iteritems():
             if button.isChecked():
-                params = widgetsParams.get(name, {}).copy()
+                params = settings.widgetsParams.get(name, {}).copy()
                 for k, v, in params.iteritems():
                     if isinstance(v, tuple):
                         params[k] = v[0]
@@ -375,7 +382,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 break
         parameters = {"Title": title,
                       "Theme": {"Name": themeName,
-                                "Css": currentCss}
+                                "Css": settings.currentCss}
                       } #TODO: Theme
         try:
             for param, item in self.settingsItems.iteritems():

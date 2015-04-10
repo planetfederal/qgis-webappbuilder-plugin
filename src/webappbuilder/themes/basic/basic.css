@@ -42,7 +42,7 @@ html, body {
     z-index: 1111
 }
 
-/*Open layer controls*/
+/*OpenLayers controls*/
 .ol-unsupported {
   display: none;
 }
@@ -389,7 +389,8 @@ button.ol-full-screen-true:after {
   opacity: 0;
   display: none;
 }
-  /*Overview map*/
+
+/*Overview map*/
 .ol-overviewmap {
   position: absolute;
   left: .5em;

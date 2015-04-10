@@ -87,6 +87,9 @@ def writeOL(appdef, folder, writeLayersData, progress):
     minZoom = int(appdef["Settings"]["Min zoom level"])
     onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
     highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
+    highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
+    selectedFeaturesStyle = appdef["Settings"]["Style for selected features"]
+    dragBoxCondition = dragBoxConditions[appdef["Settings"]["Select by rectangle"]]
     view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
@@ -95,7 +98,9 @@ def writeOL(appdef, folder, writeLayersData, progress):
                 "@ONHOVER@": onHover,
                 "@DOHIGHLIGHT@": highlight,
                 "@CESIUM@": cesium,
-                "@DRAGBOXCONDITION@": dragBoxConditions[appdef["Settings"]["Select by rectangle"]]}
+                "@DRAGBOXCONDITION@": dragBoxCondition,
+                "@HIGHLIGHTSTYLE@": highlightedFeaturesStyle,
+                "@SELECTIONSTYLE@": selectedFeaturesStyle}
     indexJsFilepath = os.path.join(folder, "index.js")
     template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
     with open(indexJsFilepath, "w") as f:

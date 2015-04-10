@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Apr 09 15:16:00 2015
+# Created: Fri Apr 10 11:46:57 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -70,9 +70,9 @@ class Ui_MainDialog(object):
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem1)
-        self.configureThemeButton = QtGui.QPushButton(self.descriptionTab)
-        self.configureThemeButton.setObjectName(_fromUtf8("configureThemeButton"))
-        self.horizontalLayout_6.addWidget(self.configureThemeButton)
+        self.buttonConfigureTheme = QtGui.QPushButton(self.descriptionTab)
+        self.buttonConfigureTheme.setObjectName(_fromUtf8("buttonConfigureTheme"))
+        self.horizontalLayout_6.addWidget(self.buttonConfigureTheme)
         self.verticalLayout_7.addLayout(self.horizontalLayout_6)
         spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem2)
@@ -882,7 +882,7 @@ class Ui_MainDialog(object):
         self.label_3.setText(_translate("MainDialog", "<b>App Title</b>", None))
         self.titleBox.setText(_translate("MainDialog", "My Web App", None))
         self.label_4.setText(_translate("MainDialog", "<b>Theme</b>", None))
-        self.configureThemeButton.setText(_translate("MainDialog", "Configure theme...", None))
+        self.buttonConfigureTheme.setText(_translate("MainDialog", "Configure theme...", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.descriptionTab), _translate("MainDialog", "Description", None))
         self.stamenWatercolorButton.setText(_translate("MainDialog", "Stamen Watercolor", None))
         self.mapQuestButton.setText(_translate("MainDialog", "MapQuest", None))

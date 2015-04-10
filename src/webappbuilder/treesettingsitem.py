@@ -1,5 +1,6 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from texteditor import TextEditorDialog, JSON
 
 class TreeSettingItem(QTreeWidgetItem):
 
@@ -20,6 +21,15 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value[1]:
                 self.popupCombo.addItem(option)
             self.tree.setItemWidget(self, 1, self.popupCombo)
+        elif "\n" in unicode(value):
+            self.button = QPushButton()
+            self.button.setText("Edit...")
+            def edit():
+                dlg = TextEditorDialog(unicode(value), JSON)
+                dlg.exec_()
+                self.newValue = dlg.text
+            self.button.clicked.connect(edit)
+            self.tree.setItemWidget(self, 1, self.button)
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
@@ -31,6 +41,8 @@ class TreeSettingItem(QTreeWidgetItem):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.popupCombo.currentText()
+        elif "\n" in unicode(self.newValue):
+            return self._value
         else:
             return self.text(1)
 

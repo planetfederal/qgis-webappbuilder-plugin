@@ -271,7 +271,6 @@ def loadAppdef(filename):
 			data = json.load(f)
 		return data
 	except Exception, e:
-		print e
 		return None
 
 
