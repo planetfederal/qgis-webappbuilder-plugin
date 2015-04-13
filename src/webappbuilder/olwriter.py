@@ -10,6 +10,8 @@ from PyQt4.QtGui import *
 from utils import *
 from settings import *
 import json
+import xml.dom.minidom
+
 
 baseLayersJs  = {
     "Stamen watercolor": "new ol.layer.Tile({type: 'base', title: 'Stamen watercolor', source: new ol.source.Stamen({layer: 'watercolor'})})",
@@ -119,7 +121,7 @@ def writeWebApp(appdef, folder):
     if "Geocoding" in widgets:
         tools.append('''<div class="navbar-form navbar-right">
                           <div class="input-group">
-                              <input type="text" id="geocoding-search" class="form-control" placeholder="Search placename...">
+                              <input type="text" id="geocoding-search" class="form-control" placeholder="Search placename..."/>
                               <div class="input-group-btn">
                                   <button class="btn btn-default" onclick="searchAddress()"><i class="glyphicon glyphicon-search"></i></button>
                               </div>
@@ -127,9 +129,9 @@ def writeWebApp(appdef, folder):
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
     if "Export as image" in widgets:
-        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</button>')
+        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</a></li>')
     if "Chart tool" in widgets:
-        tools.append('<li><a onclick="showChartTool()" href="#" id="chart-tool"><i class="glyphicon glyphicon-stats"></i> Chart tool</button>')
+        tools.append('<li><a onclick="showChartTool()" href="#" id="chart-tool"><i class="glyphicon glyphicon-stats"></i> Chart tool</a></li>')
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i> Attributes table</a></li>')
     if "Text panel" in widgets:
@@ -155,7 +157,7 @@ def writeWebApp(appdef, folder):
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
                                   <div class="col-md-12 text-center">
-                                      <h2>%s</h2></br>
+                                      <h2>%s</h2>
                                       <p>%s</p>
                                   </div>
                               </div>
@@ -195,13 +197,12 @@ def writeWebApp(appdef, folder):
                     </ul>
                   </li>''' % li)
             bookmarksFilepath = os.path.join(folder, "bookmarks.js")
-            print bookmarksFilepath
             with open(bookmarksFilepath, "w") as f:
                 bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]
                 f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
                 f.write(bookmarkEvents)
 
-    imports.extend(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
+    imports.extend(['<script src="layers/%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
@@ -218,8 +219,12 @@ def writeWebApp(appdef, folder):
                 "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
+    html = replaceInTemplate(template, values)
+    xml_ = xml.dom.minidom.parseString(html)
+    pretty = xml_.toprettyxml()
+    pretty = "\n".join(filter(lambda x: not re.match(r'^\s*$', x), pretty.splitlines()))
     with open(indexFilepath, "w") as f:
-        f.write(replaceInTemplate(template, values))
+        f.write(pretty)
 
     cssFilepath = os.path.join(folder, "webapp.css")
     with open(cssFilepath, "w") as f:
