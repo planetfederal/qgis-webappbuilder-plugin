@@ -13,9 +13,9 @@ saveAsPng = function(){
 showAttributesTable = function() {
 
     panels = document.getElementsByClassName('table-panel');
-    if (panels.length != 0){        
+    if (panels.length != 0){
         this.panel.style.display = 'block';
-        return                    
+        return
     }
 
     this.selectedRowIndices = [];
@@ -23,9 +23,9 @@ showAttributesTable = function() {
     this.toggleRowSelection = function(clas, evt){
         feature = evt.element;
         title = this.currentLayer.get('title');
-        idx = this.currentLayer.getSource().getFeatures().indexOf(feature);        
+        idx = this.currentLayer.getSource().getFeatures().indexOf(feature);
         if (idx != -1){
-            var row = this.table.getElementsByTagName("tr")[idx]; 
+            var row = this.table.getElementsByTagName("tr")[idx];
             row.className = clas;
             if (clas != "row-selected"){
                 arrayIdx = this.selectedRowIndices.indexOf(idx)
@@ -40,7 +40,7 @@ showAttributesTable = function() {
     selectInteraction.getFeatures().on('remove', function(evt){this.toggleRowSelection("row-unselected", evt)}, this);
 
 
-    this.renderPanel = function() {     
+    this.renderPanel = function() {
         this.formContainer = document.createElement("form");
         this.formContainer.className = "form-inline"
         this.panel.appendChild(this.formContainer)
@@ -98,7 +98,7 @@ showAttributesTable = function() {
     };
 
 
-    this.renderTable = function() {    
+    this.renderTable = function() {
         try{
             this.tablePanel.removeChild(this.table);
         }
@@ -108,7 +108,7 @@ showAttributesTable = function() {
 
         cols = this.currentLayer.getSource().getFeatures()[0].getKeys();
         var row = this.table.insertRow(-1);
-        
+
         for (var i = 0; i < cols.length; i++) {
             if (cols[i] != 'geometry') {
                 var headerCell = document.createElement("TH");
@@ -121,7 +121,7 @@ showAttributesTable = function() {
         selectedFeatures = selectInteraction.getFeatures().getArray();
         this.currentLayer.getSource().forEachFeature(function(feature){
             keys = feature.getKeys();
-            row = this_.table.insertRow(-1);  
+            row = this_.table.insertRow(-1);
             if (feature in selectedFeatures){
                 row.className = "row-selected";
             }
@@ -133,15 +133,15 @@ showAttributesTable = function() {
                     var cell = row.insertCell(-1);
                     cell.innerHTML = feature.get(keys[j]);
 
-                }            
+                }
             }
         });
 
         if (selectableLayersList.indexOf(this.currentLayer) != -1){
-            var rows = this.table.getElementsByTagName("tr");    
+            var rows = this.table.getElementsByTagName("tr");
             for (var i = 0; i < rows.length; i++) {
                 (function (idx) {
-                    rows[idx].addEventListener("click", 
+                    rows[idx].addEventListener("click",
                         function () {
                             feature = this_.currentLayer.getSource().getFeatures()[idx];
                             if (this.className != "row-selected"){
@@ -152,7 +152,7 @@ showAttributesTable = function() {
                             else{
                                 //arrayIdx = this_.selectedRowIndices.indexOf(idx)
                                 //this_.selectedRowIndices.splice(arrayIdx, 1);
-                                //this.className = "row-unselected" ;                            
+                                //this.className = "row-unselected" ;
                                 selectInteraction.getFeatures().remove(feature);
                             }
                         }, false);
@@ -163,11 +163,11 @@ showAttributesTable = function() {
     };
 
 
-    this.createSelector = function(map) {   
-        label = document.createElement("label");        
-        label.innerHTML = "Layer:";   
+    this.createSelector = function(map) {
+        label = document.createElement("label");
+        label.innerHTML = "Layer:";
         this.formContainer.appendChild(label);
-        this.sel = document.createElement('select');    
+        this.sel = document.createElement('select');
         this.sel.className = "form-control"
         this_ = this
         this.sel.onchange = function(){
@@ -178,13 +178,13 @@ showAttributesTable = function() {
                     this_.currentLayer = lyrs[i];
                     break
                 }
-            }        
+            }
             this_.renderTable()};
         var lyrs = map.getLayers().getArray().slice().reverse();
         for (var i = 0, l; i < lyrs.length; i++) {
             l = lyrs[i];
             if (l.get('title') && !(typeof l.getSource === "undefined")) {
-                var option = document.createElement('option');    
+                var option = document.createElement('option');
                 option.value = option.textContent = l.get('title');
                 this.sel.appendChild(option);
             }
@@ -219,7 +219,7 @@ searchAddress = function(){
 
         $.each(data, function(key, val) {
             bb = val.boundingbox;
-            items.push("<li><a href='#' onclick='goToAddress(" + bb[0] + ", " + bb[2] + ", " + bb[1] + ", " + bb[3]  
+            items.push("<li><a href='#' onclick='goToAddress(" + bb[0] + ", " + bb[2] + ", " + bb[1] + ", " + bb[3]
                         + ", \"" + val.osm_type + "\");return false;'>" + val.display_name + '</a></li>');
         });
 
@@ -239,6 +239,39 @@ goToAddress = function(lat1, lng1, lat2, lng2, osm_type) {
     document.getElementById('geocoding-results').style.display = 'none';
     map.getView().setCenter(ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857'));
     map.getView().setZoom(10);
+};
+
+
+//===========================================
+
+goToBookmarkByName = function(name){
+    for(var i=0; i<bookmarks.length; i++){
+        if (bookmarks[i][0] === name){
+            map.getView().fitExtent(bookmarks[i][1], map.getSize());
+        }
+    }
+};
+
+panToBookmark = function(i){
+    var pan = ol.animation.pan({
+        duration: 500,
+        source: view.getCenter()
+    });
+    var zoom = ol.animation.zoom({
+        duration: 500,
+        resolution: view.getResolution(),
+        source: view.getZoom()
+    });
+    map.beforeRender(pan,zoom);
+    map.getView().fitExtent(bookmarks[i][1], map.getSize());
+};
+
+goToBookmark = function(i){
+    map.getView().fitExtent(bookmarks[i][1], map.getSize());
+};
+
+flyToBookmark = function(i){
+    map.getView().fitExtent(bookmarks[i][1], map.getSize());
 };
 
 //===========================================

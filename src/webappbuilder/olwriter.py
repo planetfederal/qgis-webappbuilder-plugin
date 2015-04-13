@@ -114,6 +114,8 @@ def writeWebApp(appdef, folder):
     theme = appdef["Settings"]["Theme"]["Name"]
     tools = []
     mappanels = []
+    imports = []
+    importsAfter = []
     if "Geocoding" in widgets:
         tools.append('''<div class="navbar-form navbar-right">
                           <div class="input-group">
@@ -142,23 +144,76 @@ def writeWebApp(appdef, folder):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
+    bookmarkEvents = ""
+    if "Bookmarks" in widgets:
+        params = widgets["Bookmarks"]
+        bookmarks = params["bookmarks"]
+        print params
+        if bookmarks:
+            importsAfter.append('<script src="./bookmarks.js"></script>')
+            if params["format"] != SHOW_BOOKMARKS_IN_MENU:
+                itemBase = '''<div class="item %s">
+                              <div class="header-text hidden-xs">
+                                  <div class="col-md-12 text-center">
+                                      <h2>%s</h2></br>
+                                      <p>%s</p>
+                                  </div>
+                              </div>
+                            </div>'''
+                bookmarkDivs = "\n".join([itemBase % ("active" if i==0 else "", b[0], b[2]) for i,b in enumerate(bookmarks)])
+                li = "\n".join(['<li data-target="#story-carousel" data-slide-to="%i"></li>' % (i+1) for i in xrange(len(bookmarks)-1)])
+                mappanels.append('''
+                <div class="story-panel">
+                  <div class="row">
+                      <div id="story-carousel" class="carousel" data-interval="false" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#story-carousel" data-slide-to="0" class="active"></li>
+                            %s
+                        </ol>
+                        <div class="carousel-inner">
+                            %s
+                        </div>
+                      </div>
+                      <a class="left carousel-control" href="#story-carousel" data-slide="prev">
+                          <span class="glyphicon glyphicon-chevron-left"></span>
+                      </a>
+                      <a class="right carousel-control" href="#story-carousel" data-slide="next">
+                          <span class="glyphicon glyphicon-chevron-right"></span>
+                      </a>
+                  </div>
+                </div>
+                ''' % (li, bookmarkDivs))
+                bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
+                                          %sToBookmark($(evt.relatedTarget).index())
+                                    })''' % ["go", "pan", "fly"][params["format"]]
+            else:
+                li = "\n".join(["<li><a onclick=\"goToBookmark('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
+                tools.append('''<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bookmarks <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      %s
+                    </ul>
+                  </li>''' % li)
+            bookmarksFilepath = os.path.join(folder, "bookmarks.js")
+            print bookmarksFilepath
+            with open(bookmarksFilepath, "w") as f:
+                bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]
+                f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
+                f.write(bookmarkEvents)
 
-    geojsonVars ="\n".join(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
+    imports.extend(['<script src="layers/%s"></script>' % (safeName(layer.layer.name()) + ".js")
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-    styleVars =  "\n".join(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
+    imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     if "3D view" in widgets:
-        cesiumImport = '''<script src="./resources/cesium/Cesium.js"></script>
-                        <script src="./resources/ol3cesium.js"></script>'''
+        imports.append('<script src="./resources/cesium/Cesium.js"></script>')
+        imports.append('<script src="./resources/ol3cesium.js"></script>')
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
-    else:
-        cesiumImport = ""
     values = {"@TITLE@": appdef["Settings"]["Title"],
-                "@STYLEVARS@": styleVars,
-                "@GEOJSONVARS@": geojsonVars,
-                "@CESIUMIMPORT@": cesiumImport,
+                "@IMPORTS@": "\n".join(imports),
+                "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
@@ -244,7 +299,6 @@ def bounds(useCanvas, layers):
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
-            print "error"
             extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
     else:
         extent = None

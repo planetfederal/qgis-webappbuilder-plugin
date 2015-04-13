@@ -25,12 +25,13 @@ class WebAppBuilderPlugin:
         appdef = None
         projFile = QgsProject.instance().fileName()
         if projFile:
-            ret = QMessageBox.question(self.iface.mainWindow(), "Web app builder",
+            appdefFile =  projFile + ".appdef"
+            if os.path.exists(appdefFile):
+                ret = QMessageBox.question(self.iface.mainWindow(), "Web app builder",
                                           "This project has been already published as a web app.\n"
                                           "Do you want to reload app configuration?",
                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-            if ret == QMessageBox.Yes:
-                appdefFile =  projFile + ".appdef"
-                appdef = loadAppdef(appdefFile)
+                if ret == QMessageBox.Yes:
+                    appdef = loadAppdef(appdefFile)
         dlg = MainDialog(appdef)
         dlg.exec_()

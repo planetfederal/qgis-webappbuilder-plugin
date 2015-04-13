@@ -14,10 +14,11 @@ from types import MethodType
 import webbrowser
 from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
-from utils import METHOD_WMS, METHOD_WMS_POSTGIS
+from utils import METHOD_WMS, METHOD_WMS_POSTGIS, SHOW_BOOKMARKS_IN_MENU
 from themeeditor import ThemeEditorDialog
 from functools import partial
 from texteditor import TextEditorDialog, HTML
+from bookmarkseditor import BookmarksEditorDialog
 
 
 class Layer():
@@ -84,18 +85,16 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.geolocationButton: "Geolocation",
                         self.measureToolButton: "Measure tool",
                         self.geocodingButton: "Geocoding",
-                        self.chartToolButton: "Chart tool"}
+                        self.chartToolButton: "Chart tool",
+                        self.linksButton: "Links",
+                        self.bookmarksButton: "Bookmarks"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
             if event.button() == Qt.RightButton :
                 name = widgetButtons[selfb]
                 menu = QMenu()
-                if name == "Text panel":
-                    s = "Edit panel content..."
-                else:
-                    s = "Edit parameters..."
-                paramsAction = QAction(s, None)
+                paramsAction = QAction("Edit...", None)
                 paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
                 paramsAction.setEnabled(name in settings.widgetsParams)
                 menu.addAction(paramsAction)
@@ -175,6 +174,12 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg = TextEditorDialog(settings.widgetsParams[widgetName]["HTML content"], HTML)
             dlg.exec_()
             settings.widgetsParams[widgetName]["HTML content"] = dlg.text
+        elif widgetName == "Bookmarks":
+            dlg = BookmarksEditorDialog(self, settings.widgetsParams[widgetName]["bookmarks"],
+                                        settings.widgetsParams[widgetName]["format"])
+            dlg.exec_()
+            settings.widgetsParams[widgetName]["bookmarks"] = dlg.bookmarks
+            settings.widgetsParams[widgetName]["format"] = dlg.format
         else:
             dlg = ParametersEditorDialog(settings.widgetsParams[widgetName])
             dlg.exec_()
@@ -383,7 +388,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         parameters = {"Title": title,
                       "Theme": {"Name": themeName,
                                 "Css": settings.currentCss}
-                      } #TODO: Theme
+                      }
         try:
             for param, item in self.settingsItems.iteritems():
                 parameters[param] = item.value()

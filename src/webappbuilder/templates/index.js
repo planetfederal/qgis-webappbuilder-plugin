@@ -32,7 +32,7 @@ var selectInteraction = new ol.interaction.Select({
   },
   style: @SELECTIONSTYLE@,
   addCondition: ol.events.condition.platformModifierKeyOnly,
-  removeCondition: ol.events.condition.platformModifierKeyOnly 
+  removeCondition: ol.events.condition.platformModifierKeyOnly
 });
 map.addInteraction(selectInteraction);
 
@@ -49,14 +49,14 @@ map.addInteraction(dragBoxInteraction);
 
 dragBoxInteraction.on('boxend', function(e) {
   var extent = dragBoxInteraction.getGeometry().getExtent();
-  var selectedFeatures = selectInteraction.getFeatures();  
+  var selectedFeatures = selectInteraction.getFeatures();
   for (i = 0; i < selectableLayersList.length; i++){
     source = selectableLayersList[i].getSource()
     source.forEachFeatureIntersectingExtent(extent, function(feature) {
       selectedFeatures.push(feature);
     });
   }
-  
+
 });
 
 dragBoxInteraction.on('boxstart', function(e) {
@@ -77,7 +77,7 @@ var ALL_FIELDS = 1
 
 @POPUPLAYERS@
 
-var highlightStyle = new ol.highlightStyle({
+var highlightOverlay = new ol.FeatureOverlay({
   map: map,
   style: [@HIGHLIGHTSTYLE@]
 });
@@ -122,10 +122,10 @@ var onPointerMove = function(evt) {
   if (doHighlight){
     if (currentFeature !== highlight) {
       if (highlight) {
-        highlightStyle.removeFeature(highlight);
+        highlightOverlay.removeFeature(highlight);
       }
       if (currentFeature) {
-        highlightStyle.addFeature(currentFeature);
+        highlightOverlay.addFeature(currentFeature);
       }
       highlight = currentFeature;
     }

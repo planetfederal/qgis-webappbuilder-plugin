@@ -41,15 +41,17 @@ currentCss =  themes[currentTheme]
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
 defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
-          "Overview map": {"collapsed":True},
-          "Scale bar": {"minWidth": 64,
-                        "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
-                        },
-          "Zoom controls": {"duration": 250, "zoomInLabel": "+", "zoomOutLabel": "-",
-                           "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2},
-          "Mouse position": {"coordinateFormat": "ol.coordinate.createStringXY(4)",
-                             "projection": "EPSG:4326", "undefinedHTML": "&nbsp;"},
-          "Layers list": {"tipLabel": "Layers"}}
+                        "Bookmarks": {"bookmarks": [],
+                                      "format": 0},
+                        "Overview map": {"collapsed":True},
+                        "Scale bar": {"minWidth": 64,
+                                      "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
+                                      },
+                        "Zoom controls": {"duration": 250, "zoomInLabel": "+", "zoomOutLabel": "-",
+                                         "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2},
+                        "Mouse position": {"coordinateFormat": "ol.coordinate.createStringXY(4)",
+                                           "projection": "EPSG:4326", "undefinedHTML": "&nbsp;"},
+                        "Layers list": {"tipLabel": "Layers"}}
 
 widgetsParams = dict(defaultWidgetsParams)
 

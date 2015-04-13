@@ -24,6 +24,7 @@ class TreeSettingItem(QTreeWidgetItem):
         elif "\n" in unicode(value):
             self.button = QPushButton()
             self.button.setText("Edit...")
+            self.newValue = value
             def edit():
                 dlg = TextEditorDialog(unicode(value), JSON)
                 dlg.exec_()
@@ -41,8 +42,8 @@ class TreeSettingItem(QTreeWidgetItem):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
             return self.popupCombo.currentText()
-        elif "\n" in unicode(self.newValue):
-            return self._value
+        elif "\n" in unicode(self._value):
+            return self.newValue
         else:
             return self.text(1)
 
