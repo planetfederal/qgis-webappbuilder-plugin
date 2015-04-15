@@ -323,7 +323,7 @@ def bounds(useCanvas, layers):
     print useCanvas
     if useCanvas:
         canvas = iface.mapCanvas()
-        canvasCrs = canvas.mapRenderer().destinationCrs()
+        canvasCrs = canvas.mapSettings().destinationCrs()
         transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
