@@ -15,9 +15,16 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         if self.layers:
             self.populateFieldCombos(self.layers.keys()[0])
         self.layerCombo.currentIndexChanged.connect(self.layerComboChanged)
+        self.displayModeCombo.currentIndexChanged.connect(self.displayModeComboChanged)
         self.addButton.clicked.connect(self.addChart)
         self.removeButton.clicked.connect(self.removeChart)
         self.chartsList.currentItemChanged.connect(self.selectionChanged)
+        self.displayModeComboChanged()
+
+    def displayModeComboChanged(self):
+        visible = self.displayModeCombo.currentIndex() == 1
+        self.operationCombo.setVisible(visible)
+        self.operationLabel.setVisible(visible)
 
     def selectionChanged(self):
         try:
@@ -29,6 +36,13 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.layerCombo.setCurrentIndex(idx)
         idx = self.categoryFieldCombo.findText(self._charts[name]["categoryField"])
         self.categoryFieldCombo.setCurrentIndex(idx)
+        idx = self.displayMode.findText(self._charts[name]["displayMode"])
+        self.displayMode.setCurrentIndex(idx)
+        try:
+            idx = self.operationCombo.findText(self._charts[name]["operation"])
+            self.operationCombo.setCurrentIndex(idx)
+        except:
+            pass
         valueFields = self._charts[name]["valueFields"]
         for i in xrange(1, self.model.rowCount()):
             item = self.model.item(i)
@@ -82,7 +96,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
             self.nameBox.setStyleSheet("QLineEdit{background: yellow}")
             return
         layer = self.layerCombo.currentText()
+        displayMode = self.displayModeCombo.currentIndex()
         categoryField = self.categoryFieldCombo.currentText()
+        operation = self.operationCombo.currentIndex()
         valueFields = []
         for i in xrange(self.model.rowCount()):
             item = self.model.item(i)
@@ -91,7 +107,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                 valueFields.append(item.text())
         self._charts[name] = {"layer": layer,
                               "categoryField": categoryField,
-                              "valueFields": valueFields}
+                              "valueFields": valueFields,
+                              "displayMode": displayMode,
+                              "operation": operation}
         self.populateList()
 
     def removeChart(self):

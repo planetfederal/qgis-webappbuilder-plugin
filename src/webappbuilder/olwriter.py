@@ -167,6 +167,12 @@ def writeWebApp(appdef, folder):
                         <div id="chart"></div></div>''')
         chartsFilepath = os.path.join(folder, "charts.js")
         with open(chartsFilepath, "w") as f:
+            f.write("var AGGREGATION_MIN = 0;")
+            f.write("var AGGREGATION_MAX = 1;")
+            f.write("var AGGREGATION_SUM = 2;")
+            f.write("var AGGREGATION_AVG = 3;")
+            f.write("var DISPLAY_MODE_FEATURE = 0;")
+            f.write("var DISPLAY_MODE_CATEGORY = 1;")
             f.write("var charts = " + json.dumps(params["charts"]))
 
     bookmarkEvents = ""
@@ -327,7 +333,7 @@ def bounds(useCanvas, layers):
         transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
-        except QgsCsException:
+        except QgsCrsException:
             extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
     else:
         extent = None
@@ -335,7 +341,7 @@ def bounds(useCanvas, layers):
             transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
             try:
                 layerExtent = transform.transform(layer.layer.extent())
-            except QgsCsException:
+            except QgsCrsException:
                 layerExtent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
             if extent is None:
                 extent = layerExtent

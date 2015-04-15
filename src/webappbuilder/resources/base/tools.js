@@ -475,21 +475,65 @@ openChart = function(c){
             }
         }
         layerFeatures = lyr.getSource().getFeatures();
-        columns = [["x"]];
+        var columns = [["x"]];
         for (i = 0; i < valueFields.length; i++) {
             columns.push([valueFields[i]]);
         }
-        for (i = 0; i < selectedFeatures.length; i++) {
-            if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                columns[0].push(selectedFeatures[i].get(categoryField));
-                for (j = 0; j < valueFields.length; j++) {
-                    columns[j+1].push(selectedFeatures[i].get(valueFields[j]));
+        var selectedCount = 0;
+        if (charts[c].displayMode === DISPLAY_MODE_FEATURE){
+            for (i = 0; i < selectedFeatures.length; i++) {
+                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
+                    selectedCount++;
+                    columns[0].push(selectedFeatures[i].get(categoryField));
+                    for (j = 0; j < valueFields.length; j++) {
+                        columns[j+1].push(selectedFeatures[i].get(valueFields[j]));
+                    }
                 }
             }
         }
-
-        info = document.getElementById('chart-panel-info');
-        info.innerHTML = (columns[0].length - 1).toString() + " features selected in layer " + layerName;
+        else if (charts[c].displayMode === DISPLAY_MODE_CATEGORY){
+            values = {};
+            for (i = 0; i < selectedFeatures.length; i++) {
+                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
+                    cat = selectedFeatures[i].get(categoryField).toString();
+                    if (!(cat in values)){
+                        values[cat] = [];
+                        for (j = 0; j < valueFields.length; j++) {
+                            values[cat].push([selectedFeatures[i].get(valueFields[j])]);
+                        }
+                    }
+                    else{
+                        for (j = 0; j < valueFields.length; j++) {
+                            values[cat][j].push(selectedFeatures[i].get(valueFields[j]));
+                        }
+                    }
+                }
+            }
+            for (var key in values){
+                columns[0].push(key);
+                aggregated = []
+                for (i = 0; i < valueFields.length; i++) {
+                    if (charts[c].operation === AGGREGATION_SUM || charts[c].operation === AGGREGATION_AVG){
+                        v = 0;
+                        for (var j = 0; j < values[key][i].length; j++){
+                            v += values[key][i][j];
+                        }
+                        if (charts[c].operation === AGGREGATION_AVG){
+                            v /= values[key][i].length;
+                        }
+                    }
+                    else if (charts[c].operation === AGGREGATION_MIN){
+                        Math.min.apply(Math, values[key][i]);
+                    }
+                    else if (charts[c].operation === AGGREGATION_MAX){
+                        Math.max.apply(Math, values[key][i]);
+                    }
+                    columns[i + 1].push(v);
+                }
+            }
+        }
+        var info = document.getElementById('chart-panel-info');
+        info.innerHTML = selectedCount.toString() + " features selected in layer " + layerName;
 
         var chart = c3.generate({
             bindto: '#chart',

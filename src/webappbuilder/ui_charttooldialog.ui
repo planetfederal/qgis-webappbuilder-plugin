@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>643</width>
-    <height>385</height>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,6 +48,27 @@
        </item>
        <item>
         <widget class="QLineEdit" name="nameBox"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Display mode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="displayModeCombo">
+         <item>
+          <property name="text">
+           <string>By feature</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>By category</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_4">
@@ -100,6 +121,37 @@
         <widget class="QComboBox" name="valueFieldsCombo"/>
        </item>
        <item>
+        <widget class="QLabel" name="operationLabel">
+         <property name="text">
+          <string>Operation for aggregation</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="operationCombo">
+         <item>
+          <property name="text">
+           <string>Minimum</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Maximum</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Sum</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Average</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -130,7 +182,7 @@
          <item>
           <widget class="QPushButton" name="addButton">
            <property name="text">
-            <string>Add</string>
+            <string>Add/Modify</string>
            </property>
           </widget>
          </item>
@@ -166,6 +218,13 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Defined charts</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QListWidget" name="chartsList">
          <property name="sizePolicy">
