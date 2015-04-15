@@ -36,37 +36,54 @@ var selectInteraction = new ol.interaction.Select({
 });
 map.addInteraction(selectInteraction);
 
+isDuringMultipleSelection = false;
+
+var selectedFeatures = selectInteraction.getFeatures();
+selectedFeatures.clear = function(){
+    isDuringMultipleSelection = true;
+    while (this.getLength() > 1) {
+        this.pop();
+    }
+    isDuringMultipleSelection = false;
+    if (this.getLength()){
+        this.pop();
+    }
+}
+
 var dragBoxInteraction = new ol.interaction.DragBox({
-  condition: @DRAGBOXCONDITION@,
-  style: new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: [0, 0, 255, 1]
+    condition: ol.events.condition.shiftKeyOnly,
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: [0, 0, 255, 1]
+        })
     })
-  })
 });
 map.addInteraction(dragBoxInteraction);
 
-
 dragBoxInteraction.on('boxend', function(e) {
-  var extent = dragBoxInteraction.getGeometry().getExtent();
-  var selectedFeatures = selectInteraction.getFeatures();
-  for (i = 0; i < selectableLayersList.length; i++){
-    source = selectableLayersList[i].getSource()
-    source.forEachFeatureIntersectingExtent(extent, function(feature) {
-      selectedFeatures.push(feature);
-    });
-  }
+    var toAdd = [];
+    var extent = dragBoxInteraction.getGeometry().getExtent();
+    var selectedFeatures = selectInteraction.getFeatures();
+    for (i = 0; i < selectableLayersList.length; i++) {
+        source = selectableLayersList[i].getSource()
+        source.forEachFeatureIntersectingExtent(extent, function(feature) {
+            toAdd.push(feature);
+        });
+    }
+    if (toAdd.length !== 0){
+        isDuringMultipleSelection = true;
+        selectedFeatures.extend(toAdd.slice(0, -1));
+        isDuringMultipleSelection = false;
+        selectedFeatures.push(toAdd[toAdd.length - 1]);
+    }
 
 });
 
 dragBoxInteraction.on('boxstart', function(e) {
     var selectedFeatures = selectInteraction.getFeatures();
+    isDuringMultipleSelection = true;
     selectedFeatures.clear();
-});
-
-map.on('click', function() {
-    var selectedFeatures = selectInteraction.getFeatures();
-    selectedFeatures.clear();
+    isDuringMultipleSelection = false;
 });
 
 

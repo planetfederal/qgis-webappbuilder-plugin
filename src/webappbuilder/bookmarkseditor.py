@@ -1,9 +1,6 @@
 from qgis.core import *
 from PyQt4 import QtCore, QtGui
-from versio import config
 import os
-from versio.tools.versioinstance import instance
-from versio.tools import versioinstance
 from ui_bookmarksdialog import Ui_BookmarksDialog
 import sqlite3
 from utils import SHOW_BOOKMARKS_IN_MENU

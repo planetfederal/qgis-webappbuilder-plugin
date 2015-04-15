@@ -115,6 +115,7 @@ def writeWebApp(appdef, folder):
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
     tools = []
+    panels = []
     mappanels = []
     imports = []
     importsAfter = []
@@ -130,10 +131,9 @@ def writeWebApp(appdef, folder):
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</a></li>')
-    if "Chart tool" in widgets:
-        tools.append('<li><a onclick="showChartTool()" href="#" id="chart-tool"><i class="glyphicon glyphicon-stats"></i> Chart tool</a></li>')
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i> Attributes table</a></li>')
+        panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Text panel" in widgets:
         params = widgets["Text panel"]
         mappanels.append('<div class="inmap-panel">%s</div>' % params["HTML content"])
@@ -146,11 +146,33 @@ def writeWebApp(appdef, folder):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
+
+    if "Chart tool" in widgets:
+        params = widgets["Chart tool"]
+        li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
+        tools.append('''<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-stats"></i> Charts <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                              %s
+                            </ul>
+                          </li>''' % li)
+        imports.append('''<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+                        <link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" rel="stylesheet" type="text/css"/>
+                        <script src="./charts.js"></script>''')
+        panels.append('''<div class="chart-panel" id="chart-panel">
+                        <span class="chart-panel-info" id="chart-panel-info"></span>
+                        <a href="#" id="chart-panel-closer" class="chart-panel-closer">Close</a>
+                        <div id="chart"></div></div>''')
+        chartsFilepath = os.path.join(folder, "charts.js")
+        with open(chartsFilepath, "w") as f:
+            f.write("var charts = " + json.dumps(params["charts"]))
+
     bookmarkEvents = ""
     if "Bookmarks" in widgets:
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
-        print params
         if bookmarks:
             importsAfter.append('<script src="./bookmarks.js"></script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
@@ -206,6 +228,7 @@ def writeWebApp(appdef, folder):
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    print imports
     if "3D view" in widgets:
         imports.append('<script src="./resources/cesium/Cesium.js"></script>')
         imports.append('<script src="./resources/ol3cesium.js"></script>')
@@ -216,6 +239,7 @@ def writeWebApp(appdef, folder):
                 "@IMPORTS@": "\n".join(imports),
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
+                "@PANELS@": "\n".join(panels),
                 "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
@@ -224,7 +248,7 @@ def writeWebApp(appdef, folder):
     pretty = xml_.toprettyxml()
     pretty = "\n".join(filter(lambda x: not re.match(r'^\s*$', x), pretty.splitlines()))
     with open(indexFilepath, "w") as f:
-        f.write(pretty)
+        f.write(html)
 
     cssFilepath = os.path.join(folder, "webapp.css")
     with open(cssFilepath, "w") as f:

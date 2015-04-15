@@ -43,6 +43,7 @@ defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my we
 defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
                         "Bookmarks": {"bookmarks": [],
                                       "format": 0},
+                        "Chart tool": {"charts": {}},
                         "Overview map": {"collapsed":True},
                         "Scale bar": {"minWidth": 64,
                                       "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))

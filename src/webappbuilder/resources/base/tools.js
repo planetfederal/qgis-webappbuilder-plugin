@@ -15,35 +15,46 @@ showAttributesTable = function() {
     panels = document.getElementsByClassName('table-panel');
     if (panels.length != 0){
         this.panel.style.display = 'block';
-        return
+        return;
     }
 
     this.selectedRowIndices = [];
 
-    this.toggleRowSelection = function(clas, evt){
-        feature = evt.element;
-        title = this.currentLayer.get('title');
-        idx = this.currentLayer.getSource().getFeatures().indexOf(feature);
-        if (idx != -1){
-            var row = this.table.getElementsByTagName("tr")[idx];
-            row.className = clas;
-            if (clas != "row-selected"){
-                arrayIdx = this.selectedRowIndices.indexOf(idx)
-                this.selectedRowIndices.splice(arrayIdx, 1);
+    var this_ = this;
+    this.toggleRowSelection = function(){
+        if (isDuringMultipleSelection){
+            return;
+        }
+        if (this_.panel.style.display === 'none'){
+            return;
+        }
+        this_.selectedRowIndices = [];
+        var rows = this_.table.getElementsByTagName("tr");
+        layerFeatures = this_.currentLayer.getSource().getFeatures();
+        for (i = 0; i < layerFeatures.length; i++) {
+            var row = rows[i+1];
+            var idx = selectedFeatures.indexOf(layerFeatures[i]);
+            if (idx !== -1){
+                row.className = "row-selected";
+                this_.selectedRowIndices.push(i);
             }
             else{
-                this.selectedRowIndices.push(idx);
+                row.className = "row-unselected";
+                if (this_.onlySelectedCheck.checked){
+                    row.style.display = 'none';
+                }
+                else{
+                    row.style.display = 'table-row';
+                }
             }
         }
     };
-    selectInteraction.getFeatures().on('add', function(evt){this.toggleRowSelection("row-selected", evt)}, this);
-    selectInteraction.getFeatures().on('remove', function(evt){this.toggleRowSelection("row-unselected", evt)}, this);
-
+    selectInteraction.getFeatures().on('change:length', function(evt){this.toggleRowSelection()}, this);
 
     this.renderPanel = function() {
         this.formContainer = document.createElement("form");
-        this.formContainer.className = "form-inline"
-        this.panel.appendChild(this.formContainer)
+        this.formContainer.className = "form-inline";
+        this.panel.appendChild(this.formContainer);
         this.createSelector(map);
         this.createButtons();
         var p = document.createElement('p');
@@ -60,21 +71,21 @@ showAttributesTable = function() {
         zoomTo = document.createElement("button");
         zoomTo.setAttribute("type", "button");
         zoomTo.innerHTML = '<i class="glyphicon glyphicon-search"></i> Zoom to selected';
-        zoomTo.className = "btn btn-default"
+        zoomTo.className = "btn btn-default";
         zoomTo.onclick = function(){
             features = this_.currentLayer.getSource().getFeatures();
-            extent = ol.extent.createEmpty()
+            extent = ol.extent.createEmpty();
             for (i = 0; i < this_.selectedRowIndices.length; i++){
                 extent = ol.extent.extend(extent,
-                    features[this_.selectedRowIndices[i]].getGeometry().getExtent())
+                    features[this_.selectedRowIndices[i]].getGeometry().getExtent());
             }
             map.getView().fitExtent(extent, map.getSize());
         };
-        this.formContainer.appendChild(zoomTo)
-        clear =  document.createElement("button")
-        clear.setAttribute("type", "button")
-        clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected'
-        clear.className = "btn btn-default"
+        this.formContainer.appendChild(zoomTo);
+        clear =  document.createElement("button");
+        clear.setAttribute("type", "button");
+        clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected';
+        clear.className = "btn btn-default";
         clear.onclick = function(){
             var rows = this_.table.getElementsByTagName("tr");
             var sel = this_.selectedRowIndices.slice();
@@ -84,18 +95,16 @@ showAttributesTable = function() {
             }
         };
         this.formContainer.appendChild(clear);
+
+        onlySelected = document.createElement("label");
+        this.onlySelectedCheck = document.createElement("input");
+        this.onlySelectedCheck.setAttribute("type", "checkbox");
+        this.onlySelectedCheck.setAttribute("value", "");
+        onlySelectedCheck.onclick = this.toggleRowSelection;
+        onlySelected.appendChild(this.onlySelectedCheck);
+        onlySelected.appendChild(document.createTextNode(" Show only selected features"));
+        this.formContainer.appendChild(onlySelected);
     }
-
-
-    this.changeVisibility = function() {
-        if (this.element.className != this.shownClassName) {
-            this.element.className = this.shownClassName;
-            this.renderPanel();
-        }
-        else{
-            this.element.className = this.hiddenClassName;
-        }
-    };
 
 
     this.renderTable = function() {
@@ -103,6 +112,7 @@ showAttributesTable = function() {
             this.tablePanel.removeChild(this.table);
         }
         catch(err){}
+
         this.table = document.createElement("TABLE");
         this.table.border = "1";
 
@@ -117,42 +127,46 @@ showAttributesTable = function() {
             }
         }
 
-        this_ = this
+        this_ = this;
+        this.selectedRowIndices = [];
         selectedFeatures = selectInteraction.getFeatures().getArray();
-        this.currentLayer.getSource().forEachFeature(function(feature){
+        layerFeatures = this.currentLayer.getSource().getFeatures();
+        for (i = 0; i < layerFeatures.length; i++) {
+            feature = layerFeatures[i];
             keys = feature.getKeys();
             row = this_.table.insertRow(-1);
-            if (feature in selectedFeatures){
+            if (selectedFeatures.indexOf(feature) != -1){
                 row.className = "row-selected";
+                this.selectedRowIndices.push(i);
             }
             else{
-                row.className = "row-unselected" ;
+                row.className = "row-unselected";
+                if (this_.onlySelectedCheck.checked){
+                    row.style.display = 'none';
+                }
+                else{
+                    row.style.display = 'table-row';
+                }
             }
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] != 'geometry') {
                     var cell = row.insertCell(-1);
                     cell.innerHTML = feature.get(keys[j]);
-
                 }
             }
-        });
+        }
 
         if (selectableLayersList.indexOf(this.currentLayer) != -1){
             var rows = this.table.getElementsByTagName("tr");
-            for (var i = 0; i < rows.length; i++) {
+            for (i = 0; i < rows.length; i++) {
                 (function (idx) {
                     rows[idx].addEventListener("click",
                         function () {
                             feature = this_.currentLayer.getSource().getFeatures()[idx];
                             if (this.className != "row-selected"){
-                                //this.className = "row-selected";
-                                //this_.selectedRowIndices.push(idx);
                                 selectInteraction.getFeatures().push(feature);
                             }
                             else{
-                                //arrayIdx = this_.selectedRowIndices.indexOf(idx)
-                                //this_.selectedRowIndices.splice(arrayIdx, 1);
-                                //this.className = "row-unselected" ;
                                 selectInteraction.getFeatures().remove(feature);
                             }
                         }, false);
@@ -168,18 +182,19 @@ showAttributesTable = function() {
         label.innerHTML = "Layer:";
         this.formContainer.appendChild(label);
         this.sel = document.createElement('select');
-        this.sel.className = "form-control"
-        this_ = this
+        this.sel.className = "form-control";
+        this_ = this;
         this.sel.onchange = function(){
             var lyr = null;
             var lyrs = map.getLayers().getArray().slice().reverse();
             for (i = 0; i < lyrs.length; i++){
                 if (lyrs[i].get('title') == this.value){
                     this_.currentLayer = lyrs[i];
-                    break
+                    break;
                 }
             }
-            this_.renderTable()};
+            this_.renderTable();
+        };
         var lyrs = map.getLayers().getArray().slice().reverse();
         for (var i = 0, l; i < lyrs.length; i++) {
             l = lyrs[i];
@@ -193,10 +208,9 @@ showAttributesTable = function() {
     };
 
     this.panel = document.getElementsByClassName('attributes-table')[0];
-    this.renderPanel()
+    this.renderPanel();
     this.panel.style.display = 'block';
 
-    var this_ = this;
     var closer = document.getElementById('attributes-table-closer');
     closer.onclick = function() {
         this_.panel.style.display = 'none';
@@ -224,7 +238,7 @@ searchAddress = function(){
         });
 
         $('#geocoding-results').empty();
-        if (items.length != 0) {
+        if (items.length !== 0) {
             $('<ul/>', {
                 html: items.join('')
             }).appendTo('#geocoding-results');
@@ -303,9 +317,9 @@ measureTool = function(measureType){
         map.removeInteraction(measureInteraction);
     }
 
-    if (measureType == null){
+    if (measureType === null){
         map.on('pointermove', onPointerMove);
-        map.removeLayer(measureVector)
+        map.removeLayer(measureVector);
         for (i=0; i<measureTooltips.length; i++){
             map.removeOverlay(measureTooltips[i]);
         }
@@ -338,8 +352,8 @@ measureTool = function(measureType){
     };
 
     map.on('pointermove', pointerMoveHandler);
-    map.removeLayer(measureVector)
-    map.addLayer(measureVector)
+    map.removeLayer(measureVector);
+    map.addLayer(measureVector);
 
     var addInteraction = function(){
       var type = (measureType == 'area' ? 'Polygon' : 'LineString');
@@ -385,7 +399,7 @@ measureTool = function(measureType){
             measureTooltipElement = null;
             createMeasureTooltip();
           }, this);
-    }
+    };
 
 
     var createMeasureTooltip = function() {
@@ -401,7 +415,7 @@ measureTool = function(measureType){
       });
       measureTooltips.push(measureTooltip);
       map.addOverlay(measureTooltip);
-    }
+    };
 
     var formatLength = function(line) {
       var length = Math.round(line.getLength() * 100) / 100;
@@ -430,4 +444,81 @@ measureTool = function(measureType){
     };
 
     addInteraction();
+};
+
+//==============================================
+
+openChart = function(c){
+
+    chartPanel = document.getElementById('chart-panel');
+    chartPanel.style.display = 'block';
+
+    this.drawFromSelection = function(){
+        if (isDuringMultipleSelection){
+            return;
+        }
+        if (chartPanel.style.display === 'none'){
+            return;
+        }
+
+        var layerName = charts[c].layer;
+        var categoryField = charts[c].categoryField;
+        var valueFields = charts[c].valueFields;
+        var selectedFeatures = selectInteraction.getFeatures().getArray();
+        var lyrs = map.getLayers().getArray();
+        var lyr = null;
+        for (i = 0; i < lyrs.length; i++){
+            if (lyrs[i].get('title') == layerName){
+                lyr = lyrs[i];
+                break;
+            }
+        }
+        layerFeatures = lyr.getSource().getFeatures();
+        columns = [["x"]];
+        for (i = 0; i < valueFields.length; i++) {
+            columns.push([valueFields[i]]);
+        }
+        for (i = 0; i < selectedFeatures.length; i++) {
+            if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
+                columns[0].push(selectedFeatures[i].get(categoryField));
+                for (j = 0; j < valueFields.length; j++) {
+                    columns[j+1].push(selectedFeatures[i].get(valueFields[j]));
+                }
+            }
+        }
+
+        info = document.getElementById('chart-panel-info');
+        info.innerHTML = (columns[0].length - 1).toString() + " features selected in layer " + layerName;
+
+        var chart = c3.generate({
+            bindto: '#chart',
+            data: {
+                x: 'x',
+                columns: columns,
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    tick: {
+                        rotate: 70,
+                        multiline:false
+                    },
+                    height: 80
+                }
+            }
+        });
+    };
+
+    this.drawFromSelection();
+
+    selectInteraction.getFeatures().on('change:length', this.drawFromSelection, this);
+
+    var this_ = this;
+    var closer = document.getElementById('chart-panel-closer');
+    closer.onclick = function() {
+        chartPanel.style.display = 'none';
+        closer.blur();
+        return false;
+    };
 };

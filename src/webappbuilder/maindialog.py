@@ -14,11 +14,12 @@ from types import MethodType
 import webbrowser
 from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
-from utils import METHOD_WMS, METHOD_WMS_POSTGIS, SHOW_BOOKMARKS_IN_MENU
+from utils import METHOD_WMS, METHOD_WMS_POSTGIS
 from themeeditor import ThemeEditorDialog
 from functools import partial
 from texteditor import TextEditorDialog, HTML
 from bookmarkseditor import BookmarksEditorDialog
+from charttooldialog import ChartToolDialog
 
 
 class Layer():
@@ -180,6 +181,10 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg.exec_()
             settings.widgetsParams[widgetName]["bookmarks"] = dlg.bookmarks
             settings.widgetsParams[widgetName]["format"] = dlg.format
+        elif widgetName == "Chart tool":
+            dlg = ChartToolDialog(settings.widgetsParams[widgetName]["charts"], self)
+            dlg.exec_()
+            settings.widgetsParams[widgetName]["charts"] = dlg.charts
         else:
             dlg = ParametersEditorDialog(settings.widgetsParams[widgetName])
             dlg.exec_()
@@ -260,7 +265,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.progressBar.setValue(0)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
-            f()
+            return f()
         finally:
             self.progressBar.setVisible(False)
             self.progressLabel.setVisible(False)
