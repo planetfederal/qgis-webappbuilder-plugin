@@ -313,15 +313,12 @@ class MainDialog(QDialog, Ui_MainDialog):
                     layer.method = utils.METHOD_FILE
         appdef["Groups"] = groups
         appdef["Widgets"] = self.getWidgets()
-        deploy = not (self.checkBoxDeployData.isChecked() or preview)
-        if deploy:
-            appdef["Deploy"] = self.getDeployConfiguration(layers)
-            if appdef["Deploy"]["GeoServer workspace"] == "":
-                appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
-            if appdef["Deploy"]["PostGIS schema"] == "":
-                appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
-        else:
-            appdef["Deploy"] = {}
+        appdef["Deploy"] = self.getDeployConfiguration(layers)
+        if appdef["Deploy"]["GeoServer workspace"] == "":
+            appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
+        if appdef["Deploy"]["PostGIS schema"] == "":
+            appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
+
         return appdef
 
     def getBaseLayers(self):
@@ -353,6 +350,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def getDeployConfiguration(self, layers):
         usesGeoServer = False
         usesPostgis = False
+        deploy = not self.checkBoxDeployData.isChecked()
         for layer in layers:
             if layer.method != utils.METHOD_FILE:
                 if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
@@ -360,6 +358,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     usesGeoServer = True
                 elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
                     usesGeoServer = True
+        usesPostgis = usesPostgis and deploy
         try:
             params = {
                 "PostGIS host": self._getValue(self.postgisHostBox, usesPostgis),
