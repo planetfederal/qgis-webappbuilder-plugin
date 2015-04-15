@@ -282,8 +282,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def createApp(self):
         try:
-            #folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
-            folder = "d:\\deploy"
+            folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
             if folder is None:
                 return
             appdef = self.createAppDefinition()
