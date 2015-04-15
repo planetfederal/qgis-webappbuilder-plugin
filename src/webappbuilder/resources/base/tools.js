@@ -176,7 +176,6 @@ showAttributesTable = function() {
         this.tablePanel.appendChild(this.table);
     };
 
-
     this.createSelector = function(map) {
         label = document.createElement("label");
         label.innerHTML = "Layer:";
@@ -324,6 +323,7 @@ measureTool = function(measureType){
             map.removeOverlay(measureTooltips[i]);
         }
         measureSource.clear();
+        map.addInteraction(selectInteraction);
         return;
     }
 
@@ -380,6 +380,7 @@ measureTool = function(measureType){
           })
         })
       });
+      map.removeInteraction(selectInteraction);
       map.addInteraction(measureInteraction);
       createMeasureTooltip();
 
