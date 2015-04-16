@@ -124,22 +124,22 @@ def writeWebApp(appdef, folder):
                           <div class="input-group">
                               <input type="text" id="geocoding-search" class="form-control" placeholder="Search placename..."/>
                               <div class="input-group-btn">
-                                  <button class="btn btn-default" onclick="searchAddress()"><i class="glyphicon glyphicon-search">&nbsp;</i></button>
+                                  <button class="btn btn-default" onclick="searchAddress()"><span>&nbsp;</span><i class="glyphicon glyphicon-search"></i></button>
                               </div>
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
     if "Export as image" in widgets:
-        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera">&nbsp;</i>Export as image</a></li>')
+        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
     if "Attributes table" in widgets:
-        tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt">&nbsp;</i>Attributes table</a></li>')
+        tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Text panel" in widgets:
         params = widgets["Text panel"]
         mappanels.append('<div class="inmap-panel">%s</div>' % params["HTML content"])
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure </a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
                             <ul class="dropdown-menu">
                               <li><a onclick="measureTool('distance')" href="#">Distance</a></li>
                               <li><a onclick="measureTool('area')" href="#">Area</a></li>
@@ -152,7 +152,7 @@ def writeWebApp(appdef, folder):
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-stats"></i> Charts </a>
+                            <i class="glyphicon glyphicon-stats"></i> Charts <span class="caret"><span></a>
                             <ul class="dropdown-menu">
                               %s
                             </ul>
@@ -218,9 +218,9 @@ def writeWebApp(appdef, folder):
                                           %sToBookmark($(evt.relatedTarget).index())
                                     })''' % ["go", "pan", "fly"][params["format"]]
             else:
-                li = "\n".join(["<li><a onclick=\"goToBookmark('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
+                li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
                 tools.append('''<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Bookmarks </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Bookmarks <span class="caret"><span></a>
                     <ul class="dropdown-menu">
                       %s
                     </ul>
@@ -253,7 +253,7 @@ def writeWebApp(appdef, folder):
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
     html = replaceInTemplate(template, values)
     soup=bs(html)
-    pretty=soup.prettify()
+    pretty=soup.prettify(formatter='html')
     with open(indexFilepath, "w") as f:
         f.write(pretty)
 
