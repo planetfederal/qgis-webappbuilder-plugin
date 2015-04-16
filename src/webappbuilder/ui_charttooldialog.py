@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_charttooldialog.ui'
 #
-# Created: Wed Apr 15 16:46:19 2015
+# Created: Thu Apr 16 07:55:54 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,6 +50,7 @@ class Ui_ChartToolDialog(object):
         self.displayModeCombo.setObjectName(_fromUtf8("displayModeCombo"))
         self.displayModeCombo.addItem(_fromUtf8(""))
         self.displayModeCombo.addItem(_fromUtf8(""))
+        self.displayModeCombo.addItem(_fromUtf8(""))
         self.verticalLayout.addWidget(self.displayModeCombo)
         self.label_4 = QtGui.QLabel(ChartToolDialog)
         self.label_4.setObjectName(_fromUtf8("label_4"))
@@ -74,9 +75,9 @@ class Ui_ChartToolDialog(object):
         self.categoryFieldCombo.setSizePolicy(sizePolicy)
         self.categoryFieldCombo.setObjectName(_fromUtf8("categoryFieldCombo"))
         self.verticalLayout.addWidget(self.categoryFieldCombo)
-        self.label_3 = QtGui.QLabel(ChartToolDialog)
-        self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.verticalLayout.addWidget(self.label_3)
+        self.valueFieldsLabel = QtGui.QLabel(ChartToolDialog)
+        self.valueFieldsLabel.setObjectName(_fromUtf8("valueFieldsLabel"))
+        self.verticalLayout.addWidget(self.valueFieldsLabel)
         self.valueFieldsCombo = QtGui.QComboBox(ChartToolDialog)
         self.valueFieldsCombo.setObjectName(_fromUtf8("valueFieldsCombo"))
         self.verticalLayout.addWidget(self.valueFieldsCombo)
@@ -140,9 +141,10 @@ class Ui_ChartToolDialog(object):
         self.label_5.setText(_translate("ChartToolDialog", "Display mode", None))
         self.displayModeCombo.setItemText(0, _translate("ChartToolDialog", "By feature", None))
         self.displayModeCombo.setItemText(1, _translate("ChartToolDialog", "By category", None))
+        self.displayModeCombo.setItemText(2, _translate("ChartToolDialog", "Count by category", None))
         self.label_4.setText(_translate("ChartToolDialog", "Layer", None))
         self.label.setText(_translate("ChartToolDialog", "Category field", None))
-        self.label_3.setText(_translate("ChartToolDialog", "Value fields", None))
+        self.valueFieldsLabel.setText(_translate("ChartToolDialog", "Value fields", None))
         self.operationLabel.setText(_translate("ChartToolDialog", "Operation for aggregation", None))
         self.operationCombo.setItemText(0, _translate("ChartToolDialog", "Minimum", None))
         self.operationCombo.setItemText(1, _translate("ChartToolDialog", "Maximum", None))

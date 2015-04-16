@@ -68,6 +68,11 @@
            <string>By category</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Count by category</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -111,7 +116,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="valueFieldsLabel">
          <property name="text">
           <string>Value fields</string>
          </property>

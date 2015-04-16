@@ -25,6 +25,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         visible = self.displayModeCombo.currentIndex() == 1
         self.operationCombo.setVisible(visible)
         self.operationLabel.setVisible(visible)
+        visible = self.displayModeCombo.currentIndex() != 2
+        self.valueFieldsCombo.setVisible(visible)
+        self.valueFieldsLabel.setVisible(visible)
 
     def selectionChanged(self):
         try:

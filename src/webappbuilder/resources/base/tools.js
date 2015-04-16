@@ -476,8 +476,13 @@ openChart = function(c){
         }
         layerFeatures = lyr.getSource().getFeatures();
         var columns = [["x"]];
-        for (i = 0; i < valueFields.length; i++) {
-            columns.push([valueFields[i]]);
+        if (charts[c].displayMode === DISPLAY_MODE_COUNT){
+            columns.push(["Feature count"]);
+        }
+        else{
+            for (i = 0; i < valueFields.length; i++) {
+                columns.push([valueFields[i]]);
+            }
         }
         var selectedCount = 0;
         if (charts[c].displayMode === DISPLAY_MODE_FEATURE){
@@ -511,7 +516,7 @@ openChart = function(c){
             }
             for (var key in values){
                 columns[0].push(key);
-                aggregated = []
+                aggregated = [];
                 for (i = 0; i < valueFields.length; i++) {
                     if (charts[c].operation === AGGREGATION_SUM || charts[c].operation === AGGREGATION_AVG){
                         v = 0;
@@ -530,6 +535,25 @@ openChart = function(c){
                     }
                     columns[i + 1].push(v);
                 }
+            }
+        }
+        else if (charts[c].displayMode === DISPLAY_MODE_COUNT){
+            values = {};
+            for (i = 0; i < selectedFeatures.length; i++) {
+                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
+                    selectedCount++;
+                    cat = selectedFeatures[i].get(categoryField).toString();
+                    if (!(cat in values)){
+                        values[cat] = 1;
+                    }
+                    else{
+                        values[cat]++;
+                    }
+                }
+            }
+            for (var key in values){
+                columns[0].push(key);
+                columns[1].push(values[key]);
             }
         }
         var info = document.getElementById('chart-panel-info');
