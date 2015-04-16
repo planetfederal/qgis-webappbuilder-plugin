@@ -139,7 +139,7 @@ def writeWebApp(appdef, folder):
         mappanels.append('<div class="inmap-panel">%s</div>' % params["HTML content"])
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Measure <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure </a>
                             <ul class="dropdown-menu">
                               <li><a onclick="measureTool('distance')" href="#">Distance</a></li>
                               <li><a onclick="measureTool('area')" href="#">Area</a></li>
@@ -152,7 +152,7 @@ def writeWebApp(appdef, folder):
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-stats"></i> Charts <b class="caret"></b></a>
+                            <i class="glyphicon glyphicon-stats"></i> Charts </a>
                             <ul class="dropdown-menu">
                               %s
                             </ul>
@@ -173,6 +173,7 @@ def writeWebApp(appdef, folder):
             f.write("var AGGREGATION_AVG = 3;")
             f.write("var DISPLAY_MODE_FEATURE = 0;")
             f.write("var DISPLAY_MODE_CATEGORY = 1;")
+            f.write("var DISPLAY_MODE_COUNT = 2;")
             f.write("var charts = " + json.dumps(params["charts"]))
 
     bookmarkEvents = ""
@@ -180,7 +181,7 @@ def writeWebApp(appdef, folder):
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
         if bookmarks:
-            importsAfter.append('<script src="./bookmarks.js"></script>')
+            importsAfter.append('<script src="./bookmarks.js">/**/</script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -219,7 +220,7 @@ def writeWebApp(appdef, folder):
             else:
                 li = "\n".join(["<li><a onclick=\"goToBookmark('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
                 tools.append('''<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bookmarks <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Bookmarks </a>
                     <ul class="dropdown-menu">
                       %s
                     </ul>
@@ -234,27 +235,31 @@ def writeWebApp(appdef, folder):
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
     imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-    print imports
+
     if "3D view" in widgets:
         imports.append('<script src="./resources/cesium/Cesium.js"></script>')
         imports.append('<script src="./resources/ol3cesium.js"></script>')
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
+
     values = {"@TITLE@": appdef["Settings"]["Title"],
-                "@IMPORTS@": "\n".join(imports),
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@PANELS@": "\n".join(panels),
                 "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
-    template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
-    html = replaceInTemplate(template, values)
-    xml_ = xml.dom.minidom.parseString(html)
+    template = os.path.join(os.path.dirname(__file__), "themes", theme, "body.html")
+    body = replaceInTemplate(template, values)
+    xml_ = xml.dom.minidom.parseString(body)
     pretty = xml_.toprettyxml()
     pretty = "\n".join(filter(lambda x: not re.match(r'^\s*$', x), pretty.splitlines()))
+    template = os.path.join(os.path.dirname(__file__), "themes", theme, "head.html")
+    values = {"@TITLE@": appdef["Settings"]["Title"],
+            "@IMPORTS@": "\n".join(imports)}
+    head = replaceInTemplate(template, values)
     with open(indexFilepath, "w") as f:
-        f.write(html)
+        f.write('<html lang="en">%s\n%s</html>' % (head, pretty))
 
     cssFilepath = os.path.join(folder, "webapp.css")
     with open(cssFilepath, "w") as f:
@@ -333,7 +338,7 @@ def bounds(useCanvas, layers):
         transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
         try:
             extent = transform.transform(canvas.extent())
-        except QgsCrsException:
+        except QgsCsException:
             extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
     else:
         extent = None
@@ -341,7 +346,7 @@ def bounds(useCanvas, layers):
             transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
             try:
                 layerExtent = transform.transform(layer.layer.extent())
-            except QgsCrsException:
+            except QgsCsException:
                 layerExtent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
             if extent is None:
                 extent = layerExtent
