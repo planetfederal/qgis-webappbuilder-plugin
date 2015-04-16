@@ -10,7 +10,7 @@ from PyQt4.QtGui import *
 from utils import *
 from settings import *
 import json
-import xml.dom.minidom
+from bs4 import BeautifulSoup as bs
 
 
 baseLayersJs  = {
@@ -124,15 +124,15 @@ def writeWebApp(appdef, folder):
                           <div class="input-group">
                               <input type="text" id="geocoding-search" class="form-control" placeholder="Search placename..."/>
                               <div class="input-group-btn">
-                                  <button class="btn btn-default" onclick="searchAddress()"><i class="glyphicon glyphicon-search"></i></button>
+                                  <button class="btn btn-default" onclick="searchAddress()"><i class="glyphicon glyphicon-search">&nbsp;</i></button>
                               </div>
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
     if "Export as image" in widgets:
-        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i> Export as image</a></li>')
+        tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera">&nbsp;</i>Export as image</a></li>')
     if "Attributes table" in widgets:
-        tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i> Attributes table</a></li>')
+        tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt">&nbsp;</i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Text panel" in widgets:
         params = widgets["Text panel"]
@@ -206,10 +206,10 @@ def writeWebApp(appdef, folder):
                         </div>
                       </div>
                       <a class="left carousel-control" href="#story-carousel" data-slide="prev">
-                          <span class="glyphicon glyphicon-chevron-left"></span>
+                          <span class="glyphicon glyphicon-chevron-left">&nbsp;</span>
                       </a>
                       <a class="right carousel-control" href="#story-carousel" data-slide="next">
-                          <span class="glyphicon glyphicon-chevron-right"></span>
+                          <span class="glyphicon glyphicon-chevron-right">&nbsp;</span>
                       </a>
                   </div>
                 </div>
@@ -244,22 +244,18 @@ def writeWebApp(appdef, folder):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
+                "@IMPORTS@": "\n".join(imports),
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@PANELS@": "\n".join(panels),
                 "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
     indexFilepath = os.path.join(folder, "index.html")
-    template = os.path.join(os.path.dirname(__file__), "themes", theme, "body.html")
-    body = replaceInTemplate(template, values)
-    xml_ = xml.dom.minidom.parseString(body)
-    pretty = xml_.toprettyxml()
-    pretty = "\n".join(filter(lambda x: not re.match(r'^\s*$', x), pretty.splitlines()))
-    template = os.path.join(os.path.dirname(__file__), "themes", theme, "head.html")
-    values = {"@TITLE@": appdef["Settings"]["Title"],
-            "@IMPORTS@": "\n".join(imports)}
-    head = replaceInTemplate(template, values)
+    template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
+    html = replaceInTemplate(template, values)
+    soup=bs(html)
+    pretty=soup.prettify()
     with open(indexFilepath, "w") as f:
-        f.write('<html lang="en">%s\n%s</html>' % (head, pretty))
+        f.write(pretty)
 
     cssFilepath = os.path.join(folder, "webapp.css")
     with open(cssFilepath, "w") as f:
