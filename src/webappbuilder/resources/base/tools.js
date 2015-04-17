@@ -17,7 +17,7 @@ showAttributesTable = function() {
         this.panel.style.display = 'block';
         return;
     }
-
+    var selectedFeatures = selectInteraction.getFeatures().getArray();
     this.selectedRowIndices = [];
 
     var this_ = this;
@@ -30,9 +30,9 @@ showAttributesTable = function() {
         }
         this_.selectedRowIndices = [];
         var rows = this_.table.getElementsByTagName("tr");
-        layerFeatures = this_.currentLayer.getSource().getFeatures();
+        var layerFeatures = this_.currentLayer.getSource().getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
-            var row = rows[i+1];
+            var row = rows[i];
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
             if (idx !== -1){
                 row.className = "row-selected";
@@ -129,7 +129,6 @@ showAttributesTable = function() {
 
         this_ = this;
         this.selectedRowIndices = [];
-        var selectedFeatures = selectInteraction.getFeatures().getArray();
         layerFeatures = this.currentLayer.getSource().getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
             feature = layerFeatures[i];
@@ -197,7 +196,7 @@ showAttributesTable = function() {
         var lyrs = map.getLayers().getArray().slice().reverse();
         for (var i = 0, l; i < lyrs.length; i++) {
             l = lyrs[i];
-            if (l.get('title') && !(typeof l.getSource === "undefined")) {
+            if (l.get('title') && l instanceof ol.layer.Vector) {
                 var option = document.createElement('option');
                 option.value = option.textContent = l.get('title');
                 this.sel.appendChild(option);
@@ -614,21 +613,21 @@ showQueryPanel = function(){
 
     var NEW_SELECTION = 0;
     var ADD_TO_SELECTION = 1;
-    var IN_SELECTION = 2
+    var IN_SELECTION = 2;
 
     this_ = this;
     var queryNew = document.getElementById('btn-query-new');
     queryNew.onclick = function(){
-        this_.selectFromQuery(NEW_SELECTION)
-    }
+        this_.selectFromQuery(NEW_SELECTION);
+    };
     var queryAdd = document.getElementById('btn-query-add');
     queryAdd.onclick = function(){
-        this_.selectFromQuery(ADD_TO_SELECTION)
-    }
+        this_.selectFromQuery(ADD_TO_SELECTION);
+    };
     var queryIn = document.getElementById('btn-query-in');
     queryIn.onclick = function(){
-        this_.selectFromQuery(IN_SELECTION)
-    }
+        this_.selectFromQuery(IN_SELECTION);
+    };
     this.selectFromQuery = function(mode) {
         if (this_.queryFilter){
             var layer = null;
@@ -666,7 +665,7 @@ showQueryPanel = function(){
                 keys = feature_.getKeys();
                 feature = {};
                 for (var j = 0; j < keys.length; j++){
-                    feature[keys[j]] = feature_.get(keys[j])
+                    feature[keys[j]] = feature_.get(keys[j]);
                 }
                 if (this_.queryFilter(feature)){
                     if (mode !== IN_SELECTION){
@@ -699,7 +698,7 @@ showQueryPanel = function(){
                 input.css('background-color', '#fdd');
             }
         }
-    }
+    };
 
     $('#query-expression').keyup(this.updateExpression)
     .focus();

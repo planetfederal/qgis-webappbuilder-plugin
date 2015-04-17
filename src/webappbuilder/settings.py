@@ -52,7 +52,10 @@ defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
                                          "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2},
                         "Mouse position": {"coordinateFormat": "ol.coordinate.createStringXY(4)",
                                            "projection": "EPSG:4326", "undefinedHTML": "&nbsp;"},
-                        "Layers list": {"tipLabel": "Layers"}}
+                        "Layers list": {"tipLabel": "Layers",
+                                        "showOpacity": True,
+                                        "showZoomTo": True,
+                                        "showDownload": True}}
 
 widgetsParams = dict(defaultWidgetsParams)
 

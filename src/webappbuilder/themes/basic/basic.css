@@ -325,26 +325,23 @@ button.ol-full-screen-true:after {
 /*Layers list*/
 .layer-switcher {
     position: absolute;
-    top: 40px;
-    right: 5px;
+    top: 3.5em;
+    right: 0.5em;
     text-align: left;
-    z-index:1000;
 }
 
-.layer-switcher .layer-switcher-panel {
+.layer-tree-panel {
     padding-right: 50px;
     border: 1px solid #cccccc;
     background-color: white;
-    z-index:1000;
 }
 
-.layer-switcher .layer-switcher-panel {
+.layer-switcher .layer-tree-panel {
     display: none;
 }
 
-.layer-switcher.shown .layer-switcher-panel {
+.layer-switcher.shown .layer-tree-panel {
     display: block;
-    z-index:1000;
 }
 
 .layer-switcher button {
@@ -362,24 +359,46 @@ button.ol-full-screen-true:after {
     background-color: white;
 }
 
-.layer-switcher ul {
-    padding-left: 1em;
-    list-style: none;
+.layer-tree-panel  li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 10px 5px;
+    position:relative;
+}
+.layer-tree-panel  li::before, .layer-tree-panel  li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.layer-tree-panel  li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px
+}
+.layer-tree-panel  li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.layer-tree-panel  li span {
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none
+}
+.layer-tree-panel  li.parent_li>span {
+    cursor:pointer
+}
+.layer-tree-panel >ul>li::before, .layer-tree-panel >ul>li::after {
+    border:0
+}
+.layer-tree-panel  li:last-child::before {
+    height:30px
 }
 
-.layer-switcher li.group {
-    padding-top: 5px;
-}
-
-.layer-switcher li.group > label {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.layer-switcher li{
-  font-weight: normal;
-  font-size: 12px;
-}
 
 /*Mouse position*/
 .ol-mouse-position {

@@ -35,7 +35,7 @@ ol.control.Geolocation = function() {
   var button = document.createElement('button');
 
   var geolocate = function(e){
-    
+
   };
 
   button.addEventListener('click', geolocate, false);
@@ -51,3 +51,216 @@ ol.control.Geolocation = function() {
 
 };
 ol.inherits(ol.control.Geolocation, ol.control.Control);
+
+//====================================================
+
+
+/*
+Adapted from https://github.com/walkermatt/ol3-layerswitcher (c) Matt Walker.
+And https://github.com/acanimal/thebookofopenlayers3 (c) Antonio Santiago
+*/
+ol.control.LayerSwitcher = function(opt_options) {
+
+    var options = opt_options || {};
+
+    var tipLabel = options.tipLabel ?
+      options.tipLabel : 'Layers list';
+
+    this.showOpacity = options.showOpacity === true;
+    this.showDownload = options.showDownload === true;
+    this.showZoomTo = options.showZoomTo === true;
+
+    this.firstTime = true;
+
+    this.hiddenClassName = 'ol-unselectable ol-control layer-switcher';
+    this.shownClassName = this.hiddenClassName + ' shown';
+
+    var element = document.createElement('div');
+    element.className = this.hiddenClassName;
+
+    var button = document.createElement('button');
+    button.setAttribute('title', tipLabel);
+    element.appendChild(button);
+
+    this.panel = document.createElement('div');
+    this.panel.className = 'layer-tree-panel';
+    this.panel.id = "layertree"
+    element.appendChild(this.panel);
+
+    var this_ = this;
+    element.onmouseover = function(e) {
+        this_.showPanel();
+    };
+    button.onclick = function(e) {
+        this_.showPanel();
+    };
+    element.onmouseout = function(e) {
+        e = e || window.event;
+        if (!element.contains(e.toElement)) {
+            this_.hidePanel();
+        }
+    };
+
+    ol.control.Control.call(this, {
+        element: element,
+        target: options.target
+    });
+
+};
+
+ol.inherits(ol.control.LayerSwitcher, ol.control.Control);
+
+ol.control.LayerSwitcher.prototype.showPanel = function() {
+    if (this.element.className != this.shownClassName) {
+        this.element.className = this.shownClassName;
+        if (this.firstTime){
+            this.renderPanel();
+            this.firstTime = false;
+        }
+
+    }
+};
+
+ol.control.LayerSwitcher.prototype.hidePanel = function() {
+    if (this.element.className != this.hiddenClassName) {
+        this.element.className = this.hiddenClassName;
+    }
+};
+
+
+ol.control.LayerSwitcher.prototype.renderPanel = function() {
+    var map = this.getMap();
+    this_ = this;
+    $('#layertree').empty()
+    var list = $('<ul/>').appendTo('#layertree');
+    var layers = map.getLayerGroup().getLayers().getArray();
+    var len = layers.length;
+    for (var i = len -1; i >=0; i--){
+        list.append(this.buildLayerTree(layers[i]))
+    }
+    var findBy = function(layer, value) {
+        name = layer.get('title')
+        if (name === value) {
+            return layer;
+        }
+        if (layer.getLayers) {
+            var layers = layer.getLayers().getArray();
+            var len = layers.length, result;
+            for (var j = 0; j < len; j++) {
+                result = findBy(layers[j], value);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    };
+    if (this.showOpacity){
+        $('input.opacity').slider().on('slide', function(ev) {
+            var layername = $(this).closest('li').data('layerid');
+            var layer = findBy(map.getLayerGroup(), layername);
+            layer.setOpacity(ev.value);
+        });
+    }
+    if (this.showZoomTo){
+        $('.layer-zoom-to').on('click', function() {
+            var layername = $(this).closest('li').data('layerid');
+            var layer = findBy(map.getLayerGroup(), layername);
+            map.getView().fitExtent(layer.getSource().getExtent(), map.getSize());
+        });
+    }
+    if (this.showDownload){
+        $('.layer-download').on('click', function() {
+            var layername = $(this).closest('li').data('layerid');
+            var layer = findBy(map.getLayerGroup(), layername);
+            var geojson  = new ol.format.GeoJSON;
+            var features = layer.getSource().getFeatures();
+            var json = geojson.writeFeatures(features);
+            var dl = document.createElement('a');
+            dl.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(content));
+            dl.setAttribute('download', layername + '.geojson');
+            dl.click();
+        });
+    }
+    $('.layer-check').on('click', function() {
+        var layername = $(this).closest('li').data('layerid');
+        var layer = findBy(map.getLayerGroup(), layername);
+        layer.setVisible(!layer.getVisible());
+        if (layer.getVisible()) {
+            $(this).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+        } else {
+            $(this).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+        }
+    });
+
+};
+
+
+ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
+    var elem;
+    var name = layer.get('title');
+    var div = "<li data-layerid='" + name + "'>";
+    if (layer instanceof ol.layer.Group){
+        name = "<b>" + name + "</b>"
+    }
+    div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
+    if (!(layer instanceof ol.layer.Group)){
+        if (this.showOpacity){
+            div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
+        }
+        if (layer.get("type") != "base" && this.showZoomTo){
+            div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
+        }
+        if (layer instanceof ol.layer.Vector && this.showDownload){
+            div += "<a title='Download layer' href='#' style='padding-left:15px;'><i class='layer-download glyphicon glyphicon-download-alt'></i></a>";
+        }
+    }
+
+    if (layer.getLayers) {
+        var sublayersElem = '';
+        var layers = layer.getLayers().getArray(),
+                len = layers.length;
+        for (var i = len - 1; i >= 0; i--) {
+            sublayersElem += this.buildLayerTree(layers[i]);
+        }
+        elem = div + " <ul>" + sublayersElem + "</ul></li>";
+    } else {
+        elem = div + " </li>";
+    }
+    return elem;
+}
+
+
+
+/*
+ol.control.LayerSwitcher.prototype.ensureTopVisibleBaseLayerShown_ = function() {
+    var lastVisibleBaseLyr;
+    ol.control.LayerSwitcher.forEachRecursive(this.getMap(), function(l, idx, a) {
+        if (l.get('type') === 'base' && l.getVisible()) {
+            lastVisibleBaseLyr = l;
+        }
+    });
+    if (lastVisibleBaseLyr) this.setVisible_(lastVisibleBaseLyr, true);
+};
+
+ol.control.LayerSwitcher.prototype.setVisible_ = function(lyr, visible) {
+    var map = this.getMap();
+    lyr.setVisible(visible);
+    if (visible && lyr.get('type') === 'base') {
+        // Hide all other base layers regardless of grouping
+        ol.control.LayerSwitcher.forEachRecursive(map, function(l, idx, a) {
+            if (l != lyr && l.get('type') === 'base') {
+                l.setVisible(false);
+            }
+        });
+    }
+};
+ol.control.LayerSwitcher.forEachRecursive = function(lyr, fn) {
+    lyr.getLayers().forEach(function(lyr, idx, a) {
+        fn(lyr, idx, a);
+        if (lyr.getLayers) {
+            ol.control.LayerSwitcher.forEachRecursive(lyr, fn);
+        }
+    });
+};
+*/

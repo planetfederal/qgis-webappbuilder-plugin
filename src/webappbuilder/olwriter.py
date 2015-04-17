@@ -47,6 +47,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]))
+
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
     if "Overview map" in widgets:
@@ -84,7 +85,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
         cesium = ""
 
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers)
-    mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
+    mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
     onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
@@ -92,7 +93,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
     selectedFeaturesStyle = appdef["Settings"]["Style for selected features"]
     dragBoxCondition = dragBoxConditions[appdef["Settings"]["Select by rectangle"]]
-    view = "%s maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+    view = "%s, maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
@@ -170,6 +171,8 @@ def writeWebApp(appdef, folder):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
+    if "Help" in widgets:
+        tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
@@ -204,7 +207,7 @@ def writeWebApp(appdef, folder):
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
         if bookmarks:
-            importsAfter.append('<script src="./bookmarks.js">/**/</script>')
+            importsAfter.append('<script src="./bookmarks.js"></script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -259,6 +262,9 @@ def writeWebApp(appdef, folder):
     imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
 
+    if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
+        imports.append('<script src="./resources/bootstrap-slider.js"></script>')
+        imports.append('<link href="./resources/slider.css" rel="stylesheet"/>')
     if "3D view" in widgets:
         imports.append('<script src="./resources/cesium/Cesium.js"></script>')
         imports.append('<script src="./resources/ol3cesium.js"></script>')

@@ -71,7 +71,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
                         self.layersListButton: "Layers list",
-                        self.legendButton: "Legend",
                         self.mousePositionButton: "Mouse position",
                         self.northArrowButton: "North arrow",
                         self.overviewButton: "Overview map",
@@ -80,7 +79,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.zoomSliderButton: "Zoom slider",
                         self.zoomToExtentButton: "Zoom to extent",
                         self.cesiumButton: "3D view",
-                        self.editToolButton: "Edit tool",
                         self.textPanelButton: "Text panel",
                         self.exportAsImageButton: "Export as image",
                         self.geolocationButton: "Geolocation",
@@ -88,6 +86,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.geocodingButton: "Geocoding",
                         self.chartToolButton: "Chart tool",
                         self.linksButton: "Links",
+                        self.helpButton: "Help",
                         self.bookmarksButton: "Bookmarks",
                         self.queryButton: "Query"}
 
