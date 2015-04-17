@@ -129,7 +129,7 @@ showAttributesTable = function() {
 
         this_ = this;
         this.selectedRowIndices = [];
-        selectedFeatures = selectInteraction.getFeatures().getArray();
+        var selectedFeatures = selectInteraction.getFeatures().getArray();
         layerFeatures = this.currentLayer.getSource().getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
             feature = layerFeatures[i];
@@ -386,7 +386,6 @@ measureTool = function(measureType){
 
       measureInteraction.on('drawstart',
           function(evt) {
-            // set sketch
             sketch = evt.feature;
           }, this);
 
@@ -394,9 +393,7 @@ measureTool = function(measureType){
           function(evt) {
             measureTooltipElement.className = 'tooltip tooltip-static';
             measureTooltip.setOffset([0, -7]);
-            // unset sketch
             sketch = null;
-            // unset tooltip so that a new one can be created
             measureTooltipElement = null;
             createMeasureTooltip();
           }, this);
@@ -590,4 +587,121 @@ openChart = function(c){
         closer.blur();
         return false;
     };
+};
+
+//===========================================
+
+showQueryPanel = function(){
+
+    var select = document.getElementById('query-layer');
+    if (select.options.length === 0){
+        var lyrs = map.getLayers().getArray().slice().reverse();
+        for (var i = 0, l; i < lyrs.length; i++) {
+            l = lyrs[i];
+            if (l.get('title') && !(typeof l.getSource === "undefined")) {
+                var option = document.createElement('option');
+                option.value = option.textContent = l.get('title');
+                select.appendChild(option);
+            }
+        }
+    }
+
+    var close = document.getElementById('btn-close-query');
+    close.onclick = function() {
+        document.getElementById('query-panel').style.display = 'none';
+        return false;
+    };
+
+    var NEW_SELECTION = 0;
+    var ADD_TO_SELECTION = 1;
+    var IN_SELECTION = 2
+
+    this_ = this;
+    var queryNew = document.getElementById('btn-query-new');
+    queryNew.onclick = function(){
+        this_.selectFromQuery(NEW_SELECTION)
+    }
+    var queryAdd = document.getElementById('btn-query-add');
+    queryAdd.onclick = function(){
+        this_.selectFromQuery(ADD_TO_SELECTION)
+    }
+    var queryIn = document.getElementById('btn-query-in');
+    queryIn.onclick = function(){
+        this_.selectFromQuery(IN_SELECTION)
+    }
+    this.selectFromQuery = function(mode) {
+        if (this_.queryFilter){
+            var layer = null;
+            var layerName = document.getElementById('query-layer').value;
+            var lyrs = map.getLayers().getArray().slice().reverse();
+            for (i = 0; i < lyrs.length; i++){
+                if (lyrs[i].get('title') === layerName){
+                    layer = lyrs[i];
+                    break;
+                }
+            }
+            var layerFeatures = layer.getSource().getFeatures();
+            var selectedFeatures = selectInteraction.getFeatures();
+            var selectedFeaturesArray = selectedFeatures.getArray();
+            if (mode === NEW_SELECTION){
+                var toRemove = [];
+                for (i = 0; i < selectedFeatures.getLength(); i++) {
+                    feature = selectedFeaturesArray[i];
+                    if (layerFeatures.indexOf(feature) != -1){
+                        toRemove.push(feature);
+                    }
+                }
+                for (i = 0; i < toRemove.length; i++){
+                    selectedFeatures.remove(toRemove[i]);
+                }
+            }
+
+            for (i = 0; i < layerFeatures.length; i++) {
+                feature_ = layerFeatures[i];
+                if (mode === IN_SELECTION){
+                    if (selectedFeaturesArray.indexOf(feature_) == -1){
+                        continue;
+                    }
+                }
+                keys = feature_.getKeys();
+                feature = {};
+                for (var j = 0; j < keys.length; j++){
+                    feature[keys[j]] = feature_.get(keys[j])
+                }
+                if (this_.queryFilter(feature)){
+                    if (mode !== IN_SELECTION){
+                        selectedFeatures.push(feature_);
+                    }
+                }
+                else if (mode === IN_SELECTION){
+                    selectedFeatures.remove(feature_);
+                }
+            }
+        }
+    };
+
+    document.getElementById('query-panel').style.display = 'block';
+
+    this.updateExpression = function(){
+        var input = $('#query-expression');
+        var expression = input.val();
+        if (!expression) {
+            this_.queryFilter = null;
+            input.css('background-color', '#fff');
+        }
+        else {
+            try {
+                this_.queryFilter = compileExpression(expression);
+                input.css('background-color', '#fff');
+            }
+            catch (e) {
+                this_.queryFilter = null;
+                input.css('background-color', '#fdd');
+            }
+        }
+    }
+
+    $('#query-expression').keyup(this.updateExpression)
+    .focus();
+
 };

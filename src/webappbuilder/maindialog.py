@@ -88,7 +88,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.geocodingButton: "Geocoding",
                         self.chartToolButton: "Chart tool",
                         self.linksButton: "Links",
-                        self.bookmarksButton: "Bookmarks"}
+                        self.bookmarksButton: "Bookmarks",
+                        self.queryButton: "Query"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)

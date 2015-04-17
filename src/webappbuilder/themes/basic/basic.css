@@ -42,6 +42,19 @@ html, body {
     z-index: 1111
 }
 
+/*Query*/
+.query-panel {
+    display: none;
+    position: absolute;
+    background:rgba(255,255,255, 1);
+    padding: 15px;
+    border: 1px solid #000000;
+    top: 0px;
+    right: 0px;
+    max-width: 50%;
+    z-index: 1111
+}
+
 /*OpenLayers controls*/
 .ol-unsupported {
   display: none;
@@ -138,8 +151,9 @@ html, body {
     top: 2px;
     right: 8px;
     }
-    .ol-popup-closer:after {
-    content: "X";
+
+.ol-popup-closer:after {
+    content: "&#10006;";
 }
 
 /*3D view*/

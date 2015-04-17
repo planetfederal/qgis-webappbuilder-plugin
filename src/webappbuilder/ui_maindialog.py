@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Fri Apr 10 16:14:42 2015
+# Created: Thu Apr 16 16:02:26 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -771,6 +771,29 @@ class Ui_MainDialog(object):
         self.bookmarksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.bookmarksButton.setObjectName(_fromUtf8("bookmarksButton"))
         self.gridLayout_3.addWidget(self.bookmarksButton, 7, 1, 1, 1)
+        self.queryButton = QtGui.QToolButton(self.widgetsTab)
+        self.queryButton.setMinimumSize(QtCore.QSize(134, 100))
+        self.queryButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     min-width: 100px;\n"
+"     max-widht: 100px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.queryButton.setIcon(icon6)
+        self.queryButton.setIconSize(QtCore.QSize(32, 32))
+        self.queryButton.setCheckable(True)
+        self.queryButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.queryButton.setObjectName(_fromUtf8("queryButton"))
+        self.gridLayout_3.addWidget(self.queryButton, 7, 2, 1, 1)
         spacerItem6 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_3.addItem(spacerItem6, 8, 0, 1, 1)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
@@ -963,6 +986,7 @@ class Ui_MainDialog(object):
         self.textPanelButton.setText(_translate("MainDialog", "Text panel", None))
         self.linksButton.setText(_translate("MainDialog", "Links", None))
         self.bookmarksButton.setText(_translate("MainDialog", "Bookmarks", None))
+        self.queryButton.setText(_translate("MainDialog", "Query", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Widgets", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))
         self.label_8.setText(_translate("MainDialog", "Password", None))

@@ -129,6 +129,30 @@ def writeWebApp(appdef, folder):
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
+
+    if "Query" in widgets:
+        imports.append('''<script src="./resources/filtrex.js"></script>''')
+        tools.append('<li><a onclick="showQueryPanel()" href="#"><i class="glyphicon glyphicon-filter"></i>Query</a></li>')
+        mappanels.append('''<div class="query-panel" id="query-panel">
+                                <form class="form-horizontal">
+                                    <div style="margin-bottom: 25px" class="input-group">
+                                        <span class="input-group-addon">Layer</span>
+                                        <select id="query-layer" class="form-control"></select>
+                                    </div>
+                                    <div style="margin-bottom: 25px" class="input-group">
+                                        <span class="input-group-addon">Filter </span>
+                                        <input id="query-expression" type="text" class="form-control" placeholder="Type expression...">
+                                    </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <div class="col-sm-12 controls">
+                                          <a id="btn-query-new" href="#" class="btn btn-primary">New selection</a>
+                                          <a id="btn-query-add" href="#" class="btn btn-primary">Add to current selection</a>
+                                          <a id="btn-query-in" href="#" class="btn btn-primary">Select in current selection</a>
+                                          <a id="btn-close-query" href="#" class="btn btn-default">Close</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>''')
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
     if "Attributes table" in widgets:
@@ -146,7 +170,6 @@ def writeWebApp(appdef, folder):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
-
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
