@@ -51,7 +51,7 @@ selectedFeatures.clear = function(){
 }
 
 var dragBoxInteraction = new ol.interaction.DragBox({
-    condition: ol.events.condition.shiftKeyOnly,
+    condition: @DRAGBOXCONDITION@,
     style: new ol.style.Style({
         stroke: new ol.style.Stroke({
             color: [0, 0, 255, 1]
