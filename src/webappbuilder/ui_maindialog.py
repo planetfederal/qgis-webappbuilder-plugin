@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Fri Apr 17 11:26:38 2015
+# Created: Sun Apr 19 00:05:48 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -920,7 +920,7 @@ class Ui_MainDialog(object):
         self.verticalLayout_2.addWidget(self.widget)
 
         self.retranslateUi(MainDialog)
-        self.tabPanel.setCurrentIndex(3)
+        self.tabPanel.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainDialog)
 
     def retranslateUi(self, MainDialog):
