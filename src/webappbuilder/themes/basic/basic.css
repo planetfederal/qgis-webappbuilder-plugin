@@ -443,7 +443,8 @@ button.ol-full-screen-true:after {
 .ol-overviewmap .ol-overviewmap-map {
   border: 1px solid #7b98bc;  heght: 150px;
   margin: 2px;
-  width: 150px;
+  width: 200px;
+  height: 200px;
 }
 
 .ol-overviewmap:not(.ol-collapsed) button {
