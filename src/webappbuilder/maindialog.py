@@ -95,7 +95,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             if event.button() == Qt.RightButton :
                 name = widgetButtons[selfb]
                 menu = QMenu()
-                paramsAction = QAction("Edit...", None)
+                paramsAction = QAction("Configure...", None)
                 paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
                 paramsAction.setEnabled(name in settings.widgetsParams)
                 menu.addAction(paramsAction)

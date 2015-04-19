@@ -18,6 +18,7 @@ class ThemeEditorDialog(QtGui.QDialog):
         self.setWindowTitle("Edit Theme")
 
         layout = QtGui.QVBoxLayout()
+        hlayout = QtGui.QHBoxLayout()
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
         self.list = QtGui.QListWidget()
         self.list.addItems(self.styles.keys())
@@ -26,12 +27,22 @@ class ThemeEditorDialog(QtGui.QDialog):
         layout.addWidget(self.list)
         self.editor = TextEditorWidget()
         layout.addWidget(self.editor)
-        layout.addWidget(buttonBox)
+
+        resetButton = QtGui.QPushButton()
+        resetButton.setText("Reset default values")
+        resetButton.clicked.connect(self.resetDefaultValues)
+        hlayout.addWidget(resetButton)
+        hlayout.addWidget(buttonBox)
+        layout.addLayout(hlayout)
         self.setLayout(layout)
 
         buttonBox.accepted.connect(self.okPressed)
         buttonBox.rejected.connect(self.cancelPressed)
 
+    def resetDefaultValues(self):
+        settings.currentCss =  settings.themes[settings.currentTheme]
+        self.styles = settings.splitCssElements(settings.currentCss)
+        self.editor.setText(self.styles[self.currentItem.text()])
 
     def selectionChanged(self):
         if self.currentItem:
@@ -40,6 +51,8 @@ class ThemeEditorDialog(QtGui.QDialog):
         self.editor.setText(self.styles[self.currentItem.text()])
 
     def okPressed(self):
+        if self.currentItem:
+            self.styles[self.currentItem.text()] = self.editor.text()
         settings.currentCss = settings.joinElements(self.styles)
         self.close()
 
