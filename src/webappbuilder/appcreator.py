@@ -14,6 +14,7 @@ import jsbeautifier
 import copy
 from json.encoder import JSONEncoder
 import json
+import utils
 
 def createApp(appdef, deployData, folder, progress):
 	if not checkAppCanBeCreated():
@@ -21,8 +22,20 @@ def createApp(appdef, deployData, folder, progress):
 	QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	try:
 		if deployData:
-			importPostgis(appdef, progress)
-			publishGeoserver(appdef, progress)
+			usesGeoServer = False
+			usesPostgis = False
+			layers = appdef["Layers"]
+			for layer in layers:
+				if layer.method != utils.METHOD_FILE:
+					if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
+						usesPostgis = True
+						usesGeoServer = True
+					elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
+						usesGeoServer = True
+			if usesPostgis:
+				importPostgis(appdef, progress)
+			if usesGeoServer:
+				publishGeoserver(appdef, progress)
 		writeOL(appdef, folder, deployData, progress)
 		files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
 		for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
