@@ -576,7 +576,22 @@ class TreeLayerItem(QTreeWidgetItem):
             raise WrongValueException()
 
     def setValues(self, visible, popup, method, clusterDistance, allowSelection):
-        pass
+        if clusterDistance:
+            self.clusterItem.setCheckState(0, Qt.Checked)
+            self.clusterDistanceItem.setText(1, str(clusterDistance))
+        else:
+            self.clusterItem.setCheckState(0, Qt.Unchecked)
+            self.clusterDistanceItem.setText(1, "40")
+        self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
+        self.visibleItem.setCheckState(0, Qt.Checked if visible else Qt.Unchecked)
+        try:
+            self.connTypeCombo.setCurrentIndex(method)
+        except:
+            pass
+        if popup in options:
+            self.popupCombo.setCurrentIndex(options.index(popup))
+        else:
+            self.popupCombo.setCurrentIndex(self.popupCombo.findText(popup))
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)
