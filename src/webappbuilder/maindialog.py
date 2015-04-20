@@ -80,7 +80,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.zoomSliderButton: "Zoom slider",
                         self.zoomToExtentButton: "Zoom to extent",
                         self.cesiumButton: "3D view",
-                        self.textPanelButton: "Text panel",
+                        self.aboutPanelButton: "About panel",
                         self.exportAsImageButton: "Export as image",
                         self.geolocationButton: "Geolocation",
                         self.measureToolButton: "Measure tool",

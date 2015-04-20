@@ -9,6 +9,16 @@ sourceFromLayer = function(layer){
 
 };
 
+toggleAboutPanel = function(show){
+    panel = document.getElementById('about-panel');
+    if (show){
+        panel.style.display = 'block';
+    }
+    else{
+        panel.style.display = 'none';
+    }
+}
+
 //=======================================================
 
 saveAsPng = function(){

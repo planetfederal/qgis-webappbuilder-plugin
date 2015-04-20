@@ -1354,7 +1354,7 @@
         </widget>
        </item>
        <item row="6" column="3">
-        <widget class="QToolButton" name="textPanelButton">
+        <widget class="QToolButton" name="aboutPanelButton">
          <property name="minimumSize">
           <size>
            <width>134</width>
@@ -1379,7 +1379,7 @@
  }</string>
          </property>
          <property name="text">
-          <string>Text panel</string>
+          <string>About panel</string>
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">

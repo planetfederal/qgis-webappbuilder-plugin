@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Mon Apr 20 08:05:32 2015
+# Created: Mon Apr 20 15:29:39 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -694,9 +694,9 @@ class Ui_MainDialog(object):
         self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.measureToolButton.setObjectName(_fromUtf8("measureToolButton"))
         self.gridLayout_3.addWidget(self.measureToolButton, 6, 0, 1, 1)
-        self.textPanelButton = QtGui.QToolButton(self.widgetsTab)
-        self.textPanelButton.setMinimumSize(QtCore.QSize(134, 100))
-        self.textPanelButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.aboutPanelButton = QtGui.QToolButton(self.widgetsTab)
+        self.aboutPanelButton.setMinimumSize(QtCore.QSize(134, 100))
+        self.aboutPanelButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -711,13 +711,13 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.textPanelButton.setIcon(icon7)
-        self.textPanelButton.setIconSize(QtCore.QSize(32, 32))
-        self.textPanelButton.setCheckable(True)
-        self.textPanelButton.setChecked(False)
-        self.textPanelButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.textPanelButton.setObjectName(_fromUtf8("textPanelButton"))
-        self.gridLayout_3.addWidget(self.textPanelButton, 6, 3, 1, 1)
+        self.aboutPanelButton.setIcon(icon7)
+        self.aboutPanelButton.setIconSize(QtCore.QSize(32, 32))
+        self.aboutPanelButton.setCheckable(True)
+        self.aboutPanelButton.setChecked(False)
+        self.aboutPanelButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.aboutPanelButton.setObjectName(_fromUtf8("aboutPanelButton"))
+        self.gridLayout_3.addWidget(self.aboutPanelButton, 6, 3, 1, 1)
         self.linksButton = QtGui.QToolButton(self.widgetsTab)
         self.linksButton.setMinimumSize(QtCore.QSize(134, 100))
         self.linksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -1000,7 +1000,7 @@ class Ui_MainDialog(object):
         self.attributesTableButton.setText(_translate("MainDialog", "Attributes Table", None))
         self.chartToolButton.setText(_translate("MainDialog", "Chart tool", None))
         self.measureToolButton.setText(_translate("MainDialog", "Measure Tool", None))
-        self.textPanelButton.setText(_translate("MainDialog", "Text panel", None))
+        self.aboutPanelButton.setText(_translate("MainDialog", "About panel", None))
         self.linksButton.setText(_translate("MainDialog", "Links", None))
         self.bookmarksButton.setText(_translate("MainDialog", "Bookmarks", None))
         self.helpButton.setText(_translate("MainDialog", "Help", None))

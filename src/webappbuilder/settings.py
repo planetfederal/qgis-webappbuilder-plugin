@@ -40,7 +40,7 @@ currentCss =  themes[currentTheme]
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
-defaultWidgetsParams = {"Text panel": {"HTML content": defaultPanelContent},
+defaultWidgetsParams = {"About panel": {"HTML content": defaultPanelContent},
                         "Bookmarks": {"bookmarks": [],
                                       "format": 0},
                         "Chart tool": {"charts": {}},

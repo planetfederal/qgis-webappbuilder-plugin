@@ -160,9 +160,6 @@ def writeWebApp(appdef, folder):
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
-    if "Text panel" in widgets:
-        params = widgets["Text panel"]
-        mappanels.append('<div class="inmap-panel">%s</div>' % params["HTML content"])
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
@@ -200,6 +197,12 @@ def writeWebApp(appdef, folder):
             f.write("var DISPLAY_MODE_CATEGORY = 1;")
             f.write("var DISPLAY_MODE_COUNT = 2;")
             f.write("var charts = " + json.dumps(params["charts"]))
+    if "About panel" in widgets:
+        params = widgets["About panel"]
+        mappanels.append('''<div class="about-panel" id="about-panel">
+                        <a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>
+                        %s</div>''' % params["HTML content"])
+        tools.append('<li><a onclick="toggleAboutPanel(true)" href="#" id="about-panel-link">About</a></li>')
     if "Help" in widgets:
         tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
 
