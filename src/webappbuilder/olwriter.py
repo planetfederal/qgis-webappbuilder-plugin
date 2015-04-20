@@ -444,7 +444,7 @@ def layerToJavascript(applayer, settings, deploy):
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
-                    distance: 40,
+                    distance: %(dist)s,
                         source: new ol.source.GeoJSON({object: geojson_%(n)s})
                 });
                 var lyr_%(n)s = new ol.layer.Vector({
@@ -453,7 +453,7 @@ def layerToJavascript(applayer, settings, deploy):
                     title: "%(name)s"
                 });''' %
                 {"name": layer.name(), "n":layerName, "min": minResolution,
-                 "max": maxResolution, "dist": applayer.clusterDistance})
+                 "max": maxResolution, "dist": str(applayer.clusterDistance)})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     source: new ol.source.GeoJSON({object: geojson_%(n)s}),%(min)s %(max)s

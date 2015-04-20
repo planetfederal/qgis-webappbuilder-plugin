@@ -9,9 +9,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.charts = charts
-        self._charts = charts
-        self.populateList()
+        self._charts = dict(charts)
         self.populateLayers()
+        self.populateList()
         if self.layers:
             self.populateFieldCombos(self.layers.keys()[0])
         self.layerCombo.currentIndexChanged.connect(self.layerComboChanged)
@@ -39,28 +39,33 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.layerCombo.setCurrentIndex(idx)
         idx = self.categoryFieldCombo.findText(self._charts[name]["categoryField"])
         self.categoryFieldCombo.setCurrentIndex(idx)
-        idx = self.displayMode.findText(self._charts[name]["displayMode"])
-        self.displayMode.setCurrentIndex(idx)
+        self.displayModeCombo.setCurrentIndex(self._charts[name]["displayMode"])
         try:
-            idx = self.operationCombo.findText(self._charts[name]["operation"])
-            self.operationCombo.setCurrentIndex(idx)
+            idx = self.operationCombo.findText()
+            self.operationCombo.setCurrentIndex(self._charts[name]["operation"])
         except:
             pass
-        valueFields = self._charts[name]["valueFields"]
-        for i in xrange(1, self.model.rowCount()):
-            item = self.model.item(i)
-            item.setData(QtCore.Qt.Checked if item.text() in valueFields else QtCore.Qt.Unchecked,
+        try:
+            valueFields = self._charts[name]["valueFields"]
+            for i in xrange(1, self.model.rowCount()):
+                item = self.model.item(i)
+                item.setData(QtCore.Qt.Checked if item.text() in valueFields else QtCore.Qt.Unchecked,
                          QtCore.Qt.CheckStateRole)
+        except:
+            pass
 
     def layerComboChanged(self):
         self.populateFieldCombos(self.layerCombo.currentText())
 
     def populateList(self):
         self.chartsList.clear()
-        for chart in self._charts:
-            item = QtGui.QListWidgetItem()
-            item.setText(chart)
-            self.chartsList.addItem(item)
+        for chartName, chart in self._charts.iteritems():
+            if chart["layer"] in self.layers:
+                fields = [f.name() for f in self.layers[chart["layer"]].pendingFields()]
+                if chart["categoryField"] in fields:
+                    item = QtGui.QListWidgetItem()
+                    item.setText(chartName)
+                    self.chartsList.addItem(item)
 
     def populateLayers(self):
         skipType = [2]
@@ -108,11 +113,15 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
             checked = item.data(QtCore.Qt.CheckStateRole)
             if checked == QtCore.Qt.Checked:
                 valueFields.append(item.text())
-        self._charts[name] = {"layer": layer,
+        if valueFields:
+            self._charts[name] = {"layer": layer,
                               "categoryField": categoryField,
                               "valueFields": valueFields,
                               "displayMode": displayMode,
                               "operation": operation}
+        else:
+            QtGui.QMessageBox.warning(self, "Cannot create chart", "At least one value field must be selected")
+            return
         self.populateList()
 
     def removeChart(self):
