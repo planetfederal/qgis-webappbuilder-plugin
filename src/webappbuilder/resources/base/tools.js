@@ -1,3 +1,16 @@
+sourceFromLayer = function(layer){
+    var source = layer.getSource();
+    if (source instanceof ol.source.Cluster){
+        return source.getSource();
+    }
+    else{
+        return source;
+    }
+
+};
+
+//=======================================================
+
 saveAsPng = function(){
     map.once('postcompose', function(event) {
       var canvas = event.context.canvas;
@@ -6,7 +19,6 @@ saveAsPng = function(){
     });
     map.renderSync();
 };
-
 
 //=======================================================
 
@@ -30,7 +42,7 @@ showAttributesTable = function() {
         }
         this_.selectedRowIndices = [];
         var rows = this_.table.getElementsByTagName("tr");
-        var layerFeatures = this_.currentLayer.getSource().getFeatures();
+        var layerFeatures = sourceFromLayer(this_.currentLayer).getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
             var row = rows[i];
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
@@ -73,7 +85,7 @@ showAttributesTable = function() {
         zoomTo.innerHTML = '<i class="glyphicon glyphicon-search"></i> Zoom to selected';
         zoomTo.className = "btn btn-default";
         zoomTo.onclick = function(){
-            features = this_.currentLayer.getSource().getFeatures();
+            features = sourceFromLayer(this_.currentLayer).getFeatures();
             extent = ol.extent.createEmpty();
             for (i = 0; i < this_.selectedRowIndices.length; i++){
                 extent = ol.extent.extend(extent,
@@ -90,7 +102,7 @@ showAttributesTable = function() {
             var rows = this_.table.getElementsByTagName("tr");
             var sel = this_.selectedRowIndices.slice();
             for (var i = 0; i < sel.length; i++) {
-                feature = this_.currentLayer.getSource().getFeatures()[sel[i]];
+                feature = sourceFromLayer(this_.currentLayer).getFeatures()[sel[i]];
                 selectInteraction.getFeatures().remove(feature);
             }
         };
@@ -116,7 +128,7 @@ showAttributesTable = function() {
         this.table = document.createElement("TABLE");
         this.table.border = "1";
 
-        cols = this.currentLayer.getSource().getFeatures()[0].getKeys();
+        cols = sourceFromLayer(this.currentLayer).getFeatures()[0].getKeys();
         var row = this.table.insertRow(-1);
 
         for (var i = 0; i < cols.length; i++) {
@@ -129,7 +141,7 @@ showAttributesTable = function() {
 
         this_ = this;
         this.selectedRowIndices = [];
-        layerFeatures = this.currentLayer.getSource().getFeatures();
+        layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
             feature = layerFeatures[i];
             keys = feature.getKeys();
@@ -161,7 +173,7 @@ showAttributesTable = function() {
                 (function (idx) {
                     rows[idx].addEventListener("click",
                         function () {
-                            feature = this_.currentLayer.getSource().getFeatures()[idx];
+                            feature = layerFeatures[idx];
                             if (this.className != "row-selected"){
                                 selectInteraction.getFeatures().push(feature);
                             }
@@ -470,7 +482,7 @@ openChart = function(c){
                 break;
             }
         }
-        layerFeatures = lyr.getSource().getFeatures();
+        layerFeatures = sourceFromLayer(lyr).getFeatures();
         var columns = [["x"]];
         if (charts[c].displayMode === DISPLAY_MODE_COUNT){
             columns.push(["Feature count"]);
@@ -597,7 +609,7 @@ showQueryPanel = function(){
         var lyrs = map.getLayers().getArray().slice().reverse();
         for (var i = 0, l; i < lyrs.length; i++) {
             l = lyrs[i];
-            if (l.get('title') && !(typeof l.getSource === "undefined")) {
+            if (l.get('title') && l instanceof ol.layer.Vector) {
                 var option = document.createElement('option');
                 option.value = option.textContent = l.get('title');
                 select.appendChild(option);
@@ -639,7 +651,7 @@ showQueryPanel = function(){
                     break;
                 }
             }
-            var layerFeatures = layer.getSource().getFeatures();
+            var layerFeatures = sourceFromLayer(layer).getFeatures();
             var selectedFeatures = selectInteraction.getFeatures();
             var selectedFeaturesArray = selectedFeatures.getArray();
             if (mode === NEW_SELECTION){
