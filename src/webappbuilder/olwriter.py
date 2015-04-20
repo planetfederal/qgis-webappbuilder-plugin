@@ -172,8 +172,6 @@ def writeWebApp(appdef, folder):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
-    if "Help" in widgets:
-        tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
@@ -202,6 +200,8 @@ def writeWebApp(appdef, folder):
             f.write("var DISPLAY_MODE_CATEGORY = 1;")
             f.write("var DISPLAY_MODE_COUNT = 2;")
             f.write("var charts = " + json.dumps(params["charts"]))
+    if "Help" in widgets:
+        tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
 
     bookmarkEvents = ""
     if "Bookmarks" in widgets:
