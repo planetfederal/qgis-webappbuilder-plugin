@@ -52,6 +52,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateLayers()
         self.populateConfigParams()
         self.populateThemes()
+        self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonConfigureTheme.clicked.connect(self.configureTheme)
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
@@ -59,10 +60,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.currentBaseLayerItem = self.mapQuestAerialButton
         self.mapQuestAerialButton.setChecked(True)
-        self.baseLayerButtons = [self.mapQuestButton, self.mapQuestAerialButton,
-                self.stamenTonerButton, self.stamenWatercolorButton, self.osmButton]
         self.baseLayers = {self.mapQuestButton: "MapQuest roads",
                             self.mapQuestAerialButton: "MapQuest aerial",
+                            self.mapQuestLabelsButton: "MapQuest labels",
                             self.stamenTonerButton: "Stamen toner",
                             self.stamenWatercolorButton: "Stamen watercolor",
                             self.osmButton: "OSM"}
@@ -123,6 +123,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         if appdef is not None:
             self.loadAppdef(appdef)
 
+
+    def selectLogo(self):
+        img = QFileDialog.getOpenFileName(self, "Select image file")
+        if img:
+            self.logoBox.setText(img)
     def customBaseLayers(self):
         pass
 
@@ -131,6 +136,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         dlg.exec_()
 
     def loadAppdef(self, appdef):
+        self.titleBox.setText(appdef["Settings"]["Title"])
+        self.logoBox.setText(appdef["Settings"]["Logo"])
         for button, widgetName in self.widgetButtons.iteritems():
             if widgetName in appdef["Widgets"]:
                 button.setChecked(True)
@@ -146,6 +153,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         for button, themeName in self.themesButtons.iteritems():
             if themeName == theme:
                 button.click()
+        baseLayers = appdef["Base layers"]
+        for button, name in self.baseLayers.iteritems():
+            if name in baseLayers:
+                button.setChecked(True)
         settings.currentCss = appdef["Settings"]["Theme"]["Css"]
         items = []
         for i in xrange(self.layersTree.topLevelItemCount()):
@@ -323,7 +334,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def getBaseLayers(self):
         layers = []
-        for b in self.baseLayerButtons:
+        for b in self.baseLayers:
             if b.isChecked():
                 layers.append(self.baseLayers[b])
         return layers
@@ -388,7 +399,14 @@ class MainDialog(QDialog, Ui_MainDialog):
             if b.isChecked():
                 themeName = b.text()
                 break
+        logo = self.logoBox.text().strip()
+        if logo and not os.path.exists(logo):
+            self.tabPanel.setCurrentIndex(0)
+            self.logoBox.setStyleSheet("QLineEdit{background: yellow}")
+            raise WrongValueException()
+        self.logoBox.setStyleSheet("QLineEdit{background: white}")
         parameters = {"Title": title,
+                      "Logo": logo,
                       "Theme": {"Name": themeName,
                                 "Css": settings.currentCss}
                       }
@@ -588,6 +606,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.connTypeCombo.setCurrentIndex(method)
         except:
             pass
+        options = [utils.NO_POPUP, utils.ALL_ATTRIBUTES]
         if popup in options:
             self.popupCombo.setCurrentIndex(options.index(popup))
         else:

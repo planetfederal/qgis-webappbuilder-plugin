@@ -18,7 +18,8 @@ baseLayersJs  = {
     "Stamen toner": "new ol.layer.Tile({type: 'base', title: 'Stamen toner', source: new ol.source.Stamen({layer: 'toner'})})",
     "OSM": "new ol.layer.Tile({type: 'base', title: 'OSM', source: new ol.source.OSM()})",
     "MapQuest roads": "new ol.layer.Tile({type: 'base', title: 'MapQuest roads', source: new ol.source.MapQuest({layer: 'osm'})})",
-    "MapQuest aerial": "new ol.layer.Tile({type: 'base', title: 'MapQuest aerial', source: new ol.source.MapQuest({layer: 'sat'})})"
+    "MapQuest aerial": "new ol.layer.Tile({type: 'base', title: 'MapQuest aerial', source: new ol.source.MapQuest({layer: 'sat'})})",
+    "MapQuest labels": "new ol.layer.Tile({type: 'base', title: 'MapQuest labels', source: new ol.source.MapQuest({layer: 'hyb'})})"
 }
 
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
@@ -272,7 +273,15 @@ def writeWebApp(appdef, folder):
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
 
+    logoImg = appdef["Settings"]["Logo"].strip()
+    if logoImg:
+        logo = '<img class="pull-left" style="margin:5px;height:calc(100%-10px);" src="logo.png"></img>'
+        ext = os.path.splitext(logoImg)[1]
+        shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
+    else:
+        logo = ""
     values = {"@TITLE@": appdef["Settings"]["Title"],
+              "@LOGO@": logo,
                 "@IMPORTS@": "\n".join(imports),
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
@@ -297,6 +306,9 @@ def writeLayersAndGroups(appdef, folder):
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
     groups = appdef["Groups"]
+    if "MapQuest labels" in baseLayers:
+        idx = baseLayers.index("MapQuest labels")
+        baseLayers.append(baseLayers.pop(idx))
     baseLayer = baseLayerGroup % ",".join([baseLayersJs[b] for b in baseLayers])
     layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
     groupVars = ""

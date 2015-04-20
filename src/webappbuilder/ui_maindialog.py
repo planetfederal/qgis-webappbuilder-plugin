@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Sun Apr 19 09:04:08 2015
+# Created: Mon Apr 20 08:05:32 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,25 +47,39 @@ class Ui_MainDialog(object):
         self.tabPanel.setObjectName(_fromUtf8("tabPanel"))
         self.descriptionTab = QtGui.QWidget()
         self.descriptionTab.setObjectName(_fromUtf8("descriptionTab"))
-        self.verticalLayout_7 = QtGui.QVBoxLayout(self.descriptionTab)
-        self.verticalLayout_7.setObjectName(_fromUtf8("verticalLayout_7"))
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.descriptionTab)
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
         self.label_3 = QtGui.QLabel(self.descriptionTab)
         self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.verticalLayout_7.addWidget(self.label_3)
+        self.verticalLayout_4.addWidget(self.label_3)
         self.titleBox = QtGui.QLineEdit(self.descriptionTab)
         self.titleBox.setObjectName(_fromUtf8("titleBox"))
-        self.verticalLayout_7.addWidget(self.titleBox)
-        spacerItem = QtGui.QSpacerItem(20, 15, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.verticalLayout_7.addItem(spacerItem)
+        self.verticalLayout_4.addWidget(self.titleBox)
+        self.label_16 = QtGui.QLabel(self.descriptionTab)
+        self.label_16.setObjectName(_fromUtf8("label_16"))
+        self.verticalLayout_4.addWidget(self.label_16)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.logoBox = QtGui.QLineEdit(self.descriptionTab)
+        self.logoBox.setText(_fromUtf8(""))
+        self.logoBox.setObjectName(_fromUtf8("logoBox"))
+        self.horizontalLayout_3.addWidget(self.logoBox)
+        self.buttonLogo = QtGui.QToolButton(self.descriptionTab)
+        self.buttonLogo.setObjectName(_fromUtf8("buttonLogo"))
+        self.horizontalLayout_3.addWidget(self.buttonLogo)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_3)
         self.label_4 = QtGui.QLabel(self.descriptionTab)
         self.label_4.setObjectName(_fromUtf8("label_4"))
-        self.verticalLayout_7.addWidget(self.label_4)
+        self.verticalLayout_4.addWidget(self.label_4)
         self.widgetThemes = QtGui.QWidget(self.descriptionTab)
         self.widgetThemes.setObjectName(_fromUtf8("widgetThemes"))
         self.gridLayoutThemes = QtGui.QGridLayout(self.widgetThemes)
         self.gridLayoutThemes.setMargin(0)
         self.gridLayoutThemes.setObjectName(_fromUtf8("gridLayoutThemes"))
-        self.verticalLayout_7.addWidget(self.widgetThemes)
+        self.verticalLayout_4.addWidget(self.widgetThemes)
+        spacerItem = QtGui.QSpacerItem(20, 15, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        self.verticalLayout_4.addItem(spacerItem)
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -73,16 +87,16 @@ class Ui_MainDialog(object):
         self.buttonConfigureTheme = QtGui.QPushButton(self.descriptionTab)
         self.buttonConfigureTheme.setObjectName(_fromUtf8("buttonConfigureTheme"))
         self.horizontalLayout_6.addWidget(self.buttonConfigureTheme)
-        self.verticalLayout_7.addLayout(self.horizontalLayout_6)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_6)
         spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_7.addItem(spacerItem2)
+        self.verticalLayout_4.addItem(spacerItem2)
         self.tabPanel.addTab(self.descriptionTab, _fromUtf8(""))
         self.baseLayerTab = QtGui.QWidget()
         self.baseLayerTab.setObjectName(_fromUtf8("baseLayerTab"))
         self.gridLayout_4 = QtGui.QGridLayout(self.baseLayerTab)
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
-        self.stamenWatercolorButton = QtGui.QToolButton(self.baseLayerTab)
-        self.stamenWatercolorButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.mapQuestAerialButton = QtGui.QToolButton(self.baseLayerTab)
+        self.mapQuestAerialButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -91,20 +105,21 @@ class Ui_MainDialog(object):
 "     font: bold;\n"
 "     min-width: 100px;\n"
 "     max-width: 250px;\n"
-"     padding: 10px;\n"
+"    padding:10px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/watercolor.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.stamenWatercolorButton.setIcon(icon1)
-        self.stamenWatercolorButton.setIconSize(QtCore.QSize(250, 100))
-        self.stamenWatercolorButton.setCheckable(True)
-        self.stamenWatercolorButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.stamenWatercolorButton.setObjectName(_fromUtf8("stamenWatercolorButton"))
-        self.gridLayout_4.addWidget(self.stamenWatercolorButton, 1, 0, 1, 1)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/mapquestaerial.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.mapQuestAerialButton.setIcon(icon1)
+        self.mapQuestAerialButton.setIconSize(QtCore.QSize(250, 100))
+        self.mapQuestAerialButton.setCheckable(True)
+        self.mapQuestAerialButton.setChecked(True)
+        self.mapQuestAerialButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.mapQuestAerialButton.setObjectName(_fromUtf8("mapQuestAerialButton"))
+        self.gridLayout_4.addWidget(self.mapQuestAerialButton, 0, 0, 1, 1)
         self.mapQuestButton = QtGui.QToolButton(self.baseLayerTab)
         self.mapQuestButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
@@ -129,8 +144,8 @@ class Ui_MainDialog(object):
         self.mapQuestButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.mapQuestButton.setObjectName(_fromUtf8("mapQuestButton"))
         self.gridLayout_4.addWidget(self.mapQuestButton, 0, 1, 1, 1)
-        self.stamenTonerButton = QtGui.QToolButton(self.baseLayerTab)
-        self.stamenTonerButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.mapQuestLabelsButton = QtGui.QToolButton(self.baseLayerTab)
+        self.mapQuestLabelsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -139,20 +154,21 @@ class Ui_MainDialog(object):
 "     font: bold;\n"
 "     min-width: 100px;\n"
 "     max-width: 250px;\n"
-"     padding: 10px;\n"
+"    padding:10px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/toner.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.stamenTonerButton.setIcon(icon3)
-        self.stamenTonerButton.setIconSize(QtCore.QSize(250, 100))
-        self.stamenTonerButton.setCheckable(True)
-        self.stamenTonerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.stamenTonerButton.setObjectName(_fromUtf8("stamenTonerButton"))
-        self.gridLayout_4.addWidget(self.stamenTonerButton, 1, 1, 1, 1)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/mapquestlabels.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.mapQuestLabelsButton.setIcon(icon3)
+        self.mapQuestLabelsButton.setIconSize(QtCore.QSize(250, 100))
+        self.mapQuestLabelsButton.setCheckable(True)
+        self.mapQuestLabelsButton.setChecked(False)
+        self.mapQuestLabelsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.mapQuestLabelsButton.setObjectName(_fromUtf8("mapQuestLabelsButton"))
+        self.gridLayout_4.addWidget(self.mapQuestLabelsButton, 1, 0, 1, 1)
         self.osmButton = QtGui.QToolButton(self.baseLayerTab)
         self.osmButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
@@ -177,11 +193,9 @@ class Ui_MainDialog(object):
         self.osmButton.setChecked(False)
         self.osmButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.osmButton.setObjectName(_fromUtf8("osmButton"))
-        self.gridLayout_4.addWidget(self.osmButton, 2, 0, 1, 1)
-        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_4.addItem(spacerItem3, 3, 0, 1, 1)
-        self.mapQuestAerialButton = QtGui.QToolButton(self.baseLayerTab)
-        self.mapQuestAerialButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.gridLayout_4.addWidget(self.osmButton, 1, 1, 1, 1)
+        self.stamenTonerButton = QtGui.QToolButton(self.baseLayerTab)
+        self.stamenTonerButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -190,21 +204,46 @@ class Ui_MainDialog(object):
 "     font: bold;\n"
 "     min-width: 100px;\n"
 "     max-width: 250px;\n"
-"    padding:10px;\n"
+"     padding: 10px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/mapquestaerial.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.mapQuestAerialButton.setIcon(icon5)
-        self.mapQuestAerialButton.setIconSize(QtCore.QSize(250, 100))
-        self.mapQuestAerialButton.setCheckable(True)
-        self.mapQuestAerialButton.setChecked(True)
-        self.mapQuestAerialButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.mapQuestAerialButton.setObjectName(_fromUtf8("mapQuestAerialButton"))
-        self.gridLayout_4.addWidget(self.mapQuestAerialButton, 0, 0, 1, 1)
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/toner.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.stamenTonerButton.setIcon(icon5)
+        self.stamenTonerButton.setIconSize(QtCore.QSize(250, 100))
+        self.stamenTonerButton.setCheckable(True)
+        self.stamenTonerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.stamenTonerButton.setObjectName(_fromUtf8("stamenTonerButton"))
+        self.gridLayout_4.addWidget(self.stamenTonerButton, 2, 0, 1, 1)
+        self.stamenWatercolorButton = QtGui.QToolButton(self.baseLayerTab)
+        self.stamenWatercolorButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold;\n"
+"     min-width: 100px;\n"
+"     max-width: 250px;\n"
+"     padding: 10px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/watercolor.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.stamenWatercolorButton.setIcon(icon6)
+        self.stamenWatercolorButton.setIconSize(QtCore.QSize(250, 100))
+        self.stamenWatercolorButton.setCheckable(True)
+        self.stamenWatercolorButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.stamenWatercolorButton.setObjectName(_fromUtf8("stamenWatercolorButton"))
+        self.gridLayout_4.addWidget(self.stamenWatercolorButton, 2, 1, 1, 1)
+        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_4.addItem(spacerItem3, 3, 0, 1, 1)
         self.horizontalLayout_8 = QtGui.QHBoxLayout()
         self.horizontalLayout_8.setObjectName(_fromUtf8("horizontalLayout_8"))
         spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -262,9 +301,9 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.scaleBarButton.setIcon(icon6)
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.scaleBarButton.setIcon(icon7)
         self.scaleBarButton.setIconSize(QtCore.QSize(32, 32))
         self.scaleBarButton.setCheckable(True)
         self.scaleBarButton.setChecked(True)
@@ -288,7 +327,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.zoomControlsButton.setIcon(icon6)
+        self.zoomControlsButton.setIcon(icon7)
         self.zoomControlsButton.setIconSize(QtCore.QSize(32, 32))
         self.zoomControlsButton.setCheckable(True)
         self.zoomControlsButton.setChecked(True)
@@ -314,7 +353,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.layersListButton.setIcon(icon6)
+        self.layersListButton.setIcon(icon7)
         self.layersListButton.setIconSize(QtCore.QSize(32, 32))
         self.layersListButton.setCheckable(True)
         self.layersListButton.setChecked(True)
@@ -338,7 +377,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.overviewButton.setIcon(icon6)
+        self.overviewButton.setIcon(icon7)
         self.overviewButton.setIconSize(QtCore.QSize(32, 32))
         self.overviewButton.setCheckable(True)
         self.overviewButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -361,7 +400,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.northArrowButton.setIcon(icon6)
+        self.northArrowButton.setIcon(icon7)
         self.northArrowButton.setIconSize(QtCore.QSize(32, 32))
         self.northArrowButton.setCheckable(True)
         self.northArrowButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -384,7 +423,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.fullScreenButton.setIcon(icon6)
+        self.fullScreenButton.setIcon(icon7)
         self.fullScreenButton.setIconSize(QtCore.QSize(32, 32))
         self.fullScreenButton.setCheckable(True)
         self.fullScreenButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -407,7 +446,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.attributionButton.setIcon(icon6)
+        self.attributionButton.setIcon(icon7)
         self.attributionButton.setIconSize(QtCore.QSize(32, 32))
         self.attributionButton.setCheckable(True)
         self.attributionButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -430,7 +469,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.zoomSliderButton.setIcon(icon6)
+        self.zoomSliderButton.setIcon(icon7)
         self.zoomSliderButton.setIconSize(QtCore.QSize(32, 32))
         self.zoomSliderButton.setCheckable(True)
         self.zoomSliderButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -453,7 +492,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.cesiumButton.setIcon(icon6)
+        self.cesiumButton.setIcon(icon7)
         self.cesiumButton.setIconSize(QtCore.QSize(32, 32))
         self.cesiumButton.setCheckable(True)
         self.cesiumButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -476,7 +515,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.zoomToExtentButton.setIcon(icon6)
+        self.zoomToExtentButton.setIcon(icon7)
         self.zoomToExtentButton.setIconSize(QtCore.QSize(32, 32))
         self.zoomToExtentButton.setCheckable(True)
         self.zoomToExtentButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -500,7 +539,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.mousePositionButton.setIcon(icon6)
+        self.mousePositionButton.setIcon(icon7)
         self.mousePositionButton.setIconSize(QtCore.QSize(32, 32))
         self.mousePositionButton.setCheckable(True)
         self.mousePositionButton.setAutoRepeat(False)
@@ -524,7 +563,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.geolocationButton.setIcon(icon6)
+        self.geolocationButton.setIcon(icon7)
         self.geolocationButton.setIconSize(QtCore.QSize(32, 32))
         self.geolocationButton.setCheckable(True)
         self.geolocationButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -556,7 +595,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.exportAsImageButton.setIcon(icon6)
+        self.exportAsImageButton.setIcon(icon7)
         self.exportAsImageButton.setIconSize(QtCore.QSize(32, 32))
         self.exportAsImageButton.setCheckable(True)
         self.exportAsImageButton.setChecked(False)
@@ -580,7 +619,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.geocodingButton.setIcon(icon6)
+        self.geocodingButton.setIcon(icon7)
         self.geocodingButton.setIconSize(QtCore.QSize(32, 32))
         self.geocodingButton.setCheckable(True)
         self.geocodingButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -603,7 +642,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.attributesTableButton.setIcon(icon6)
+        self.attributesTableButton.setIcon(icon7)
         self.attributesTableButton.setIconSize(QtCore.QSize(32, 32))
         self.attributesTableButton.setCheckable(True)
         self.attributesTableButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -626,7 +665,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.chartToolButton.setIcon(icon6)
+        self.chartToolButton.setIcon(icon7)
         self.chartToolButton.setIconSize(QtCore.QSize(32, 32))
         self.chartToolButton.setCheckable(True)
         self.chartToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -649,7 +688,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.measureToolButton.setIcon(icon6)
+        self.measureToolButton.setIcon(icon7)
         self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
         self.measureToolButton.setCheckable(True)
         self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -672,7 +711,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.textPanelButton.setIcon(icon6)
+        self.textPanelButton.setIcon(icon7)
         self.textPanelButton.setIconSize(QtCore.QSize(32, 32))
         self.textPanelButton.setCheckable(True)
         self.textPanelButton.setChecked(False)
@@ -696,7 +735,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.linksButton.setIcon(icon6)
+        self.linksButton.setIcon(icon7)
         self.linksButton.setIconSize(QtCore.QSize(32, 32))
         self.linksButton.setCheckable(True)
         self.linksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -721,7 +760,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.bookmarksButton.setIcon(icon6)
+        self.bookmarksButton.setIcon(icon7)
         self.bookmarksButton.setIconSize(QtCore.QSize(32, 32))
         self.bookmarksButton.setCheckable(True)
         self.bookmarksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -744,7 +783,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.helpButton.setIcon(icon6)
+        self.helpButton.setIcon(icon7)
         self.helpButton.setIconSize(QtCore.QSize(32, 32))
         self.helpButton.setCheckable(True)
         self.helpButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -767,7 +806,7 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.queryButton.setIcon(icon6)
+        self.queryButton.setIcon(icon7)
         self.queryButton.setIconSize(QtCore.QSize(32, 32))
         self.queryButton.setCheckable(True)
         self.queryButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -911,9 +950,9 @@ class Ui_MainDialog(object):
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
         self.horizontalLayout_2.addWidget(self.buttonCreateApp)
         self.buttonPreview = QtGui.QPushButton(self.widget)
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonPreview.setIcon(icon7)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.buttonPreview.setIcon(icon8)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
@@ -927,14 +966,17 @@ class Ui_MainDialog(object):
         MainDialog.setWindowTitle(_translate("MainDialog", "Web App Builder", None))
         self.label_3.setText(_translate("MainDialog", "<b>App Title</b>", None))
         self.titleBox.setText(_translate("MainDialog", "My Web App", None))
+        self.label_16.setText(_translate("MainDialog", "<b>Logo image</b>", None))
+        self.buttonLogo.setText(_translate("MainDialog", "...", None))
         self.label_4.setText(_translate("MainDialog", "<b>Theme</b>", None))
         self.buttonConfigureTheme.setText(_translate("MainDialog", "Configure theme...", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.descriptionTab), _translate("MainDialog", "Description", None))
-        self.stamenWatercolorButton.setText(_translate("MainDialog", "Stamen Watercolor", None))
-        self.mapQuestButton.setText(_translate("MainDialog", "MapQuest", None))
-        self.stamenTonerButton.setText(_translate("MainDialog", "Stamen Toner", None))
-        self.osmButton.setText(_translate("MainDialog", "OSM", None))
         self.mapQuestAerialButton.setText(_translate("MainDialog", "MapQuest Aerial", None))
+        self.mapQuestButton.setText(_translate("MainDialog", "MapQuest", None))
+        self.mapQuestLabelsButton.setText(_translate("MainDialog", "MapQuest Labels", None))
+        self.osmButton.setText(_translate("MainDialog", "OSM", None))
+        self.stamenTonerButton.setText(_translate("MainDialog", "Stamen Toner", None))
+        self.stamenWatercolorButton.setText(_translate("MainDialog", "Stamen Watercolor", None))
         self.buttonCustomBaseLayers.setText(_translate("MainDialog", "Custom base layers...", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.baseLayerTab), _translate("MainDialog", "Base Layers", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2", None))
