@@ -4,6 +4,25 @@ from texteditor import TextEditorDialog, JSON
 
 class TreeSettingItem(QTreeWidgetItem):
 
+    comboStyle = '''QComboBox {
+                 border: 1px solid gray;
+                 border-radius: 3px;
+                 padding: 1px 18px 1px 3px;
+                 min-width: 6em;
+             }
+
+             QComboBox::drop-down {
+                 subcontrol-origin: padding;
+                 subcontrol-position: top right;
+                 width: 15px;
+                 border-left-width: 1px;
+                 border-left-color: darkgray;
+                 border-left-style: solid;
+                 border-top-right-radius: 3px;
+                 border-bottom-right-radius: 3px;
+             }
+            '''
+
     def __init__(self, parent, tree, name, value):
         QTreeWidgetItem.__init__(self, parent)
         self.parent = parent
@@ -17,20 +36,21 @@ class TreeSettingItem(QTreeWidgetItem):
             else:
                 self.setCheckState(1, Qt.Unchecked)
         elif isinstance(value, tuple):
-            self.popupCombo = QComboBox()
+            self.combo = QComboBox()
+            self.combo.setStyleSheet(self.comboStyle)
             for option in value[1]:
-                self.popupCombo.addItem(option)
-            self.tree.setItemWidget(self, 1, self.popupCombo)
+                self.combo.addItem(option)
+            self.tree.setItemWidget(self, 1, self.combo)
         elif "\n" in unicode(value):
-            self.button = QPushButton()
-            self.button.setText("Edit...")
+            self.label = QLabel()
+            self.label.setText("<a href='#'>Edit</a>")
             self.newValue = value
             def edit():
                 dlg = TextEditorDialog(unicode(value), JSON)
                 dlg.exec_()
                 self.newValue = dlg.text
-            self.button.clicked.connect(edit)
-            self.tree.setItemWidget(self, 1, self.button)
+            self.label.connect(self.label, SIGNAL("linkActivated(QString)"), edit)
+            self.tree.setItemWidget(self, 1, self.label)
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
@@ -41,7 +61,7 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(self._value, (int,float)):
             return float(self.text(1))
         elif isinstance(self._value, tuple):
-            return self.popupCombo.currentText()
+            return self.combo.currentText()
         elif "\n" in unicode(self._value):
             return self.newValue
         else:
