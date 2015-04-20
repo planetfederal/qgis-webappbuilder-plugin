@@ -90,7 +90,7 @@ dragBoxInteraction.on('boxstart', function(e) {
 @CESIUM@
 
 var NO_POPUP = 0
-var ALL_FIELDS = 1
+var ALL_ATTRIBUTES = 1
 
 @POPUPLAYERS@
 
