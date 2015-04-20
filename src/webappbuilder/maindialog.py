@@ -8,7 +8,8 @@ import utils
 from collections import defaultdict
 from olwriter import writeOL
 from qgis.utils import iface
-from appcreator import createApp
+from appcreator import createApp, WrongAppDefinitionException,\
+    AppDefProblemsDialog
 import settings
 from types import MethodType
 import webbrowser
@@ -290,26 +291,32 @@ class MainDialog(QDialog, Ui_MainDialog):
             webbrowser.open_new(path)
         except WrongValueException:
             pass
+        except WrongAppDefinitionException, e:
+            dlg = AppDefProblemsDialog(unicode(e))
+            dlg.exec_()
 
     def createApp(self):
         try:
             folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
-            if folder is None:
-                return
-            appdef = self.createAppDefinition()
-            self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle("Web app creator")
-            msgBox.setText("App was correctly created and deployed")
-            msgBox.setInformativeText("Do you want to open it in a web browser?");
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setDefaultButton(QMessageBox.Yes);
-            ret = msgBox.exec_();
-            if ret == QMessageBox.Yes:
-                webbrowser.open_new("file://%s/index.html" % folder)
+            if folder:
+                appdef = self.createAppDefinition()
+                self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
+                msgBox = QMessageBox()
+                msgBox.setWindowTitle("Web app creator")
+                msgBox.setText("App was correctly created and deployed")
+                msgBox.setInformativeText("Do you want to open it in a web browser?");
+                msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
+                msgBox.setIcon(QMessageBox.Information)
+                msgBox.setDefaultButton(QMessageBox.Yes);
+                ret = msgBox.exec_();
+                if ret == QMessageBox.Yes:
+                    webbrowser.open_new("file://%s/index.html" % folder)
         except WrongValueException:
             pass
+        except WrongAppDefinitionException, e:
+            dlg = AppDefProblemsDialog(unicode(e))
+            dlg.exec_()
+
 
     def createAppDefinition(self, preview = False):
         layers, groups = self.getLayersAndGroups()

@@ -16,48 +16,54 @@ from json.encoder import JSONEncoder
 import json
 import utils
 
-def createApp(appdef, deployData, folder, progress):
-	if not checkAppCanBeCreated():
-		return
-	QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-	try:
-		if deployData:
-			usesGeoServer = False
-			usesPostgis = False
-			layers = appdef["Layers"]
-			for layer in layers:
-				if layer.method != utils.METHOD_FILE:
-					if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
-						usesPostgis = True
-						usesGeoServer = True
-					elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
-						usesGeoServer = True
-			if usesPostgis:
-				importPostgis(appdef, progress)
-			if usesGeoServer:
-				publishGeoserver(appdef, progress)
-		writeOL(appdef, folder, deployData, progress)
-		files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
-		for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
-			for f in fs:
-				if f.endswith("js"):
-					files.append(os.path.join(root, f))
-		for path in files:
-			try:
-				beauty = jsbeautifier.beautify_file(path)
-				with open(path, "w") as f:
-					f.write(beauty)
-			except:
-				pass #jsbeautifier gives some random errors sometimes due to imports
-		projFile = QgsProject.instance().fileName()
-		if projFile:
-			appdefFile =  projFile + ".appdef"
-			saveAppdef(appdef, appdefFile)
-	finally:
-		QApplication.restoreOverrideCursor()
+class WrongAppDefinitionException(Exception):
+	pass
 
-def checkAppCanBeCreated():
-	return True
+def createApp(appdef, deployData, folder, progress):
+	checkAppCanBeCreated(appdef)
+	if deployData:
+		usesGeoServer = False
+		usesPostgis = False
+		layers = appdef["Layers"]
+		for layer in layers:
+			if layer.method != utils.METHOD_FILE:
+				if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
+					usesPostgis = True
+					usesGeoServer = True
+				elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
+					usesGeoServer = True
+		if usesPostgis:
+			importPostgis(appdef, progress)
+		if usesGeoServer:
+			publishGeoserver(appdef, progress)
+	writeOL(appdef, folder, deployData, progress)
+	files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
+	for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
+		for f in fs:
+			if f.endswith("js"):
+				files.append(os.path.join(root, f))
+	for path in files:
+		try:
+			beauty = jsbeautifier.beautify_file(path)
+			with open(path, "w") as f:
+				f.write(beauty)
+		except:
+			pass #jsbeautifier gives some random errors sometimes due to imports
+	projFile = QgsProject.instance().fileName()
+	if projFile:
+		appdefFile =  projFile + ".appdef"
+		saveAppdef(appdef, appdefFile)
+
+def checkAppCanBeCreated(appdef):
+	problems = []
+	if "Chart tool" in appdef["Widgets"]:
+		if len(appdef["Widgets"]["Chart tool"]["charts"]) == 0:
+			problems.append("Chart tool added, but no charts have been defined")
+	if "Bookmarks" in appdef["Widgets"]:
+		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
+			problems.append("Bookmarks widget added, but no bookmarks have been defined")
+	if problems:
+		raise WrongAppDefinitionException("\n\n".join(problems))
 
 def importPostgis(appdef, progress):
 	progress.setText("Importing into PostGIS (1/3)")
@@ -286,4 +292,37 @@ def loadAppdef(filename):
 	except Exception, e:
 		return None
 
+class AppDefProblemsDialog(QDialog):
 
+	def __init__(self, problems, parent=None):
+		super(AppDefProblemsDialog, self).__init__(parent)
+		self.title = "Wrong Web App Definition"
+		self.msg = "The following problems were found in your app definition:\n"
+		self.problems = problems
+		self.question = "Do you really want to delete all these elements?"
+		self.buttonBox = None
+		self.initGui()
+
+	def initGui(self):
+		self.setWindowTitle(self.title)
+		layout = QVBoxLayout()
+
+		msgLabel = QLabel(self.msg)
+		msgLabel.setWordWrap(True)
+		layout.addWidget(msgLabel)
+
+		text = QTextEdit()
+		text.setText(unicode(self.problems))
+		text.setReadOnly(True)
+		text.setLineWrapMode(QTextEdit.NoWrap)
+		layout.addWidget(text)
+
+		self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
+		layout.addWidget(self.buttonBox)
+
+		self.setLayout(layout)
+		self.buttonBox.accepted.connect(self.accept)
+
+		self.setMinimumWidth(400)
+		self.setMinimumHeight(400)
+		self.resize(500, 400)
