@@ -44,7 +44,7 @@ showAttributesTable = function() {
         var rows = this_.table.getElementsByTagName("tr");
         var layerFeatures = sourceFromLayer(this_.currentLayer).getFeatures();
         for (i = 0; i < layerFeatures.length; i++) {
-            var row = rows[i];
+            var row = rows[i + 1];
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
             if (idx !== -1){
                 row.className = "row-selected";
@@ -169,11 +169,11 @@ showAttributesTable = function() {
 
         if (selectableLayersList.indexOf(this.currentLayer) != -1){
             var rows = this.table.getElementsByTagName("tr");
-            for (i = 0; i < rows.length; i++) {
+            for (i = 1; i < rows.length; i++) {
                 (function (idx) {
                     rows[idx].addEventListener("click",
                         function () {
-                            feature = layerFeatures[idx];
+                            feature = layerFeatures[idx - 1];
                             if (this.className != "row-selected"){
                                 selectInteraction.getFeatures().push(feature);
                             }
@@ -234,10 +234,10 @@ showAttributesTable = function() {
 
 var geocodingStyle = new ol.style.Style({
   image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-    anchor: [0.5, 64],
+    anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    opacity: 1,
+    opacity: 0.75,
     src: './resources/marker.png'
   }))
 });
