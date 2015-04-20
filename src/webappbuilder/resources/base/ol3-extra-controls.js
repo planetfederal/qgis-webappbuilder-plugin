@@ -228,34 +228,39 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
 ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
     var elem;
     var name = layer.get('title');
-    var div = "<li data-layerid='" + name + "'>";
-    if (layer instanceof ol.layer.Group){
-        name = "<b>" + name + "</b>"
+    if (name){
+        var div = "<li data-layerid='" + name + "'>";
+        if (layer instanceof ol.layer.Group){
+            name = "<b>" + name + "</b>"
+        }
+        div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
+        if (!(layer instanceof ol.layer.Group)){
+            if (this.showOpacity){
+                div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
+            }
+            if (layer.get("type") != "base" && this.showZoomTo){
+                div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
+            }
+            if (layer instanceof ol.layer.Vector && this.showDownload){
+                div += "<a title='Download layer' href='#' style='padding-left:15px;'><i class='layer-download glyphicon glyphicon-download-alt'></i></a>";
+            }
+        }
+        if (layer.getLayers) {
+            var sublayersElem = '';
+            var layers = layer.getLayers().getArray(),
+                    len = layers.length;
+            for (var i = len - 1; i >= 0; i--) {
+                sublayersElem += this.buildLayerTree(layers[i]);
+            }
+            elem = div + " <ul>" + sublayersElem + "</ul></li>";
+        } else {
+            elem = div + " </li>";
+        }
     }
-    div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
-    if (!(layer instanceof ol.layer.Group)){
-        if (this.showOpacity){
-            div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
-        }
-        if (layer.get("type") != "base" && this.showZoomTo){
-            div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
-        }
-        if (layer instanceof ol.layer.Vector && this.showDownload){
-            div += "<a title='Download layer' href='#' style='padding-left:15px;'><i class='layer-download glyphicon glyphicon-download-alt'></i></a>";
-        }
-    }
-
-    if (layer.getLayers) {
-        var sublayersElem = '';
-        var layers = layer.getLayers().getArray(),
-                len = layers.length;
-        for (var i = len - 1; i >= 0; i--) {
-            sublayersElem += this.buildLayerTree(layers[i]);
-        }
-        elem = div + " <ul>" + sublayersElem + "</ul></li>";
-    } else {
-        elem = div + " </li>";
+    else{
+        elem = "";
     }
     return elem;
 }
+
 
