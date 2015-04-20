@@ -120,10 +120,10 @@ var onPointerMove = function(evt) {
     var field = popupLayers[singleLayersList.indexOf(layer)];
     if (field == NO_POPUP){
     }
-    else if (field == ALL_FIELDS){
+    else if (field == ALL_ATTRIBUTES){
       for ( var i=0; i<currentFeatureKeys.length;i++) {
           if (currentFeatureKeys[i] != 'geometry') {
-              popupField = currentFeatureKeys[i] + ': '+ currentFeature.get(currentFeatureKeys[i]);
+              popupField = "<b>" + currentFeatureKeys[i] + '</b>: '+ currentFeature.get(currentFeatureKeys[i]);
               popupText = popupText + popupField+'<br>';
           }
       }
@@ -131,7 +131,7 @@ var onPointerMove = function(evt) {
     else{
       var value = feature.get(field);
       if (value){
-        popupText = field + ': ' + value;
+        popupText = "<b>" + field + '</b>: ' + value;
       }
     }
   });
@@ -176,10 +176,10 @@ var onSingleClick = function(evt) {
     var field = popupLayers[singleLayersList.indexOf(layer)];
     if (field == NO_POPUP){
     }
-    else if (field == ALL_FIELDS){
+    else if (field == ALL_ATTRIBUTES){
       for ( var i=0; i<currentFeatureKeys.length;i++) {
           if (currentFeatureKeys[i] != 'geometry') {
-              popupField = currentFeatureKeys[i] + ': '+ currentFeature.get(currentFeatureKeys[i]);
+              popupField = "<b>" + currentFeatureKeys[i] + '</b>: '+ currentFeature.get(currentFeatureKeys[i]);
               popupText = popupText + popupField+'<br>';
           }
       }
@@ -187,7 +187,7 @@ var onSingleClick = function(evt) {
     else{
       var value = feature.get(field);
       if (value){
-        popupText = field + ': '+ value;
+        popupText = "<b>" + field + '</b>: '+ value;
       }
     }
   });
