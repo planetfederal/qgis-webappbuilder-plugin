@@ -32,25 +32,53 @@ ol.inherits(ol.control.CesiumControl, ol.control.Control);
 
 ol.control.Geolocation = function() {
 
-  var button = document.createElement('button');
+    this_ = this;
+    geolocate = function(){
+        if (this_.geolocation){
+            if (this_.geolocation.getTracking()){
+                this_.getMap().removeOverlay(this_.marker)
+                this_.geolocation.setTracking(false)
+            }
+            else{
+                this_.getMap().addOverlay(this_.marker)
+                this_.geolocation.setTracking(true)
+                view.setCenter(this_.geolocation.getPosition());
+            }
+        }
+        else{
+            var view = this_.getMap().getView();
+            this_.geolocation = new ol.Geolocation({
+                    projection: view.getProjection(),
+                    tracking: true
+            });
+            view.setCenter(this_.geolocation.getPosition());
+            this_.geolocation.on('change', function(evt) {
+                view.setCenter(this_.geolocation.getPosition());
+            });
+            this_.marker = new ol.Overlay({
+                element: /** @type {Element} */ ($('<i/>').addClass('icon-flag').get(0)),
+                positioning: 'bottom-left',
+                stopEvent: false
+            });
+            this_.getMap().addOverlay(this_.marker);
+        }
+    }
+    var button = document.createElement('button');
 
-  var geolocate = function(e){
+    button.addEventListener('click', geolocate, false);
+    button.addEventListener('touchstart', geolocate, false);
 
-  };
+    var element = document.createElement('div');
+    element.className = 'geolocation-control ol-unselectable ol-control';
+    element.appendChild(button);
 
-  button.addEventListener('click', geolocate, false);
-  button.addEventListener('touchstart', geolocate, false);
-
-  var element = document.createElement('div');
-  element.className = 'geolocation-control ol-unselectable ol-control';
-  element.appendChild(button);
-
-  ol.control.Control.call(this, {
-    element: element,
-  });
+    ol.control.Control.call(this, {
+      element: element,
+    });
 
 };
 ol.inherits(ol.control.Geolocation, ol.control.Control);
+
 
 //====================================================
 
@@ -230,37 +258,3 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
     return elem;
 }
 
-
-
-/*
-ol.control.LayerSwitcher.prototype.ensureTopVisibleBaseLayerShown_ = function() {
-    var lastVisibleBaseLyr;
-    ol.control.LayerSwitcher.forEachRecursive(this.getMap(), function(l, idx, a) {
-        if (l.get('type') === 'base' && l.getVisible()) {
-            lastVisibleBaseLyr = l;
-        }
-    });
-    if (lastVisibleBaseLyr) this.setVisible_(lastVisibleBaseLyr, true);
-};
-
-ol.control.LayerSwitcher.prototype.setVisible_ = function(lyr, visible) {
-    var map = this.getMap();
-    lyr.setVisible(visible);
-    if (visible && lyr.get('type') === 'base') {
-        // Hide all other base layers regardless of grouping
-        ol.control.LayerSwitcher.forEachRecursive(map, function(l, idx, a) {
-            if (l != lyr && l.get('type') === 'base') {
-                l.setVisible(false);
-            }
-        });
-    }
-};
-ol.control.LayerSwitcher.forEachRecursive = function(lyr, fn) {
-    lyr.getLayers().forEach(function(lyr, idx, a) {
-        fn(lyr, idx, a);
-        if (lyr.getLayers) {
-            ol.control.LayerSwitcher.forEachRecursive(lyr, fn);
-        }
-    });
-};
-*/
