@@ -60,6 +60,7 @@ ol.control.Geolocation = function() {
                 positioning: 'bottom-left',
                 stopEvent: false
             });
+            this_.marker.bindTo('position', this_.geolocation);
             this_.getMap().addOverlay(this_.marker);
         }
     }
