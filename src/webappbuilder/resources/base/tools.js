@@ -232,6 +232,19 @@ showAttributesTable = function() {
 
 //===================
 
+var geocodingStyle = new ol.style.Style({
+  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+    anchor: [0.5, 64],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    opacity: 1,
+    src: './resources/marker.png'
+  }))
+});
+var geocodingSource = new ol.source.Vector({});
+var geocodingLayer = new ol.layer.Vector({
+  source: geocodingSource
+});
 
 searchAddress = function(){
     var inp = document.getElementById("geocoding-search");
@@ -262,11 +275,20 @@ searchAddress = function(){
 
 goToAddress = function(lat1, lng1, lat2, lng2, osm_type) {
     document.getElementById('geocoding-results').style.display = 'none';
-    map.getView().setCenter(ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857'));
+    var pos = ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857')
+    map.getView().setCenter(pos);
     map.getView().setZoom(10);
+    var feat = new ol.Feature({
+      geometry: new ol.geom.Point(pos),
+    });
+    feat.setStyle(geocodingStyle);
+    geocodingSource.clear()
+    geocodingSource.addFeature(feat)
+    map.removeLayer(geocodingLayer)
+    map.addLayer(geocodingLayer)
 };
 
-searchBoxKeyPressed = function(){
+searchBoxKeyPressed = function(e){
     e = e || window.event;
     if (e.keyCode == 13){
         searchAddress();
