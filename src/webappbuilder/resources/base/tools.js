@@ -232,6 +232,7 @@ showAttributesTable = function() {
 
 //===================
 
+
 searchAddress = function(){
     var inp = document.getElementById("geocoding-search");
     if (inp.value === ""){
@@ -264,6 +265,13 @@ goToAddress = function(lat1, lng1, lat2, lng2, osm_type) {
     map.getView().setCenter(ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857'));
     map.getView().setZoom(10);
 };
+
+searchBoxKeyPressed = function(){
+    e = e || window.event;
+    if (e.keyCode == 13){
+        searchAddress();
+    }
+}
 
 
 //===========================================
