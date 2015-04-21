@@ -199,10 +199,13 @@ def writeWebApp(appdef, folder):
             f.write("var charts = " + json.dumps(params["charts"]))
     if "About panel" in widgets:
         params = widgets["About panel"]
+        closer = ('<a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>'
+                 if params["closable"] else "")
         mappanels.append('''<div class="about-panel" id="about-panel">
-                        <a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>
-                        %s</div>''' % params["HTML content"])
-        tools.append('<li><a onclick="toggleAboutPanel(true)" href="#" id="about-panel-link">About</a></li>')
+                        %s
+                        %s</div>''' % (closer, params["content"]))
+        if params["showNavBarLink"]:
+            tools.append('<li><a onclick="toggleAboutPanel(true)" href="#" id="about-panel-link">About</a></li>')
     if "Help" in widgets:
         tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
 
