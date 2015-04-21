@@ -551,7 +551,11 @@ openChart = function(c){
             values = {};
             for (i = 0; i < selectedFeatures.length; i++) {
                 if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                    cat = selectedFeatures[i].get(categoryField).toString();
+                        cat = selectedFeatures[i].get(categoryField)
+                    if (cat == null){
+                        continue;
+                    }
+                    cat = cat.toString();
                     if (!(cat in values)){
                         values[cat] = [];
                         for (j = 0; j < valueFields.length; j++) {
@@ -593,7 +597,11 @@ openChart = function(c){
             for (i = 0; i < selectedFeatures.length; i++) {
                 if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
                     selectedCount++;
-                    cat = selectedFeatures[i].get(categoryField).toString();
+                    cat = selectedFeatures[i].get(categoryField)
+                    if (cat == null){
+                        continue;
+                    }
+                    cat = cat.toString();
                     if (!(cat in values)){
                         values[cat] = 1;
                     }
