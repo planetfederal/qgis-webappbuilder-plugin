@@ -55,9 +55,9 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                         "Mouse position": {"coordinateFormat": "ol.coordinate.createStringXY(4)",
                                            "projection": "EPSG:4326", "undefinedHTML": "&nbsp;"},
                         "Layers list": {"tipLabel": "Layers",
-                                        "showOpacity": True,
-                                        "showZoomTo": True,
-                                        "showDownload": True}}
+                                        "showOpacity": False,
+                                        "showZoomTo": False,
+                                        "showDownload": False}}
 
 widgetsParams = dict(defaultWidgetsParams)
 
