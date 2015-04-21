@@ -682,6 +682,7 @@ showQueryPanel = function(){
     };
     this.selectFromQuery = function(mode) {
         if (this_.queryFilter){
+            isDuringMultipleSelection = true;
             var layer = null;
             var layerName = document.getElementById('query-layer').value;
             var lyrs = map.getLayers().getArray().slice().reverse();
@@ -727,6 +728,18 @@ showQueryPanel = function(){
                 else if (mode === IN_SELECTION){
                     selectedFeatures.remove(feature_);
                 }
+            }
+
+            if (selectedFeatures.getLength()){
+                var f = selectedFeatures.pop()
+                isDuringMultipleSelection = false;
+                selectedFeatures.push(f)
+            }
+            else{
+                selectedFeatures.push(feature_);
+                isDuringMultipleSelection = false;
+                selectedFeatures.pop()
+
             }
         }
     };
