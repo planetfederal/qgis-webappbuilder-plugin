@@ -522,7 +522,7 @@ button.ol-full-screen-true:after {
     left: 50px;
     height: 500px;
     width: 300px;
-    min-width: 100px;
+    min-width: 300px;
     z-index: 100
 }
 
