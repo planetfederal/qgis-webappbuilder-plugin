@@ -66,7 +66,7 @@ dragBoxInteraction.on('boxend', function(e) {
     var extent = dragBoxInteraction.getGeometry().getExtent();
     var selectedFeatures = selectInteraction.getFeatures();
     for (i = 0; i < selectableLayersList.length; i++) {
-        source = selectableLayersList[i].getSource()
+        source = sourceFromLayer(selectableLayersList[i])
         source.forEachFeatureIntersectingExtent(extent, function(feature) {
             toAdd.push(feature);
         });

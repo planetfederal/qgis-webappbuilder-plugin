@@ -332,7 +332,7 @@ panToBookmark = function(i){
 };
 
 goToBookmark = function(i){
-    bookmark = bookmarks[i]
+    bookmark = bookmarks[i];
     if (bookmark){
         map.getView().fitExtent(bookmark[1], map.getSize());
     }
