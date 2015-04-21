@@ -234,9 +234,11 @@ def writeWebApp(appdef, folder):
                                     </ol>''' % li
                 else:
                     indicators = ""
+                slide = "slide" if params["interval"] else ""
+                interval = str(params["interval"] * 1000) if params["interval"] else "false"
                 mappanels.append('''<div class="story-panel">
                       <div class="row">
-                          <div id="story-carousel" class="carousel" data-interval="false" data-ride="carousel">
+                          <div id="story-carousel" class="carousel %s" data-interval="%s" data-ride="carousel">
                             %s
                             <div class="carousel-inner">
                                 %s
@@ -250,7 +252,7 @@ def writeWebApp(appdef, folder):
                           </a>
                       </div>
                     </div>
-                    ''' % (indicators, bookmarkDivs))
+                    ''' % (slide, interval, indicators, bookmarkDivs))
                 bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
                                           %sToBookmark($(evt.relatedTarget).index()-1)
                                     })''' % ["go", "pan", "fly"][params["format"]]
