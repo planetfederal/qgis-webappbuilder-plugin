@@ -68,17 +68,17 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                     self.chartsList.addItem(item)
 
     def populateLayers(self):
-        skipType = [2]
         self.layers = {}
         root = QgsProject.instance().layerTreeRoot()
         for child in root.children():
             if isinstance(child, QgsLayerTreeGroup):
                 for subchild in child.children():
                     if isinstance(subchild, QgsLayerTreeLayer):
-                        if subchild.layer().type() not in skipType:
+                        if isinstance(subchild.layer(), QgsVectorLayer):
                             self.layers[subchild.layer().name()] = subchild.layer()
             elif isinstance(child, QgsLayerTreeLayer):
-                self.layers[child.layer().name()] = child.layer()
+                if isinstance(child.layer(), QgsVectorLayer):
+                    self.layers[child.layer().name()] = child.layer()
 
         self.layerCombo.addItems(self.layers.keys())
 
