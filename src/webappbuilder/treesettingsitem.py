@@ -68,4 +68,15 @@ class TreeSettingItem(QTreeWidgetItem):
             return self.text(1)
 
     def setValue(self, value):
-        pass
+        if isinstance(self._value, bool):
+            if value:
+                self.setCheckState(1, Qt.Checked)
+            else:
+                self.setCheckState(1, Qt.Unchecked)
+        elif isinstance(self._value, tuple):
+            idx = self.combo.findText(value)
+            self.combo.setCurrentIndex(idx)
+        elif "\n" in unicode(self._value):
+            self.newValue = value
+        else:
+            self.setText(1, unicode(value))
