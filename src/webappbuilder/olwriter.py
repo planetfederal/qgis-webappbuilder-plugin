@@ -252,7 +252,7 @@ def writeWebApp(appdef, folder):
                     </div>
                     ''' % (indicators, bookmarkDivs))
                 bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
-                                          %sToBookmark($(evt.relatedTarget).index()+1)
+                                          %sToBookmark($(evt.relatedTarget).index()-1)
                                     })''' % ["go", "pan", "fly"][params["format"]]
             else:
                 li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
