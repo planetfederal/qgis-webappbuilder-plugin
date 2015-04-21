@@ -113,7 +113,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
             checked = item.data(QtCore.Qt.CheckStateRole)
             if checked == QtCore.Qt.Checked:
                 valueFields.append(item.text())
-        if valueFields:
+        if valueFields or displayMode == 2:
             self._charts[name] = {"layer": layer,
                               "categoryField": categoryField,
                               "valueFields": valueFields,
