@@ -327,15 +327,18 @@ panToBookmark = function(i){
         source: view.getZoom()
     });
     map.beforeRender(pan,zoom);
-    map.getView().fitExtent(bookmarks[i][1], map.getSize());
+    goToBookmark(i);
+
 };
 
 goToBookmark = function(i){
-    map.getView().fitExtent(bookmarks[i][1], map.getSize());
-};
-
-flyToBookmark = function(i){
-    map.getView().fitExtent(bookmarks[i][1], map.getSize());
+    bookmark = bookmarks[i]
+    if (bookmark){
+        map.getView().fitExtent(bookmark[1], map.getSize());
+    }
+    else{
+        map.getView().fitExtent(originalExtent, map.getSize());
+    }
 };
 
 //===========================================

@@ -24,7 +24,8 @@ var map = new ol.Map({
   layers: layersList,
   view: view
 });
-map.getView().fitExtent(@BOUNDS@, map.getSize());
+var originalExtent = @BOUNDS@;
+map.getView().fitExtent(originalExtent, map.getSize());
 
 var selectInteraction = new ol.interaction.Select({
   layers: function(layer){

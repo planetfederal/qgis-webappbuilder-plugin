@@ -224,31 +224,35 @@ def writeWebApp(appdef, folder):
                                   </div>
                               </div>
                             </div>'''
-                bookmarkDivs = "\n".join([itemBase % ("active" if i==0 else "", b[0], b[2]) for i,b in enumerate(bookmarks)])
-                li = "\n".join(['<li data-target="#story-carousel" data-slide-to="%i"></li>' % (i+1) for i in xrange(len(bookmarks)-1)])
-                mappanels.append('''
-                <div class="story-panel">
-                  <div class="row">
-                      <div id="story-carousel" class="carousel" data-interval="false" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#story-carousel" data-slide-to="0" class="active"></li>
+                bookmarkDivs = itemBase % ("active", params["introTitle"], params["introText"])
+                bookmarkDivs += "\n".join([itemBase % ("", b[0], b[2]) for i,b in enumerate(bookmarks)])
+                if params["showIndicators"]:
+                    li = "\n".join(['<li data-target="#story-carousel" data-slide-to="%i"></li>' % (i+1) for i in xrange(len(bookmarks))])
+                    indicators = '''<ol class="carousel-indicators">
+                                        <li data-target="#story-carousel" data-slide-to="0" class="active"></li>
+                                        %s
+                                    </ol>''' % li
+                else:
+                    indicators = ""
+                mappanels.append('''<div class="story-panel">
+                      <div class="row">
+                          <div id="story-carousel" class="carousel" data-interval="false" data-ride="carousel">
                             %s
-                        </ol>
-                        <div class="carousel-inner">
-                            %s
-                        </div>
+                            <div class="carousel-inner">
+                                %s
+                            </div>
+                          </div>
+                          <a class="left carousel-control" href="#story-carousel" data-slide="prev">
+                              <span class="glyphicon glyphicon-chevron-left">&nbsp;</span>
+                          </a>
+                          <a class="right carousel-control" href="#story-carousel" data-slide="next">
+                              <span class="glyphicon glyphicon-chevron-right">&nbsp;</span>
+                          </a>
                       </div>
-                      <a class="left carousel-control" href="#story-carousel" data-slide="prev">
-                          <span class="glyphicon glyphicon-chevron-left">&nbsp;</span>
-                      </a>
-                      <a class="right carousel-control" href="#story-carousel" data-slide="next">
-                          <span class="glyphicon glyphicon-chevron-right">&nbsp;</span>
-                      </a>
-                  </div>
-                </div>
-                ''' % (li, bookmarkDivs))
+                    </div>
+                    ''' % (indicators, bookmarkDivs))
                 bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
-                                          %sToBookmark($(evt.relatedTarget).index())
+                                          %sToBookmark($(evt.relatedTarget).index()+1)
                                     })''' % ["go", "pan", "fly"][params["format"]]
             else:
                 li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])

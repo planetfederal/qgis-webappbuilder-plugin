@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
-    <height>652</height>
+    <width>587</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,20 +25,23 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Bookmarks to use (drag to reorder, select to edit description)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Available bookmarks</string>
+            <widget class="QListWidget" name="bookmarksList">
+             <property name="dragDropMode">
+              <enum>QAbstractItemView::InternalMove</enum>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="availableBookmarksList">
              <property name="selectionMode">
-              <enum>QAbstractItemView::ExtendedSelection</enum>
+              <enum>QAbstractItemView::SingleSelection</enum>
              </property>
             </widget>
            </item>
@@ -47,28 +50,22 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="addButton">
+            <widget class="QPushButton" name="addFromQgisButton">
              <property name="maximumSize">
               <size>
-               <width>50</width>
+               <width>1111111</width>
                <height>16777215</height>
               </size>
              </property>
              <property name="text">
-              <string>-&gt;</string>
+              <string>Add from QGIS bookmarks...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="addFromLayerButton">
+             <property name="text">
+              <string>Add from layer...</string>
              </property>
             </widget>
            </item>
@@ -76,12 +73,19 @@
             <widget class="QPushButton" name="removeButton">
              <property name="maximumSize">
               <size>
-               <width>50</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
              <property name="text">
-              <string>&lt;-</string>
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="removeAllButton">
+             <property name="text">
+              <string>Remove all</string>
              </property>
             </widget>
            </item>
@@ -101,32 +105,14 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Bookmarks to use (drag to reorder, select to edit description)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="bookmarksToUseList">
-             <property name="dragDropMode">
-              <enum>QAbstractItemView::InternalMove</enum>
-             </property>
-             <property name="selectionMode">
-              <enum>QAbstractItemView::SingleSelection</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <layout class="QVBoxLayout" name="verticalLayout_4"/>
          </item>
         </layout>
        </item>
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Bookmark text</string>
+          <string>Bookmark description text</string>
          </property>
         </widget>
        </item>
@@ -139,91 +125,133 @@
       <attribute name="title">
        <string>Configuration</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QCheckBox" name="showAsStoryPanelCheck">
-         <property name="text">
+        <widget class="QGroupBox" name="storyPanelGroup">
+         <property name="title">
           <string>Show as story panel</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Animation type:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="animationTypeCombo">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Go to</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Pan to</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="moveAutomaticallyCheck">
+              <property name="text">
+               <string>Move automatically each</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="transitionTimeBox">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>seconds</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="showIndicatorsCheck">
+            <property name="text">
+             <string>Show indicators</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Intro title</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="introTitleBox"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Intro description</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="introDescriptionBox"/>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Animation type:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="animationTypeCombo">
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>0</height>
-            </size>
-           </property>
-           <item>
-            <property name="text">
-             <string>Go to</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pan to</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Fly to</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>330</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
