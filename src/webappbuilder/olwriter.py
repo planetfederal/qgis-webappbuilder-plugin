@@ -200,7 +200,7 @@ def writeWebApp(appdef, folder):
     if "About panel" in widgets:
         params = widgets["About panel"]
         closer = ('<a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>'
-                 if params["closable"] else "")
+                 if params["isClosable"] else "")
         mappanels.append('''<div class="about-panel" id="about-panel">
                         %s
                         %s</div>''' % (closer, params["content"]))
