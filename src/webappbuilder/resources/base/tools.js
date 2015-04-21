@@ -111,10 +111,13 @@ showAttributesTable = function() {
         clear.onclick = function(){
             var rows = this_.table.getElementsByTagName("tr");
             var sel = this_.selectedRowIndices.slice();
-            for (var i = 0; i < sel.length; i++) {
-                feature = sourceFromLayer(this_.currentLayer).getFeatures()[sel[i]];
-                selectInteraction.getFeatures().remove(feature);
+            features = sourceFromLayer(this_.currentLayer).getFeatures()
+            isDuringMultipleSelection = true;
+            for (var i = 0; i < sel.length - 1; i++) {
+                selectInteraction.getFeatures().remove(features[sel[i]]);
             }
+            isDuringMultipleSelection = false;
+            selectInteraction.getFeatures().remove(features[sel[sel.length - 1]]);
         };
         this.formContainer.appendChild(clear);
 
