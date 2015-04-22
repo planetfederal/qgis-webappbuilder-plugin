@@ -37,7 +37,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
         shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "base"), dst)
     layers = appdef["Layers"]
     if writeLayersData:
-        exportLayers(layers, folder, progress)
+        exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
     exportStyles(layers, folder, appdef["Settings"])
     writeLayersAndGroups(appdef, folder)
     popupLayers = "popupLayers = [%s];" % ",".join(['%s' % str(layer.popup)

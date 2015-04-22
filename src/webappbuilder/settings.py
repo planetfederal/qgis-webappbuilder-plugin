@@ -98,6 +98,7 @@ highlightedFeaturesStyle = '''new ol.style.Style({
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
+                "Precision for GeoJSON export": 2,
                 "Restrict to extent": False,
                 "Max zoom level": 28,
                 "Min zoom level": 1,
