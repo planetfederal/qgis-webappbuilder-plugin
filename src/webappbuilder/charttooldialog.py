@@ -59,6 +59,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
 
     def populateList(self):
         self.chartsList.clear()
+        toDelete = []
         for chartName, chart in self._charts.iteritems():
             if chart["layer"] in self.layers:
                 fields = [f.name() for f in self.layers[chart["layer"]].pendingFields()]
@@ -66,6 +67,14 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                     item = QtGui.QListWidgetItem()
                     item.setText(chartName)
                     self.chartsList.addItem(item)
+                else:
+                    toDelete.append(chartName)
+            else:
+                toDelete.append(chartName)
+        for d in toDelete:
+            del self._charts[d]
+
+
 
     def populateLayers(self):
         self.layers = {}
