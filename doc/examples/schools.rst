@@ -103,10 +103,10 @@ Let's configure the about panel now. Right click on it and select *Configure...*
 
 The only parameter we want to edit is the content of the panel. Click on the *Edit* link to open the following text editor.
 
-.. image:: img/charttool2.png
+.. image:: img/aboutpanel2.png
 	:align: center
 
-The content of the panel is defined using plain HTML. Enter the following in the teext editor, then close it clicking on OK, and close also the about panel parameters dialog.
+The content of the panel is defined using plain HTML. Enter the following in the text editor, then close it clicking on OK, and close also the about panel parameters dialog.
 
 ::
 
@@ -179,36 +179,42 @@ Now click on *New selection*.
 
 The Paris schools will be highlighted. Unlike the unselected schools in the schools layer, selected ones are not clustered.
 
-Now you can open the chart tool and you will see something like this.
-
 .. image:: img/paris.png
 	:align: center
 
-To see the attributes associated to each school (and to understand the attribute names we are using in these query expressions), you can open the attributes table in the web app.
+Now you can open the chart tool and you will see something like this.
+
+.. image:: img/paris2.png
+	:align: center
+
+To see the attributes associated to each school (and to understand the attribute names we are using in these query expressions), you can close the chart panel and open the attributes table in the web app.
+
+.. image:: img/attributes.png
+	:align: center
 
 Here is a more complex example. Let's select all public schools in the Île-deFrance region, which includes Paris. The department numbers in the region are 75,77,78,91,92,93,94 and 95.
 
-Use the following expression in the query tool:
+Enter the following expression in the query tool and click on *New selection*:
 
 ::
 
 	floor(POSTCODE/1000) in  (75,77,78, 91,92,93,94,95) and PUBLIC == "PU"
 
-This is what the result will look like:
+Open the chart tool and you will see something like this:
 
 .. image:: img/ilefrance.png
 	:align: center
 
 You can also shown the location of schools with a given name, using a little trick. The selected features are in a separate layer, which is not shown in the layers list. That means that, if you turn off visibility for the schools layers, the layer with selected elements will still be in the map.
 
-Enter this in the query box and click on *New selection*. 
+For instance, enter this in the query box and click on *New selection*. 
 
 ::
 
 	NAME == "JULES FERRY"
 
-In the layers list, uncheck the schools layer. You should see something like this:
+In the layers list, uncheck the schools layer. You should now see something like this:
 
-... image:: img/julesferry.png
+.. image:: img/julesferry.png
 	:align: center
 
