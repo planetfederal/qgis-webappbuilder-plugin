@@ -19,6 +19,7 @@ toggleAboutPanel = function(show){
     }
 }
 
+
 //=======================================================
 
 saveAsPng = function(){
@@ -31,9 +32,12 @@ saveAsPng = function(){
 };
 
 //=======================================================
+showAttributesTable = function(){
+    $("html").css("cursor", "progress");
+    window.setTimeout(showAttributesTable_, 10);
+}
 
-showAttributesTable = function() {
-
+showAttributesTable_ = function() {
     panels = document.getElementsByClassName('table-panel');
     if (panels.length != 0){
         this.panel.style.display = 'block';
@@ -130,7 +134,6 @@ showAttributesTable = function() {
         onlySelected.appendChild(document.createTextNode(" Show only selected features"));
         this.formContainer.appendChild(onlySelected);
     }
-
 
     this.renderTable = function() {
         try{
@@ -240,6 +243,8 @@ showAttributesTable = function() {
         closer.blur();
         return false;
     };
+
+    $("html").css("cursor", "default");
 
 };
 
@@ -516,6 +521,7 @@ openChart = function(c){
             return;
         }
 
+        $('body').addClass('waiting');
         var layerName = charts[c].layer;
         var categoryField = charts[c].categoryField;
         var valueFields = charts[c].valueFields;
@@ -554,7 +560,7 @@ openChart = function(c){
             values = {};
             for (i = 0; i < selectedFeatures.length; i++) {
                 if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                        cat = selectedFeatures[i].get(categoryField)
+                    cat = selectedFeatures[i].get(categoryField);
                     if (cat == null){
                         continue;
                     }
@@ -615,9 +621,10 @@ openChart = function(c){
             }
 
             var sorted = [];
-            for (var key in values)
-                sorted.push([key, values[key]])
-            sorted.sort(function(a, b) {return b[1] - a[1]})
+            for (var key in values){
+                sorted.push([key, values[key]]);
+            }
+            sorted.sort(function(a, b) {return b[1] - a[1]});
 
             for (i = 0; i < sorted.length; i++) {
                 columns[0].push(sorted[i][0]);
@@ -645,6 +652,7 @@ openChart = function(c){
                 }
             }
         });
+        $('body').addClass('waiting');
     };
 
     this.drawFromSelection();
@@ -750,12 +758,12 @@ showQueryPanel = function(){
             if (selectedFeatures.getLength()){
                 var f = selectedFeatures.pop()
                 isDuringMultipleSelection = false;
-                selectedFeatures.push(f)
+                selectedFeatures.push(f);
             }
             else{
                 selectedFeatures.push(feature_);
                 isDuringMultipleSelection = false;
-                selectedFeatures.pop()
+                selectedFeatures.pop();
 
             }
         }
