@@ -613,9 +613,15 @@ openChart = function(c){
                     }
                 }
             }
-            for (var key in values){
-                columns[0].push(key);
-                columns[1].push(values[key]);
+
+            var sorted = [];
+            for (var key in values)
+                sortable.push([key, values[key]])
+            sortable.sort(function(a, b) {return a[1] - b[1]})
+
+            for (i = 0; i < sorted.length; i++) {
+                columns[0].push(sorted[i][0]);
+                columns[1].push(sorted[i][1]);
             }
         }
         var info = document.getElementById('chart-panel-info');
