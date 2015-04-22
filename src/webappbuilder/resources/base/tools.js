@@ -616,8 +616,8 @@ openChart = function(c){
 
             var sorted = [];
             for (var key in values)
-                sortable.push([key, values[key]])
-            sortable.sort(function(a, b) {return a[1] - b[1]})
+                sorted.push([key, values[key]])
+            sorted.sort(function(a, b) {return b[1] - a[1]})
 
             for (i = 0; i < sorted.length; i++) {
                 columns[0].push(sorted[i][0]);
