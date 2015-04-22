@@ -666,14 +666,11 @@ showQueryPanel = function(){
 
     var select = document.getElementById('query-layer');
     if (select.options.length === 0){
-        var lyrs = map.getLayers().getArray().slice().reverse();
-        for (var i = 0, l; i < lyrs.length; i++) {
-            l = lyrs[i];
-            if (l.get('title') && l instanceof ol.layer.Vector) {
-                var option = document.createElement('option');
-                option.value = option.textContent = l.get('title');
-                select.appendChild(option);
-            }
+        for (var i = 0, l; i < selectableLayersList.length; i++) {
+            l = selectableLayersList[i];
+            var option = document.createElement('option');
+            option.value = option.textContent = l.get('title');
+            select.appendChild(option);
         }
     }
 
