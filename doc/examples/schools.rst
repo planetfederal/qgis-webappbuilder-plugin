@@ -32,7 +32,7 @@ Defining the web app
 Start the Web App Builder by selecting the *Plugins/Boundless/Web App Builder* menu.
 
 
-.. image:: img/webappbuilder.png
+.. image:: img/descriptiontab.png
 	:align: center
 
 We have several tabs, each one used to define a particular set of parameters. We will go through all of them and describe their meaning.
