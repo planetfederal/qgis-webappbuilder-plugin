@@ -243,6 +243,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populateLayers(self):
         skipType = [2]
+        visibleLayers = iface.mapCanvas().layers()
         root = QgsProject.instance().layerTreeRoot()
         for child in root.children():
             if isinstance(child, QgsLayerTreeGroup):
@@ -256,6 +257,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 layer = child.layer()
                 if layer.type() not in skipType:
                     item = TreeLayerItem(layer, self.layersTree)
+                    item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
                     self.layersTree.addTopLevelItem(item)
 
         self.layersTree.expandAll()
@@ -461,6 +463,7 @@ class MainDialog(QDialog, Ui_MainDialog):
 class TreeGroupItem(QTreeWidgetItem):
 
     def __init__(self, name, layers, layersTree):
+        visibleLayers = iface.mapCanvas().layers()
         QTreeWidgetItem.__init__(self)
         skipType = [2]
         self.layers = layers
@@ -470,6 +473,7 @@ class TreeGroupItem(QTreeWidgetItem):
         for layer in layers:
             if layer.type() not in skipType:
                 item = TreeLayerItem(layer, layersTree)
+                item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
                 self.addChild(item)
 
 class TreeLayerItem(QTreeWidgetItem):
