@@ -110,7 +110,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
     with open(indexJsFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
 
-    writeWebApp(appdef, folder)
+    indexFilepath = writeWebApp(appdef, folder)
+    return indexFilepath
 
 def writeWebApp(appdef, folder):
     layers = appdef["Layers"]
