@@ -153,8 +153,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 button.click()
         baseLayers = appdef["Base layers"]
         for button, name in self.baseLayers.iteritems():
-            if name in baseLayers:
-                button.setChecked(True)
+            button.setChecked(name in baseLayers)
         settings.currentCss = appdef["Settings"]["Theme"]["Css"]
         items = []
         for i in xrange(self.layersTree.topLevelItemCount()):
