@@ -271,9 +271,9 @@ def writeWebApp(appdef, folder):
                 f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
                 f.write(bookmarkEvents)
 
-    imports.extend(['<script src="layers/%s.js"></script>' % (safeName(layer.layer.name()))
+    imports.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-    imports.extend(['<script src="styles/%s_style.js"></script>' % (safeName(layer.layer.name()))
+    imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
 
     if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
@@ -578,7 +578,7 @@ def exportStyles(layers, folder, settings):
                                 }
                             }
                             ''' % {"v": varName}
-            size = layer.customProperty("labeling/fontSize")
+            size = str(float(layer.customProperty("labeling/fontSize")) * 2)
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
@@ -638,7 +638,7 @@ def exportStyles(layers, folder, settings):
             print e
             style = "{}"
 
-        path = os.path.join(stylesFolder, safeName(layer.name()) + "_style.js")
+        path = os.path.join(stylesFolder, safeName(layer.name()) + ".js")
 
         with codecs.open(path, "w","utf-8") as f:
             f.write('''%(defs)s

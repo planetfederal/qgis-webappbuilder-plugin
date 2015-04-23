@@ -59,7 +59,7 @@ def exportLayers(layers, folder, progress, precision):
         if appLayer.method == METHOD_FILE:
             layer = appLayer.layer
             if layer.type() == layer.VectorLayer:
-                path = os.path.join(layersFolder, safeName(layer.name()) + ".js")
+                path = os.path.join(layersFolder, "lyr_%s.js" % safeName(layer.name()))
                 QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", epsg3587, 'GeoJson')
                 with open(path) as f:
                     lines = f.readlines()
@@ -71,6 +71,8 @@ def exportLayers(layers, folder, progress, precision):
                         line = removeSpaces(line)
                         if layer.geometryType() == QGis.Point:
                             line = line.replace("MultiPoint", "Point")
+                            line = line.replace("[ [", "[")
+                            line = line.replace("] ]", "]")
                             line = line.replace("[[", "[")
                             line = line.replace("]]", "]")
                         f.write(line)
