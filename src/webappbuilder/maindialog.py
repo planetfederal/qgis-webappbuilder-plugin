@@ -265,6 +265,11 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.layersTree.resizeColumnToContents(0)
         self.layersTree.resizeColumnToContents(1)
 
+        def toggleLayerItemChildren(item, _):
+            if isinstance(item, TreeLayerItem):
+                item.toggleChildren()
+        self.layersTree.itemChanged.connect(toggleLayerItemChildren)
+
     def populateConfigParams(self):
         self.settingsItems = defaultdict(dict)
         item = QTreeWidgetItem()
@@ -491,6 +496,7 @@ class TreeLayerItem(QTreeWidgetItem):
                  }
                 '''
     def __init__(self, layer, tree):
+        self.combos = []
         QTreeWidgetItem.__init__(self)
         self.layer = layer
         self.setText(0, layer.name())
@@ -569,6 +575,22 @@ class TreeLayerItem(QTreeWidgetItem):
             self.clusterDistanceItem.setDisabled(disable)
         except:
             pass
+
+    def toggleChildren(self):
+        disabled = self.checkState(0) == Qt.Unchecked
+        for i in xrange(self.childCount()):
+            subitem = self.child(i)
+            subitem.setDisabled(disabled)
+        try:
+            self.connTypeCombo.setDisabled(disabled)
+        except:
+            pass
+        try:
+            self.popupCombo.setDisabled(disabled)
+        except:
+            pass
+        if not disabled:
+            self.connTypeChanged()
 
     @property
     def popup(self):
