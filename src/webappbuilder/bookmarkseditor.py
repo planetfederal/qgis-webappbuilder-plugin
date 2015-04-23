@@ -13,7 +13,22 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.addFromQgisButton.clicked.connect(self.addFromQgis)
-        self.addFromLayerButton.clicked.connect(self.addFromLayer)
+
+        self.layers = {}
+        root = QgsProject.instance().layerTreeRoot()
+        for child in root.children():
+            if isinstance(child, QgsLayerTreeGroup):
+                for subchild in child.children():
+                    if isinstance(subchild, QgsLayerTreeLayer):
+                        if isinstance(subchild.layer(), QgsVectorLayer):
+                            self.layers[subchild.layer().name()] = subchild.layer()
+            elif isinstance(child, QgsLayerTreeLayer):
+                if isinstance(child.layer(), QgsVectorLayer):
+                    self.layers[child.layer().name()] = child.layer()
+        if self.layers:
+            self.addFromLayerButton.clicked.connect(self.addFromLayer)
+        else:
+            self.addFromLayerButton.setEnabled(False)
         self.removeButton.clicked.connect(self.removeBookmark)
         self.removeAllButton.clicked.connect(self.removeAllBookmarks)
         self.bookmarksList.currentItemChanged.connect(self.selectionChanged)
@@ -36,7 +51,7 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         self.showIndicatorsCheck.setChecked(showIndicators)
 
     def addFromLayer(self):
-        dlg = BookmarksFromLayerDialog(self)
+        dlg = BookmarksFromLayerDialog(self.layers, self)
         dlg.exec_()
         if dlg.bookmarks:
             for b in dlg.bookmarks:
@@ -82,6 +97,7 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         for bookmark in self.bookmarks:
             item = BookmarkItem(bookmark[0], bookmark[1], bookmark[2])
             self.bookmarksList.addItem(item)
+        self.bookmarks = []
 
     def removeAllBookmarks(self):
         self.bookmarksList.clear()
@@ -174,24 +190,12 @@ class BookmarkSelectorDialog(QtGui.QDialog):
 
 class BookmarksFromLayerDialog(QtGui.QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, layers, parent=None):
         super(BookmarksFromLayerDialog, self).__init__(parent)
         self.bookmarks = []
         self.setWindowTitle("Bookmarks from layer")
         layout = QtGui.QVBoxLayout()
-
-        self.layers = {}
-        root = QgsProject.instance().layerTreeRoot()
-        for child in root.children():
-            if isinstance(child, QgsLayerTreeGroup):
-                for subchild in child.children():
-                    if isinstance(subchild, QgsLayerTreeLayer):
-                        if isinstance(subchild.layer(), QgsVectorLayer):
-                            self.layers[subchild.layer().name()] = subchild.layer()
-            elif isinstance(child, QgsLayerTreeLayer):
-                if isinstance(child.layer(), QgsVectorLayer):
-                    self.layers[child.layer().name()] = child.layer()
-
+        self.layers = layers
         label = QtGui.QLabel()
         label.setText("Layer")
         layout.addWidget(label)
