@@ -642,7 +642,10 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterDistanceItem.setText(1, "40")
             except AttributeError:
                 pass # raster layers wont have this clusterItem
-        self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
+        try:
+            self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
+        except:
+            pass
         self.visibleItem.setCheckState(0, Qt.Checked if visible else Qt.Unchecked)
         try:
             self.connTypeCombo.setCurrentIndex(method)
