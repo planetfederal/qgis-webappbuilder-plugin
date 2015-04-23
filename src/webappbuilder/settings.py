@@ -100,7 +100,7 @@ defaultAppSettings = {
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
                 "Precision for GeoJSON export": 2,
                 "Restrict to extent": False,
-                "Max zoom level": 28,
+                "Max zoom level": 35,
                 "Min zoom level": 1,
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
