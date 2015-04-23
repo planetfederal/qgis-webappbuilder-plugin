@@ -191,12 +191,13 @@ class MainDialog(QDialog, Ui_MainDialog):
                                         settings.widgetsParams[widgetName]["introText"],
                                         settings.widgetsParams[widgetName]["showIndicators"])
             dlg.exec_()
-            settings.widgetsParams[widgetName]["bookmarks"] = dlg.bookmarks
-            settings.widgetsParams[widgetName]["format"] = dlg.format
-            settings.widgetsParams[widgetName]["interval"] = dlg.interval
-            settings.widgetsParams[widgetName]["introTitle"] = dlg.introTitle
-            settings.widgetsParams[widgetName]["introText"] = dlg.introText
-            settings.widgetsParams[widgetName]["showIndicators"] = dlg.showIndicators
+            if dlg.bookmarks:
+                settings.widgetsParams[widgetName]["bookmarks"] = dlg.bookmarks
+                settings.widgetsParams[widgetName]["format"] = dlg.format
+                settings.widgetsParams[widgetName]["interval"] = dlg.interval
+                settings.widgetsParams[widgetName]["introTitle"] = dlg.introTitle
+                settings.widgetsParams[widgetName]["introText"] = dlg.introText
+                settings.widgetsParams[widgetName]["showIndicators"] = dlg.showIndicators
 
         elif widgetName == "Chart tool":
             dlg = ChartToolDialog(settings.widgetsParams[widgetName]["charts"], self)
