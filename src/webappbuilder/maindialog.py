@@ -444,10 +444,14 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.appLayer())
             else:
+                groupLayers = []
                 for j in xrange(item.childCount()):
                     subitem = item.child(j)
-                    layers.append(subitem.appLayer())
-                groups[item.name] = item.layers[::-1]
+                    if subitem.checkState(0) == Qt.Checked:
+                        layers.append(subitem.appLayer())
+                        groupLayers.append(subitem.layer)
+                if groupLayers:
+                    groups[item.name] = groupLayers[::-1]
 
         return layers[::-1], groups
 
