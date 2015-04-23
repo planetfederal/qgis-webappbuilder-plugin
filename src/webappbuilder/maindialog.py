@@ -614,8 +614,11 @@ class TreeLayerItem(QTreeWidgetItem):
             self.clusterItem.setCheckState(0, Qt.Checked)
             self.clusterDistanceItem.setText(1, str(clusterDistance))
         else:
-            self.clusterItem.setCheckState(0, Qt.Unchecked)
-            self.clusterDistanceItem.setText(1, "40")
+            try:
+                self.clusterItem.setCheckState(0, Qt.Unchecked)
+                self.clusterDistanceItem.setText(1, "40")
+            except AttributeError:
+                pass # raster layers wont have this clusterItem
         self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
         self.visibleItem.setCheckState(0, Qt.Checked if visible else Qt.Unchecked)
         try:
