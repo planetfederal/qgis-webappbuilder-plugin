@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Mon Apr 20 15:29:39 2015
+# Created: Thu Apr 23 11:22:01 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -244,19 +244,6 @@ class Ui_MainDialog(object):
         self.gridLayout_4.addWidget(self.stamenWatercolorButton, 2, 1, 1, 1)
         spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem3, 3, 0, 1, 1)
-        self.horizontalLayout_8 = QtGui.QHBoxLayout()
-        self.horizontalLayout_8.setObjectName(_fromUtf8("horizontalLayout_8"))
-        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_8.addItem(spacerItem4)
-        self.verticalLayout_10 = QtGui.QVBoxLayout()
-        self.verticalLayout_10.setObjectName(_fromUtf8("verticalLayout_10"))
-        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_10.addItem(spacerItem5)
-        self.buttonCustomBaseLayers = QtGui.QPushButton(self.baseLayerTab)
-        self.buttonCustomBaseLayers.setObjectName(_fromUtf8("buttonCustomBaseLayers"))
-        self.verticalLayout_10.addWidget(self.buttonCustomBaseLayers)
-        self.horizontalLayout_8.addLayout(self.verticalLayout_10)
-        self.gridLayout_4.addLayout(self.horizontalLayout_8, 3, 1, 1, 1)
         self.tabPanel.addTab(self.baseLayerTab, _fromUtf8(""))
         self.layersTab = QtGui.QWidget()
         self.layersTab.setObjectName(_fromUtf8("layersTab"))
@@ -741,8 +728,8 @@ class Ui_MainDialog(object):
         self.linksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.linksButton.setObjectName(_fromUtf8("linksButton"))
         self.gridLayout_3.addWidget(self.linksButton, 7, 0, 1, 1)
-        spacerItem6 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem6, 8, 0, 1, 1)
+        spacerItem4 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem4, 8, 0, 1, 1)
         self.bookmarksButton = QtGui.QToolButton(self.widgetsTab)
         self.bookmarksButton.setMinimumSize(QtCore.QSize(134, 100))
         self.bookmarksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -899,8 +886,8 @@ class Ui_MainDialog(object):
         self.gridLayout.addWidget(self.label_5, 3, 0, 1, 1)
         self.horizontalLayout.addLayout(self.gridLayout)
         self.verticalLayout_8.addWidget(self.geoserverGroupBox)
-        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_8.addItem(spacerItem7)
+        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem5)
         self.checkBoxDeployData = QtGui.QCheckBox(self.suiteTab)
         self.checkBoxDeployData.setObjectName(_fromUtf8("checkBoxDeployData"))
         self.verticalLayout_8.addWidget(self.checkBoxDeployData)
@@ -908,8 +895,8 @@ class Ui_MainDialog(object):
         self.label_9.setStyleSheet(_fromUtf8("color: rgb(163, 163, 163);"))
         self.label_9.setObjectName(_fromUtf8("label_9"))
         self.verticalLayout_8.addWidget(self.label_9)
-        spacerItem8 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_8.addItem(spacerItem8)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_8.addItem(spacerItem6)
         self.tabPanel.addTab(self.suiteTab, _fromUtf8(""))
         self.settingsTab = QtGui.QWidget()
         self.settingsTab.setObjectName(_fromUtf8("settingsTab"))
@@ -943,8 +930,8 @@ class Ui_MainDialog(object):
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.horizontalLayout_2.addWidget(self.progressBar)
-        spacerItem9 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem9)
+        spacerItem7 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem7)
         self.buttonCreateApp = QtGui.QPushButton(self.widget)
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
@@ -977,7 +964,6 @@ class Ui_MainDialog(object):
         self.osmButton.setText(_translate("MainDialog", "OSM", None))
         self.stamenTonerButton.setText(_translate("MainDialog", "Stamen Toner", None))
         self.stamenWatercolorButton.setText(_translate("MainDialog", "Stamen Watercolor", None))
-        self.buttonCustomBaseLayers.setText(_translate("MainDialog", "Custom base layers...", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.baseLayerTab), _translate("MainDialog", "Base Layers", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.layersTab), _translate("MainDialog", "Layers", None))

@@ -56,7 +56,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonConfigureTheme.clicked.connect(self.configureTheme)
         self.buttonPreview.clicked.connect(self.updatePreview)
-        self.buttonCustomBaseLayers.clicked.connect(self.customBaseLayers)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.currentBaseLayerItem = self.mapQuestAerialButton
@@ -129,8 +128,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         img = QFileDialog.getOpenFileName(self, "Select image file")
         if img:
             self.logoBox.setText(img)
-    def customBaseLayers(self):
-        pass
 
     def configureTheme(self):
         dlg = ThemeEditorDialog()
