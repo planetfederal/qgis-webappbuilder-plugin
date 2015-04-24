@@ -98,6 +98,7 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.showOpacity = options.showOpacity === true;
     this.showDownload = options.showDownload === true;
     this.showZoomTo = options.showZoomTo === true;
+    this.allowReordering = options.allowReordering === true;
 
     this.firstTime = true;
 
@@ -167,6 +168,15 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
     for (var i = len -1; i >=0; i--){
         list.append(this.buildLayerTree(layers[i]))
     }
+    function indexOf(layers, layer) {
+        var length = layers.getLength();
+        for (var i = 0; i < length; i++) {
+            if (layer === layers.item(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
     var findBy = function(layer, value) {
         name = layer.get('title')
         if (name === value) {
@@ -202,13 +212,41 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         $('.layer-download').on('click', function() {
             var layername = $(this).closest('li').data('layerid');
             var layer = findBy(map.getLayerGroup(), layername);
-            var geojson  = new ol.format.GeoJSON;
+            var geojson = new ol.format.GeoJSON;
             var features = layer.getSource().getFeatures();
             var json = geojson.writeFeatures(features);
             var dl = document.createElement('a');
             dl.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(content));
             dl.setAttribute('download', layername + '.geojson');
             dl.click();
+        });
+    }
+    if (this.allowReordering){
+        $('.layer-move-up').on('click', function() {
+            var li = $(this).closest('li');
+            var layername = li.data('layerid');
+            var layer = findBy(map.getLayerGroup(), layername);
+            var layers = map.getLayers();
+            var index = indexOf(layers, layer);
+            if (index < layers.getLength() - 1) {
+                var next = layers.item(index + 1);
+                layers.setAt(index + 1, layer);
+                layers.setAt(index, next);
+                li.prev().before(li);
+            }
+        });
+        $('.layer-move-down').on('click', function() {
+            var li = $(this).closest('li');
+            var layername = li.data('layerid');
+            var layer = findBy(map.getLayerGroup(), layername);
+            var layers = map.getLayers();
+            var index = indexOf(layers, layer);
+            if (index > 1) {
+                var prev = layers.item(index - 1);
+                layers.setAt(index - 1, layer);
+                layers.setAt(index, prev);
+                li.next().after(li);
+            }
         });
     }
     $('.layer-check').on('click', function() {
@@ -237,6 +275,10 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
         if (!(layer instanceof ol.layer.Group)){
             if (this.showOpacity){
                 div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
+            }
+            if (layer.get("type") != "base" && this.allowReordering){
+                div += "<a title='Move up' href='#' style='padding-left:15px;' href='#'><i class='layer-move-up glyphicon glyphicon-triangle-top'></i></a>";
+                div += "<a title='Move dowm' href='#' style='padding-left:15px;' href='#'><i class='layer-move-down glyphicon glyphicon-triangle-bottom'></i></a>";
             }
             if (layer.get("type") != "base" && this.showZoomTo){
                 div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
