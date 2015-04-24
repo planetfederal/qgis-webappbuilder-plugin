@@ -58,8 +58,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
-        self.currentBaseLayerItem = self.mapQuestAerialButton
-        self.mapQuestAerialButton.setChecked(True)
         self.baseLayers = {self.mapQuestButton: "MapQuest roads",
                             self.mapQuestAerialButton: "MapQuest aerial",
                             self.mapQuestLabelsButton: "MapQuest labels",
