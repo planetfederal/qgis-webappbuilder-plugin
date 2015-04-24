@@ -257,6 +257,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if layer.type() not in skipType:
                     item = TreeLayerItem(layer, self.layersTree)
                     item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
+                    item.toggleChildren()
                     self.layersTree.addTopLevelItem(item)
 
         self.layersTree.expandAll()
@@ -473,6 +474,7 @@ class TreeGroupItem(QTreeWidgetItem):
             if layer.type() not in skipType:
                 item = TreeLayerItem(layer, layersTree)
                 item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
+                item.toggleChildren()
                 self.addChild(item)
 
 class TreeLayerItem(QTreeWidgetItem):
