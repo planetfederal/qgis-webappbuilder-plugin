@@ -356,7 +356,7 @@ def writeLayersAndGroups(appdef, folder):
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()), str(layer.visible).lower()) for layer in layers])
 
-    groupList = ["baseLayer"]
+    groupList = ["baseLayer"] if baseLayers else []
     usedGroups = []
     noGroupList = []
     for appLayer in layers:
