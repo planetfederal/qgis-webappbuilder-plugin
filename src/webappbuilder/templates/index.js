@@ -32,8 +32,7 @@ var selectInteraction = new ol.interaction.Select({
     return selectableLayersList.indexOf(layer) != -1;
   },
   style: @SELECTIONSTYLE@,
-  addCondition: ol.events.condition.platformModifierKeyOnly,
-  removeCondition: ol.events.condition.platformModifierKeyOnly
+  toggleCondition: ol.events.condition.shiftKeyOnly,
 });
 map.addInteraction(selectInteraction);
 
@@ -51,42 +50,8 @@ selectedFeatures.clear = function(){
     }
 }
 
-var dragBoxInteraction = new ol.interaction.DragBox({
-    condition: @DRAGBOXCONDITION@,
-    style: new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: [0, 0, 255, 1]
-        })
-    })
-});
-map.addInteraction(dragBoxInteraction);
 
-dragBoxInteraction.on('boxend', function(e) {
-    var toAdd = [];
-    var extent = dragBoxInteraction.getGeometry().getExtent();
-    var selectedFeatures = selectInteraction.getFeatures();
-    for (i = 0; i < selectableLayersList.length; i++) {
-        source = sourceFromLayer(selectableLayersList[i])
-        source.forEachFeatureIntersectingExtent(extent, function(feature) {
-            toAdd.push(feature);
-        });
-    }
-    if (toAdd.length !== 0){
-        isDuringMultipleSelection = true;
-        selectedFeatures.extend(toAdd.slice(0, -1));
-        isDuringMultipleSelection = false;
-        selectedFeatures.push(toAdd[toAdd.length - 1]);
-    }
-
-});
-
-dragBoxInteraction.on('boxstart', function(e) {
-    var selectedFeatures = selectInteraction.getFeatures();
-    isDuringMultipleSelection = true;
-    selectedFeatures.clear();
-    isDuringMultipleSelection = false;
-});
-
+var currentInteraction;
 
 @CESIUM@
 

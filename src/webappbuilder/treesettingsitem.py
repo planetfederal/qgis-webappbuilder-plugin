@@ -41,6 +41,8 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value[1]:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
+            idx = self.combo.findText(value[0])
+            self.combo.setCurrentIndex(idx)
         elif "\n" in unicode(value):
             self.label = QLabel()
             self.label.setText("<a href='#'>Edit</a>")
@@ -54,6 +56,7 @@ class TreeSettingItem(QTreeWidgetItem):
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(value))
+
 
     def value(self):
         if isinstance(self._value, bool):

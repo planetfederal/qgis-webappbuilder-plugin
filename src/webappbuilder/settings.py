@@ -61,7 +61,13 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                         "Layers list": {"tipLabel": "Layers",
                                         "showOpacity": False,
                                         "showZoomTo": False,
-                                        "showDownload": False}}
+                                        "showDownload": False},
+                        "Selection tools": {"Select single feature": True,
+                                            "Select by rectangle": True,
+                                            "Select by polygon": True,
+                                            "Select by point and radius": True,
+                                            }
+                        }
 
 widgetsParams = dict(defaultWidgetsParams)
 
@@ -104,7 +110,6 @@ defaultAppSettings = {
                 "Min zoom level": 1,
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
-                "Select by rectangle": ("Not enabled", ("Not enabled", "Using Alt key", "Using Shift key", "Without using additional key")),
                 "Style for selected features": selectedFeaturesStyle,
                 "Style for highlighted features": highlightedFeaturesStyle}
 

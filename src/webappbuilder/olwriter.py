@@ -48,7 +48,6 @@ def writeOL(appdef, folder, writeLayersData, progress):
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]))
-
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
     if "Overview map" in widgets:
@@ -93,7 +92,6 @@ def writeOL(appdef, folder, writeLayersData, progress):
     highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
     highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
     selectedFeaturesStyle = appdef["Settings"]["Style for selected features"]
-    dragBoxCondition = dragBoxConditions[appdef["Settings"]["Select by rectangle"]]
     view = "%s, maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
@@ -102,7 +100,6 @@ def writeOL(appdef, folder, writeLayersData, progress):
                 "@ONHOVER@": onHover,
                 "@DOHIGHLIGHT@": highlight,
                 "@CESIUM@": cesium,
-                "@DRAGBOXCONDITION@": dragBoxCondition,
                 "@HIGHLIGHTSTYLE@": highlightedFeaturesStyle,
                 "@SELECTIONSTYLE@": selectedFeaturesStyle}
     indexJsFilepath = os.path.join(folder, "index.js")
@@ -132,6 +129,27 @@ def writeWebApp(appdef, folder):
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
+
+    if "Selection tools" in widgets:
+        params = widgets["Selection tools"]
+        selectTools = []
+        if params["Select single feature"]:
+            selectTools.append(["selectSingleFeature()", "Select single feature"])
+        if params["Select by polygon"]:
+            selectTools.append(["selectByPolygon()", "Select by polygon"])
+        if params["Select by point and radius"]:
+            selectTools.append(["selectByPointAndRadius()", "Select by point and radius"])
+        if params["Select by rectangle"]:
+            selectTools.append(["selectByRectangle()", "Select by rectangle"])
+        if selectTools:
+            li = "\n".join(['<li><a onclick="%s" href="#">%s</a></li>' % (sel[0], sel[1]) for sel in selectTools])
+            tools.append('''<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Selection <span class="caret"><span></a>
+                            <ul class="dropdown-menu">
+                              %s
+                            </ul>
+                          </li>''' % li)
 
     if "Query" in widgets:
         imports.append('''<script src="./resources/filtrex.js"></script>''')
@@ -578,7 +596,10 @@ def exportStyles(layers, folder, settings):
                                 }
                             }
                             ''' % {"v": varName}
-            size = str(float(layer.customProperty("labeling/fontSize")) * 2)
+            try:
+                size = str(float(layer.customProperty("labeling/fontSize")) * 2)
+            except:
+                size = 1
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")

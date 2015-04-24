@@ -350,7 +350,6 @@ goToBookmark = function(i){
 };
 
 //===========================================
-var measureInteraction;
 var measureSource = new ol.source.Vector();
 var measureVector = new ol.layer.Vector({
   source: measureSource,
@@ -374,18 +373,19 @@ var measureTooltips=[];
 
 measureTool = function(measureType){
 
-    if (measureInteraction){
-        map.removeInteraction(measureInteraction);
+    if (currentInteraction){
+        map.removeInteraction(currentInteraction)
     }
 
     if (measureType === null){
-        map.on('pointermove', onPointerMove);
-        map.removeLayer(measureVector);
+        //map.removeLayer(measureVector);
         for (i=0; i<measureTooltips.length; i++){
             map.removeOverlay(measureTooltips[i]);
         }
         measureSource.clear();
-        map.addInteraction(selectInteraction);
+        //map.addInteraction(selectInteraction);
+        selectInteraction.setActive(true);
+        map.on('pointermove', onPointerMove);
         return;
     }
 
@@ -419,7 +419,7 @@ measureTool = function(measureType){
 
     var addInteraction = function(){
       var type = (measureType == 'area' ? 'Polygon' : 'LineString');
-      measureInteraction = new ol.interaction.Draw({
+      var measureInteraction = new ol.interaction.Draw({
         source: measureSource,
         type: /** @type {ol.geom.GeometryType} */ (type),
         style: new ol.style.Style({
@@ -442,9 +442,6 @@ measureTool = function(measureType){
           })
         })
       });
-      map.removeInteraction(selectInteraction);
-      map.addInteraction(measureInteraction);
-      createMeasureTooltip();
 
       measureInteraction.on('drawstart',
           function(evt) {
@@ -459,6 +456,13 @@ measureTool = function(measureType){
             measureTooltipElement = null;
             createMeasureTooltip();
           }, this);
+
+
+      selectInteraction.setActive(false);
+      map.addInteraction(measureInteraction);
+      currentInteraction = measureInteraction;
+      createMeasureTooltip();
+
     };
 
 
@@ -793,4 +797,144 @@ showQueryPanel = function(){
     $('#query-expression').keyup(this.updateExpression)
     .focus();
 
+};
+
+//============================================================================
+
+selectByRectangle = function(){
+
+    if (currentInteraction){
+        map.removeInteraction(currentInteraction)
+    }
+    var dragBoxInteraction = new ol.interaction.DragBox({
+        condition: ol.events.condition.noModifierKeys,
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: [0, 0, 255, 1]
+            })
+        })
+    });
+
+    dragBoxInteraction.on('boxend', function(e) {
+        var toAdd = [];
+        var extent = dragBoxInteraction.getGeometry().getExtent();
+        var selectedFeatures = selectInteraction.getFeatures();
+        for (i = 0; i < selectableLayersList.length; i++) {
+            source = sourceFromLayer(selectableLayersList[i])
+            source.forEachFeatureIntersectingExtent(extent, function(feature) {
+                toAdd.push(feature);
+            });
+        }
+        if (toAdd.length !== 0){
+            isDuringMultipleSelection = true;
+            selectedFeatures.extend(toAdd.slice(0, -1));
+            isDuringMultipleSelection = false;
+            selectedFeatures.push(toAdd[toAdd.length - 1]);
+        }
+
+    });
+
+    dragBoxInteraction.on('boxstart', function(e) {
+        var selectedFeatures = selectInteraction.getFeatures();
+        isDuringMultipleSelection = true;
+        selectedFeatures.clear();
+        isDuringMultipleSelection = false;
+    });
+
+    map.addInteraction(dragBoxInteraction);
+    currentInteraction = dragBoxInteraction;
+
+};
+
+//===========================================================================
+selectSingleFeature = function(){
+    selectInteraction.setActive(true);
+    if (currentInteraction){
+        map.removeInteraction(currentInteraction);
+    }
+};
+
+var selectByPolygonSource = new ol.source.Vector();
+
+selectByPolygon = function(){
+
+    if (currentInteraction){
+        map.removeInteraction(currentInteraction);
+    }
+
+    var polygon;
+
+    var addInteraction = function(){
+      var selectByPolygonInteraction = new ol.interaction.Draw({
+        source: selectByPolygonSource,
+        type: 'Polygon',
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(255, 255, 255, 0.2)'
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'rgba(0, 0, 0, 0.5)',
+            lineDash: [10, 10],
+            width: 2
+          }),
+          image: new ol.style.Circle({
+            radius: 5,
+            stroke: new ol.style.Stroke({
+              color: 'rgba(0, 0, 0, 0.7)'
+            }),
+            fill: new ol.style.Fill({
+              color: 'rgba(255, 255, 255, 0.2)'
+            })
+          })
+        })
+      });
+
+      selectByPolygonInteraction.on('drawstart',
+          function(evt) {
+          var selectedFeatures = selectInteraction.getFeatures();
+            isDuringMultipleSelection = true;
+            selectedFeatures.clear();
+            isDuringMultipleSelection = false;
+            polygon = evt.feature;
+          }, this);
+
+      selectByPolygonInteraction.on('drawend',
+          function(evt) {
+            doSelection();
+            polygon = null;
+          }, this);
+
+
+      map.addInteraction(selectByPolygonInteraction);
+      currentInteraction = selectByPolygonInteraction;
+      selectInteraction.setActive(false);
+
+    };
+
+
+    var doSelection = function() {
+        //Only for points and this might not be the most efficient way...
+        var toAdd = [];
+        if (polygon)
+            var geom = polygon.getGeometry();
+            var polygExtent = geom.getExtent();
+            for (i = 0; i < selectableLayersList.length; i++) {
+                source = sourceFromLayer(selectableLayersList[i])
+                source.forEachFeatureIntersectingExtent(polygExtent, function(feature) {
+                    var extent = feature.getGeometry().getExtent();
+                    if (geom.intersectsExtent(extent)){
+                        toAdd.push(feature);
+                    }
+            });
+        }
+        if (toAdd.length !== 0){
+            isDuringMultipleSelection = true;
+            selectedFeatures.extend(toAdd.slice(0, -1));
+            isDuringMultipleSelection = false;
+            selectedFeatures.push(toAdd[toAdd.length - 1]);
+        }
+
+    };
+
+    addInteraction();
 };
