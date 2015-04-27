@@ -21,6 +21,7 @@ from functools import partial
 from texteditor import TextEditorDialog, HTML
 from bookmarkseditor import BookmarksEditorDialog
 from charttooldialog import ChartToolDialog
+from settings import WrongValueException
 
 
 class Layer():
@@ -40,8 +41,7 @@ lineIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_line.pn
 polygonIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_polygon.png"))
 rasterIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_raster.jpg"))
 
-class WrongValueException(Exception):
-    pass
+
 
 class MainDialog(QDialog, Ui_MainDialog):
 

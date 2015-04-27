@@ -1,6 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from texteditor import TextEditorDialog, JSON
+from settings import WrongValueException
 
 class TreeSettingItem(QTreeWidgetItem):
 
@@ -59,16 +60,25 @@ class TreeSettingItem(QTreeWidgetItem):
 
 
     def value(self):
-        if isinstance(self._value, bool):
-            return self.checkState(1) == Qt.Checked
-        elif isinstance(self._value, (int,float)):
-            return float(self.text(1))
-        elif isinstance(self._value, tuple):
-            return self.combo.currentText()
-        elif "\n" in unicode(self._value):
-            return self.newValue
-        else:
-            return self.text(1)
+        self.setBackgroundColor(0, Qt.white)
+        self.setBackgroundColor(1, Qt.white)
+        try:
+            if isinstance(self._value, bool):
+                return self.checkState(1) == Qt.Checked
+            elif isinstance(self._value, (int,long)):
+                return long(self.text(1))
+            elif isinstance(self._value, float):
+                return float(self.text(1))
+            elif isinstance(self._value, tuple):
+                return self.combo.currentText()
+            elif "\n" in unicode(self._value):
+                return self.newValue
+            else:
+                return self.text(1)
+        except:
+            self.setBackgroundColor(0, Qt.yellow)
+            self.setBackgroundColor(1, Qt.yellow)
+            raise WrongValueException()
 
     def setValue(self, value):
         if isinstance(self._value, bool):

@@ -1,5 +1,8 @@
 import os
 
+class WrongValueException(Exception):
+    pass
+
 def loadThemes():
     allCss = {}
     basePath = os.path.join(os.path.dirname(__file__), "themes")
