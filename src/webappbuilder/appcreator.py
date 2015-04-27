@@ -11,7 +11,6 @@ from geoserver.catalog import Catalog
 from utils import *
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
-import copy
 from json.encoder import JSONEncoder
 import json
 import utils
@@ -54,11 +53,25 @@ def createApp(appdef, deployData, folder, progress):
 		appdefFile =  projFile + ".appdef"
 		saveAppdef(appdef, appdefFile)
 
+def findLayerByName(name, layers):
+	for layer in layers:
+		if layer.layer.name() == name:
+			return layer
+
 def checkAppCanBeCreated(appdef):
 	problems = []
 	if "Chart tool" in appdef["Widgets"]:
-		if len(appdef["Widgets"]["Chart tool"]["charts"]) == 0:
+		layers = appdef["Layers"]
+		charts = appdef["Widgets"]["Chart tool"]["charts"]
+		if len(charts) == 0:
 			problems.append("Chart tool added, but no charts have been defined")
+		for name, chart in charts.iteritems():
+			layer = findLayerByName(chart["layer"], layers)
+			if layer is None:
+				problems.append("Chart tool %s uses a layer (%s) that is not added to web app") % (name, chart["layer"])
+			if not layer.allowSelection:
+				problems.append("Chart tool %s uses a layer (%s) that does not allow selection") % (name, chart["layer"])
+
 	if "Bookmarks" in appdef["Widgets"]:
 		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
 			problems.append("Bookmarks widget added, but no bookmarks have been defined")
