@@ -9,7 +9,7 @@ class ThemeEditorDialog(QtGui.QDialog):
     def __init__(self, parent = None):
         super(ThemeEditorDialog, self).__init__(parent)
 
-        self.styles = settings.splitCssElements(settings.currentCss)
+        self.styles = settings.splitElements(settings.currentCss)
         self.currentItem = None
 
         self.resize(600, 600)
@@ -41,7 +41,7 @@ class ThemeEditorDialog(QtGui.QDialog):
 
     def resetDefaultValues(self):
         settings.currentCss =  settings.themes[settings.currentTheme]
-        self.styles = settings.splitCssElements(settings.currentCss)
+        self.styles = settings.splitElements(settings.currentCss)
         self.editor.setText(self.styles[self.currentItem.text()])
 
     def selectionChanged(self):

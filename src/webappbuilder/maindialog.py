@@ -51,6 +51,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         QDialog.__init__(self)
         self.setupUi(self)
         self.populateLayers()
+        self.populateBaseLayers()
         self.populateConfigParams()
         self.populateThemes()
         self.buttonLogo.clicked.connect(self.selectLogo)
@@ -58,13 +59,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
-        self.baseLayers = {self.mapQuestButton: "MapQuest roads",
-                            self.mapQuestAerialButton: "MapQuest aerial",
-                            self.mapQuestLabelsButton: "MapQuest labels",
-                            self.stamenTonerButton: "Stamen toner",
-                            self.stamenWatercolorButton: "Stamen watercolor",
-                            self.osmButton: "OSM"}
-
         widgetButtons = {self.attributesTableButton: "Attributes table",
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
@@ -153,6 +147,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         baseLayers = appdef["Base layers"]
         for button, name in self.baseLayers.iteritems():
             button.setChecked(name in baseLayers)
+        for button, name in self.baseOverlays.iteritems():
+            button.setChecked(name in baseLayers)
         settings.currentCss = appdef["Settings"]["Theme"]["Css"]
         items = []
         for i in xrange(self.layersTree.topLevelItemCount()):
@@ -207,6 +203,12 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg.exec_()
             settings.widgetsParams[widgetName] = dlg.params
 
+    buttonStyle = '''QToolButton {
+                background-color: #bbbbbb; border-style: outset; border-width: 2px;
+                border-radius: 10px; border-color: beige; font: bold;
+                min-width: 100px; max-width: 250px; padding:10px;}
+                QToolButton:checked { background-color: #9ABEED; border-style: inset;}'''
+
     def populateThemes(self):
         self.themesButtons = {}
         themes = [k for k in settings.themes.keys() if k != "basic"]
@@ -221,11 +223,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             button.setCheckable(True)
             button.setChecked(i == 0)
             button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            button.setStyleSheet('''QToolButton {
-                background-color: #bbbbbb; border-style: outset; border-width: 2px;
-                border-radius: 10px; border-color: beige; font: bold;
-                min-width: 100px; max-width: 250px; padding:10px;}
-                QToolButton:checked { background-color: #9ABEED; border-style: inset;}''')
+            button.setStyleSheet(self.buttonStyle)
             def clicked(button):
                 for b in self.themesButtons:
                     b.setChecked(False)
@@ -238,6 +236,42 @@ class MainDialog(QDialog, Ui_MainDialog):
             col = i % 2
             self.gridLayoutThemes.addWidget(button, row, col, 1, 1)
             self.themesButtons[button] = theme
+
+    def populateBaseLayers(self):
+        self.baseLayers = {}
+        layers = sorted([lay for lay in settings.baseLayers.keys()])
+        for i, layer in enumerate(layers):
+            button = QToolButton()
+            filename = os.path.join(os.path.dirname(__file__), "baselayers", layer.lower().replace(" ", "") + ".png")
+            icon = QIcon(filename)
+            button.setIcon(icon)
+            button.setText(layer)
+            button.setIconSize(QSize(160, 80))
+            button.setCheckable(True)
+            button.setChecked(False)
+            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            button.setStyleSheet(self.buttonStyle)
+            row = i / 3
+            col = i % 3
+            self.gridLayoutBaseLayers.addWidget(button, row, col, 1, 1)
+            self.baseLayers[button] = layer
+        layers = sorted([lay for lay in settings.baseOverlays.keys()])
+        self.baseOverlays = {}
+        for i, layer in enumerate(layers):
+            button = QToolButton()
+            filename = os.path.join(os.path.dirname(__file__), "baselayers", layer.lower().replace(" ", "") + ".png")
+            icon = QIcon(filename)
+            button.setIcon(icon)
+            button.setText(layer)
+            button.setIconSize(QSize(160, 80))
+            button.setCheckable(True)
+            button.setChecked(False)
+            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            button.setStyleSheet(self.buttonStyle)
+            row = i / 3
+            col = i % 3
+            self.gridLayoutBaseOverlays.addWidget(button, row, col, 1, 1)
+            self.baseOverlays[button] = layer
 
 
     def populateLayers(self):
@@ -357,6 +391,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         for b in self.baseLayers:
             if b.isChecked():
                 layers.append(self.baseLayers[b])
+        for b in self.baseOverlays:
+            if b.isChecked():
+                layers.append(self.baseOverlays[b])
         return layers
 
     def getWidgets(self):

@@ -13,15 +13,6 @@ import json
 from bs4 import BeautifulSoup as bs
 
 
-baseLayersJs  = {
-    "Stamen watercolor": "new ol.layer.Tile({type: 'base', title: 'Stamen watercolor', source: new ol.source.Stamen({layer: 'watercolor'})})",
-    "Stamen toner": "new ol.layer.Tile({type: 'base', title: 'Stamen toner', source: new ol.source.Stamen({layer: 'toner'})})",
-    "OSM": "new ol.layer.Tile({type: 'base', title: 'OSM', source: new ol.source.OSM()})",
-    "MapQuest roads": "new ol.layer.Tile({type: 'base', title: 'MapQuest roads', source: new ol.source.MapQuest({layer: 'osm'})})",
-    "MapQuest aerial": "new ol.layer.Tile({type: 'base', title: 'MapQuest aerial', source: new ol.source.MapQuest({layer: 'sat'})})",
-    "MapQuest labels": "new ol.layer.Tile({type: 'base', title: 'MapQuest labels', source: new ol.source.MapQuest({layer: 'hyb'})})"
-}
-
 baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
 
 dragBoxConditions = {"Not enabled": "ol.events.condition.never",
@@ -333,14 +324,17 @@ def writeWebApp(appdef, folder):
 
 
 def writeLayersAndGroups(appdef, folder):
-    baseLayers = appdef["Base layers"]
+    base = appdef["Base layers"]
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
     groups = appdef["Groups"]
-    if "MapQuest labels" in baseLayers:
-        idx = baseLayers.index("MapQuest labels")
-        baseLayers.append(baseLayers.pop(idx))
-    baseLayer = baseLayerGroup % ",".join([baseLayersJs[b] for b in baseLayers])
+    baseJs =[]
+    for b in base:
+        if b in baseLayers:
+            baseJs.append(baseLayers[b])
+        elif b in baseOverlays:
+            baseJs.append(baseOverlays[b])
+    baseLayer = baseLayerGroup % ",".join(baseJs)
     layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
     groupVars = ""
     groupedLayers = {}
@@ -356,7 +350,7 @@ def writeLayersAndGroups(appdef, folder):
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()), str(layer.visible).lower()) for layer in layers])
 
-    groupList = ["baseLayer"] if baseLayers else []
+    groupList = ["baseLayer"] if base else []
     usedGroups = []
     noGroupList = []
     for appLayer in layers:

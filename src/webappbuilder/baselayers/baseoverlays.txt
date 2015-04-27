@@ -1,0 +1,77 @@
+/*MapQuest labels*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'MapQuest labels', 
+	source: new ol.source.MapQuest({layer: 'hyb'})
+})
+
+/*Stamen toner hybrid*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'Stamen toner lite', 
+	source: new ol.source.Stamen({layer: 'toner-hybrid'})
+})
+   
+/*Stamen toner lines*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'Stamen toner lines', 
+	source: new ol.source.Stamen({layer: 'toner-lines'})
+})
+
+/*Stamen toner labels*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'Stamen toner labels', 
+	source: new ol.source.Stamen({layer: 'toner-labels'})
+})
+
+/*Hydda roads and labels*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'Hydda roads and labels', 
+	source: new ol.source.XYZ({ 
+		url: 'http://s.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png'
+	})   
+})
+
+/*OpenWeatherMap clouds*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'OpenWeatherMap temperature', 
+	source: new ol.source.XYZ({ 
+		url: 'http://s.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png',
+		attributions: [new ol.Attribution({html:['Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>']})],
+	})   
+})
+
+/*OpenWeatherMap temperature*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'OpenWeatherMap temperature', 
+	source: new ol.source.XYZ({ 
+		url: 'http://s.tile.openweathermap.org/map/temp/{z}/{x}/{y}.png',
+		attributions: [new ol.Attribution({html:['Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>']})],
+	})   
+})
+
+/*OpenWeatherMap wind*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'OpenWeatherMap wind', 
+	source: new ol.source.XYZ({ 
+		url: 'http://s.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png',
+		attributions: [new ol.Attribution({html:['Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>']})],
+	})   
+})
+
+/*OpenWeatherMap pressure*/ 
+new ol.layer.Tile({
+	type: 'base', 
+	title: 'OpenWeatherMap pressure', 
+	source: new ol.source.XYZ({ 
+		url: 'http://s.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png',
+		attributions: [new ol.Attribution({html:['Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>']})],
+	})   
+})
+

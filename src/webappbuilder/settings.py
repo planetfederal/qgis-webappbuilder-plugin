@@ -15,7 +15,19 @@ def loadThemes():
             allCss[themeName] = "".join(f.readlines())
     return allCss
 
-def splitCssElements(s):
+def loadBaseLayers():
+    path = os.path.join(os.path.dirname(__file__), "baselayers", "baselayers.txt")
+    with open(path) as f:
+        text = "".join(f.readlines())
+    return splitElements(text)
+
+def loadBaseOverlays():
+    path = os.path.join(os.path.dirname(__file__), "baselayers", "baseoverlays.txt")
+    with open(path) as f:
+        text = "".join(f.readlines())
+    return splitElements(text)
+
+def splitElements(s):
     lines = s.splitlines()
     css = {}
     element = None
@@ -36,7 +48,8 @@ def joinElements(els):
         s += css
     return s
 
-
+baseLayers = loadBaseLayers()
+baseOverlays = loadBaseOverlays()
 themes = loadThemes()
 currentTheme = "basic" if "basic" in themes else themes.keys()[0]
 currentCss =  themes[currentTheme]
