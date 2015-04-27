@@ -350,20 +350,19 @@ def writeLayersAndGroups(appdef, folder):
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()), str(layer.visible).lower()) for layer in layers])
 
-    groupList = ["baseLayer"] if base else []
+    layersList = ["baseLayer"] if base else []
     usedGroups = []
-    noGroupList = []
     for appLayer in layers:
         layer = appLayer.layer
         if layer.id() in groupedLayers:
             groupName = groupedLayers[layer.id()]
             if groupName not in usedGroups:
-                groupList.append("group_" + safeName(groupName))
+                layersList.append("group_" + safeName(groupName))
                 usedGroups.append(groupName)
         else:
-            noGroupList.append("lyr_" + safeName(layer.name()))
+            layersList.append("lyr_" + safeName(layer.name()))
 
-    layersList = "var layersList = [%s];" % ",".join([layer for layer in (groupList + noGroupList)])
+    layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
     singleLayersList = "var singleLayersList = [%s];" % ",".join(["lyr_%s" % safeName(layer.layer.name()) for layer in layers])
     selectableLayersList = "var selectableLayersList = [%s];" % ",".join(
                             ["lyr_%s" % safeName(layer.layer.name()) for layer in layers if layer.allowSelection])
