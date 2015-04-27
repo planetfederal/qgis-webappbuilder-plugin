@@ -657,10 +657,13 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             pass
         options = [utils.NO_POPUP, utils.ALL_ATTRIBUTES]
-        if popup in options:
-            self.popupCombo.setCurrentIndex(options.index(popup))
-        else:
-            self.popupCombo.setCurrentIndex(self.popupCombo.findText(popup))
+        try:
+            if popup in options:
+                self.popupCombo.setCurrentIndex(options.index(popup))
+            else:
+                self.popupCombo.setCurrentIndex(self.popupCombo.findText(popup))
+        except:
+            pass
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)
