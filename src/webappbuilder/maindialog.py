@@ -611,9 +611,9 @@ class TreeLayerItem(QTreeWidgetItem):
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
 
     def connTypeChanged(self):
-        current = self.connTypeCombo.currentIndex()
-        disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
         try:
+            current = self.connTypeCombo.currentIndex()
+            disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             self.popupItem.setDisabled(disable)
             self.popupCombo.setDisabled(disable)
             self.clusterItem.setDisabled(disable)
