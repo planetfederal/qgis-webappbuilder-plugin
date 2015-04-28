@@ -83,7 +83,8 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                             "Select by rectangle": True,
                                             "Select by polygon": True,
                                             "Select by point and radius": True,
-                                            }
+                                            },
+                        "Links": {"links":{}}
                         }
 
 widgetsParams = dict(defaultWidgetsParams)

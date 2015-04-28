@@ -22,6 +22,7 @@ from texteditor import TextEditorDialog, HTML
 from bookmarkseditor import BookmarksEditorDialog
 from charttooldialog import ChartToolDialog
 from settings import WrongValueException
+from linksdialog import LinksDialog
 
 
 class Layer():
@@ -178,6 +179,11 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg = TextEditorDialog(settings.widgetsParams[widgetName]["HTML content"], HTML)
             dlg.exec_()
             settings.widgetsParams[widgetName]["HTML content"] = dlg.text
+        elif widgetName == "Links":
+            dlg = LinksDialog(settings.widgetsParams[widgetName]["links"], self)
+            dlg.exec_()
+            if dlg.ok:
+                settings.widgetsParams[widgetName]["links"] = dlg.links
         elif widgetName == "Bookmarks":
             dlg = BookmarksEditorDialog(self, settings.widgetsParams[widgetName]["bookmarks"],
                                         settings.widgetsParams[widgetName]["format"],

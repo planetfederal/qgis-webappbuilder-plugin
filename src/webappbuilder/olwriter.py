@@ -121,6 +121,10 @@ def writeWebApp(appdef, folder):
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
 
+    if "Links" in widgets:
+        links = widgets["Links"]["links"]
+        for name, url in links.iteritems():
+            tools.append('<li><a href="%s">%s</a></li>' % (url, name))
     if "Selection tools" in widgets:
         params = widgets["Selection tools"]
         selectTools = []
@@ -155,7 +159,7 @@ def writeWebApp(appdef, folder):
                                         <span class="input-group-addon">Filter </span>
                                         <input id="query-expression" type="text" class="form-control" placeholder="Type expression...">
                                     </div>
-                                    <div style="margin-top:10px" class="form-group">
+                                   <div style="margin-top:10px" class="form-group">
                                         <div class="col-sm-12 controls">
                                           <a id="btn-query-new" href="#" class="btn btn-primary">New selection</a>
                                           <a id="btn-query-add" href="#" class="btn btn-primary">Add to current selection</a>
