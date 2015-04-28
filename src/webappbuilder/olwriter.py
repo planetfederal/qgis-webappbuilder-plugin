@@ -422,10 +422,6 @@ def bounds(useCanvas, layers):
                                 extent.xMaximum(), extent.yMaximum())
 
 def _getWfsLayer(url, title, layerName, typeName, min, max):
-    if typeName is None:
-        typeName = ""
-    else:
-        typeName = typeName + ":"
     return ('''var wfsSource_%(layerName)s = new ol.source.ServerVector({
                     format: new ol.format.GeoJSON(),
                     loader: function(extent, resolution, projection) {
