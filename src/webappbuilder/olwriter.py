@@ -438,7 +438,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max):
                             dataType: 'jsonp'
                         });
                     },
-                    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({maxZoom: 19})),
+                    strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
                     projection: 'EPSG:3857'
                 });
 
@@ -475,7 +475,7 @@ def layerToJavascript(applayer, settings, deploy):
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
-                        source: new ol.source.GeoJSON({object: geojson_%(n)s})
+                    source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
                 });
                 var lyr_%(n)s = new ol.layer.Vector({
                     source: cluster_%(n)s, %(min)s %(max)s
@@ -486,7 +486,8 @@ def layerToJavascript(applayer, settings, deploy):
                  "max": maxResolution, "dist": str(applayer.clusterDistance)})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
-                    source: new ol.source.GeoJSON({object: geojson_%(n)s}),%(min)s %(max)s
+                    source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
+                    %(min)s %(max)s
                     style: style_%(n)s,
                     title: "%(name)s"
                 });''' %

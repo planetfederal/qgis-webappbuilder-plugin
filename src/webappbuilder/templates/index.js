@@ -33,6 +33,15 @@ var selectInteraction = new ol.interaction.Select({
   },
   style: @SELECTIONSTYLE@,
   toggleCondition: ol.events.condition.shiftKeyOnly,
+  filter: function(feature, layer){
+    features = f.get("features")
+    if (features){
+        return false;
+    }
+    else{
+        return true
+    }
+  }
 });
 map.addInteraction(selectInteraction);
 
