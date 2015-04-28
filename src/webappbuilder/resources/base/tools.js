@@ -913,7 +913,7 @@ selectByPolygon = function(){
 
 
     var doSelection = function() {
-        //Only for points and this might not be the most efficient way...
+        //Only correct for points and this might not be the most efficient way...
         var toAdd = [];
         if (polygon)
             var geom = polygon.getGeometry();
