@@ -60,6 +60,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
+        self.tabPanel.currentChanged.connect(self.tabChanged)
         widgetButtons = {self.attributesTableButton: "Attributes table",
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
@@ -117,6 +118,24 @@ class MainDialog(QDialog, Ui_MainDialog):
         if appdef is not None:
             self.loadAppdef(appdef)
 
+    def tabChanged(self, index):
+        if index == 4:
+            self.updateDeployGroups()
+
+    def updateDeployGroups(self):
+        postGisMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS]
+        geoServerMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS,
+                           utils.METHOD_WMS, utils.METHOD_WFS]
+        usesGeoServer = False
+        usesPostGis = False
+        layers, _ = self.getLayersAndGroups()
+        for layer in layers:
+            if layer.method in geoServerMethods:
+                usesGeoServer = True
+                if layer.method in postGisMethods:
+                    usesPostGis = True
+        self.geoserverGroupBox.setEnabled(usesGeoServer)
+        self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked() and usesPostGis)
 
     def selectLogo(self):
         img = QFileDialog.getOpenFileName(self, "Select image file")
@@ -171,8 +190,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                 item.setCheckState(0, Qt.Unchecked)
 
     def deployCheckChanged(self):
-        self.geoserverGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
-        self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked())
+        self.updateDeployGroups()
 
     def editWidgetParameters(self, widgetName):
         if widgetName == "Text panel":
@@ -422,25 +440,28 @@ class MainDialog(QDialog, Ui_MainDialog):
         return value
 
     def getDeployConfiguration(self, layers):
+        postGisMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS]
+        geoServerMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS,
+                           utils.METHOD_WMS, utils.METHOD_WFS]
         usesGeoServer = False
-        usesPostgis = False
-        deploy = not self.checkBoxDeployData.isChecked()
+        usesPostGis = False
+        layers, _ = self.getLayersAndGroups()
         for layer in layers:
-            if layer.method != utils.METHOD_FILE:
-                if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
-                    usesPostgis = True
-                    usesGeoServer = True
-                elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
-                    usesGeoServer = True
-        usesPostgis = usesPostgis and deploy
+            if layer.method in geoServerMethods:
+                usesGeoServer = True
+                if layer.method in postGisMethods:
+                    usesPostGis = True
+
+        deploy = not self.checkBoxDeployData.isChecked()
+        usesPostGis = usesPostGis and deploy
         try:
             params = {
-                "PostGIS host": self._getValue(self.postgisHostBox, usesPostgis),
-                "PostGIS port": self._getValue(self.postgisPortBox, usesPostgis),
-                "PostGIS database": self._getValue(self.postgisDatabaseBox, usesPostgis),
+                "PostGIS host": self._getValue(self.postgisHostBox, usesPostGis),
+                "PostGIS port": self._getValue(self.postgisPortBox, usesPostGis),
+                "PostGIS database": self._getValue(self.postgisDatabaseBox, usesPostGis),
                 "PostGIS schema": self.postgisSchemaBox.text().strip(),
-                "PostGIS username": self._getValue(self.postgisUsernameBox, usesPostgis),
-                "PostGIS password": self._getValue(self.postgisPasswordBox, usesPostgis),
+                "PostGIS username": self._getValue(self.postgisUsernameBox, usesPostGis),
+                "PostGIS password": self._getValue(self.postgisPasswordBox, usesPostGis),
                 "GeoServer url": self._getValue(self.geoserverUrlBox, usesGeoServer).strip("/"),
                 "GeoServer username": self._getValue(self.geoserverUsernameBox, usesGeoServer),
                 "GeoServer password": self._getValue(self.geoserverPasswordBox, usesGeoServer),
