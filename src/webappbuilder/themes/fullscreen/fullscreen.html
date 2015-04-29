@@ -18,24 +18,18 @@
 </head>
 
   <body>
-  <nav class="navbar navbar-default" role="navigation" id="toolbar">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      @LOGO@
-      <a class="navbar-brand" href="#">@TITLE@</a>
-    </div>
-    <div class="collapse navbar-collapse" id="navbar">
-        <ul class="nav navbar-nav navbar-right">
-        @TOOLBAR@
-        </ul>
-    </div>
-  </nav>
+
   <div id="content">
+    <div id="slideout">
+      Menu
+      <div id="slideout_inner">
+        <div class="container">
+            <ul class="nav navbar-nav navbar">
+            @TOOLBAR@
+            </ul>
+        </div>
+      </div>
+    </div>
     <div id="map">
       <div id="popup" class="ol-popup">
         <a class="closer-icon" href="#" id="popup-closer">&times;</a>
