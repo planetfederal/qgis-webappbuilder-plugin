@@ -1,115 +1,115 @@
 /*CartoDB*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'CartoDB light', 
-	source: new ol.source.XYZ({ 
+	type: 'base',
+	title: 'CartoDB light',
+	source: new ol.source.XYZ({
 		url: 'http://s.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
 		attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
 		})]
-	})    
+	})
 })
 
 /*CartoDB without labels*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'CartoDB light without labels', 
-	source: new ol.source.XYZ({ 
+	type: 'base',
+	title: 'CartoDB light without labels',
+	source: new ol.source.XYZ({
 		url: 'http://s.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
 		attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
 		})]
-	})    
+	})
 })
 
 /*CartoDB dark*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'CartoDB dark', 
-	source: new ol.source.XYZ({ 
+	type: 'base',
+	title: 'CartoDB dark',
+	source: new ol.source.XYZ({
 		url: 'http://s.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
 		attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
 		})]
-	})    
+	})
 })
 
 /*CartoDB dark without labels*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'CartoDB dark without labels', 
-	source: new ol.source.XYZ({ 
+	type: 'base',
+	title: 'CartoDB dark without labels',
+	source: new ol.source.XYZ({
 		url: 'http://s.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
 		attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
 		})]
-	})    
+	})
 })
 
 /*Open topo map*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'Open topo map', 
-	source: new ol.source.XYZ({ 
-		url: ''http://s.tile.opentopomap.org/{z}/{x}/{y}.png'',
-		attributions: [new ol.Attribution({ html: [''Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)']
+	type: 'base',
+	title: 'Open topo map',
+	source: new ol.source.XYZ({
+		url: 'http://s.tile.opentopomap.org/{z}/{x}/{y}.png',
+		attributions: [new ol.Attribution({ html: ['Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)']
 		})]
-	})    
+	})
 })
 
 
-/*Stamen watercolor*/ 
+/*Stamen watercolor*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'Stamen watercolor', 
+	type: 'base',
+	title: 'Stamen watercolor',
 	source: new ol.source.Stamen({layer: 'watercolor'})
 })
 
-/*Stamen toner*/ 
+/*Stamen toner*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'Stamen toner', 
+	type: 'base',
+	title: 'Stamen toner',
 	source: new ol.source.Stamen({layer: 'toner'})
 })
 
-/*Stamen toner lite*/ 
+/*Stamen toner lite*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'Stamen toner lite', 
+	type: 'base',
+	title: 'Stamen toner lite',
 	source: new ol.source.Stamen({layer: 'toner-lite'})
 })
 
-/*OSM Mapnik*/ 
+/*OSM Mapnik*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'OSM Mapnik', 
+	type: 'base',
+	title: 'OSM Mapnik',
 	source: source: new ol.source.OSM()
 })
 
-/*MapQuest roads*/ 
+/*MapQuest roads*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'MapQuest roads', 
+	type: 'base',
+	title: 'MapQuest roads',
 	source: new ol.source.MapQuest({layer: 'osm'})
 })
 
-/*MapQuest aerial*/ 
+/*MapQuest aerial*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'MapQuest aerial', 
+	type: 'base',
+	title: 'MapQuest aerial',
 	source: new ol.source.MapQuest({layer: 'sat'})
 })
 
 /*ESRI world topo map*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI world topo map', 
+	type: 'base',
+	title: 'ESRI world topo map',
   	source: new ol.source.XYZ({
-    	attributions: [new ol.Attribution({ html:'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer">ArcGIS</a>']})],
+    	attributions: [new ol.Attribution({ html:['Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer">ArcGIS</a>']})],
     	url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
   	})
 })
 
 /*ESRI world street map*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI world street map', 
+	type: 'base',
+	title: 'ESRI world street map',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer">ArcGIS</a>']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
@@ -118,8 +118,8 @@ new ol.layer.Tile({
 
 /*ESRI DeLorme world map*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI DeLorme world map', 
+	type: 'base',
+	title: 'ESRI DeLorme world map',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Copyright: &copy;2012 DeLorme']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/{z}/{y}/{x}'
@@ -128,8 +128,8 @@ new ol.layer.Tile({
 
 /*ESRI world imagery*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI world imagery', 
+	type: 'base',
+	title: 'ESRI world imagery',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
@@ -138,8 +138,8 @@ new ol.layer.Tile({
 
 /*ESRI world terrain*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI world terrain', 
+	type: 'base',
+	title: 'ESRI world terrain',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}'
@@ -149,8 +149,8 @@ new ol.layer.Tile({
 
 /*ESRI world shaded relief*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI world shaded relief', 
+	type: 'base',
+	title: 'ESRI world shaded relief',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: Esri']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}'
@@ -159,8 +159,8 @@ new ol.layer.Tile({
 
 /*ESRI NatGeo world map*/
 new ol.layer.Tile({
-	type: 'base', 
-	title: 'ESRI NatGeo world map', 
+	type: 'base',
+	title: 'ESRI NatGeo world map',
 	source: new ol.source.XYZ({
 		attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC']})],
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}'
