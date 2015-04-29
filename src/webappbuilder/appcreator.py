@@ -68,9 +68,9 @@ def checkAppCanBeCreated(appdef):
 		for name, chart in charts.iteritems():
 			layer = findLayerByName(chart["layer"], layers)
 			if layer is None:
-				problems.append("Chart tool %s uses a layer (%s) that is not added to web app") % (name, chart["layer"])
+				problems.append("Chart tool %s uses a layer (%s) that is not added to web app" % (name, chart["layer"]))
 			if not layer.allowSelection:
-				problems.append("Chart tool %s uses a layer (%s) that does not allow selection") % (name, chart["layer"])
+				problems.append("Chart tool %s uses a layer (%s) that does not allow selection" % (name, chart["layer"]))
 
 	if "Bookmarks" in appdef["Widgets"]:
 		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
