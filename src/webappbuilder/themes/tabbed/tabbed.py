@@ -114,6 +114,7 @@ def writeWebApp(appdef, folder):
                         <script src="./charts.js"></script>''')
         panels.append('''<div class="tab-pane" id="charts-tab">
                             <div class="chart-panel" id="chart-panel">
+                            <select id="chart-selector" class="form-control"></select>
                               <div class="chart-panel-info" id="chart-panel-info">
                               </div>
                                 <div id="chart">
