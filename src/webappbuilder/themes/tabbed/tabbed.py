@@ -120,7 +120,17 @@ def writeWebApp(appdef, folder):
                                 </div>
                              </div>
                           </div>''')
-        initialize.append("openChart(Object.keys(charts)[0]);")
+        initialize.append('''sel = document.getElementById("chart-selector");
+                              chartNames = Object.keys(charts)
+                              for (var i = 0; i < chartNames.length; i++){
+                                  var option = document.createElement('option');
+                                  option.value = option.textContent = chartNames[i];
+                                  sel.appendChild(option);
+                              }
+                              sel.onchange = function(){
+                                  openChart(this.value);
+                              };
+                              openChart(Object.keys(charts)[0]);''')
         chartsFilepath = os.path.join(folder, "charts.js")
         with open(chartsFilepath, "w") as f:
             f.write("var AGGREGATION_MIN = 0;")
