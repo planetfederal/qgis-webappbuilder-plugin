@@ -99,6 +99,7 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.showDownload = options.showDownload === true;
     this.showZoomTo = options.showZoomTo === true;
     this.allowReordering = options.allowReordering === true;
+    this.showGroupContent = options.showGroupContent === true;
 
     this.firstTime = true;
 
@@ -166,7 +167,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
     var layers = map.getLayerGroup().getLayers().getArray();
     var len = layers.length;
     for (var i = len -1; i >=0; i--){
-        list.append(this.buildLayerTree(layers[i]))
+        list.append(this.buildLayerTree(layers[i]), false)
     }
     function indexOf(layers, layer) {
         var length = layers.getLength();
@@ -263,7 +264,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
 };
 
 
-ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
+ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
     var elem;
     var name = layer.get('title');
     if (name){
@@ -276,10 +277,6 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
             if (this.showOpacity){
                 div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
             }
-            if (layer.get("type") != "base" && this.allowReordering){
-                div += "<a title='Move up' href='#' style='padding-left:15px;' href='#'><i class='layer-move-up glyphicon glyphicon-triangle-top'></i></a>";
-                div += "<a title='Move dowm' href='#' style='padding-left:15px;' href='#'><i class='layer-move-down glyphicon glyphicon-triangle-bottom'></i></a>";
-            }
             if (layer.get("type") != "base" && this.showZoomTo){
                 div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
             }
@@ -287,12 +284,17 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer) {
                 div += "<a title='Download layer' href='#' style='padding-left:15px;'><i class='layer-download glyphicon glyphicon-download-alt'></i></a>";
             }
         }
-        if (layer.getLayers) {
+        if (layer.get("type") != "base" && this.allowReordering && !isInGroup){
+            div += "<a title='Move up' href='#' style='padding-left:15px;' href='#'><i class='layer-move-up glyphicon glyphicon-triangle-top'></i></a>";
+            div += "<a title='Move dowm' href='#' style='padding-left:15px;' href='#'><i class='layer-move-down glyphicon glyphicon-triangle-bottom'></i></a>";
+        }
+
+        if (layer.getLayers && this.showGroupContent) {
             var sublayersElem = '';
             var layers = layer.getLayers().getArray(),
                     len = layers.length;
             for (var i = len - 1; i >= 0; i--) {
-                sublayersElem += this.buildLayerTree(layers[i]);
+                sublayersElem += this.buildLayerTree(layers[i], true);
             }
             elem = div + " <ul>" + sublayersElem + "</ul></li>";
         } else {

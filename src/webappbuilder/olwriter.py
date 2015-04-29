@@ -13,8 +13,6 @@ import json
 from bs4 import BeautifulSoup as bs
 
 
-baseLayerGroup = "var baseLayer = new ol.layer.Group({'title': 'Base maps',layers: [%s]});"
-
 dragBoxConditions = {"Not enabled": "ol.events.condition.never",
                      "Using Alt key": "ol.events.condition.altKeyOnly",
                      "Using Shift key": "ol.events.condition.shiftKeyOnly",
@@ -312,7 +310,7 @@ def writeWebApp(appdef, folder):
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@PANELS@": "\n".join(panels),
-                "@TOOLBAR@": '<ul class="nav navbar-nav navbar-right">' + "\n".join(tools) + "</ul>"}
+                "@TOOLBAR@": "\n".join(tools)}
     indexFilepath = os.path.join(folder, "index.html")
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
     html = replaceInTemplate(template, values)
@@ -338,7 +336,7 @@ def writeLayersAndGroups(appdef, folder):
             baseJs.append(baseLayers[b])
         elif b in baseOverlays:
             baseJs.append(baseOverlays[b])
-    baseLayer = baseLayerGroup % ",".join(baseJs)
+    baseLayer = "var baseLayer = new ol.layer.Group({'type': 'base', 'title': 'Base maps',layers: [%s]});" % ",".join(baseJs)
     layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
     groupVars = ""
     groupedLayers = {}
