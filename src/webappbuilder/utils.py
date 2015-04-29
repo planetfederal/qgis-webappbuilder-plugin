@@ -34,6 +34,16 @@ TYPE_MAP = {
     QGis.WKBMultiPolygon: 'MultiPolygon',
     }
 
+
+def replaceInTemplate(template, values):
+    path = os.path.join(os.path.dirname(__file__), "templates", template)
+    with open(path) as f:
+        lines = f.readlines()
+    s = "".join(lines)
+    for name,value in values.iteritems():
+        s = s.replace(name, value)
+    return s
+
 def tempFolder():
     tempDir = os.path.join(unicode(QDir.tempPath()), 'webappbuilder')
     if not QDir(tempDir).exists():

@@ -211,25 +211,22 @@ showAttributesTable_ = function() {
         this.sel.className = "form-control";
         this_ = this;
         this.sel.onchange = function(){
-            var lyr = null;
-            var lyrs = map.getLayers().getArray().slice().reverse();
-            for (i = 0; i < lyrs.length; i++){
-                if (lyrs[i].get('title') == this.value){
-                    this_.currentLayer = lyrs[i];
+            for (i = 0; i < selectableLayersList.length; i++){
+                if (selectableLayersList[i].get('title') == this.value){
+                    this_.currentLayer = selectableLayersList[i];
                     break;
                 }
             }
             this_.renderTable();
         };
-        var lyrs = map.getLayers().getArray().slice().reverse();
-        for (var i = 0, l; i < lyrs.length; i++) {
-            l = lyrs[i];
-            if (l.get('title') && l instanceof ol.layer.Vector) {
-                var option = document.createElement('option');
-                option.value = option.textContent = l.get('title');
-                this.sel.appendChild(option);
-            }
+
+        for (var i = 0, l; i < selectableLayersList.length; i++) {
+            l = selectableLayersList[i];
+            var option = document.createElement('option');
+            option.value = option.textContent = l.get('title');
+            this.sel.appendChild(option);
         }
+
         this.formContainer.appendChild(this.sel);
     };
 
@@ -238,12 +235,13 @@ showAttributesTable_ = function() {
     this.panel.style.display = 'block';
 
     var closer = document.getElementById('attributes-table-closer');
-    closer.onclick = function() {
-        this_.panel.style.display = 'none';
-        closer.blur();
-        return false;
-    };
-
+    if (closer){
+        closer.onclick = function() {
+            this_.panel.style.display = 'none';
+            closer.blur();
+            return false;
+        };
+    }
     $("html").css("cursor", "default");
 
 };
@@ -665,11 +663,13 @@ openChart = function(c){
 
     var this_ = this;
     var closer = document.getElementById('chart-panel-closer');
-    closer.onclick = function() {
-        chartPanel.style.display = 'none';
-        closer.blur();
-        return false;
-    };
+    if (closer){
+        closer.onclick = function() {
+            chartPanel.style.display = 'none';
+            closer.blur();
+            return false;
+        };
+    }
 };
 
 //===========================================
@@ -687,10 +687,12 @@ showQueryPanel = function(){
     }
 
     var close = document.getElementById('btn-close-query');
-    close.onclick = function() {
-        document.getElementById('query-panel').style.display = 'none';
-        return false;
-    };
+    if (close){
+        close.onclick = function() {
+            document.getElementById('query-panel').style.display = 'none';
+            return false;
+        };
+    }
 
     var NEW_SELECTION = 0;
     var ADD_TO_SELECTION = 1;

@@ -11,6 +11,7 @@ from utils import *
 from settings import *
 import json
 from bs4 import BeautifulSoup as bs
+import importlib
 
 
 dragBoxConditions = {"Not enabled": "ol.events.condition.never",
@@ -100,6 +101,21 @@ def writeOL(appdef, folder, writeLayersData, progress):
     return indexFilepath
 
 def writeWebApp(appdef, folder):
+    theme = appdef["Settings"]["Theme"]["Name"]
+    try:
+        module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
+    except ImportError:
+        print "import"
+        return _writeWebApp(appdef, folder)
+    if hasattr(module, 'writeWebApp'):
+        print "ok"
+        func = getattr(module, 'writeWebApp')
+        return func(appdef, folder)
+    else:
+        print "func"
+        return _writeWebApp(appdef, folder)
+
+def _writeWebApp(appdef, folder):
     layers = appdef["Layers"]
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
@@ -299,7 +315,7 @@ def writeWebApp(appdef, folder):
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
-        logo = '<img class="pull-left" style="margin:5px;height:calc(100%-10px);" src="logo.png"></img>'
+        logo = '<img class="pull-left" style="margin:5px;height:calc(100%%-10px);" src="logo.png"></img>'
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
     else:
@@ -384,14 +400,6 @@ def writeLayersAndGroups(appdef, folder):
 
 
 
-def replaceInTemplate(template, values):
-    path = os.path.join(os.path.dirname(__file__), "templates", template)
-    with open(path) as f:
-        lines = f.readlines()
-    s = "".join(lines)
-    for name,value in values.iteritems():
-        s = s.replace(name, value)
-    return s
 
 def bounds(useCanvas, layers):
     print useCanvas
