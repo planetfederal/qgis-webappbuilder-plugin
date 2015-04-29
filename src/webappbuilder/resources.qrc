@@ -1,12 +1,8 @@
 <RCC>
   <qresource prefix="/plugins/qgis2ol">
-    <file>icons/mapquestlabels.png</file>
-    <file>icons/mapquestaerial.png</file>
-    <file>icons/mapquest.png</file>
     <file>themes/basic/basic.png</file>
-    <file>icons/osm.png</file>
-    <file>icons/watercolor.png</file>
-    <file>icons/toner.png</file>
+    <file>icons/minus.png</file>
+    <file>icons/plus.png</file>
     <file>icons/export.png</file>
     <file>icons/group.gif</file>
     <file>icons/layer.png</file>

@@ -224,6 +224,45 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLineEdit" name="filterLayersBox">
+           <property name="placeholderText">
+            <string>Enter text to filter layers list...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="expandLayersButton">
+           <property name="toolTip">
+            <string>Expand layers</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/plus.png</normaloff>:/plugins/qgis2ol/icons/plus.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="collapseLayersButton">
+           <property name="toolTip">
+            <string>Collapase layers</string>
+           </property>
+           <property name="text">
+            <string>-</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/qgis2ol/icons/minus.png</normaloff>:/plugins/qgis2ol/icons/minus.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QTreeWidget" name="layersTree">
          <property name="minimumSize">
           <size>

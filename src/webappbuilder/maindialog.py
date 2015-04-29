@@ -61,6 +61,9 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
+        self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
+        self.collapseLayersButton.clicked.connect(self.collapseLayers)
+        self.filterLayersBox.textChanged.connect(self.filterLayers)
         widgetButtons = {self.attributesTableButton: "Attributes table",
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
@@ -136,6 +139,31 @@ class MainDialog(QDialog, Ui_MainDialog):
                     usesPostGis = True
         self.geoserverGroupBox.setEnabled(usesGeoServer)
         self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked() and usesPostGis)
+
+    def collapseLayers(self):
+        self.layersTree.collapseAll()
+        for i in xrange(self.layersTree.topLevelItemCount()):
+            item = self.layersTree.topLevelItem(i)
+            if isinstance(item, TreeGroupItem):
+                item.setExpanded(True)
+
+    def filterLayers(self):
+        text = self.filterLayersBox.text()
+        for i in xrange(self.layersTree.topLevelItemCount()):
+            item = self.layersTree.topLevelItem(i)
+            if isinstance(item, TreeLayerItem):
+                itemText = item.text(0)
+                item.setHidden(text != "" and text not in itemText)
+            else:
+                groupVisible = False
+                for j in xrange(item.childCount()):
+                    subitem = item.child(j)
+                    subitemText = subitem.text(0)
+                    hidden = text != "" and text not in subitemText
+                    if not hidden:
+                        groupVisible = True
+                    subitem.setHidden(hidden)
+                item.setHidden(not groupVisible)
 
     def selectLogo(self):
         img = QFileDialog.getOpenFileName(self, "Select image file")
