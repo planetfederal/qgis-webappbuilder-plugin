@@ -1,6 +1,7 @@
 from qgis.core import *
 from PyQt4 import QtCore, QtGui
 from ui_charttooldialog import Ui_ChartToolDialog
+import copy
 
 class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
     def __init__(self, charts, parent):
@@ -9,7 +10,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.charts = charts
-        self._charts = dict(charts)
+        self._charts = copy.deepcopy(charts)
         self.populateLayers()
         self.populateList()
         if self.layers:

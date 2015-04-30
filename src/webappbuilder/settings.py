@@ -1,4 +1,5 @@
 import os
+import copy
 
 class WrongValueException(Exception):
     pass
@@ -51,8 +52,6 @@ def joinElements(els):
 baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
 themes = loadThemes()
-currentTheme = "basic" if "basic" in themes else themes.keys()[0]
-currentCss =  themes[currentTheme]
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
@@ -88,7 +87,6 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                         "Links": {"links":{}}
                         }
 
-widgetsParams = dict(defaultWidgetsParams)
 
 selectedFeaturesStyle = '''new ol.style.Style({
     fill: new ol.style.Fill({
@@ -132,4 +130,16 @@ defaultAppSettings = {
                 "Style for selected features": selectedFeaturesStyle,
                 "Style for highlighted features": highlightedFeaturesStyle}
 
-appSettings = dict(defaultAppSettings)
+
+
+def initialize():
+    global widgetsParams
+    global currentCss
+    global appSettings
+    print defaultWidgetsParams
+    widgetsParams = copy.deepcopy(defaultWidgetsParams)
+    currentTheme = "basic" if "basic" in themes else themes.keys()[0]
+    currentCss =  themes[currentTheme]
+    appSettings = copy.deepcopy(defaultAppSettings)
+
+initialize()

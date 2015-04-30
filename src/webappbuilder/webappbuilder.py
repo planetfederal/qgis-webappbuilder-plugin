@@ -5,6 +5,7 @@ from qgis.core import *
 import resources_rc
 from maindialog import MainDialog
 from appcreator import loadAppdef
+from settings import initialize
 
 
 class WebAppBuilderPlugin:
@@ -33,5 +34,6 @@ class WebAppBuilderPlugin:
                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
                 if ret == QMessageBox.Yes:
                     appdef = loadAppdef(appdefFile)
+        initialize()
         dlg = MainDialog(appdef)
         dlg.exec_()
