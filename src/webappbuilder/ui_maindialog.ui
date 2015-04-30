@@ -1759,6 +1759,20 @@
          </spacer>
         </item>
         <item>
+         <widget class="QPushButton" name="buttonOpen">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonSave">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="buttonCreateApp">
           <property name="text">
            <string>Create App</string>

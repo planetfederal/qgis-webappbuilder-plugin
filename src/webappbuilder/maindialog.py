@@ -9,7 +9,7 @@ from collections import defaultdict
 from olwriter import writeOL
 from qgis.utils import iface
 from appcreator import createApp, WrongAppDefinitionException,\
-    AppDefProblemsDialog
+    AppDefProblemsDialog, loadAppdef, saveAppdef
 import settings
 from types import MethodType
 import webbrowser
@@ -42,8 +42,6 @@ lineIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_line.pn
 polygonIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_polygon.png"))
 rasterIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_raster.jpg"))
 
-
-
 class MainDialog(QDialog, Ui_MainDialog):
 
     items = {}
@@ -64,6 +62,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
         self.collapseLayersButton.clicked.connect(self.collapseLayers)
         self.filterLayersBox.textChanged.connect(self.filterLayers)
+        self.buttonOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+        self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.buttonOpen.clicked.connect(self.openAppdef)
+        self.buttonSave.clicked.connect(self.saveAppdef)
         widgetButtons = {self.attributesTableButton: "Attributes table",
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
@@ -173,6 +175,22 @@ class MainDialog(QDialog, Ui_MainDialog):
     def configureTheme(self):
         dlg = ThemeEditorDialog()
         dlg.exec_()
+
+    def openAppdef(self):
+        appdefFile = QFileDialog.getOpenFileName(self, "Select app definition file", "",
+                                          "Appdef files (*.appdef)")
+        if appdefFile:
+            appdef = loadAppdef(appdefFile)
+            if appdef:
+                self.loadAppdef(appdef)
+                self.tabPanel.setCurrentIndex(0)
+
+
+    def saveAppdef(self):
+        appdefFile = QFileDialog.getSaveFileName(self, "Select app definition file", "",
+                                          "Appdef files (*.appdef)")
+        if appdefFile:
+            saveAppdef(self.createAppDefinition(False), appdefFile)
 
     def loadAppdef(self, appdef):
         self.titleBox.setText(appdef["Settings"]["Title"])

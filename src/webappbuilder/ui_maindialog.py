@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Apr 29 07:53:25 2015
+# Created: Thu Apr 30 08:26:40 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -851,6 +851,14 @@ class Ui_MainDialog(object):
         self.horizontalLayout_2.addWidget(self.progressBar)
         spacerItem6 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem6)
+        self.buttonOpen = QtGui.QPushButton(self.widget)
+        self.buttonOpen.setText(_fromUtf8(""))
+        self.buttonOpen.setObjectName(_fromUtf8("buttonOpen"))
+        self.horizontalLayout_2.addWidget(self.buttonOpen)
+        self.buttonSave = QtGui.QPushButton(self.widget)
+        self.buttonSave.setText(_fromUtf8(""))
+        self.buttonSave.setObjectName(_fromUtf8("buttonSave"))
+        self.horizontalLayout_2.addWidget(self.buttonSave)
         self.buttonCreateApp = QtGui.QPushButton(self.widget)
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
