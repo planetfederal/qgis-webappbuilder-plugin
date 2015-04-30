@@ -188,7 +188,7 @@ html, body {
 /*Attributes table*/
 .attributes-table .table-panel{
     overflow: scroll;
-    height: 90%;
+    height: 85%;
 }
 
 .attributes-table table{

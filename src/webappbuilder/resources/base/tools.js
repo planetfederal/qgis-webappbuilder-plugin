@@ -62,6 +62,7 @@ showAttributesTable_ = function() {
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
             if (idx !== -1){
                 row.className = "row-selected";
+                row.style.display = 'table-row';
                 this_.selectedRowIndices.push(i);
             }
             else{
@@ -85,7 +86,7 @@ showAttributesTable_ = function() {
         this.createButtons();
         var p = document.createElement('p');
         this.panel.appendChild(p);
-        this.currentLayer = map.getLayers().getArray().slice().reverse()[0];
+        this.currentLayer = selectableLayersList[0];
         this.tablePanel = document.createElement('div');
         this.tablePanel.className = 'table-panel';
         this.panel.appendChild(this.tablePanel);
@@ -187,21 +188,25 @@ showAttributesTable_ = function() {
             var rows = this.table.getElementsByTagName("tr");
             for (i = 1; i < rows.length; i++) {
                 (function (idx) {
-                    rows[idx].addEventListener("click",
-                        function () {
-                            feature = layerFeatures[idx - 1];
-                            if (this.className != "row-selected"){
-                                selectInteraction.getFeatures().push(feature);
-                            }
-                            else{
-                                selectInteraction.getFeatures().remove(feature);
-                            }
-                        }, false);
-                })(i);
+                    rows[idx].addEventListener("click",function(){
+                        this_.rowClicked(rows[idx], idx)}, false);
+                    }
+                )(i);
             }
         }
         this.tablePanel.appendChild(this.table);
     };
+
+    this.rowClicked = function(row, idx){
+        layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
+        feature = layerFeatures[idx - 1];
+        if (row.className != "row-selected"){
+            selectInteraction.getFeatures().push(feature);
+        }
+        else{
+            selectInteraction.getFeatures().remove(feature);
+        }
+    }
 
     this.createSelector = function(map) {
         label = document.createElement("label");
