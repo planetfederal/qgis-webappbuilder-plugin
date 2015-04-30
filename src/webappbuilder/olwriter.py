@@ -98,8 +98,15 @@ def writeOL(appdef, folder, writeLayersData, progress):
     with open(indexJsFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
 
+    writeCss(appdef, folder)
     indexFilepath = writeWebApp(appdef, folder)
     return indexFilepath
+
+def writeCss(appdef, folder):
+    cssFilepath = os.path.join(folder, "webapp.css")
+    with open(cssFilepath, "w") as f:
+        f.write(appdef["Settings"]["Theme"]["Css"])
+
 
 def writeWebApp(appdef, folder):
     theme = appdef["Settings"]["Theme"]["Name"]
@@ -335,10 +342,6 @@ def _writeWebApp(appdef, folder):
     pretty=soup.prettify(formatter='html')
     with open(indexFilepath, "w") as f:
         f.write(pretty)
-
-    cssFilepath = os.path.join(folder, "webapp.css")
-    with open(cssFilepath, "w") as f:
-        f.write(appdef["Settings"]["Theme"]["Css"])
     return indexFilepath
 
 
@@ -365,7 +368,6 @@ def writeLayersAndGroups(appdef, folder):
                 group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
-
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()), str(layer.visible).lower()) for layer in layers])
 

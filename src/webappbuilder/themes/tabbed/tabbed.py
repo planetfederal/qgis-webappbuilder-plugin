@@ -252,8 +252,4 @@ def writeWebApp(appdef, folder):
     pretty=soup.prettify(formatter='html')
     with open(indexFilepath, "w") as f:
         f.write(pretty)
-
-    cssFilepath = os.path.join(folder, "webapp.css")
-    with open(cssFilepath, "w") as f:
-        f.write(appdef["Settings"]["Theme"]["Css"])
     return indexFilepath
