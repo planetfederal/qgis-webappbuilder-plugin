@@ -3,20 +3,14 @@ This example shows how to create a different type of web app using the Web App B
 Data
 =====
 
-All data needed for this exercise can be found `here <data/bakeries.zip>`_. T
+All data needed for this exercise can be found `here <data/bakeries.zip>`_. 
 
 Setting up the application in QGIS
 ===================================
 
 Before we use the Web App Builder plugin, we have to set up our data layers in QGIS. The data that we put in the web app will be exactly as it is in QGIS, including the styling. 
 
-Open the QGIS project included in the exercise data. 
-
-
-.. image:: img/qgisproject.png
-	:align: center
-
-There is only one layer and it already has a style that we can use, so there is no need to modify it.
+Open the QGIS project included in the exercise data.  There is only one layer and it already has a style that we can use, so there is no need to modify it.
 
 If you open the attributes table, you will see that the layer has several fields with information about each bakery, and a field named *Text* with a HTML-formatted text which includes that information. We will be using this field for showing the description of each bakery. 
 
@@ -25,8 +19,6 @@ Defining the web app
 =====================
 
 Start the Web App Builder by selecting the *Plugins/Boundless/Web App Builder* menu.
-
-
 
 The following sections describe how to set up the content of each tab in the Web App Builder window
 
