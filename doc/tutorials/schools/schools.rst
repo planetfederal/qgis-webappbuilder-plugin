@@ -6,7 +6,7 @@ This exercise demonstrate how to create a web app using a layer with data for sc
 Data
 =====
 
-All data needed for this exercise can be found :download:`here <data/ecoles.zip>`. The schools layers is based on the original data from the article linked above, converted to a GeoJSON file, with attribute field names translated into english and some of them removed to reduce the size of the file.
+All data needed for this exercise can be found `here <data/ecoles.zip>`_. The schools layers is based on the original data from the article linked above, converted to a GeoJSON file, with attribute field names translated into english and some of them removed to reduce the size of the file.
 
 Also, only schools in metropolitan France are considered, to simplify handling projections (the original file has coordinates using several CRSs...all together in the same file)
 

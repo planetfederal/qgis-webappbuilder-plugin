@@ -3,7 +3,7 @@ This example shows how to create a different type of web app using the Web App B
 Data
 =====
 
-All data needed for this exercise can be found :download:`here <data/bakeries.zip>`. T
+All data needed for this exercise can be found `here <data/bakeries.zip>`_. T
 
 Setting up the application in QGIS
 ===================================
