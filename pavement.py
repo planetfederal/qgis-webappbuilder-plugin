@@ -20,6 +20,7 @@ options(
         excludes = [
             'test-output',
             'test',
+            'ext-src',
             'coverage*.*',
             'nose*.*',            
             '*.pyc'
@@ -99,6 +100,20 @@ def package(options):
 
 
 def make_zip(zip, options):
+    metadata_file = options.plugin.source_dir / "metadata.txt"
+    cfg = ConfigParser.SafeConfigParser()
+    cfg.optionxform = str
+    cfg.read(metadata_file)
+    base_version = cfg.get('general', 'version')
+    head_path = path('.git/HEAD')
+    head_ref = head_path.open('rU').readline().strip()[5:]
+    ref_file = path(".git/" + head_ref)
+    ref = ref_file.open('rU').readline().strip()
+    cfg.set("general", "version", "%s-%s-%s" % (base_version, datetime.now().strftime("%Y%m%d"), ref))
+    
+    buf = StringIO()
+    cfg.write(buf)
+    zip.writestr("webappbuilder/metadata.txt", buf.getvalue())
 
     excludes = set(options.plugin.excludes)
 
@@ -107,7 +122,8 @@ def make_zip(zip, options):
     def filter_excludes(files):
         if not files: return []
         # to prevent descending into dirs, modify the list in place
-        for f in files:
+        for i in xrange(len(files) - 1, -1, -1):
+            f = files[i]
             if exclude(f):
                 debug('excluding %s' % f)
                 files.remove(f)
@@ -118,5 +134,3 @@ def make_zip(zip, options):
             relpath = os.path.relpath(root, 'src')
             zip.write(path(root) / f, path(relpath) / f)
         filter_excludes(dirs)
-
-    
