@@ -8,7 +8,7 @@ Attributes table
 
 The attributes table displays attributes associated to features of a given layer.  
 
-.. image:: img/configuretheme.png
+.. image:: img/attributestable.png
 	:align: center
 
 Selected features for the layer are shown in a differente color.
@@ -29,9 +29,6 @@ Full screen
 
 A button to turn on/off the full screen mode.
 
-.. image:: img/fullscreen.png
-	:align: center
-
 Layers list
 **********************
 
@@ -39,6 +36,7 @@ A control with the list of layers in the map.
 
 .. image:: img/layerslist.png
 	:align: center
+
 The following properties can be configured in its configuration dialog.
 
 
@@ -57,14 +55,17 @@ Mouse position
 
 A control that displays the current coordinates of the mouse as it moves over the map.
 
-.. image:: img/configurelayerslist.png
+.. image:: img/mouseposition.png
 	:align: center
 
 The following properties can be configured in its configuration dialog.
 
+.. image:: img/configuremouseposition.png
+	:align: center
+
 - *Coordinate format*
 - *Projection*
-- *undefinedHTML*
+- *undefinedHTML*: the text to show when the coordinate under the mouse cursor cannot be computed.
 
 North arrow
 **********************
@@ -111,24 +112,18 @@ Zoom controls
 
 Controls to zoom the map in and out.
 
-.. image:: img/zoomcontrols.png
-	:align: center
 
 Zoom slider
 **********************
 
 A slider to control the zoom level.
 
-.. image:: img/zoomslider.png
-	:align: center
 
 3D view
 **********************
 
 A button to turn on/off the 3D mode.
 
-.. image:: img/3dview.png
-	:align: center
 
 About panel
 **********************
@@ -142,7 +137,7 @@ A button to turn on/off the full screen mode.
 
 The following properties can be configured in its configuration dialog.
 
-.. image:: img/configurescalebar.png
+.. image:: img/configureabout.png
 	:align: center	
 
 - *content*: The content of the panel. Accepts HTML-formatted text
@@ -156,9 +151,6 @@ Adds an option to export the current map view to an image file.
 
 Geolocation
 **********************
-
-.. image:: img/geolocation.png
-	:align: center	
 
 A control to enable geolocation and use the current position of the user in the map
 
