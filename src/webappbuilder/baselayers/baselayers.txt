@@ -79,7 +79,7 @@ new ol.layer.Tile({
 new ol.layer.Tile({
 	type: 'base',
 	title: 'OSM Mapnik',
-	source: source: new ol.source.OSM()
+	source: new ol.source.OSM()
 })
 
 /*MapQuest roads*/
