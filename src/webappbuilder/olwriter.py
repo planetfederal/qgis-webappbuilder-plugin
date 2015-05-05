@@ -68,7 +68,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
                         url : '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
                     });
                     scene.terrainProvider = terrainProvider;
-                    map.addControl(new CesiumControl(ol3d))'''
+                    map.addControl(new ol.control.CesiumControl(ol3d))'''
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
