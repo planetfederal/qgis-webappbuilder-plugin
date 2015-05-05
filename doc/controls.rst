@@ -75,6 +75,14 @@ An arrow that indicates the North direction
 .. image:: img/northarrow.png
 	:align: center
 
+Home button
+**********************
+
+A button to go back to the initial map extent.
+
+.. image:: img/homebutton.png
+	:align: center	
+
 Overview map
 **********************
 
