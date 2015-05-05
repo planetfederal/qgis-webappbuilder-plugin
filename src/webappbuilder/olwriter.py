@@ -459,8 +459,9 @@ def layerToJavascript(applayer, settings, deploy):
     workspace = safeName(settings["Title"])
     layer = applayer.layer
     if scaleVisibility and layer.hasScaleBasedVisibility():
-        minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale())
-        maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale())
+        scaleToResolution = 3571.42
+        minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale() / scaleToResolution)
+        maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale() / scaleToResolution)
     else:
         minResolution = ""
         maxResolution = ""
