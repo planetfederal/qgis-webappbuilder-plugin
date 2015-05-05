@@ -113,14 +113,11 @@ def writeWebApp(appdef, folder):
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
     except ImportError:
-        print "import"
         return _writeWebApp(appdef, folder)
     if hasattr(module, 'writeWebApp'):
-        print "ok"
         func = getattr(module, 'writeWebApp')
         return func(appdef, folder)
     else:
-        print "func"
         return _writeWebApp(appdef, folder)
 
 def _writeWebApp(appdef, folder):
@@ -142,7 +139,6 @@ def _writeWebApp(appdef, folder):
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
-
     if "Links" in widgets:
         links = widgets["Links"]["links"]
         for name, url in links.iteritems():
@@ -215,9 +211,9 @@ def _writeWebApp(appdef, folder):
                               %s
                             </ul>
                           </li>''' % li)
-        imports.append('''<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
-                        <link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" rel="stylesheet" type="text/css"/>
+        imports.append('''<script src="./resources/d3.min.js"></script>
+                        <script src="./resources/c3.min.js"></script>
+                        <link href="./resources/c3.min.css" rel="stylesheet" type="text/css"/>
                         <script src="./charts.js"></script>''')
         panels.append('''<div class="chart-panel" id="chart-panel">
                         <span class="chart-panel-info" id="chart-panel-info"></span>
