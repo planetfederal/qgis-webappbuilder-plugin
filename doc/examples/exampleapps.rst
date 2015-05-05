@@ -5,6 +5,6 @@ Here is a list of example apps that demonstrate the kind of them that you can cr
 
 All applications are based on `this dataset <exampledata.zip>`_. Along with layers data and a QGIS project, the dataset contains *appdef* files that can be used to create each of the example apps described here.
 
-- `A narrative map that explores the lakes in Alaska <http://boundlessgeo.github.io/qgis-app-builder/lakes.html>`_
+- `A narrative map that explores the lakes in Alaska <http://boundlessgeo.github.io/qgis-app-builder/lakes/index.html>`_
 
-- `A complete web app that allows exploring Alaska data in detail <http://boundlessgeo.github.io/qgis-app-builder/lakes.html>`_
+- `A complete web app that allows exploring Alaska data in detail <http://boundlessgeo.github.io/qgis-app-builder/tabbed/index.html>`_
