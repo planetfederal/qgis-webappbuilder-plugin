@@ -570,18 +570,12 @@ button.ol-full-screen-true:after {
   width: 1.8em;
 }
 
-/*Zoom to extent*/
-.ol-zoom-extent {
+/*Home button*/
+.home-button {
   top: 70px;
   left: .5em;
 }
 
-.ol-zoom-extent button {
-  line-height: 1.4em;
-}
-.ol-zoom-extent button:after {
-  content: "E";
-}
 
 /*Measure tool*/
 .tooltip {

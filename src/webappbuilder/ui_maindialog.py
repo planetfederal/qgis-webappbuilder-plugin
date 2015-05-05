@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Apr 30 08:26:40 2015
+# Created: Tue May 05 10:10:01 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 737, 314))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.widgetBaseLayers.setObjectName(_fromUtf8("widgetBaseLayers"))
         self.gridLayoutBaseLayers = QtGui.QGridLayout(self.widgetBaseLayers)
         self.gridLayoutBaseLayers.setObjectName(_fromUtf8("gridLayoutBaseLayers"))
@@ -115,7 +115,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 737, 313))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.widgetBaseOverlays.setObjectName(_fromUtf8("widgetBaseOverlays"))
         self.gridLayoutBaseOverlays = QtGui.QGridLayout(self.widgetBaseOverlays)
         self.gridLayoutBaseOverlays.setObjectName(_fromUtf8("gridLayoutBaseOverlays"))
@@ -381,9 +381,9 @@ class Ui_MainDialog(object):
         self.cesiumButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.cesiumButton.setObjectName(_fromUtf8("cesiumButton"))
         self.gridLayout_3.addWidget(self.cesiumButton, 3, 0, 1, 1)
-        self.zoomToExtentButton = QtGui.QToolButton(self.widgetsTab)
-        self.zoomToExtentButton.setMinimumSize(QtCore.QSize(134, 100))
-        self.zoomToExtentButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.homeButton = QtGui.QToolButton(self.widgetsTab)
+        self.homeButton.setMinimumSize(QtCore.QSize(134, 100))
+        self.homeButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -398,12 +398,12 @@ class Ui_MainDialog(object):
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.zoomToExtentButton.setIcon(icon3)
-        self.zoomToExtentButton.setIconSize(QtCore.QSize(32, 32))
-        self.zoomToExtentButton.setCheckable(True)
-        self.zoomToExtentButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.zoomToExtentButton.setObjectName(_fromUtf8("zoomToExtentButton"))
-        self.gridLayout_3.addWidget(self.zoomToExtentButton, 3, 1, 1, 1)
+        self.homeButton.setIcon(icon3)
+        self.homeButton.setIconSize(QtCore.QSize(32, 32))
+        self.homeButton.setCheckable(True)
+        self.homeButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.homeButton.setObjectName(_fromUtf8("homeButton"))
+        self.gridLayout_3.addWidget(self.homeButton, 3, 1, 1, 1)
         self.mousePositionButton = QtGui.QToolButton(self.widgetsTab)
         self.mousePositionButton.setMinimumSize(QtCore.QSize(134, 100))
         self.mousePositionButton.setMaximumSize(QtCore.QSize(100, 100))
@@ -904,7 +904,7 @@ class Ui_MainDialog(object):
         self.attributionButton.setText(_translate("MainDialog", "Attribution", None))
         self.zoomSliderButton.setText(_translate("MainDialog", "Zoom Slider", None))
         self.cesiumButton.setText(_translate("MainDialog", "3D View", None))
-        self.zoomToExtentButton.setText(_translate("MainDialog", "Zoom to Extent", None))
+        self.homeButton.setText(_translate("MainDialog", "Home button", None))
         self.mousePositionButton.setText(_translate("MainDialog", "Mouse Position", None))
         self.geolocationButton.setText(_translate("MainDialog", "Geolocation", None))
         self.label_15.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Tools and widgets </span></p></body></html>", None))

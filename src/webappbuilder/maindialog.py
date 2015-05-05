@@ -76,7 +76,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.scaleBarButton: "Scale bar",
                         self.zoomControlsButton: "Zoom controls",
                         self.zoomSliderButton: "Zoom slider",
-                        self.zoomToExtentButton: "Zoom to extent",
+                        self.homeButton: "Home button",
                         self.cesiumButton: "3D view",
                         self.aboutPanelButton: "About panel",
                         self.exportAsImageButton: "Export as image",

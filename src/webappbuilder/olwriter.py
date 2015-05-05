@@ -49,8 +49,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
         s = json.dumps(widgets["Mouse position"])
         s = s.replace('"%s"' % coord, coord)
         controls.append("new ol.control.MousePosition(%s)" % s)
-    if "Zoom to extent" in widgets:
-        controls.append("new ol.control.ZoomToExtent()")
+    if "Home button" in widgets:
+        controls.append("new ol.control.HomeButton()")
     if "Zoom slider" in widgets:
         controls.append("new ol.control.ZoomSlider()")
     if "North arrow" in widgets:
