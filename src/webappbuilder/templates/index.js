@@ -159,16 +159,18 @@ var onSingleClick = function(evt) {
     var popupText = '';
     var currentFeature;
     var currentFeatureKeys;
+    var toAdd = [];
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
-        if (feature){
+        if (feature) {
             currentFeature = feature;
             currentFeatureKeys = currentFeature.getKeys();
             var field = popupLayers[singleLayersList.indexOf(layer)];
             if (field == NO_POPUP) {} else if (field == ALL_ATTRIBUTES) {
                 for (var i = 0; i < currentFeatureKeys.length; i++) {
                     if (currentFeatureKeys[i] != 'geometry') {
-                        popupField = "<b>" + currentFeatureKeys[i] + '</b>: ' + currentFeature.get(currentFeatureKeys[i]);
+                        popupField = "<b>" + currentFeatureKeys[i] + '</b>: '
+                            + currentFeature.get(currentFeatureKeys[i]);
                         popupText = popupText + popupField + '<br>';
                     }
                 }
@@ -178,9 +180,20 @@ var onSingleClick = function(evt) {
                     popupText = "<b>" + field + '</b>: ' + value;
                 }
             }
+            if (toAdd.indexOf(feature) == -1){
+                toAdd.push(feature);
+            }
         }
     });
-
+    if (currentInteraction == null){
+        selectedFeatures.clear();
+        if (toAdd.length !== 0){
+            isDuringMultipleSelection = true;
+            selectedFeatures.extend(toAdd.slice(0, -1));
+            isDuringMultipleSelection = false;
+            selectedFeatures.push(toAdd[toAdd.length - 1]);
+        }
+    }
     if (popupText) {
         overlayPopup.setPosition(coord);
         content.innerHTML = popupText;
@@ -190,8 +203,6 @@ var onSingleClick = function(evt) {
         closer.blur();
     }
 };
-
-
 map.on('pointermove', function(evt) {
   onPointerMove(evt);
 });

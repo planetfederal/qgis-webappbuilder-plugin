@@ -381,13 +381,10 @@ measureTool = function(measureType){
     }
 
     if (measureType === null){
-        //map.removeLayer(measureVector);
         for (i=0; i<measureTooltips.length; i++){
             map.removeOverlay(measureTooltips[i]);
         }
         measureSource.clear();
-        //map.addInteraction(selectInteraction);
-        selectInteraction.setActive(true);
         map.on('pointermove', onPointerMove);
         return;
     }
@@ -461,7 +458,6 @@ measureTool = function(measureType){
           }, this);
 
 
-      selectInteraction.setActive(false);
       map.addInteraction(measureInteraction);
       currentInteraction = measureInteraction;
       createMeasureTooltip();
@@ -855,9 +851,9 @@ selectByRectangle = function(){
 
 //===========================================================================
 selectSingleFeature = function(){
-    selectInteraction.setActive(true);
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
+        currentInteraction = null;
     }
 };
 
@@ -914,7 +910,6 @@ selectByPolygon = function(){
 
       map.addInteraction(selectByPolygonInteraction);
       currentInteraction = selectByPolygonInteraction;
-      selectInteraction.setActive(false);
 
     };
 
