@@ -1,0 +1,4 @@
+#!c:\python27\python.exe
+# EASY-INSTALL-SCRIPT: 'jsbeautifier==1.5.5','js-beautify'
+__requires__ = 'jsbeautifier==1.5.5'
+__import__('pkg_resources').run_script('jsbeautifier==1.5.5', 'js-beautify')
