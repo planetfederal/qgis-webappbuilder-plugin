@@ -25,6 +25,11 @@ class WebAppBuilderPlugin:
 
     def unload(self):
         self.iface.removePluginMenu("Boundless", self.action)
+        try:
+            from github import removeUpdatePluginMenu
+            removeUpdatePluginMenu("Boundless")
+        except:
+            pass
 
     def run(self):
         appdef = None
