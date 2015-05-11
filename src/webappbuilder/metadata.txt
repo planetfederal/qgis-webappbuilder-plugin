@@ -12,7 +12,7 @@
 name=Web App Builder
 qgisMinimumVersion=2.0
 description=Creates OL3-based web apps
-version=1.0
+version=0.1
 author=Victor Olaya
 email=volaya@boundlessgeo.com
 
