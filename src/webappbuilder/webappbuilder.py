@@ -7,7 +7,6 @@ from maindialog import MainDialog
 from appcreator import loadAppdef
 from settings import initialize
 
-
 class WebAppBuilderPlugin:
 
     def __init__(self, iface):
@@ -18,6 +17,11 @@ class WebAppBuilderPlugin:
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
         self.iface.addPluginToMenu("Boundless", self.action)
+        try:
+            from github import addUpdatePluginMenu
+            addUpdatePluginMenu("Boundless", "volaya", "webappbuilder")
+        except:
+            pass
 
     def unload(self):
         self.iface.removePluginMenu("Boundless", self.action)
