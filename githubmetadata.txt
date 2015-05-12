@@ -1,3 +1,0 @@
-[General]
-sourceFolder=src/webappbuilder
-dependencies=requests,httplib2
