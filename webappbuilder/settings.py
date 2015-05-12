@@ -136,7 +136,6 @@ def initialize():
     global widgetsParams
     global currentCss
     global appSettings
-    print defaultWidgetsParams
     widgetsParams = copy.deepcopy(defaultWidgetsParams)
     currentTheme = "basic" if "basic" in themes else themes.keys()[0]
     currentCss =  themes[currentTheme]

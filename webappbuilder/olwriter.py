@@ -25,7 +25,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
     if not os.path.exists(dst):
-        shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "base"), dst)
+        shutil.copytree(os.path.join(os.path.dirname(__file__), "resources"), dst)
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
@@ -69,9 +69,6 @@ def writeOL(appdef, folder, writeLayersData, progress):
                     });
                     scene.terrainProvider = terrainProvider;
                     map.addControl(new ol.control.CesiumControl(ol3d))'''
-        dst = os.path.join(folder, "resources", "cesium")
-        if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
     else:
         cesium = ""
 
@@ -311,7 +308,7 @@ def _writeWebApp(appdef, folder):
         imports.append('<script src="./resources/bootstrap-slider.js"></script>')
         imports.append('<link href="./resources/slider.css" rel="stylesheet"/>')
     if "3D view" in widgets:
-        imports.append('<script src="./resources/cesium/Cesium.js"></script>')
+        imports.append('<script src="./resources/Cesium.js"></script>')
         imports.append('<script src="./resources/ol3cesium.js"></script>')
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
