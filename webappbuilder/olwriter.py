@@ -24,8 +24,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     progress.setText("Creating local files (3/3)")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
-    if not os.path.exists(dst):
-        shutil.copytree(os.path.join(os.path.dirname(__file__), "resources"), dst)
+    shutil.copytree(os.path.join(os.path.dirname(__file__), "resources"), dst)
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
