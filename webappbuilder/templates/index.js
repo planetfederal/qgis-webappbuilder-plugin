@@ -64,9 +64,6 @@ var currentInteraction;
 
 @CESIUM@
 
-var NO_POPUP = 0
-var ALL_ATTRIBUTES = 1
-
 @POPUPLAYERS@
 
 var highlightOverlay = new ol.FeatureOverlay({
@@ -99,27 +96,26 @@ var onPointerMove = function(evt) {
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
-    var popupField;
-    var popupText = '';
+    var popupText = "";
     var currentFeature;
-    var currentFeatureKeys;
+    var toAdd = [];
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
-        if (feature){
+        if (feature) {
             currentFeature = feature;
-            currentFeatureKeys = currentFeature.getKeys();
-            var field = popupLayers[singleLayersList.indexOf(layer)];
-            if (field == NO_POPUP) {} else if (field == ALL_ATTRIBUTES) {
-                for (var i = 0; i < currentFeatureKeys.length; i++) {
-                    if (currentFeatureKeys[i] != 'geometry') {
-                        popupField = "<b>" + currentFeatureKeys[i] + '</b>: ' + currentFeature.get(currentFeatureKeys[i]);
-                        popupText = popupText + popupField + '<br>';
+            if (popupText == "") {
+                popupText = popupLayers[singleLayersList.indexOf(layer)];
+                if (popupText) {
+                    var currentFeatureKeys = currentFeature.getKeys();
+                    for (var i = 0; i < currentFeatureKeys.length; i++) {
+                        if (currentFeatureKeys[i] != 'geometry') {
+                            var value = currentFeature.get(currentFeatureKeys[i]);
+                            if (value) {
+                                popupText = popupText.replace("[" + currentFeatureKeys[i] + "]",
+                                    String(currentFeature.get(currentFeatureKeys[i])))
+                            }
+                        }
                     }
-                }
-            } else {
-                var value = feature.get(field);
-                if (value) {
-                    popupText = "<b>" + field + '</b>: ' + value;
                 }
             }
         }
@@ -155,33 +151,27 @@ var onSingleClick = function(evt) {
     }
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
-    var popupField;
-    var popupText = '';
+    var popupText = "";
     var currentFeature;
-    var currentFeatureKeys;
     var toAdd = [];
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
         if (feature) {
             currentFeature = feature;
-            currentFeatureKeys = currentFeature.getKeys();
-            var field = popupLayers[singleLayersList.indexOf(layer)];
-            if (field == NO_POPUP) {} else if (field == ALL_ATTRIBUTES) {
-                for (var i = 0; i < currentFeatureKeys.length; i++) {
-                    if (currentFeatureKeys[i] != 'geometry') {
-                        popupField = "<b>" + currentFeatureKeys[i] + '</b>: '
-                            + currentFeature.get(currentFeatureKeys[i]);
-                        popupText = popupText + popupField + '<br>';
+            if (popupText == "") {
+                popupText = popupLayers[singleLayersList.indexOf(layer)];
+                if (popupText) {
+                    var currentFeatureKeys = currentFeature.getKeys();
+                    for (var i = 0; i < currentFeatureKeys.length; i++) {
+                        if (currentFeatureKeys[i] != 'geometry') {
+                            var value = currentFeature.get(currentFeatureKeys[i]);
+                            if (value) {
+                                popupText = popupText.replace("[" + currentFeatureKeys[i] + "]",
+                                    String(currentFeature.get(currentFeatureKeys[i])))
+                            }
+                        }
                     }
                 }
-            } else {
-                var value = feature.get(field);
-                if (value) {
-                    popupText = "<b>" + field + '</b>: ' + value;
-                }
-            }
-            if (toAdd.indexOf(feature) == -1){
-                toAdd.push(feature);
             }
         }
     });

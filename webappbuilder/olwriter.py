@@ -24,14 +24,15 @@ def writeOL(appdef, folder, writeLayersData, progress):
     progress.setText("Creating local files (3/3)")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
-    shutil.copytree(os.path.join(os.path.dirname(__file__), "resources"), dst)
+    resourcesFolder = os.path.join(os.path.dirname(__file__), "resources")
+    shutil.rmtree(dst)
+    shutil.copytree(resourcesFolder, dst)
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
     exportStyles(layers, folder, appdef["Settings"])
     writeLayersAndGroups(appdef, folder)
-    popupLayers = "popupLayers = [%s];" % ",".join(['%s' % str(layer.popup)
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    popupLayers = "popupLayers = [%s];" % ",".join(["'%s'" % layer.popup for layer in layers])
     controls = []
     widgets = appdef["Widgets"]
     if "Scale bar" in widgets:

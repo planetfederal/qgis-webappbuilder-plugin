@@ -5,9 +5,6 @@ from qgis.core import *
 import subprocess
 import uuid
 
-NO_POPUP = "NO_POPUP"
-ALL_ATTRIBUTES = "ALL_ATTRIBUTES"
-
 METHOD_FILE= 0
 METHOD_WMS = 1
 METHOD_WFS = 2

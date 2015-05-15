@@ -23,6 +23,7 @@ from bookmarkseditor import BookmarksEditorDialog
 from charttooldialog import ChartToolDialog
 from settings import WrongValueException
 from linksdialog import LinksDialog
+from popupeditor import PopupEditorDialog
 
 
 class Layer():
@@ -608,6 +609,7 @@ class TreeLayerItem(QTreeWidgetItem):
                  }
                 '''
     def __init__(self, layer, tree):
+        self.popup = ""
         self.combos = []
         QTreeWidgetItem.__init__(self)
         self.layer = layer
@@ -643,14 +645,15 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.connTypeCombo.currentIndexChanged.connect(self.connTypeChanged)
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Info popup content")
-            self.popupCombo = QComboBox()
-            self.popupCombo.setStyleSheet(self.comboStyle)
-            options = ["No popup", "Show all attributes"]
-            options.extend(["FIELD:" + f.name() for f in self.layer.pendingFields()])
-            for option in options:
-                self.popupCombo.addItem(option)
+            self.popupLabel = QLabel()
+            self.popupLabel.setText("<a href='#'>Edit</a>")
+            tree.setItemWidget(self.popupItem, 1, self.popupLabel)
+            def edit():
+                dlg = PopupEditorDialog(self.popup, [f.name() for f in self.layer.pendingFields()])
+                dlg.exec_()
+                self.popup = dlg.text.strip()
+            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), edit)
             self.addChild(self.popupItem)
-            tree.setItemWidget(self.popupItem, 1, self.popupCombo)
             self.allowSelectionItem = QTreeWidgetItem(self)
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
@@ -682,7 +685,7 @@ class TreeLayerItem(QTreeWidgetItem):
             current = self.connTypeCombo.currentIndex()
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             self.popupItem.setDisabled(disable)
-            self.popupCombo.setDisabled(disable)
+            self.popupLabel.setDisabled(disable)
             self.clusterItem.setDisabled(disable)
             self.clusterDistanceItem.setDisabled(disable)
         except:
@@ -698,21 +701,12 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             pass
         try:
-            self.popupCombo.setDisabled(disabled)
+            self.popupLabel.setDisabled(disabled)
         except:
             pass
         if not disabled:
             self.connTypeChanged()
 
-    @property
-    def popup(self):
-        try:
-            idx = self.popupCombo.currentIndex()
-            options = [utils.NO_POPUP, utils.ALL_ATTRIBUTES]
-            popup = options[idx] if idx < 2 else '"%s"' % self.popupCombo.currentText()[len("FIELD:"):]
-        except:
-            popup = utils.NO_POPUP
-        return popup
 
     @property
     def allowSelection(self):
@@ -766,14 +760,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.connTypeCombo.setCurrentIndex(method)
         except:
             pass
-        options = [utils.NO_POPUP, utils.ALL_ATTRIBUTES]
-        try:
-            if popup in options:
-                self.popupCombo.setCurrentIndex(options.index(popup))
-            else:
-                self.popupCombo.setCurrentIndex(self.popupCombo.findText(popup))
-        except:
-            pass
+        self.popup = popup
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)
