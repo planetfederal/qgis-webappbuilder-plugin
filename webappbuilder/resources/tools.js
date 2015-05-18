@@ -563,6 +563,7 @@ openChart = function(c){
             values = {};
             for (i = 0; i < selectedFeatures.length; i++) {
                 if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
+                    selectedCount++;
                     cat = selectedFeatures[i].get(categoryField);
                     if (cat == null){
                         continue;
