@@ -34,7 +34,7 @@ var selectInteraction = new ol.interaction.Select({
   style: @SELECTIONSTYLE@,
   toggleCondition: ol.events.condition.shiftKeyOnly,
   filter: function(feature, layer){
-    features = f.get("features")
+    features = feature.get("features")
     if (features){
         return false;
     }
