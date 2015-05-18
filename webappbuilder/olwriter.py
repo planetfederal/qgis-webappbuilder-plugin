@@ -25,7 +25,8 @@ def writeOL(appdef, folder, writeLayersData, progress):
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
     resourcesFolder = os.path.join(os.path.dirname(__file__), "resources")
-    shutil.rmtree(dst)
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
     shutil.copytree(resourcesFolder, dst)
     layers = appdef["Layers"]
     if writeLayersData:
