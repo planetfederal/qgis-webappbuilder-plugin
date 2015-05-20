@@ -686,6 +686,7 @@ class TreeLayerItem(QTreeWidgetItem):
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             self.popupItem.setDisabled(disable)
             self.popupLabel.setDisabled(disable)
+            self.allowSelectionItem.setDisabled(disable)
             self.clusterItem.setDisabled(disable)
             self.clusterDistanceItem.setDisabled(disable)
         except:
