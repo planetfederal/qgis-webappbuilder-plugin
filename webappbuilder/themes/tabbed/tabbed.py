@@ -108,7 +108,7 @@ def writeWebApp(appdef, folder):
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         tabs.append('<li><a href="#charts-tab" role="tab" data-toggle="tab">Charts</a></li>')
-        imports.append('''<script src="./resources/d3/3.5.5/d3.min.js"></script>
+        imports.append('''<script src="./resources/d3.min.js"></script>
                         <script src="./resources/c3.min.js"></script>
                         <link href="./resources/c3.min.css" rel="stylesheet" type="text/css"/>
                         <script src="./charts.js"></script>''')
