@@ -311,9 +311,6 @@ def _writeWebApp(appdef, folder):
     if "3D view" in widgets:
         imports.append('<script src="./resources/Cesium.js"></script>')
         imports.append('<script src="./resources/ol3cesium.js"></script>')
-        dst = os.path.join(folder, "resources", "cesium")
-        if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
