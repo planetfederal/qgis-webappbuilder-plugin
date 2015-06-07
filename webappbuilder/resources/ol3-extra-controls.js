@@ -302,7 +302,12 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
         if (layer instanceof ol.layer.Group){
             name = "<b>" + name + "</b>"
         }
-        div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
+        if (layer.getVisible()){
+            div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
+        }
+        else{
+            div += "<span><i class='layer-check glyphicon glyphicon-unchecked'></i> " + name + "</span>";
+        }
         if (!(layer instanceof ol.layer.Group)){
             if (this.showOpacity){
                 div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
