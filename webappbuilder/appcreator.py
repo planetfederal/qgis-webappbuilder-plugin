@@ -25,12 +25,11 @@ def createApp(appdef, deployData, folder, progress):
 		usesPostgis = False
 		layers = appdef["Layers"]
 		for layer in layers:
-			if layer.method != utils.METHOD_FILE:
-				if layer.layer.type() == layer.layer.VectorLayer and layer.layer.providerType().lower() != "wfs":
-					usesPostgis = True
-					usesGeoServer = True
-				elif layer.layer.type() == layer.layer.RasterLayer and layer.layer.providerType().lower() != "wms":
-					usesGeoServer = True
+			if layer.method in [utils.METHOD_WFS_POSTGIS, utils.METHOD_WMS_POSTGIS]:
+				usesPostgis = True
+				usesGeoServer = True
+			elif layer.method in [utils.METHOD_WFS, utils.METHOD_WMS]:
+				usesGeoServer = True
 		if usesPostgis:
 			importPostgis(appdef, progress)
 		if usesGeoServer:
