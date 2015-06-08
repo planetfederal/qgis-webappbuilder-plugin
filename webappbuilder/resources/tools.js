@@ -185,7 +185,11 @@ showAttributesTable_ = function() {
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] != 'geometry') {
                     var cell = row.insertCell(-1);
-                    cell.innerHTML = feature.get(keys[j]);
+                    var text = feature.get(keys[j]);
+                    if (this.isUrl(text)){
+                        text = "<a href='" + text + "' target='_blank' >" + text + "</a>";
+                    }
+                    cell.innerHTML = text;
                 }
             }
         }
@@ -201,6 +205,11 @@ showAttributesTable_ = function() {
             }
         }
         this.tablePanel.appendChild(this.table);
+    };
+
+    this.isUrl = function(text){
+        var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+        return regexp.test(text);
     };
 
     this.rowClicked = function(row, idx){
