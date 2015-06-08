@@ -303,7 +303,8 @@ def _writeWebApp(appdef, folder):
                 f.write(bookmarkEvents)
 
     imports.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer
+                                and layer.method == METHOD_FILE])
     imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
 
@@ -424,7 +425,7 @@ def bounds(useCanvas, layers):
                                 extent.xMaximum(), extent.yMaximum())
 
 def _getWfsLayer(url, title, layerName, typeName, min, max):
-    return ('''var wfsSource_%(layerName)s = new ol.source.ServerVector({
+    return ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                     format: new ol.format.GeoJSON(),
                     loader: function(extent, resolution, projection) {
                         var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
