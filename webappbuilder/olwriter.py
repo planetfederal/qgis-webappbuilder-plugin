@@ -512,13 +512,15 @@ def layerToJavascript(applayer, settings, deploy):
             source = layer.source()
             layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+            styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s", "TILED": "true"},
+                          params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layers, "url": url, "n": layerName, "name": layer.name()}
+                      });''' % {"layers": layers, "url": url, "n": layerName, "name": layer.name(),
+                                "styles": styles}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
