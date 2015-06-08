@@ -33,7 +33,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
         exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
     exportStyles(layers, folder, appdef["Settings"])
     writeLayersAndGroups(appdef, folder)
-    popupLayers = "popupLayers = [%s];" % ",".join(["'%s'" % layer.popup for layer in layers])
+    popupLayers = "popupLayers = [%s];" % ",".join(["`%s`" % layer.popup for layer in layers])
     controls = []
     widgets = appdef["Widgets"]
     if "Scale bar" in widgets:
