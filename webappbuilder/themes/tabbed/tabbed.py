@@ -13,6 +13,13 @@ def writeWebApp(appdef, folder):
     panels = []
     imports = []
     importsAfter = []
+
+    if "Mouse position" in widgets:
+        projection = widgets["Mouse position"]["projection"]
+        epsg = projection.split(":")[-1]
+        if epsg not in ["3857", "4326"]:
+            imports.append('<script src="./resources/proj4.js"></script>')
+            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
     if "About panel" in widgets:
         params = widgets["About panel"]
         tabs.append('<li><a href="#about-tab" role="tab" data-toggle="tab">About</a></li>')

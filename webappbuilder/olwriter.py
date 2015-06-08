@@ -129,6 +129,13 @@ def _writeWebApp(appdef, folder):
     mappanels = []
     imports = []
     importsAfter = []
+
+    if "Mouse position" in widgets:
+        projection = widgets["Mouse position"]["projection"]
+        epsg = projection.split(":")[-1]
+        if epsg not in ["3857", "4326"]:
+            imports.append('<script src="./resources/proj4.js"></script>')
+            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
     if "Geocoding" in widgets:
         tools.append('''<div class="navbar-form navbar-right">
                           <div class="input-group">
