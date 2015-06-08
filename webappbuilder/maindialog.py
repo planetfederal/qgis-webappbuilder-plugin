@@ -21,7 +21,7 @@ from functools import partial
 from texteditor import TextEditorDialog, HTML
 from bookmarkseditor import BookmarksEditorDialog
 from charttooldialog import ChartToolDialog
-from settings import WrongValueException
+from settings import WrongValueException, outputFolders
 from linksdialog import LinksDialog
 from popupeditor import PopupEditorDialog
 
@@ -46,6 +46,7 @@ rasterIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer_raste
 class MainDialog(QDialog, Ui_MainDialog):
 
     items = {}
+
 
     def __init__(self, appdef):
         QDialog.__init__(self)
@@ -415,10 +416,13 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def createApp(self):
         try:
-            folder = QFileDialog.getExistingDirectory(self, "Select folder to store app")
+            projFile = QgsProject.instance().fileName()
+            previousFolder = outputFolders.get(projFile, "")
+            folder = QFileDialog.getExistingDirectory(self, "Select folder to store app", previousFolder)
             if folder:
                 appdef = self.createAppDefinition()
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
+                outputFolders[projFile] = folder
                 msgBox = QMessageBox()
                 msgBox.setWindowTitle("Web app creator")
                 msgBox.setText("App was correctly created and deployed")

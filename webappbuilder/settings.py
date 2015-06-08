@@ -53,6 +53,8 @@ baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
 themes = loadThemes()
 
+outputFolders = {}
+
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
 defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
