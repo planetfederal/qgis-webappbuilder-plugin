@@ -118,13 +118,15 @@ highlightedFeaturesStyle = '''new ol.style.Style({
     }),
     })'''
 
+zoomLevels = list((str(i) for i in xrange(1,33)))
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
                 "Precision for GeoJSON export": 2,
                 "Restrict to extent": False,
-                "Max zoom level": 35,
-                "Min zoom level": 1,
+                "Max zoom level": ("32", zoomLevels),
+                "Min zoom level": ("1", zoomLevels),
+                "Zoom level when zooming to point feature": ("16", zoomLevels),
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
                 "Style for selected features": selectedFeaturesStyle,

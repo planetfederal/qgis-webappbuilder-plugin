@@ -106,7 +106,13 @@ showAttributesTable_ = function() {
                 extent = ol.extent.extend(extent,
                     features[this_.selectedRowIndices[i]].getGeometry().getExtent());
             }
-            map.getView().fitExtent(extent, map.getSize());
+            if (extent[0] == extent[2]){
+                map.getView().setCenter([extent[0], extent[1]]);
+                map.getView().setZoom(pointZoom);
+            }
+            else{
+                map.getView().fitExtent(extent, map.getSize());
+            }
         };
         this.formContainer.appendChild(zoomTo);
         clear =  document.createElement("button");

@@ -77,6 +77,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
+    pointZoom = str(appdef["Settings"]["Zoom level when zooming to point feature"])
     onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
     highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
     highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
@@ -86,6 +87,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
                 "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
                 "@VIEW@": view,
+                "@POINTZOOM@": pointZoom,
                 "@ONHOVER@": onHover,
                 "@DOHIGHLIGHT@": highlight,
                 "@CESIUM@": cesium,

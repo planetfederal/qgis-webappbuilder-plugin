@@ -12,7 +12,9 @@ var overlayPopup = new ol.Overlay({
 
 var view = new ol.View({
     @VIEW@
-  })
+});
+
+var pointZoom = @POINTZOOM@;
 
 var map = new ol.Map({
   controls: [
@@ -24,6 +26,7 @@ var map = new ol.Map({
   layers: layersList,
   view: view
 });
+
 var originalExtent = @BOUNDS@;
 map.getView().fitExtent(originalExtent, map.getSize());
 
