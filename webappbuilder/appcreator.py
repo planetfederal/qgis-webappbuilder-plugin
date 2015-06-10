@@ -74,8 +74,16 @@ def checkAppCanBeCreated(appdef):
 	if "Bookmarks" in appdef["Widgets"]:
 		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
 			problems.append("Bookmarks widget added, but no bookmarks have been defined")
+
+	for applayer in appdef["Layers"]:
+		layer = applayer.layer
+		if layer.providerType().lower() in ["wms", "wfs"] and layer.crs().authid() != "EPSG:3857":
+			problems.append("Layer %s uses CRS %s. Only EPSG 3857 is supported for remote services"
+						% (layer.name(), layer.crs().authid()))
+
 	if problems:
 		raise WrongAppDefinitionException("\n\n".join(problems))
+
 
 def importPostgis(appdef, progress):
 	progress.setText("Importing into PostGIS (1/3)")
