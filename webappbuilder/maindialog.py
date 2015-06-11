@@ -419,6 +419,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         except WrongAppDefinitionException, e:
             dlg = AppDefProblemsDialog(unicode(e))
             dlg.exec_()
+        except:
+            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
+                                 "Could not create web app.\nSee QGIS log for more details.")
 
     def createApp(self):
         try:
@@ -444,6 +448,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         except WrongAppDefinitionException, e:
             dlg = AppDefProblemsDialog(unicode(e))
             dlg.exec_()
+        except:
+            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
+                                 "Could not create web app.\nSee QGIS log for more details.")
 
 
     def createAppDefinition(self, preview = False):
