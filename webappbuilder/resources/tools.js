@@ -186,7 +186,7 @@ showAttributesTable_ = function() {
                 if (keys[j] != 'geometry') {
                     var cell = row.insertCell(-1);
                     var text = feature.get(keys[j]);
-                    if (this.isUrl(text)){
+                    if (this.isLink(text)){
                         text = "<a href='" + text + "' target='_blank' >" + text + "</a>";
                     }
                     cell.innerHTML = text;
@@ -207,9 +207,12 @@ showAttributesTable_ = function() {
         this.tablePanel.appendChild(this.table);
     };
 
-    this.isUrl = function(text){
-        var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-        return regexp.test(text);
+    this.isLink = function(text){
+        var regexpUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+        isUrl = regexpUrl.test(text);
+        var regexpFile = /^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.[a-z]*$/
+        isFile = regexpFile.test(text);
+        return isUrl || isFile;
     };
 
     this.rowClicked = function(row, idx){
