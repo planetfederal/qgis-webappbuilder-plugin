@@ -431,35 +431,51 @@ def bounds(useCanvas, layers):
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
 
-def _getWfsLayer(url, title, layerName, typeName, min, max):
-    return ('''var wfsSource_%(layerName)s = new ol.source.Vector({
-                    format: new ol.format.GeoJSON(),
-                    loader: function(extent, resolution, projection) {
-                        var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
-                            '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
-                            '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
-                        $.ajax({
-                            url: url,
-                            dataType: 'jsonp'
-                        });
-                    },
-                    strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
-                    projection: 'EPSG:3857'
-                });
+def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType):
+    wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
+                        format: new ol.format.GeoJSON(),
+                        loader: function(extent, resolution, projection) {
+                            var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
+                                '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
+                                '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
+                            $.ajax({
+                                url: url,
+                                dataType: 'jsonp'
+                            });
+                        },
+                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
+                        projection: 'EPSG:3857'
+                    });
+                    var loadFeatures_%(layerName)s = function(response) {
+                        wfsSource_%(layerName)s.addFeatures(wfsSource_%(layerName)s.readFeatures(response));
+                    };
 
-                var loadFeatures_%(layerName)s = function(response) {
-                    wfsSource_%(layerName)s.addFeatures(wfsSource_%(layerName)s.readFeatures(response));
-                };
+                    ''' %
+                    {"url": url, "layerName":layerName, "typeName": typeName})
+
+    if clusterDistance > 0 and geometryType:
+        vectorLayer = ('''var cluster_%(n)s = new ol.source.Cluster({
+                    distance: %(dist)s,
+                    source: wfsSource_%(layerName)s,
+                });
                 var lyr_%(layerName)s = new ol.layer.Vector({
-                    source: wfsSource_%(layerName)s, %(min)s %(max)s
+                    source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(layerName)s,
                     title: "%(title)s"
                 });''' %
-                {"url": url, "title": title, "layerName":layerName, "min": min,
-                 "max": max, "typeName": typeName})
+                {"title": title, "layerName":layerName, "min": min,
+                 "max": max, "dist": str(clusterDistance)})
+    else:
+        vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
+                            source: wfsSource_%(layerName)s, %(min)s %(max)s
+                            style: style_%(layerName)s,
+                            title: "%(title)s"
+                        });''' %
+                        {"title": title, "layerName":layerName, "min": min, "max": max})
+    return wfsSource + vectorLayer
+
 
 def layerToJavascript(applayer, settings, deploy):
-    #TODO: change scale to resolution
     scaleVisibility = settings["Use layer scale dependent visibility"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
@@ -475,7 +491,9 @@ def layerToJavascript(applayer, settings, deploy):
         if layer.providerType().lower() == "wfs":
             url = layer.source().split("?")[0]
             typeName = layer.name() #TODO
-            return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution, maxResolution)
+            return _getWfsLayer(url, layer.name(), layerName, typeName,
+                                minResolution, maxResolution, applayer.clusterDistance,
+                                layer.geometryType())
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
