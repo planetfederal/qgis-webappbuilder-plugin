@@ -24,6 +24,7 @@ from charttooldialog import ChartToolDialog
 from settings import WrongValueException, outputFolders
 from linksdialog import LinksDialog
 from popupeditor import PopupEditorDialog
+import traceback
 
 
 class Layer():
@@ -195,47 +196,52 @@ class MainDialog(QDialog, Ui_MainDialog):
             saveAppdef(self.createAppDefinition(False), appdefFile)
 
     def loadAppdef(self, appdef):
-        self.titleBox.setText(appdef["Settings"]["Title"])
-        self.logoBox.setText(appdef["Settings"]["Logo"])
-        for button, widgetName in self.widgetButtons.iteritems():
-            if widgetName in appdef["Widgets"]:
-                button.setChecked(True)
-                for paramName, value in appdef["Widgets"][widgetName].iteritems():
-                    if isinstance(value, tuple):
-                        settings.widgetsParams[widgetName][paramName][0] = value
-                    else:
-                        settings.widgetsParams[widgetName][paramName] = value
-        for name in self.settingsItems:
-            if name in appdef["Settings"]:
-                self.settingsItems[name].setValue(appdef["Settings"][name])
-        theme = appdef["Settings"]["Theme"]["Name"]
-        for button, themeName in self.themesButtons.iteritems():
-            if themeName == theme:
-                button.click()
-        baseLayers = appdef["Base layers"]
-        for button, name in self.baseLayers.iteritems():
-            button.setChecked(name in baseLayers)
-        for button, name in self.baseOverlays.iteritems():
-            button.setChecked(name in baseLayers)
-        settings.currentCss = appdef["Settings"]["Theme"]["Css"]
-        items = []
-        for i in xrange(self.layersTree.topLevelItemCount()):
-            item = self.layersTree.topLevelItem(i)
-            if isinstance(item, TreeLayerItem):
-                items.append(item)
-            else:
-                for j in xrange(item.childCount()):
-                    subitem = item.child(j)
-                    items.append(subitem)
-        layers = {lay["layer"]: lay for lay in appdef["Layers"]}
-        for item in items:
-            if item.layer.name() in layers:
-                item.setCheckState(0, Qt.Checked)
-                layer = layers[item.layer.name()]
-                item.setValues(layer["visible"], layer["popup"], layer["method"],
-                               layer["clusterDistance"], layer["allowSelection"])
-            else:
-                item.setCheckState(0, Qt.Unchecked)
+        try:
+            self.titleBox.setText(appdef["Settings"]["Title"])
+            self.logoBox.setText(appdef["Settings"]["Logo"])
+            for button, widgetName in self.widgetButtons.iteritems():
+                if widgetName in appdef["Widgets"]:
+                    button.setChecked(True)
+                    for paramName, value in appdef["Widgets"][widgetName].iteritems():
+                        if isinstance(value, tuple):
+                            settings.widgetsParams[widgetName][paramName][0] = value
+                        else:
+                            settings.widgetsParams[widgetName][paramName] = value
+            for name in self.settingsItems:
+                if name in appdef["Settings"]:
+                    self.settingsItems[name].setValue(appdef["Settings"][name])
+            theme = appdef["Settings"]["Theme"]["Name"]
+            for button, themeName in self.themesButtons.iteritems():
+                if themeName == theme:
+                    button.click()
+            baseLayers = appdef["Base layers"]
+            for button, name in self.baseLayers.iteritems():
+                button.setChecked(name in baseLayers)
+            for button, name in self.baseOverlays.iteritems():
+                button.setChecked(name in baseLayers)
+            settings.currentCss = appdef["Settings"]["Theme"]["Css"]
+            items = []
+            for i in xrange(self.layersTree.topLevelItemCount()):
+                item = self.layersTree.topLevelItem(i)
+                if isinstance(item, TreeLayerItem):
+                    items.append(item)
+                else:
+                    for j in xrange(item.childCount()):
+                        subitem = item.child(j)
+                        items.append(subitem)
+            layers = {lay["layer"]: lay for lay in appdef["Layers"]}
+            for item in items:
+                if item.layer.name() in layers:
+                    item.setCheckState(0, Qt.Checked)
+                    layer = layers[item.layer.name()]
+                    item.setValues(layer["visible"], layer["popup"], layer["method"],
+                                   layer["clusterDistance"], layer["allowSelection"])
+                else:
+                    item.setCheckState(0, Qt.Unchecked)
+        except Exception, e:
+            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
+            QMessageBox.warning(iface.mainWindow(), "Error loading app definition",
+                "App definition could not be loaded.\nCheck QGIS log for more details")
 
     def deployCheckChanged(self):
         self.updateDeployGroups()
