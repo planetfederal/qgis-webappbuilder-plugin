@@ -106,60 +106,27 @@ def importPostgis(appdef, progress):
 				schemaExists = True
 			tables = connector.getTables(schema=schema)
 			tablename = safeName(layer.layer.name())
-			print tables
 			tableExists = tablename in [t[1] for t in tables]
 			if tableExists:
 				connector.deleteTable([schema, tablename])
-			importLayerIntoPostgis(layer.layer, host, port, username, password,
+				importLayerIntoPostgis(layer.layer, host, port, username, password,
 								dbname, schema, tablename)
 		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
 def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename):
-	extent = '{},{},{},{}'.format(
-	        layer.extent().xMinimum(), layer.extent().xMaximum(),
-	        layer.extent().yMinimum(), layer.extent().yMaximum())
-	geomtypes = {QGis.WKBPoint: 3,
-	             QGis.WKBLineString: 4,
-	             QGis.WKBPolygon: 5,
-	             QGis.WKBMultiPoint: 7,
-	             QGis.WKBMultiLineString: 9,
-	             QGis.WKBMultiPolygon: 8}
-	geomtype = geomtypes.get(layer.wkbType(), 0)
+	pk = "id"
+	geom = "geom"
+	providerName = "postgres"
 
-	params = {ogr2ogr.INPUT_LAYER: layer,
-	            ogr2ogr.DBNAME: dbname,
-	            ogr2ogr.PORT : port,
-	            ogr2ogr.HOST : host,
-	            ogr2ogr.USER : username,
-	            ogr2ogr.PASSWORD: password,
-	            ogr2ogr.SCHEMA: schema,
-	            ogr2ogr.GTYPE: geomtype,
-	            ogr2ogr.TABLE: tablename,
-	            ogr2ogr.A_SRS: "EPSG:3857",
-	            ogr2ogr.S_SRS: layer.crs().authid(),
-	            ogr2ogr.T_SRS: "EPSG:3857",
-	            ogr2ogr.DIM: 0,
-	            ogr2ogr.OVERWRITE: True,
-	            ogr2ogr.APPEND: False,
-	            ogr2ogr.SPAT: extent,
-	            ogr2ogr.GT: '',
-	            ogr2ogr.SEGMENTIZE: '',
-	            ogr2ogr.SIMPLIFY: '',
-	            ogr2ogr.OPTIONS: '',
-	            ogr2ogr.PK: '',
-	            ogr2ogr.GEOCOLUMN: '',
-	            ogr2ogr.WHERE: ''
-	            }
+	uri = QgsDataSourceURI()
+	uri.setConnection(host, str(port), dbname, username, self.geodb.password)
+	uri.setDataSource(schema, tablename, geom, "", pk)
 
-	alg = Processing.getAlgorithm("gdalogr:importvectorintopostgisdatabasenewconnection")
-	for name, value in params.iteritems():
-		param = alg.getParameterFromName(name)
-		if param and param.setValue(value):
-			continue
-		output = alg.getOutputFromName(name)
-		if output and output.setValue(value):
-			continue
-	AlgorithmExecutor.runalg(alg)
+	ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, layer.crs(), False, False, options)
+	if ret != 0:
+		raise Exception("Could not import layer '%s': %s" % (layer.name(), errMsg))
+
+
 
 def publishGeoserver(appdef, progress):
 	usesGeoServer = False
