@@ -72,8 +72,9 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
             for name in dlg.bookmarks:
                 b = qgisBookmarks[name]
                 rect = QgsRectangle(b[3], b[4], b[5], b[6])
-                transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem(int(b[7])),
-                                                   QgsCoordinateReferenceSystem("EPSG:3857"))
+                crs = QgsCoordinateReferenceSystem()
+                crs.createFromSrsId(int(b[7]))
+                transform = QgsCoordinateTransform(crs, QgsCoordinateReferenceSystem("EPSG:3857"))
                 extent = transform.transform(rect)
                 item = BookmarkItem(b[1],  [extent.xMinimum(), extent.yMinimum(),
                                           extent.xMaximum(), extent.yMaximum()], "")
