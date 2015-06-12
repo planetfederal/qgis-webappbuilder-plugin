@@ -42,7 +42,7 @@ class TreeSettingItem(QTreeWidgetItem):
             for option in value[1]:
                 self.combo.addItem(option)
             self.tree.setItemWidget(self, 1, self.combo)
-            idx = self.combo.findText(value[0])
+            idx = self.combo.findText(str(value[0]))
             self.combo.setCurrentIndex(idx)
         elif "\n" in unicode(value):
             self.label = QLabel()
@@ -87,7 +87,7 @@ class TreeSettingItem(QTreeWidgetItem):
             else:
                 self.setCheckState(1, Qt.Unchecked)
         elif isinstance(self._value, tuple):
-            idx = self.combo.findText(value)
+            idx = self.combo.findText(str(value))
             self.combo.setCurrentIndex(idx)
         elif "\n" in unicode(self._value):
             self.newValue = value
