@@ -121,10 +121,11 @@ highlightedFeaturesStyle = '''new ol.style.Style({
     })'''
 
 zoomLevels = list((str(i) for i in xrange(1,33)))
+precisionLevels = list((str(i) for i in range(6)))
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
                 "Extent": ("Canvas extent", ("Canvas extent", "Fit to layers extent")),
-                "Precision for GeoJSON export": 2,
+                "Precision for GeoJSON export": ("2", precisionLevels),
                 "Restrict to extent": False,
                 "Max zoom level": ("32", zoomLevels),
                 "Min zoom level": ("1", zoomLevels),
