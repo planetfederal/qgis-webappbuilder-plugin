@@ -59,7 +59,7 @@ def exportLayers(layers, folder, progress, precision):
     epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
-    reducePrecision = re.compile(r"([0-9]+\.[0-9]{%i})([0-9]+)" % precision)
+    reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % precision)
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
                          for i,it in enumerate(txt.split('"')))
     for i, appLayer in enumerate(layers):
