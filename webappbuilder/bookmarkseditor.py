@@ -4,6 +4,7 @@ import os
 from ui_bookmarksdialog import Ui_BookmarksDialog
 import sqlite3
 from utils import SHOW_BOOKMARKS_IN_MENU
+from listselectordialog import ListSelectorDialog
 
 
 class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
@@ -66,10 +67,10 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         allBookmarks = cursor.fetchall()
         usedBookmarks = [self.bookmarksList.item(i).name for i in xrange(self.bookmarksList.count())]
         qgisBookmarks = {b[1]: b for b in allBookmarks if b[1] not in usedBookmarks}
-        dlg = BookmarkSelectorDialog(qgisBookmarks.keys(), self)
+        dlg = ListSelectorDialog(qgisBookmarks.keys(), self)
         dlg.exec_()
-        if dlg.bookmarks:
-            for name in dlg.bookmarks:
+        if dlg.selected:
+            for name in dlg.selected:
                 b = qgisBookmarks[name]
                 rect = QgsRectangle(b[3], b[4], b[5], b[6])
                 crs = QgsCoordinateReferenceSystem()
@@ -150,43 +151,6 @@ class BookmarkItem(QtGui.QListWidgetItem):
         self.setText(name)
 
 
-class BookmarkSelectorDialog(QtGui.QDialog):
-
-    def __init__(self, bookmarks, parent=None):
-        super(BookmarkSelectorDialog, self).__init__(parent)
-        self.bookmarks = []
-        self.setWindowTitle("Select bookmarks")
-        layout = QtGui.QVBoxLayout()
-
-        self.bookmarksList = QtGui.QListWidget()
-        for b in bookmarks:
-            item = QtGui.QListWidgetItem()
-            item.setText(b)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            self.bookmarksList.addItem(item)
-        layout.addWidget(self.bookmarksList)
-
-        self.buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        layout.addWidget(self.buttonBox)
-
-        self.setLayout(layout)
-        self.buttonBox.accepted.connect(self.okPressed)
-        self.buttonBox.rejected.connect(self.cancelPressed)
-        self.setMinimumWidth(400)
-        self.setMinimumHeight(400)
-        self.resize(500, 400)
-
-    def okPressed(self):
-        self.bookmarks = []
-        for i in xrange(self.bookmarksList.count()):
-            item = self.bookmarksList.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                self.bookmarks.append(item.text())
-        self.close()
-
-    def cancelPressed(self):
-        self.bookmarks = []
-        self.close()
 
 
 class BookmarksFromLayerDialog(QtGui.QDialog):

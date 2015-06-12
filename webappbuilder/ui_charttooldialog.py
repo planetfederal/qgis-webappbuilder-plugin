@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_charttooldialog.ui'
 #
-# Created: Thu Apr 16 07:55:54 2015
+# Created: Fri Jun 12 08:26:10 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_ChartToolDialog(object):
     def setupUi(self, ChartToolDialog):
         ChartToolDialog.setObjectName(_fromUtf8("ChartToolDialog"))
-        ChartToolDialog.resize(643, 499)
+        ChartToolDialog.resize(643, 569)
         self.verticalLayout_3 = QtGui.QVBoxLayout(ChartToolDialog)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
@@ -81,6 +81,9 @@ class Ui_ChartToolDialog(object):
         self.valueFieldsCombo = QtGui.QComboBox(ChartToolDialog)
         self.valueFieldsCombo.setObjectName(_fromUtf8("valueFieldsCombo"))
         self.verticalLayout.addWidget(self.valueFieldsCombo)
+        self.valueFieldsList = QtGui.QListView(ChartToolDialog)
+        self.valueFieldsList.setObjectName(_fromUtf8("valueFieldsList"))
+        self.verticalLayout.addWidget(self.valueFieldsList)
         self.operationLabel = QtGui.QLabel(ChartToolDialog)
         self.operationLabel.setObjectName(_fromUtf8("operationLabel"))
         self.verticalLayout.addWidget(self.operationLabel)

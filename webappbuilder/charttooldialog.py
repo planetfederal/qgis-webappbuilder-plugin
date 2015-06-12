@@ -2,6 +2,7 @@ from qgis.core import *
 from PyQt4 import QtCore, QtGui
 from ui_charttooldialog import Ui_ChartToolDialog
 import copy
+import sys
 
 class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
     def __init__(self, charts, parent):
@@ -27,7 +28,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.operationCombo.setVisible(visible)
         self.operationLabel.setVisible(visible)
         visible = self.displayModeCombo.currentIndex() != 2
-        self.valueFieldsCombo.setVisible(visible)
+        isMac = sys.platform == 'darwin'
+        self.valueFieldsCombo.setVisible(visible and not isMac)
+        self.valueFieldsList.setVisible(visible and isMac)
         self.valueFieldsLabel.setVisible(visible)
 
     def selectionChanged(self):
@@ -47,8 +50,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         except:
             pass
         try:
+            offset = 0 if sys.platform == "darwin" else 1
             valueFields = self._charts[name]["valueFields"]
-            for i in xrange(1, self.model.rowCount()):
+            for i in xrange(offset, self.model.rowCount()):
                 item = self.model.item(i)
                 item.setData(QtCore.Qt.Checked if item.text() in valueFields else QtCore.Qt.Unchecked,
                          QtCore.Qt.CheckStateRole)
@@ -98,13 +102,23 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.categoryFieldCombo.addItems(fields)
         self.model = QtGui.QStandardItemModel(len(fields), 1)
         item = QtGui.QStandardItem("Select fields")
-        self.model.setItem(0, 0, item);
+        if  sys.platform == 'darwin':
+            self.valueFieldsCombo.setVisible(False)
+            self.valueFieldsCombo.setVisible(True)
+            toUse = self.valueFieldsList
+            offset = 0
+        else:
+            self.valueFieldsCombo.setVisible(True)
+            self.valueFieldsList.setVisible(False)
+            toUse = self.valueFieldsCombo
+            self.model.setItem(0, 0, item);
+            offset = 1
         for i, f in enumerate(fields):
             item = QtGui.QStandardItem(f)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole);
-            self.model.setItem(i + 1, 0, item);
-        self.valueFieldsCombo.setModel(self.model)
+            self.model.setItem(i + offset, 0, item);
+        toUse.setModel(self.model)
 
     def addChart(self):
         name = self.nameBox.text()
