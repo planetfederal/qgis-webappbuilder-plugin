@@ -180,6 +180,10 @@ def _writeWebApp(appdef, folder):
                                     <div style="margin-bottom: 25px" class="input-group">
                                         <span class="input-group-addon">Filter </span>
                                         <input id="query-expression" type="text" class="form-control" placeholder="Type expression...">
+                                        <span class="input-group-addon">
+                                        <a href="https://github.com/joewalnes/filtrex#expressions" target="_blank">
+                                            Help
+                                        </a></span>
                                     </div>
                                    <div style="margin-top:10px" class="form-group">
                                         <div class="col-sm-12 controls">
