@@ -133,7 +133,8 @@ defaultAppSettings = {
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
                 "Style for selected features": selectedFeaturesStyle,
-                "Style for highlighted features": highlightedFeaturesStyle}
+                "Style for highlighted features": highlightedFeaturesStyle,
+                "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326"))}
 
 
 

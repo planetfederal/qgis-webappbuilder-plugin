@@ -55,8 +55,8 @@ def tempFilenameInTempFolder(basename):
     filename =  os.path.join(folder, basename)
     return filename
 
-def exportLayers(layers, folder, progress, precision):
-    epsg3587 = QgsCoordinateReferenceSystem("EPSG:3857")
+def exportLayers(layers, folder, progress, precision, crsid):
+    destCrs = QgsCoordinateReferenceSystem(crsid)
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % precision)
@@ -67,7 +67,7 @@ def exportLayers(layers, folder, progress, precision):
             layer = appLayer.layer
             if layer.type() == layer.VectorLayer:
                 path = os.path.join(layersFolder, "lyr_%s.js" % safeName(layer.name()))
-                QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", epsg3587, 'GeoJson')
+                QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
                 with open(path) as f:
                     lines = f.readlines()
                 with open(path, "w") as f:
@@ -92,7 +92,7 @@ def exportLayers(layers, folder, progress, precision):
                 if not path.lower() in envval.lower().split(os.pathsep):
                     envval += '%s%s' % (os.pathsep, path)
                     os.putenv('PATH', envval)
-                command = 'gdal_translate -of JPEG -a_srs EPSG:3857 %s %s' % (orgFile, destFile)
+                command = 'gdal_translate -of JPEG -a_srs %s %s %s' % (crsid, orgFile, destFile)
                 if os.name == 'nt':
                     command = command.split(" ")
                 else:

@@ -14,13 +14,8 @@ from bs4 import BeautifulSoup as bs
 import importlib
 from math import floor
 
-
-dragBoxConditions = {"Not enabled": "ol.events.condition.never",
-                     "Using Alt key": "ol.events.condition.altKeyOnly",
-                     "Using Shift key": "ol.events.condition.shiftKeyOnly",
-                     "Without using additional key": "ol.events.condition.noModifierKeys"}
-
 def writeOL(appdef, folder, writeLayersData, progress):
+    viewCrs = appdef["Settings"]["App view CRS"]
     progress.setText("Creating local files (3/3)")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
@@ -30,7 +25,9 @@ def writeOL(appdef, folder, writeLayersData, progress):
     shutil.copytree(resourcesFolder, dst)
     layers = appdef["Layers"]
     if writeLayersData:
-        exportLayers(layers, folder, progress, appdef["Settings"]["Precision for GeoJSON export"])
+        exportLayers(layers, folder, progress,
+                     appdef["Settings"]["Precision for GeoJSON export"],
+                     appdef["Settings"]["App view CRS"])
     exportStyles(layers, folder, appdef["Settings"])
     writeLayersAndGroups(appdef, folder)
     popupLayers = "popupLayers = [%s];" % ",".join(["`%s`" % layer.popup for layer in layers])
@@ -73,7 +70,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     else:
         cesium = ""
 
-    mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers)
+    mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
     mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
@@ -82,7 +79,7 @@ def writeOL(appdef, folder, writeLayersData, progress):
     highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
     highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
     selectedFeaturesStyle = appdef["Settings"]["Style for selected features"]
-    view = "%s, maxZoom: %d, minZoom: %d" % (mapextent, maxZoom, minZoom)
+    view = "%s, maxZoom: %d, minZoom: %d, projection: '%s'" % (mapextent, maxZoom, minZoom, viewCrs)
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
@@ -405,24 +402,23 @@ def writeLayersAndGroups(appdef, folder):
 
 
 
-def bounds(useCanvas, layers):
-    print useCanvas
+def bounds(useCanvas, layers, crsid):
     if useCanvas:
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapSettings().destinationCrs()
-        transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem("EPSG:3857"))
+        transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem(crsid))
         try:
             extent = transform.transform(canvas.extent())
         except QgsCsException:
-            extent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
+            extent = QgsRectangle()
     else:
         extent = None
         for layer in layers:
-            transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+            transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem(crsid))
             try:
                 layerExtent = transform.transform(layer.layer.extent())
             except QgsCsException:
-                layerExtent = QgsRectangle(-20026376.39, -20048966.10, 20026376.39,20048966.10)
+                layerExtent = QgsRectangle()
             if extent is None:
                 extent = layerExtent
             else:
@@ -431,27 +427,27 @@ def bounds(useCanvas, layers):
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
 
-def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType):
+def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType, crsid):
     wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
                             var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
-                                '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
+                                '&srsname=%(crs)s&bbox=' + extent.join(',') + ',%(crs)s';
                             $.ajax({
                                 url: url,
                                 dataType: 'jsonp'
                             });
                         },
                         strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
-                        projection: 'EPSG:3857'
+                        projection: '%(crs)s'
                     });
                     var loadFeatures_%(layerName)s = function(response) {
                         wfsSource_%(layerName)s.addFeatures(wfsSource_%(layerName)s.readFeatures(response));
                     };
 
                     ''' %
-                    {"url": url, "layerName":layerName, "typeName": typeName})
+                    {"url": url, "layerName":layerName, "typeName": typeName, "crs": crsid})
 
     if clusterDistance > 0 and geometryType:
         vectorLayer = ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -476,6 +472,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geo
 
 
 def layerToJavascript(applayer, settings, deploy):
+    viewCrs = settings["App view CRS"]
     scaleVisibility = settings["Use layer scale dependent visibility"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
@@ -493,7 +490,7 @@ def layerToJavascript(applayer, settings, deploy):
             typeName = layer.name() #TODO
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layer.geometryType())
+                                layer.geometryType(), viewCrs)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -517,10 +514,10 @@ def layerToJavascript(applayer, settings, deploy):
                 {"name": layer.name(), "n":layerName, "min": minResolution,
                  "max": maxResolution})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
-                #TODO:cluster
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
-                return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution, maxResolution)
+                return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
+                            maxResolution, applayer.clusterDistance, layer.geometryType(), viewCrs)
         else:
             source = layer.source()
             layers = layer.name()
@@ -549,7 +546,7 @@ def layerToJavascript(applayer, settings, deploy):
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
-                transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+                transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
                 extent = transform.transform(provider.extent())
                 sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                         extent.xMaximum(), extent.yMaximum())
@@ -558,13 +555,13 @@ def layerToJavascript(applayer, settings, deploy):
                                 title: "%(name)s",
                                 source: new ol.source.ImageStatic({
                                    url: "./layers/%(n)s.jpg",
-                                    projection: 'EPSG:3857',
+                                    projection: %(crs)s',
                                     alwaysInRange: true,
                                     imageSize: [%(col)d, %(row)d],
                                     imageExtent: %(extent)s
                                 })
                             });''' % {"n": layerName, "extent": sExtent, "col": provider.xSize(),
-                                        "name": layer.name(), "row": provider.ySize()}
+                                        "name": layer.name(), "row": provider.ySize(), "crs": viewCrs}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({

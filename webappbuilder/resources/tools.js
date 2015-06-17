@@ -337,10 +337,18 @@ searchBoxKeyPressed = function(e){
 
 //===========================================
 
+getBookmarkExtentInViewCrs = function(extent){
+
+    var viewCrs = view.getProjection().getCode()
+    return ol.proj.transformExtent(extent, "EPSG:3857", viewCrs)
+
+};
+
 goToBookmarkByName = function(name){
     for(var i=0; i<bookmarks.length; i++){
         if (bookmarks[i][0] === name){
-            map.getView().fitExtent(bookmarks[i][1], map.getSize());
+            map.getView().fitExtent(getBookmarkExtentInViewCrs(bookmarks[i][1]),
+                map.getSize());
         }
     }
 };
@@ -363,7 +371,7 @@ panToBookmark = function(i){
 goToBookmark = function(i){
     bookmark = bookmarks[i];
     if (bookmark){
-        map.getView().fitExtent(bookmark[1], map.getSize());
+        map.getView().fitExtent(getBookmarkExtentInViewCrs(bookmark[1]), map.getSize());
     }
     else{
         map.getView().fitExtent(originalExtent, map.getSize());

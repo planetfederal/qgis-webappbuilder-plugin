@@ -58,6 +58,7 @@ def findLayerByName(name, layers):
 			return layer
 
 def checkAppCanBeCreated(appdef):
+	viewCrs = appdef["Settings"]["App view CRS"]
 	problems = []
 	if "Chart tool" in appdef["Widgets"]:
 		layers = appdef["Layers"]
@@ -77,9 +78,12 @@ def checkAppCanBeCreated(appdef):
 
 	for applayer in appdef["Layers"]:
 		layer = applayer.layer
-		if layer.providerType().lower() in ["wms", "wfs"] and layer.crs().authid() != "EPSG:3857":
-			problems.append("Layer %s uses CRS %s. Only EPSG 3857 is supported for remote services"
+		if layer.providerType().lower() in ["wms", "wfs"] and layer.crs().authid() != viewCrs:
+			problems.append("Layer %s uses CRS %s. Reprojection is not supported for remote services"
 						% (layer.name(), layer.crs().authid()))
+
+	if appdef["Base layers"] and viewCrs != "EPSG:3857":
+		problems.append("Base layers can only be used if view CRS is EPSG:3857")
 
 	if problems:
 		raise WrongAppDefinitionException("\n\n".join(problems))
@@ -129,6 +133,7 @@ def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema
 
 
 def publishGeoserver(appdef, progress):
+	viewCrs = appdef["Settings"]["App view CRS"]
 	usesGeoServer = False
 	for applayer in appdef["Layers"]:
 		if applayer.method != METHOD_FILE:
@@ -182,17 +187,17 @@ def publishGeoserver(appdef, progress):
 						catalog.save(store)
 					catalog.publish_featuretype(name, store, layer.crs().authid())
 				else:
-					path = getDataFromLayer(layer)
+					path = getDataFromLayer(layer, viewCrs)
 					catalog.create_featurestore(name,
 													path,
 													workspace=workspace,
 													overwrite=True)
 				gslayer = catalog.get_layer(name)
 				r = gslayer.resource
-				r.dirty['srs'] = "EPSG:3857"
+				r.dirty['srs'] = viewCrs
 				catalog.save(r)
 			elif layer.type() == layer.RasterLayer:
-				path = getDataFromLayer(layer)
+				path = getDataFromLayer(layer, viewCrs)
 				catalog.create_coveragestore(name,
 				                          path,
 				                          workspace=workspace,
@@ -204,11 +209,11 @@ def publishGeoserver(appdef, progress):
 		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
 
-def getDataFromLayer(layer):
+def getDataFromLayer(layer, crsid):
 	if layer.type() == layer.RasterLayer:
-		data = exportRasterLayer(layer)
+		data = exportRasterLayer(layer, crsid)
 	else:
-		filename = exportVectorLayer(layer)
+		filename = exportVectorLayer(layer, crsid)
 		basename, extension = os.path.splitext(filename)
 		data = {
 		    'shp': basename + '.shp',
@@ -218,18 +223,17 @@ def getDataFromLayer(layer):
 		}
 	return data
 
-epsg3857 = QgsCoordinateReferenceSystem("EPSG:3857")
-
-def exportVectorLayer(layer):
+def exportVectorLayer(layer, crsid):
+	destCrs = QgsCoordinateReferenceSystem(crsid)
 	settings = QSettings()
 	systemEncoding = settings.value( "/UI/encoding", "System" )
 	filename = unicode(layer.source())
 	destFilename = unicode(layer.name())
-	if not filename.lower().endswith("shp") or layer.crs().authid() != "EPSG:3857":
+	if not filename.lower().endswith("shp") or layer.crs().authid() != crsid:
 		output = tempFilenameInTempFolder(destFilename + ".shp")
 		provider = layer.dataProvider()
-		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), epsg3857)
-		crsTransform = QgsCoordinateTransform(layer.crs(), epsg3857)
+		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), destCrs)
+		crsTransform = QgsCoordinateTransform(layer.crs(), destCrs)
 		outFeat = QgsFeature()
 		for f in layer.getFeatures():
 			geom = f.geometry()
@@ -242,13 +246,14 @@ def exportVectorLayer(layer):
 	else:
 		return filename
 
-def exportRasterLayer(layer):
-	if not unicode(layer.source()).lower().endswith("tif") or layer.crs().authid() != "EPSG:3857":
+def exportRasterLayer(layer, crsid):
+	destCrs = QgsCoordinateReferenceSystem(crsid)
+	if not unicode(layer.source()).lower().endswith("tif") or layer.crs().authid() != crsid:
 		filename = str(layer.name())
 		output = tempFilenameInTempFolder(filename + ".tif")
 		writer = QgsRasterFileWriter(output)
 		writer.setOutputFormat("GTiff");
-		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), epsg3857)
+		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), destCrs)
 		del writer
 		return output
 	else:
