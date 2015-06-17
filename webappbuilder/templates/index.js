@@ -178,15 +178,6 @@ var onSingleClick = function(evt) {
             }
         }
     });
-    if (currentInteraction == null){
-        selectedFeatures.clear();
-        if (toAdd.length !== 0){
-            isDuringMultipleSelection = true;
-            selectedFeatures.extend(toAdd.slice(0, -1));
-            isDuringMultipleSelection = false;
-            selectedFeatures.push(toAdd[toAdd.length - 1]);
-        }
-    }
     if (popupText) {
         overlayPopup.setPosition(coord);
         content.innerHTML = popupText;

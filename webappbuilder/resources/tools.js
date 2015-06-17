@@ -430,6 +430,7 @@ var measureTooltips=[];
 
 measureTool = function(measureType){
 
+    selectInteraction.setActive(false);
     if (currentInteraction){
         map.removeInteraction(currentInteraction)
     }
@@ -440,6 +441,7 @@ measureTool = function(measureType){
         }
         measureSource.clear();
         map.on('pointermove', onPointerMove);
+        selectInteraction.setActive(true);
         return;
     }
 
@@ -861,6 +863,7 @@ showQueryPanel = function(){
 
 selectByRectangle = function(){
 
+    measureTool(null);
     if (currentInteraction){
         map.removeInteraction(currentInteraction)
     }
@@ -905,17 +908,24 @@ selectByRectangle = function(){
 };
 
 //===========================================================================
+
 selectSingleFeature = function(){
+
+    measureTool(null);
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
         currentInteraction = null;
     }
 };
 
+
+//============================================================================
+
 var selectByPolygonSource = new ol.source.Vector();
 
 selectByPolygon = function(){
 
+    measureTool(null);
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
     }
@@ -972,6 +982,7 @@ selectByPolygon = function(){
     var doSelection = function() {
         //Only correct for points and this might not be the most efficient way...
         var toAdd = [];
+        selectedFeatures.clear();
         if (polygon)
             var geom = polygon.getGeometry();
             var polygExtent = geom.getExtent();
