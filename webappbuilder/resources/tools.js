@@ -47,13 +47,31 @@ showAttributesTable_ = function() {
     this.selectedRowIndices = [];
 
     var this_ = this;
-    this.toggleRowSelection = function(){
+    this.filterTable = function(){
         if (isDuringMultipleSelection){
             return;
         }
         if (this_.panel.style.display === 'none'){
             return;
         }
+
+        var filterText = this_.tableFilterBox.value.toUpperCase();
+        var passesFilter = function(f){
+            if (filterText == ""){
+                return true;
+            }
+            var keys = f.getKeys();
+            for (var i = 0; i< keys.length; i++) {
+                if (keys[i] != 'geometry') {
+                    var text = f.get(keys[i]).toString();
+                    if (text.indexOf(filterText).toUpperCase() != -1){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
         this_.selectedRowIndices = [];
         var rows = this_.table.getElementsByTagName("tr");
         var layerFeatures = sourceFromLayer(this_.currentLayer).getFeatures();
@@ -62,21 +80,17 @@ showAttributesTable_ = function() {
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
             if (idx !== -1){
                 row.className = "row-selected";
-                row.style.display = 'table-row';
+                row.style.display = passesFilter(layerFeatures[i]) ? 'table-row' : 'none';
                 this_.selectedRowIndices.push(i);
             }
             else{
                 row.className = "row-unselected";
-                if (this_.onlySelectedCheck.checked){
-                    row.style.display = 'none';
-                }
-                else{
-                    row.style.display = 'table-row';
-                }
+                row.style.display = ! this_.onlySelectedCheck.checked
+                    && passesFilter(layerFeatures[i]) ? 'table-row' : 'none';
             }
         }
     };
-    selectInteraction.getFeatures().on('change:length', function(evt){this.toggleRowSelection()}, this);
+    selectInteraction.getFeatures().on('change:length', function(evt){this.filterTable()}, this);
 
     this.renderPanel = function() {
         this.formContainer = document.createElement("form");
@@ -132,14 +146,28 @@ showAttributesTable_ = function() {
         };
         this.formContainer.appendChild(clear);
 
+        tableFilterLabel = document.createElement("label");
+        tableFilterLabel.innerHTML = " Filter:"
+        this.formContainer.appendChild(tableFilterLabel);
+        this.tableFilterBox = document.createElement("input");
+        this.tableFilterBox.setAttribute("type", "text");
+        this.tableFilterBox.setAttribute("value", "");
+        this.tableFilterBox.className = "form-control";
+        this.tableFilterBox.setAttribute("placeholder", "Type filter expression...")
+        this.tableFilterBox.onkeyup = this.filterTable;
+        this.formContainer.appendChild(this.tableFilterBox);
+
         onlySelected = document.createElement("label");
         this.onlySelectedCheck = document.createElement("input");
         this.onlySelectedCheck.setAttribute("type", "checkbox");
         this.onlySelectedCheck.setAttribute("value", "");
-        onlySelectedCheck.onclick = this.toggleRowSelection;
+        this.onlySelectedCheck.onclick = this.filterTable;
         onlySelected.appendChild(this.onlySelectedCheck);
         onlySelected.appendChild(document.createTextNode(" Show only selected features"));
         this.formContainer.appendChild(onlySelected);
+
+
+
     }
 
     this.renderTable = function() {
