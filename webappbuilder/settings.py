@@ -83,8 +83,7 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                         "showGroupContent":False},
                         "Selection tools": {"Select single feature": True,
                                             "Select by rectangle": True,
-                                            "Select by polygon": True,
-                                            "Select by point and radius": True,
+                                            "Select by polygon": True
                                             },
                         "Links": {"links":{}}
                         }

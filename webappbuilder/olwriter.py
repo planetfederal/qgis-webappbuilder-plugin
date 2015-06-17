@@ -154,8 +154,6 @@ def _writeWebApp(appdef, folder):
             selectTools.append(["selectSingleFeature()", "Select single feature"])
         if params["Select by polygon"]:
             selectTools.append(["selectByPolygon()", "Select by polygon"])
-        if params["Select by point and radius"]:
-            selectTools.append(["selectByPointAndRadius()", "Select by point and radius"])
         if params["Select by rectangle"]:
             selectTools.append(["selectByRectangle()", "Select by rectangle"])
         if selectTools:
