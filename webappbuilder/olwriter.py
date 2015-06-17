@@ -428,7 +428,8 @@ def bounds(useCanvas, layers, crsid):
                                 extent.xMaximum(), extent.yMaximum())
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType, crsid):
-    wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
+    wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
+                    var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
                             var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
@@ -443,7 +444,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geo
                         projection: '%(crs)s'
                     });
                     var loadFeatures_%(layerName)s = function(response) {
-                        wfsSource_%(layerName)s.addFeatures(wfsSource_%(layerName)s.readFeatures(response));
+                        wfsSource_%(layerName)s.addFeatures(geojsonFormat_%(layerName)s.readFeatures(response));
                     };
 
                     ''' %
