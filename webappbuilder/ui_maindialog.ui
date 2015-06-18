@@ -183,8 +183,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>80</width>
+            <height>18</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayoutBaseLayers"/>
@@ -208,8 +208,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>80</width>
+            <height>18</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayoutBaseOverlays"/>
@@ -1767,6 +1767,13 @@
         </item>
         <item>
          <widget class="QPushButton" name="buttonSave">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonHelp">
           <property name="text">
            <string/>
           </property>

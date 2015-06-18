@@ -67,8 +67,10 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.filterLayersBox.textChanged.connect(self.filterLayers)
         self.buttonOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
+        self.buttonHelp.clicked.connect(self.showHelp)
         widgetButtons = {self.attributesTableButton: "Attributes table",
                         self.attributionButton: "Attribution",
                         self.fullScreenButton: "Full screen",
@@ -125,6 +127,9 @@ class MainDialog(QDialog, Ui_MainDialog):
 
         if appdef is not None:
             self.loadAppdef(appdef)
+
+    def showHelp(self):
+        webbrowser.open_new("http://qgis.boundlessgeo.com/static/webappbuilder/usage.rst")
 
     def tabChanged(self, index):
         if index == 4:

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Tue May 05 10:10:01 2015
+# Created: Thu Jun 18 07:21:42 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 98, 28))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 80, 18))
         self.widgetBaseLayers.setObjectName(_fromUtf8("widgetBaseLayers"))
         self.gridLayoutBaseLayers = QtGui.QGridLayout(self.widgetBaseLayers)
         self.gridLayoutBaseLayers.setObjectName(_fromUtf8("gridLayoutBaseLayers"))
@@ -115,7 +115,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 98, 28))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 80, 18))
         self.widgetBaseOverlays.setObjectName(_fromUtf8("widgetBaseOverlays"))
         self.gridLayoutBaseOverlays = QtGui.QGridLayout(self.widgetBaseOverlays)
         self.gridLayoutBaseOverlays.setObjectName(_fromUtf8("gridLayoutBaseOverlays"))
@@ -859,6 +859,10 @@ class Ui_MainDialog(object):
         self.buttonSave.setText(_fromUtf8(""))
         self.buttonSave.setObjectName(_fromUtf8("buttonSave"))
         self.horizontalLayout_2.addWidget(self.buttonSave)
+        self.buttonHelp = QtGui.QPushButton(self.widget)
+        self.buttonHelp.setText(_fromUtf8(""))
+        self.buttonHelp.setObjectName(_fromUtf8("buttonHelp"))
+        self.horizontalLayout_2.addWidget(self.buttonHelp)
         self.buttonCreateApp = QtGui.QPushButton(self.widget)
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
