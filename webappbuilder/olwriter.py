@@ -13,6 +13,7 @@ import json
 from bs4 import BeautifulSoup as bs
 import importlib
 from math import floor
+import urlparse
 
 def writeOL(appdef, folder, writeLayersData, progress):
     viewCrs = appdef["Settings"]["App view CRS"]
@@ -490,7 +491,8 @@ def layerToJavascript(applayer, settings, deploy):
     if layer.type() == layer.VectorLayer:
         if layer.providerType().lower() == "wfs":
             url = layer.source().split("?")[0]
-            typeName = layer.name() #TODO
+            parsed = urlparse.urlparse(layer.source())
+            typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layer.geometryType(), viewCrs)
