@@ -19,7 +19,6 @@ class WrongAppDefinitionException(Exception):
 	pass
 
 def createApp(appdef, deployData, folder, progress):
-	checkAppCanBeCreated(appdef)
 	if deployData:
 		usesGeoServer = False
 		usesPostgis = False
@@ -64,29 +63,38 @@ def checkAppCanBeCreated(appdef):
 		layers = appdef["Layers"]
 		charts = appdef["Widgets"]["Chart tool"]["charts"]
 		if len(charts) == 0:
-			problems.append("Chart tool added, but no charts have been defined")
+			problems.append("Chart tool added, but no charts have been defined. "
+						"You should configure the chart tool and define at least one chart")
+		if "Selection tools" not in appdef["Widgets"]:
+			problems.append("Chart tool added, but the web app has no selection tools. "
+						"Charts are created based on selected features, so you should add selection "
+						"tools to the web app, to allow the user selecting features in the map")
 		for name, chart in charts.iteritems():
 			layer = findLayerByName(chart["layer"], layers)
 			if layer is None:
 				problems.append("Chart tool %s uses a layer (%s) that is not added to web app" % (name, chart["layer"]))
 			if not layer.allowSelection:
-				problems.append("Chart tool %s uses a layer (%s) that does not allow selection" % (name, chart["layer"]))
+				problems.append(("Chart tool %s uses a layer (%s) that does not allow selection. " +
+							"Selection should be enabled for that layer.") % (name, chart["layer"]))
 
 	if "Bookmarks" in appdef["Widgets"]:
 		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
-			problems.append("Bookmarks widget added, but no bookmarks have been defined")
+			problems.append("Bookmarks widget added, but no bookmarks have been defined"
+						"You should configure the bookmars widget and define at least one bookmark")
 
 	for applayer in appdef["Layers"]:
 		layer = applayer.layer
 		if layer.providerType().lower() in ["wms", "wfs"] and layer.crs().authid() != viewCrs:
-			problems.append("Layer %s uses CRS %s. Reprojection is not supported for remote services"
+			problems.append("Layer %s uses CRS %s. Reprojection is not supported for remote services. "
+						"This layer will probably not appear correctly in the web app"
 						% (layer.name(), layer.crs().authid()))
 
 	if appdef["Base layers"] and viewCrs != "EPSG:3857":
-		problems.append("Base layers can only be used if view CRS is EPSG:3857")
+		problems.append("Base layers can only be used if view CRS is EPSG:3857. "
+					"They will not appear correctly if the web app uses a different CRS."
+					"Your web app uses %s" % viewCrs)
 
-	if problems:
-		raise WrongAppDefinitionException("\n\n".join(problems))
+	return problems
 
 
 def importPostgis(appdef, progress):
@@ -284,16 +292,19 @@ def loadAppdef(filename):
 	except Exception, e:
 		return None
 
+warningIcon = os.path.join(os.path.dirname(__file__), "icons", "warning.png")
+
 class AppDefProblemsDialog(QDialog):
 
 	def __init__(self, problems, parent=None):
 		super(AppDefProblemsDialog, self).__init__(parent)
 		self.title = "Wrong Web App Definition"
-		self.msg = "The following problems were found in your app definition:\n"
+		self.msg = ("The following problems were found in your app definition:\n"
+					"Do you want to create the web app?")
 		self.problems = problems
-		self.question = "Do you really want to delete all these elements?"
-		self.buttonBox = None
+		self.ok = False
 		self.initGui()
+
 
 	def initGui(self):
 		self.setWindowTitle(self.title)
@@ -303,18 +314,27 @@ class AppDefProblemsDialog(QDialog):
 		msgLabel.setWordWrap(True)
 		layout.addWidget(msgLabel)
 
-		text = QTextEdit()
-		text.setText(unicode(self.problems))
-		text.setReadOnly(True)
-		text.setLineWrapMode(QTextEdit.NoWrap)
-		layout.addWidget(text)
-
-		self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok)
-		layout.addWidget(self.buttonBox)
-
+		class MyBrowser(QTextBrowser):
+			def loadResource(self, type_, name):
+				return None
+		self.textBrowser = MyBrowser()
+		#self.textBrowser.connect(self.textBrowser, QtCore.SIGNAL("anchorClicked(const QUrl&)"), self.linkClicked)
+		problems = ['<li><img src="%s"/> &nbsp; %s</li>' % (warningIcon, p) for p in self.problems]
+		text = '<html><ul>%s</ul></html>' % "".join(problems)
+		self.textBrowser.setHtml(text)
+		layout.addWidget(self.textBrowser)
+		buttonBox = QDialogButtonBox(QDialogButtonBox.Yes | QDialogButtonBox.No)
+		layout.addWidget(buttonBox)
 		self.setLayout(layout)
-		self.buttonBox.accepted.connect(self.accept)
+
+		self.connect(buttonBox, SIGNAL("rejected()"), self.close)
+		self.connect(buttonBox, SIGNAL("accepted()"), self.okPressed)
 
 		self.setMinimumWidth(400)
 		self.setMinimumHeight(400)
 		self.resize(500, 400)
+
+	def okPressed(self):
+		self.ok = True
+		self.close()
+

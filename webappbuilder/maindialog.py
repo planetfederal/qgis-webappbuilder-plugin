@@ -9,7 +9,7 @@ from collections import defaultdict
 from olwriter import writeOL
 from qgis.utils import iface
 from appcreator import createApp, WrongAppDefinitionException,\
-    AppDefProblemsDialog, loadAppdef, saveAppdef
+    AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
 import settings
 from types import MethodType
 import webbrowser
@@ -430,12 +430,18 @@ class MainDialog(QDialog, Ui_MainDialog):
                                  "Could not create web app.\nSee QGIS log for more details.")
 
     def createApp(self):
+        appdef = self.createAppDefinition()
+        problems = checkAppCanBeCreated(appdef)
+        if problems:
+            dlg = AppDefProblemsDialog(problems)
+            dlg.exec_()
+            if not dlg.ok:
+                return
         try:
             projFile = QgsProject.instance().fileName()
             previousFolder = outputFolders.get(projFile, "")
             folder = QFileDialog.getExistingDirectory(self, "Select folder to store app", previousFolder)
             if folder:
-                appdef = self.createAppDefinition()
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
                 outputFolders[projFile] = folder
                 msgBox = QMessageBox()
@@ -450,13 +456,10 @@ class MainDialog(QDialog, Ui_MainDialog):
                     webbrowser.open_new("file://%s/index.html" % folder)
         except WrongValueException:
             pass
-        except WrongAppDefinitionException, e:
-            dlg = AppDefProblemsDialog(unicode(e))
-            dlg.exec_()
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nSee QGIS log for more details.")
+                                 "Could not create web app.\nCheck the QGIS log for more details.")
 
 
     def createAppDefinition(self, preview = False):
