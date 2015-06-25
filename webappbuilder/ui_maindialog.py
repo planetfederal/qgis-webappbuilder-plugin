@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Jun 18 07:21:42 2015
+# Created: Thu Jun 25 09:28:33 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 80, 18))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 737, 314))
         self.widgetBaseLayers.setObjectName(_fromUtf8("widgetBaseLayers"))
         self.gridLayoutBaseLayers = QtGui.QGridLayout(self.widgetBaseLayers)
         self.gridLayoutBaseLayers.setObjectName(_fromUtf8("gridLayoutBaseLayers"))
@@ -115,7 +115,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 80, 18))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 737, 313))
         self.widgetBaseOverlays.setObjectName(_fromUtf8("widgetBaseOverlays"))
         self.gridLayoutBaseOverlays = QtGui.QGridLayout(self.widgetBaseOverlays)
         self.gridLayoutBaseOverlays.setObjectName(_fromUtf8("gridLayoutBaseOverlays"))
@@ -158,15 +158,6 @@ class Ui_MainDialog(object):
         self.widgetsTab.setObjectName(_fromUtf8("widgetsTab"))
         self.gridLayout_3 = QtGui.QGridLayout(self.widgetsTab)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
-        self.label_2 = QtGui.QLabel(self.widgetsTab)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
-        self.label_2.setSizePolicy(sizePolicy)
-        self.label_2.setTextFormat(QtCore.Qt.RichText)
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.gridLayout_3.addWidget(self.label_2, 0, 0, 1, 1)
         self.scaleBarButton = QtGui.QToolButton(self.widgetsTab)
         self.scaleBarButton.setMinimumSize(QtCore.QSize(134, 100))
         self.scaleBarButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -452,15 +443,6 @@ class Ui_MainDialog(object):
         self.geolocationButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.geolocationButton.setObjectName(_fromUtf8("geolocationButton"))
         self.gridLayout_3.addWidget(self.geolocationButton, 3, 3, 1, 1)
-        self.label_15 = QtGui.QLabel(self.widgetsTab)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
-        self.label_15.setSizePolicy(sizePolicy)
-        self.label_15.setTextFormat(QtCore.Qt.RichText)
-        self.label_15.setObjectName(_fromUtf8("label_15"))
-        self.gridLayout_3.addWidget(self.label_15, 4, 0, 1, 1)
         self.measureToolButton = QtGui.QToolButton(self.widgetsTab)
         self.measureToolButton.setMinimumSize(QtCore.QSize(134, 100))
         self.measureToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
@@ -718,6 +700,24 @@ class Ui_MainDialog(object):
         self.gridLayout_3.addWidget(self.helpButton, 7, 2, 1, 1)
         spacerItem3 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_3.addItem(spacerItem3, 8, 0, 1, 1)
+        self.label_15 = QtGui.QLabel(self.widgetsTab)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
+        self.label_15.setSizePolicy(sizePolicy)
+        self.label_15.setTextFormat(QtCore.Qt.RichText)
+        self.label_15.setObjectName(_fromUtf8("label_15"))
+        self.gridLayout_3.addWidget(self.label_15, 4, 0, 1, 3)
+        self.label_2 = QtGui.QLabel(self.widgetsTab)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setTextFormat(QtCore.Qt.RichText)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.gridLayout_3.addWidget(self.label_2, 0, 0, 1, 2)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
         self.suiteTab = QtGui.QWidget()
         self.suiteTab.setObjectName(_fromUtf8("suiteTab"))
@@ -877,7 +877,7 @@ class Ui_MainDialog(object):
         self.verticalLayout_2.addWidget(self.widget)
 
         self.retranslateUi(MainDialog)
-        self.tabPanel.setCurrentIndex(0)
+        self.tabPanel.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainDialog)
 
     def retranslateUi(self, MainDialog):
@@ -898,7 +898,6 @@ class Ui_MainDialog(object):
         self.collapseLayersButton.setText(_translate("MainDialog", "-", None))
         self.layersTree.headerItem().setText(1, _translate("MainDialog", "2", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.layersTab), _translate("MainDialog", "Layers", None))
-        self.label_2.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Controls</span></p></body></html>", None))
         self.scaleBarButton.setText(_translate("MainDialog", "Scale Bar", None))
         self.zoomControlsButton.setText(_translate("MainDialog", "Zoom Controls", None))
         self.layersListButton.setText(_translate("MainDialog", "Layers List", None))
@@ -911,7 +910,6 @@ class Ui_MainDialog(object):
         self.homeButton.setText(_translate("MainDialog", "Home button", None))
         self.mousePositionButton.setText(_translate("MainDialog", "Mouse Position", None))
         self.geolocationButton.setText(_translate("MainDialog", "Geolocation", None))
-        self.label_15.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Tools and widgets </span></p></body></html>", None))
         self.measureToolButton.setText(_translate("MainDialog", "Measure Tools", None))
         self.selectionToolsButton.setText(_translate("MainDialog", "Selection Tools", None))
         self.attributesTableButton.setText(_translate("MainDialog", "Attributes Table", None))
@@ -923,6 +921,8 @@ class Ui_MainDialog(object):
         self.exportAsImageButton.setText(_translate("MainDialog", "Export as image", None))
         self.linksButton.setText(_translate("MainDialog", "Links", None))
         self.helpButton.setText(_translate("MainDialog", "Help", None))
+        self.label_15.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Tools and widgets </span>(right click to configure)</p></body></html>", None))
+        self.label_2.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Controls</span> (right click to configure)</p></body></html>", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Widgets", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))
         self.label_8.setText(_translate("MainDialog", "Password", None))
