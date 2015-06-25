@@ -14,6 +14,15 @@ def writeWebApp(appdef, folder):
     imports = []
     importsAfter = []
 
+    for applayer in layers:
+        layer = applayer.layer
+        useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
+        if layer.providerType().lower() == "wfs":
+            epsg = layer.crs().authid().split(":")[-1]
+        if not useViewCrs and epsg not in ["3857", "4326"]:
+            imports.append('<script src="./resources/proj4.js"></script>')
+            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+
     if "Mouse position" in widgets:
         projection = widgets["Mouse position"]["projection"]
         epsg = projection.split(":")[-1]
@@ -246,7 +255,7 @@ def writeWebApp(appdef, folder):
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
-                "@IMPORTS@": "\n".join(imports),
+                "@IMPORTS@": "\n".join(set(imports)),
                 "@IMPORTSAFTER@": "\n".join(importsAfter),
                 "@TABS@": "\n".join(tabs),
                 "@TABPANELS@": "\n".join(panels),
