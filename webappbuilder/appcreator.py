@@ -84,8 +84,8 @@ def checkAppCanBeCreated(appdef):
 
 	for applayer in appdef["Layers"]:
 		layer = applayer.layer
-		if layer.providerType().lower() in ["wms", "wfs"] and layer.crs().authid() != viewCrs:
-			problems.append("Layer %s uses CRS %s. Reprojection is not supported for remote services. "
+		if layer.providerType().lower() == "wms" and layer.crs().authid() != viewCrs:
+			problems.append("Layer %s uses CRS %s. Reprojection is not supported for WMS services. "
 						"This layer will probably not appear correctly in the web app"
 						% (layer.name(), layer.crs().authid()))
 

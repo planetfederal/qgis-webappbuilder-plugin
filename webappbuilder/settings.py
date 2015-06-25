@@ -133,7 +133,8 @@ defaultAppSettings = {
                 "Highlight features on hover": False,
                 "Style for selected features": selectedFeaturesStyle,
                 "Style for highlighted features": highlightedFeaturesStyle,
-                "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326"))}
+                "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326")),
+                "Use view CRS for WFS connections": True}
 
 
 

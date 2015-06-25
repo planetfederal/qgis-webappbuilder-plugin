@@ -430,28 +430,30 @@ def bounds(useCanvas, layers, crsid):
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
 
-def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType, crsid):
+def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType, layerCrs, viewCrs):
     wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
                             var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
-                                '&srsname=%(crs)s&bbox=' + extent.join(',') + ',%(crs)s';
+                                '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
                             $.ajax({
                                 url: url,
                                 dataType: 'jsonp'
                             });
                         },
                         strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
-                        projection: '%(crs)s'
                     });
                     var loadFeatures_%(layerName)s = function(response) {
-                        wfsSource_%(layerName)s.addFeatures(geojsonFormat_%(layerName)s.readFeatures(response));
+                        wfsSource_%(layerName)s.addFeatures(
+                                geojsonFormat_%(layerName)s.readFeatures(response,
+                                    {dataProjection: '%(layerCrs)s', featureProjection: '%(viewCrs)s'}));
                     };
 
                     ''' %
-                    {"url": url, "layerName":layerName, "typeName": typeName, "crs": crsid})
+                    {"url": url, "layerName":layerName, "typeName": typeName,
+                     "layerCrs": layerCrs, "viewCrs": viewCrs})
 
     if clusterDistance > 0 and geometryType:
         vectorLayer = ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -478,8 +480,13 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geo
 def layerToJavascript(applayer, settings, deploy):
     viewCrs = settings["App view CRS"]
     scaleVisibility = settings["Use layer scale dependent visibility"]
+    useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
+    if useViewCrs:
+        layerCrs = viewCrs
+    else:
+        layerCrs = layer.crs().authid()
     if scaleVisibility and layer.hasScaleBasedVisibility():
         scaleToResolution = 3571.42
         minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale() / scaleToResolution)
@@ -495,7 +502,7 @@ def layerToJavascript(applayer, settings, deploy):
             typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layer.geometryType(), viewCrs)
+                                layer.geometryType(), layerCrs, viewCrs)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -522,7 +529,7 @@ def layerToJavascript(applayer, settings, deploy):
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
-                            maxResolution, applayer.clusterDistance, layer.geometryType(), viewCrs)
+                            maxResolution, applayer.clusterDistance, layer.geometryType(), layerCrs, viewCrs)
         else:
             source = layer.source()
             layers = layer.name()
