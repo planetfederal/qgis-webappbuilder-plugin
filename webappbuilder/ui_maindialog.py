@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Thu Jun 25 09:28:33 2015
+# Created: Thu Jun 25 12:06:26 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 737, 314))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.widgetBaseLayers.setObjectName(_fromUtf8("widgetBaseLayers"))
         self.gridLayoutBaseLayers = QtGui.QGridLayout(self.widgetBaseLayers)
         self.gridLayoutBaseLayers.setObjectName(_fromUtf8("gridLayoutBaseLayers"))
@@ -115,7 +115,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 737, 313))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.widgetBaseOverlays.setObjectName(_fromUtf8("widgetBaseOverlays"))
         self.gridLayoutBaseOverlays = QtGui.QGridLayout(self.widgetBaseOverlays)
         self.gridLayoutBaseOverlays.setObjectName(_fromUtf8("gridLayoutBaseOverlays"))
@@ -877,7 +877,7 @@ class Ui_MainDialog(object):
         self.verticalLayout_2.addWidget(self.widget)
 
         self.retranslateUi(MainDialog)
-        self.tabPanel.setCurrentIndex(3)
+        self.tabPanel.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainDialog)
 
     def retranslateUi(self, MainDialog):
