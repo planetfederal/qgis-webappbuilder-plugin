@@ -238,7 +238,7 @@ showAttributesTable_ = function() {
     this.isLink = function(text){
         var regexpUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
         isUrl = regexpUrl.test(text);
-        var regexpFile = /^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.$]+)+\.[a-z]*$/
+        var regexpFile = /.*[^\w -.].*/
         isFile = regexpFile.test(text);
         return isUrl || isFile;
     };
