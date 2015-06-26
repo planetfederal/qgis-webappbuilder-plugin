@@ -211,7 +211,7 @@ html, body {
 
 .attributes-table .table-panel{
     overflow: scroll;
-    height: 90%;
+    height: calc(100% - 50px);
 }
 
 .attributes-table table{

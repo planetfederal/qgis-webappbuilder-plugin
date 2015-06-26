@@ -218,6 +218,7 @@ showAttributesTable_ = function() {
                         text = "<a href='" + text + "' target='_blank' >" + text + "</a>";
                     }
                     cell.innerHTML = text;
+                    cell.style.whiteSpace = "nowrap"
                 }
             }
         }
