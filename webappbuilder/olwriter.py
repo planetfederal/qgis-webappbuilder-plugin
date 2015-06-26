@@ -107,26 +107,10 @@ def writeCss(appdef, folder):
 
 
 def writeWebApp(appdef, folder):
-    theme = appdef["Settings"]["Theme"]["Name"]
-    try:
-        module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
-    except ImportError:
-        return _writeWebApp(appdef, folder)
-    if hasattr(module, 'writeWebApp'):
-        func = getattr(module, 'writeWebApp')
-        return func(appdef, folder)
-    else:
-        return _writeWebApp(appdef, folder)
-
-def _writeWebApp(appdef, folder):
     layers = appdef["Layers"]
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
-    tools = []
-    panels = []
-    mappanels = []
     imports = []
-    importsAfter = []
 
     for applayer in layers:
         layer = applayer.layer
@@ -143,6 +127,34 @@ def _writeWebApp(appdef, folder):
         if epsg not in ["3857", "4326"]:
             imports.append('<script src="./resources/proj4.js"></script>')
             imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+
+    try:
+        module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
+        if hasattr(module, 'writeWebApp'):
+            func = getattr(module, 'writeWebApp')
+            html = func(appdef, folder, imports)
+        else:
+            html = defaultWriteWebApp(appdef, folder, imports)
+    except ImportError:
+        html = defaultWriteWebApp(appdef, folder, imports)
+
+
+    indexFilepath = os.path.join(folder, "index.html")
+    soup=bs(html)
+    pretty=soup.prettify(formatter='html')
+    with open(indexFilepath, "w") as f:
+        f.write(pretty)
+    return indexFilepath
+
+def defaultWriteWebApp(appdef, folder, imports):
+    layers = appdef["Layers"]
+    widgets = appdef["Widgets"]
+    theme = appdef["Settings"]["Theme"]["Name"]
+    tools = []
+    panels = []
+    mappanels = []
+    importsAfter = []
+
     if "Geocoding" in widgets:
         tools.append('''<div class="navbar-form navbar-right">
                           <div class="input-group">
@@ -345,14 +357,10 @@ def _writeWebApp(appdef, folder):
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@PANELS@": "\n".join(panels),
                 "@TOOLBAR@": "\n".join(tools)}
-    indexFilepath = os.path.join(folder, "index.html")
+
     template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
     html = replaceInTemplate(template, values)
-    soup=bs(html)
-    pretty=soup.prettify(formatter='html')
-    with open(indexFilepath, "w") as f:
-        f.write(pretty)
-    return indexFilepath
+    return html
 
 
 def writeLayersAndGroups(appdef, folder):

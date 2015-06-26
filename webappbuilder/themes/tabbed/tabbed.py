@@ -1,17 +1,15 @@
 import os
 import json
 import shutil
-from bs4 import BeautifulSoup as bs
 from webappbuilder.utils import SHOW_BOOKMARKS_IN_MENU, safeName, replaceInTemplate
 
-def writeWebApp(appdef, folder):
+def writeWebApp(appdef, folder, imports):
     layers = appdef["Layers"]
     widgets = appdef["Widgets"]
     tools = []
     initialize = []
     tabs =[]
     panels = []
-    imports = []
     importsAfter = []
 
     for applayer in layers:
@@ -261,11 +259,6 @@ def writeWebApp(appdef, folder):
                 "@TABPANELS@": "\n".join(panels),
                 "@TOOLBAR@": "\n".join(tools),
                 "@INITIALIZE@": "\n".join(initialize)}
-    indexFilepath = os.path.join(folder, "index.html")
     template = os.path.join(os.path.dirname(__file__), "tabbed.html")
     html = replaceInTemplate(template, values)
-    soup=bs(html)
-    pretty=soup.prettify(formatter='html')
-    with open(indexFilepath, "w") as f:
-        f.write(pretty)
-    return indexFilepath
+    return html
