@@ -128,7 +128,6 @@ def _writeWebApp(appdef, folder):
     imports = []
     importsAfter = []
 
-
     for applayer in layers:
         layer = applayer.layer
         useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]

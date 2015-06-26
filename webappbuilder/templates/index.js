@@ -169,7 +169,7 @@ var onSingleClick = function(evt) {
                         if (currentFeatureKeys[i] != 'geometry') {
                             var value = currentFeature.get(currentFeatureKeys[i]);
                             if (value) {
-                                popupText = popupText.replace("[" + currentFeatureKeys[i] + "]",
+                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join(
                                     String(currentFeature.get(currentFeatureKeys[i])))
                             }
                         }
