@@ -117,9 +117,9 @@ def writeWebApp(appdef, folder):
         useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
-        if not useViewCrs and epsg not in ["3857", "4326"]:
-            imports.append('<script src="./resources/proj4.js"></script>')
-            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+            if not useViewCrs and epsg not in ["3857", "4326"]:
+                imports.append('<script src="./resources/proj4.js"></script>')
+                imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
 
     if "Mouse position" in widgets:
         projection = widgets["Mouse position"]["projection"]
@@ -735,6 +735,8 @@ def exportStyles(layers, folder, settings):
                 {"defs":defs, "name":safeName(layer.name()), "style":style})
 
 
+SIZE_FACTOR = 3.8
+
 def getRGBAColor(color, alpha):
     r,g,b,a = color.split(",")
     a = float(a) / 255.0
@@ -748,11 +750,7 @@ def getSymbolAsStyle(symbol, stylesFolder):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
-            size = floor(float(props["size"]) * 3)
-            color =  getRGBAColor(props["color"], alpha)
-            outlineColor = getRGBAColor(props["outline_color"], alpha)
-            outlineWidth = float(props["outline_width"])
-            style = "image: %s" % getCircle(color, size, outlineColor, outlineWidth)
+            style = "image: %s" % getShape(props, alpha)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
@@ -804,9 +802,38 @@ def getSymbolAsStyle(symbol, stylesFolder):
                         ''' % style)
     return "[ %s]" % ",".join(styles)
 
+def getShape(props, alpha):
+    size = floor(float(props["size"]) * SIZE_FACTOR / 2)
+    color =  getRGBAColor(props["color"], alpha)
+    outlineColor = getRGBAColor(props["outline_color"], alpha)
+    outlineWidth = float(props["outline_width"])
+    shape = props["name"]
+    if "star" in shape.lower():
+        return getRegularShape(color, 5,  size, size / 2.0, outlineColor, outlineWidth)
+    elif "triangle" in shape.lower():
+        return getRegularShape(color, 3,  size, None, outlineColor, outlineWidth)
+    elif "square" == shape.lower():
+        return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth)
+    elif "pentagon" == shape.lower():
+        return getRegularShape(color, 5,  size, None, outlineColor, outlineWidth)
+    else:
+        return getCircle(color, size, outlineColor, outlineWidth)
+
 def getCircle(color, size, outlineColor, outlineWidth):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
                 (str(size), getStrokeStyle(outlineColor, False, outlineWidth),
+                 getFillStyle(color)))
+
+def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth):
+    if radius2 is None:
+        return ("new ol.style.RegularShape({points: %s, radius: %s, stroke: %s, fill: %s})" %
+                (str(points), str(radius1),
+                 getStrokeStyle(outlineColor, False, outlineWidth),
+                 getFillStyle(color)))
+    else:
+        return ("new ol.style.RegularShape({points: %s, radius1: %s, radius2: %s, stroke: %s, fill: %s})" %
+                (str(points), str(radius1), str(radius2),
+                 getStrokeStyle(outlineColor, False, outlineWidth),
                  getFillStyle(color)))
 
 def getIcon(path, size):
@@ -821,7 +848,7 @@ def getIcon(path, size):
             })''' % {"s": size, "path": "styles/" + os.path.basename(path)}
 
 def getStrokeStyle(color, dashed, width):
-    width  = math.floor(float(width) * 3.8)
+    width  = math.floor(float(width) * SIZE_FACTOR)
     dash = "[3]" if dashed else "null"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
 
