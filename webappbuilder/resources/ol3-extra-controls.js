@@ -284,11 +284,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         var layername = $(this).closest('li').data('layerid');
         var layer = findBy(map.getLayerGroup(), layername);
         layer.setVisible(!layer.getVisible());
-        if (layer.getVisible()) {
-            $(this).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
-        } else {
-            $(this).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
-        }
+        $(this).checked = layer.getVisible();
     });
 
 };
@@ -302,11 +298,12 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
         if (layer instanceof ol.layer.Group){
             name = "<b>" + name + "</b>"
         }
+
         if (layer.getVisible()){
-            div += "<span><i class='layer-check glyphicon glyphicon-check'></i> " + name + "</span>";
+            div += "<input class='layer-check' type='checkbox' checked>" + name
         }
         else{
-            div += "<span><i class='layer-check glyphicon glyphicon-unchecked'></i> " + name + "</span>";
+            div += "<input class='layer-check' type='checkbox'>" + name
         }
         if (!(layer instanceof ol.layer.Group)){
             if (this.showOpacity){
