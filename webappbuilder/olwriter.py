@@ -750,7 +750,9 @@ def getSymbolAsStyle(symbol, stylesFolder):
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             size = floor(float(props["size"]) * 3)
             color =  getRGBAColor(props["color"], alpha)
-            style = "image: %s" % getCircle(color, size)
+            outlineColor = getRGBAColor(props["outline_color"], alpha)
+            outlineWidth = float(props["outline_width"])
+            style = "image: %s" % getCircle(color, size, outlineColor, outlineWidth)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             path = os.path.join(stylesFolder, os.path.basename(sl.path()))
             shutil.copy(sl.path(), path)
@@ -802,9 +804,9 @@ def getSymbolAsStyle(symbol, stylesFolder):
                         ''' % style)
     return "[ %s]" % ",".join(styles)
 
-def getCircle(color, size):
+def getCircle(color, size, outlineColor, outlineWidth):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
-                (str(size), getStrokeStyle("'rgba(0,0,0,255)'", False, "0.5"),
+                (str(size), getStrokeStyle(outlineColor, False, outlineWidth),
                  getFillStyle(color)))
 
 def getIcon(path, size):
