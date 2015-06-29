@@ -816,6 +816,8 @@ def getShape(props, alpha):
         return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth)
     elif "pentagon" == shape.lower():
         return getRegularShape(color, 5,  size, None, outlineColor, outlineWidth)
+    elif "diamond" == shape.lower():
+        return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth, 3.14159 / 4.0)
     else:
         return getCircle(color, size, outlineColor, outlineWidth)
 
@@ -824,12 +826,12 @@ def getCircle(color, size, outlineColor, outlineWidth):
                 (str(size), getStrokeStyle(outlineColor, False, outlineWidth),
                  getFillStyle(color)))
 
-def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth):
+def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth, rotation = 0):
     if radius2 is None:
-        return ("new ol.style.RegularShape({points: %s, radius: %s, stroke: %s, fill: %s})" %
+        return ("new ol.style.RegularShape({points: %s, radius: %s, stroke: %s, fill: %s, rotation: %s})" %
                 (str(points), str(radius1),
                  getStrokeStyle(outlineColor, False, outlineWidth),
-                 getFillStyle(color)))
+                 getFillStyle(color), str(rotation)))
     else:
         return ("new ol.style.RegularShape({points: %s, radius1: %s, radius2: %s, stroke: %s, fill: %s})" %
                 (str(points), str(radius1), str(radius2),
