@@ -128,6 +128,8 @@ class MainDialog(QDialog, Ui_MainDialog):
         if appdef is not None:
             self.loadAppdef(appdef)
 
+        self.tabPanel.setCurrentIndex(0)
+
     def showHelp(self):
         webbrowser.open_new("http://qgis.boundlessgeo.com/static/webappbuilder/usage.rst")
 
