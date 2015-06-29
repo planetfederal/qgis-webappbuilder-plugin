@@ -447,7 +447,8 @@ def bounds(useCanvas, layers, crsid):
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
 
-def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geometryType, layerCrs, viewCrs):
+def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
+                 geometryType, layerCrs, viewCrs, layerOpacity):
     wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
@@ -478,19 +479,22 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance, geo
                     source: wfsSource_%(layerName)s,
                 });
                 var lyr_%(layerName)s = new ol.layer.Vector({
+                    opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(layerName)s,
                     title: "%(title)s"
                 });''' %
-                {"title": title, "layerName":layerName, "min": min,
-                 "max": max, "dist": str(clusterDistance)})
+                {"opacity": layerOpacity, "title": title, "layerName":layerName,
+                 "min": min,"max": max, "dist": str(clusterDistance)})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
+                            opacity: %(opacity)s,
                             source: wfsSource_%(layerName)s, %(min)s %(max)s
                             style: style_%(layerName)s,
                             title: "%(title)s"
                         });''' %
-                        {"title": title, "layerName":layerName, "min": min, "max": max})
+                        {"opacity": layerOpacity, "title": title, "layerName":layerName,
+                         "min": min, "max": max})
     return wfsSource + vectorLayer
 
 
@@ -500,6 +504,7 @@ def layerToJavascript(applayer, settings, deploy):
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
+    layerOpacity = 1 - (layer.layerTransparency() / 100.0)
     if useViewCrs:
         layerCrs = viewCrs
     else:
@@ -519,7 +524,7 @@ def layerToJavascript(applayer, settings, deploy):
             typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layer.geometryType(), layerCrs, viewCrs)
+                                layer.geometryType(), layerCrs, viewCrs, layerOpacity)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -527,37 +532,42 @@ def layerToJavascript(applayer, settings, deploy):
                     source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
                 });
                 var lyr_%(n)s = new ol.layer.Vector({
+                    opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
                     title: "%(name)s"
                 });''' %
-                {"name": layer.name(), "n":layerName, "min": minResolution,
-                 "max": maxResolution, "dist": str(applayer.clusterDistance)})
+                {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
+                 "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance)})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
+                    opacity: %(opacity)s,
                     source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
                     %(min)s %(max)s
                     style: style_%(n)s,
                     title: "%(name)s"
                 });''' %
-                {"name": layer.name(), "n":layerName, "min": minResolution,
-                 "max": maxResolution})
+                {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
+                 "min": minResolution, "max": maxResolution})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
-                            maxResolution, applayer.clusterDistance, layer.geometryType(), layerCrs, viewCrs)
+                            maxResolution, applayer.clusterDistance, layer.geometryType(),
+                            layerCrs, viewCrs, layerOpacity)
         else:
             source = layer.source()
             layers = layer.name()
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
+                        opacity: %(opacity)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layerName, "url": url, "n": layerName, "name": layer.name()}
+                      });''' % {"opacity": layerOpacity, "layers": layerName,
+                                "url": url, "n": layerName, "name": layer.name()}
     elif layer.type() == layer.RasterLayer:
         if layer.providerType().lower() == "wms":
             source = layer.source()
@@ -565,12 +575,14 @@ def layerToJavascript(applayer, settings, deploy):
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
             return '''var lyr_%(n)s = new ol.layer.Tile({
+                        opacity: %(opacity)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layers, "url": url, "n": layerName, "name": layer.name(),
+                      });''' % {"opacity": layerOpacity, "layers": layers,
+                                "url": url, "n": layerName, "name": layer.name(),
                                 "styles": styles}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
@@ -580,7 +592,7 @@ def layerToJavascript(applayer, settings, deploy):
                 sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                         extent.xMaximum(), extent.yMaximum())
                 return '''var lyr_%(n)s = new ol.layer.Image({
-                                opacity: 1,
+                                opacity: %(opacity)s,
                                 title: "%(name)s",
                                 source: new ol.source.ImageStatic({
                                    url: "./layers/%(n)s.jpg",
@@ -589,17 +601,21 @@ def layerToJavascript(applayer, settings, deploy):
                                     imageSize: [%(col)d, %(row)d],
                                     imageExtent: %(extent)s
                                 })
-                            });''' % {"n": layerName, "extent": sExtent, "col": provider.xSize(),
-                                        "name": layer.name(), "row": provider.ySize(), "crs": viewCrs}
+                            });''' % {"opacity": layerOpacity, "n": layerName,
+                                      "extent": sExtent, "col": provider.xSize(),
+                                        "name": layer.name(), "row": provider.ySize(),
+                                        "crs": viewCrs}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
+                        opacity: %(opacity)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
-                      });''' % {"layers": layerName, "url": url, "n": layerName, "name": layer.name()}
+                      });''' % {"opacity": layerOpacity, "layers": layerName,
+                                "url": url, "n": layerName, "name": layer.name()}
 
 def exportStyles(layers, folder, settings):
     stylesFolder = os.path.join(folder, "styles")
@@ -617,16 +633,15 @@ def exportStyles(layers, folder, settings):
         defs = ""
         try:
             renderer = layer.rendererV2()
-            layerTransparency = layer.layerTransparency()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder, layerTransparency)
+                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder)
                 value = 'var value = ""'
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder,layerTransparency)))
+                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder)))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s[value]'''  % (safeName(layer.name()))
@@ -635,7 +650,7 @@ def exportStyles(layers, folder, settings):
                 defs += "var %s = [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder,layerTransparency)
+                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder)
                     ranges.append('[%f, %f, %s]' % (ran.lowerValue(), ran.upperValue(), symbolstyle))
                 defs += ",\n".join(ranges) + "];"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
@@ -721,16 +736,14 @@ def exportStyles(layers, folder, settings):
 
 
 def getRGBAColor(color, alpha):
-    r,g,b,_ = color.split(",")
-    return '"rgba(%s)"' % ",".join([r, g, b, str(alpha)])
+    r,g,b,a = color.split(",")
+    a = float(a) / 255.0
+    return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layerTransparency):
+def getSymbolAsStyle(symbol, stylesFolder):
     styles = []
-    if layerTransparency == 0:
-        alpha = symbol.alpha()
-    else:
-        alpha = layerTransparency/float(100)
+    alpha = symbol.alpha()
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
@@ -758,7 +771,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layerTransparency):
                 line_style = props["line_style"]
             style = "stroke: %s" % (getStrokeStyle(color, line_style != "solid", line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
-            fillColor =  getRGBAColor(props["color"], alpha)
+            if props["style"] == "no":
+                fillAlpha = 0
+            else:
+                fillAlpha = alpha
+            fillColor =  getRGBAColor(props["color"], fillAlpha)
+
             # for old version
             if 'color_border' in props:
                 borderColor =  getRGBAColor(props["color_border"], alpha)
