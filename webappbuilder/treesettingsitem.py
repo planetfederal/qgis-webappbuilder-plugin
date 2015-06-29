@@ -49,7 +49,7 @@ class TreeSettingItem(QTreeWidgetItem):
             self.label.setText("<a href='#'>Edit</a>")
             self.newValue = value
             def edit():
-                dlg = TextEditorDialog(unicode(value), JSON)
+                dlg = TextEditorDialog(unicode(self.newValue), JSON)
                 dlg.exec_()
                 self.newValue = dlg.text
             self.label.connect(self.label, SIGNAL("linkActivated(QString)"), edit)
