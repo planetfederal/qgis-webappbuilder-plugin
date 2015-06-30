@@ -112,6 +112,12 @@ def writeWebApp(appdef, folder):
     theme = appdef["Settings"]["Theme"]["Name"]
     imports = []
 
+    imports.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer
+                                and layer.method == METHOD_FILE])
+    imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
+                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+
     for applayer in layers:
         layer = applayer.layer
         useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
@@ -147,7 +153,6 @@ def writeWebApp(appdef, folder):
     return indexFilepath
 
 def defaultWriteWebApp(appdef, folder, imports):
-    layers = appdef["Layers"]
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
     tools = []
@@ -330,11 +335,6 @@ def defaultWriteWebApp(appdef, folder, imports):
                 f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
                 f.write(bookmarkEvents)
 
-    imports.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer
-                                and layer.method == METHOD_FILE])
-    imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
 
     if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
         imports.append('<script src="./resources/bootstrap-slider.js"></script>')
@@ -621,6 +621,7 @@ def exportStyles(layers, folder, settings):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
     for appLayer in layers:
+        cannotWriteStyle = False
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer or appLayer.method == METHOD_WMS:
             continue
@@ -662,6 +663,8 @@ def exportStyles(layers, folder, settings):
                                 }
                             }
                             ''' % {"v": varName}
+            else:
+                cannotWriteStyle = True
             try:
                 size = str(float(layer.customProperty("labeling/fontSize")) * 2)
             except:
@@ -723,16 +726,36 @@ def exportStyles(layers, folder, settings):
                             "size": size, "color": color, "value": value, "cluster": cluster}
         except Exception, e:
             print e
-            style = "{}"
+            cannotWriteStyle = True
 
         path = os.path.join(stylesFolder, safeName(layer.name()) + ".js")
 
         with codecs.open(path, "w","utf-8") as f:
-            f.write('''%(defs)s
-                    var textStyleCache_%(name)s={}
-                    var clusterStyleCache_%(name)s={}
-                    var style_%(name)s = %(style)s;''' %
-                {"defs":defs, "name":safeName(layer.name()), "style":style})
+            if cannotWriteStyle:
+                f.write('''var default_fill = new ol.style.Fill({
+                   color: 'rgba(255,255,255,0.4)'
+                 });
+                 var default_stroke = new ol.style.Stroke({
+                   color: '#3399CC',
+                   width: 1.25
+                 });
+                 var style_%s = [
+                   new ol.style.Style({
+                     image: new ol.style.Circle({
+                       fill: default_fill,
+                       stroke: default_stroke,
+                       radius: 5
+                     }),
+                     fill: default_fill,
+                     stroke: default_stroke
+                   })
+                 ];''' % safeName(layer.name()))
+            else:
+                f.write('''%(defs)s
+                        var textStyleCache_%(name)s={}
+                        var clusterStyleCache_%(name)s={}
+                        var style_%(name)s = %(style)s;''' %
+                    {"defs":defs, "name":safeName(layer.name()), "style":style})
 
 
 SIZE_FACTOR = 3.8

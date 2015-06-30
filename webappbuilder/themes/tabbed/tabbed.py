@@ -224,11 +224,6 @@ def writeWebApp(appdef, folder, imports):
                 f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
                 f.write(bookmarkEvents)
 
-    imports.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-    imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-
     if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
         imports.append('<script src="./resources/bootstrap-slider.js"></script>')
         imports.append('<link href="./resources/slider.css" rel="stylesheet"/>')

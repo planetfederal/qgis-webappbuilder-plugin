@@ -59,8 +59,8 @@ def findLayerByName(name, layers):
 def checkAppCanBeCreated(appdef):
 	viewCrs = appdef["Settings"]["App view CRS"]
 	problems = []
+	layers = appdef["Layers"]
 	if "Chart tool" in appdef["Widgets"]:
-		layers = appdef["Layers"]
 		charts = appdef["Widgets"]["Chart tool"]["charts"]
 		if len(charts) == 0:
 			problems.append("Chart tool added, but no charts have been defined. "
@@ -93,6 +93,14 @@ def checkAppCanBeCreated(appdef):
 		problems.append("Base layers can only be used if view CRS is EPSG:3857. "
 					"They will not appear correctly if the web app uses a different CRS."
 					"Your web app uses %s" % viewCrs)
+
+	for applayer in layers:
+		renderer = applayer.layer.rendererV2()
+		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
+									QgsGraduatedSymbolRendererV2)):
+			problems.append("Symbology used by layer %s includes unsupported elements. "
+						"This layer will not be correctly styled in the web app"
+						% layer.name())
 
 	return problems
 
