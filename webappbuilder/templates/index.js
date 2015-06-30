@@ -117,6 +117,9 @@ var onPointerMove = function(evt) {
                                 popupText = popupText.replace("[" + currentFeatureKeys[i] + "]",
                                     String(currentFeature.get(currentFeatureKeys[i])))
                             }
+                            else{
+                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join("NULL")
+                            }
                         }
                     }
                 }
@@ -171,6 +174,9 @@ var onSingleClick = function(evt) {
                             if (value) {
                                 popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join(
                                     String(currentFeature.get(currentFeatureKeys[i])))
+                            }
+                            else{
+                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join("NULL")
                             }
                         }
                     }
