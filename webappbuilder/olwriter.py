@@ -165,7 +165,7 @@ def defaultWriteWebApp(appdef, folder, imports):
                           <div class="input-group">
                               <input type="text" onkeypress="searchBoxKeyPressed(event);" id="geocoding-search" class="form-control" placeholder="Search placename..."/>
                               <div class="input-group-btn">
-                                  <button class="btn btn-default" "onclick="searchAddress()"><span>&nbsp;</span><i class="glyphicon glyphicon-search"></i></button>
+                                  <button class="btn btn-default" onclick="searchAddress()"><span>&nbsp;</span><i class="glyphicon glyphicon-search"></i></button>
                               </div>
                           </div>
                         </div>''');
