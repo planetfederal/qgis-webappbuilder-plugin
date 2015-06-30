@@ -818,7 +818,7 @@ def getShape(props, alpha):
         return getRegularShape(color, 5,  size, None, outlineColor, outlineWidth)
     elif "square" == shape.lower():
         return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth, 3.14159 / 4.0)
-    elif "cross" in shape.lower():
+    elif "cross" == shape.lower():
         return getRegularShape(color, 4,  size, 0, outlineColor, outlineWidth)
     elif "cross2" == shape.lower():
         return getRegularShape(color, 4,  size, 0, outlineColor, outlineWidth, 3.14159 / 4.0)
