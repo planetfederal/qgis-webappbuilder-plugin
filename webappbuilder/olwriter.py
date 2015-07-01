@@ -10,7 +10,6 @@ from PyQt4.QtGui import *
 from utils import *
 from settings import *
 import json
-from bs4 import BeautifulSoup as bs
 import importlib
 from math import floor
 import urlparse
@@ -146,8 +145,13 @@ def writeWebApp(appdef, folder):
 
 
     indexFilepath = os.path.join(folder, "index.html")
-    soup=bs(html)
-    pretty=soup.prettify(formatter='html')
+    try:
+        from bs4 import BeautifulSoup as bs
+        soup=bs(html)
+        pretty=soup.prettify(formatter='html')
+    except:
+        pretty = html
+
     with open(indexFilepath, "w") as f:
         f.write(pretty)
     return indexFilepath
