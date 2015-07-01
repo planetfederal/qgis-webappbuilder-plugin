@@ -30,38 +30,7 @@ var map = new ol.Map({
 var originalExtent = @BOUNDS@;
 map.getView().fitExtent(originalExtent, map.getSize());
 
-var selectInteraction = new ol.interaction.Select({
-  layers: function(layer){
-    return selectableLayersList.indexOf(layer) != -1;
-  },
-  style: @SELECTIONSTYLE@,
-  toggleCondition: ol.events.condition.shiftKeyOnly,
-  filter: function(feature, layer){
-    features = feature.get("features")
-    if (features){
-        return false;
-    }
-    else{
-        return true
-    }
-  }
-});
-map.addInteraction(selectInteraction);
-
-isDuringMultipleSelection = false;
-
-var selectedFeatures = selectInteraction.getFeatures();
-selectedFeatures.clear = function(){
-    isDuringMultipleSelection = true;
-    while (this.getLength() > 1) {
-        this.pop();
-    }
-    isDuringMultipleSelection = false;
-    if (this.getLength()){
-        this.pop();
-    }
-}
-
+var selectionStyle = @SELECTIONSTYLE@;
 
 var currentInteraction;
 
@@ -76,21 +45,6 @@ var highlightOverlay = new ol.FeatureOverlay({
 
 var doHighlight = @DOHIGHLIGHT@;
 var doHover = @ONHOVER@;
-
-var decluster = function(f){
-    features = f.get("features")
-    if (features){
-        if (features.length > 1){
-            return null;
-        }
-        else{
-            return features[0];
-        }
-    }
-    else{
-        return f;
-    }
-}
 
 var highlight;
 var onPointerMove = function(evt) {
@@ -107,7 +61,7 @@ var onPointerMove = function(evt) {
         if (feature) {
             currentFeature = feature;
             if (popupText == "") {
-                popupText = popupLayers[singleLayersList.indexOf(layer)];
+                popupText = popupLayers[getAllNonBaseLayers().indexOf(layer)];
                 if (popupText) {
                     var currentFeatureKeys = currentFeature.getKeys();
                     for (var i = 0; i < currentFeatureKeys.length; i++) {
@@ -165,7 +119,7 @@ var onSingleClick = function(evt) {
         if (feature) {
             currentFeature = feature;
             if (popupText == "") {
-                popupText = popupLayers[singleLayersList.indexOf(layer)];
+                popupText = popupLayers[getAllNonBaseLayers().indexOf(layer)];
                 if (popupText) {
                     var currentFeatureKeys = currentFeature.getKeys();
                     for (var i = 0; i < currentFeatureKeys.length; i++) {
@@ -182,6 +136,7 @@ var onSingleClick = function(evt) {
                     }
                 }
             }
+
         }
     });
     if (popupText) {

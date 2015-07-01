@@ -151,7 +151,6 @@ def writeWebApp(appdef, folder):
         pretty=soup.prettify(formatter='html')
     except:
         pretty = html
-
     with open(indexFilepath, "w") as f:
         f.write(pretty)
     return indexFilepath
@@ -181,21 +180,19 @@ def defaultWriteWebApp(appdef, folder, imports):
     if "Selection tools" in widgets:
         params = widgets["Selection tools"]
         selectTools = []
-        if params["Select single feature"]:
-            selectTools.append(["selectSingleFeature()", "Select single feature"])
+        selectTools.append(["removeSelectionTool()", "No selection tool (zoom/pan)"])
         if params["Select by polygon"]:
             selectTools.append(["selectByPolygon()", "Select by polygon"])
         if params["Select by rectangle"]:
             selectTools.append(["selectByRectangle()", "Select by rectangle"])
-        if selectTools:
-            li = "\n".join(['<li><a onclick="%s" href="#">%s</a></li>' % (sel[0], sel[1]) for sel in selectTools])
-            tools.append('''<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Selection <span class="caret"><span></a>
-                            <ul class="dropdown-menu">
-                              %s
-                            </ul>
-                          </li>''' % li)
+        li = "\n".join(['<li><a onclick="%s" href="#">%s</a></li>' % (sel[0], sel[1]) for sel in selectTools])
+        tools.append('''<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Selection <span class="caret"><span></a>
+                        <ul class="dropdown-menu">
+                          %s
+                        </ul>
+                      </li>''' % li)
 
     if "Query" in widgets:
         imports.append('''<script src="./resources/filtrex.js"></script>''')
@@ -391,7 +388,8 @@ def writeLayersAndGroups(appdef, folder):
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
 
-    visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()), str(layer.visible).lower()) for layer in layers])
+    visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
+                                                str(layer.visible).lower()) for layer in layers])
 
     layersList = ["baseLayer"] if base else []
     usedGroups = []
@@ -406,9 +404,6 @@ def writeLayersAndGroups(appdef, folder):
             layersList.append("lyr_" + safeName(layer.name()))
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
-    singleLayersList = "var singleLayersList = [%s];" % ",".join(["lyr_%s" % safeName(layer.layer.name()) for layer in layers])
-    selectableLayersList = "var selectableLayersList = [%s];" % ",".join(
-                            ["lyr_%s" % safeName(layer.layer.name()) for layer in layers if layer.allowSelection])
 
     path = os.path.join(folder, "layers")
     if not QDir(path).exists():
@@ -420,8 +415,6 @@ def writeLayersAndGroups(appdef, folder):
         f.write(groupVars + "\n")
         f.write(visibility + "\n")
         f.write(layersList + "\n")
-        f.write(singleLayersList + "\n")
-        f.write(selectableLayersList + "\n")
 
 
 
@@ -452,7 +445,7 @@ def bounds(useCanvas, layers, crsid):
                                 extent.xMaximum(), extent.yMaximum())
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
-                 geometryType, layerCrs, viewCrs, layerOpacity):
+                 geometryType, layerCrs, viewCrs, layerOpacity, isSelectable):
     wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
@@ -486,16 +479,19 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(layerName)s,
-                    title: "%(title)s"
+                    title: "%(title)s",
+                    isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
-                 "min": min,"max": max, "dist": str(clusterDistance)})
+                 "min": min,"max": max, "dist": str(clusterDistance),
+                 "selectable": str(isSelectable).lower()})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
                             opacity: %(opacity)s,
                             source: wfsSource_%(layerName)s, %(min)s %(max)s
                             style: style_%(layerName)s,
-                            title: "%(title)s"
+                            title: "%(title)s",
+                            isSelectable: %(selectable)s
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max})
@@ -528,7 +524,8 @@ def layerToJavascript(applayer, settings, deploy):
             typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layer.geometryType(), layerCrs, viewCrs, layerOpacity)
+                                layer.geometryType(), layerCrs, viewCrs, layerOpacity,
+                                applayer.allowSelection)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -539,26 +536,30 @@ def layerToJavascript(applayer, settings, deploy):
                     opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
-                    title: "%(name)s"
+                    title: "%(name)s",
+                    isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
-                 "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance)})
+                 "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
+                 "selectable": str(applayer.allowSelection).lower()})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
                     source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
                     %(min)s %(max)s
                     style: style_%(n)s,
-                    title: "%(name)s"
+                    title: "%(name)s",
+                    isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
-                 "min": minResolution, "max": maxResolution})
+                 "min": minResolution, "max": maxResolution,
+                 "selectable": str(applayer.allowSelection).lower()})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
                             maxResolution, applayer.clusterDistance, layer.geometryType(),
-                            layerCrs, viewCrs, layerOpacity)
+                            layerCrs, viewCrs, layerOpacity, applayer.allowSelection)
         else:
             source = layer.source()
             layers = layer.name()
@@ -702,7 +703,9 @@ def exportStyles(layers, folder, settings):
                                   clusterStyleCache_%(name)s[size] = style;
                                 }
                                 return style;
-                            }''' % {"name": safeName(layer.name())}
+                            }
+                            feature = feature.get('features')[0]
+                            ''' % {"name": safeName(layer.name())}
             else:
                 cluster = ""
 
@@ -713,7 +716,7 @@ def exportStyles(layers, folder, settings):
                         var labelText = %(label)s;
                         var key = value + "_" + labelText
 
-                        if (!%(cache)s[key]){
+                        if (!textStyleCache_%(layerName)s[key]){
                             var text = new ol.style.Text({
                                   font: '%(size)spx Calibri,sans-serif',
                                   text: labelText,
@@ -721,12 +724,18 @@ def exportStyles(layers, folder, settings):
                                     color: "%(color)s"
                                   }),
                                 });
-                            %(cache)s[key] = new ol.style.Style({"text": text});
+                            textStyleCache_%(layerName)s[key] = new ol.style.Style({"text": text});
                         }
-                        var allStyles = [%(cache)s[key]];
-                        allStyles.push.apply(allStyles, style);
+                        var allStyles = [textStyleCache_%(layerName)s[key]];
+                        var selected = lyr_%(layerName)s.selectedFeatures;
+                        if (selected && selected.indexOf(feature) != -1){
+                            allStyles.push(selectionStyle)
+                        }
+                        else{
+                            allStyles.push.apply(allStyles, style);
+                        }
                         return allStyles;
-                    }''' % {"style": style, "label": labelText, "cache": "textStyleCache_" + safeName(layer.name()),
+                    }''' % {"style": style, "label": labelText, "layerName": safeName(layer.name()),
                             "size": size, "color": color, "value": value, "cluster": cluster}
         except Exception, e:
             print e
@@ -830,7 +839,7 @@ def getSymbolAsStyle(symbol, stylesFolder):
     return "[ %s]" % ",".join(styles)
 
 def getShape(props, alpha):
-    size = floor(float(props["size"]) * SIZE_FACTOR / 2)
+    size = float(props["size"]) * SIZE_FACTOR / 2
     color =  getRGBAColor(props["color"], alpha)
     outlineColor = getRGBAColor(props["outline_color"], alpha)
     outlineWidth = float(props["outline_width"])
@@ -881,7 +890,7 @@ def getIcon(path, size):
             })''' % {"s": size, "path": "styles/" + os.path.basename(path)}
 
 def getStrokeStyle(color, dashed, width):
-    width  = math.floor(float(width) * SIZE_FACTOR)
+    width  = float(width) * SIZE_FACTOR
     dash = "[3]" if dashed else "null"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
 

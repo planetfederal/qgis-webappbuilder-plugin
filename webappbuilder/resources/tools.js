@@ -10,15 +10,124 @@ sourceFromLayer = function(layer){
 };
 
 toggleAboutPanel = function(show){
-    panel = document.getElementById('about-panel');
+    var panel = document.getElementById('about-panel');
     if (show){
         panel.style.display = 'block';
     }
     else{
         panel.style.display = 'none';
     }
-}
+};
 
+var decluster = function(f) {
+    var features = f.get("features");
+    if (features) {
+        if (features.length > 1) {
+            return null;
+        } else {
+            return features[0];
+        }
+    } else {
+        return f;
+    }
+};
+
+var getAllNonBaseLayers = function(rootLayer){
+    if (typeof rootLayer === 'undefined') {
+        rootLayer = map.getLayerGroup();
+    }
+    var nonBaseLayers = [];
+    var layers = rootLayer.getLayers().getArray();
+    var len = layers.length;
+    for (var i = len -1; i >=0; i--){
+        var layer = layers[i];
+        if (layer.getLayers) {
+            var groupLayers = getAllNonBaseLayers(layer);
+            nonBaseLayers.push.apply(nonBaseLayers, groupLayers);
+        }
+        else if (layer.get("type") != "base"){
+            nonBaseLayers.push(layer);
+        }
+    }
+    return nonBaseLayers;
+};
+
+var getSelectableLayers = function(){
+    var allLayers = getAllNonBaseLayers();
+    var selectableLayers = [];
+    var len = allLayers.length;
+    for (var i = 0; i < len; i++){
+        if (allLayers[i].get("isSelectable") == true){
+            selectableLayers.push(allLayers[i]);
+        }
+    }
+    return selectableLayers;
+};
+
+
+//=======================================================
+//Selection functions
+//=======================================================
+
+var SelectionManager = function(){
+
+    this.listeners = [];
+
+    this.addToSelection = function(features, layer){
+        if (typeof layer.selectedFeatures === 'undefined') {
+            layer.selectedFeatures = [];
+        }
+        $.merge(layer.selectedFeatures, features);
+        this.notify();
+        var source = sourceFromLayer(layer);
+        source.dispatchEvent('change');
+    };
+
+    this.removeFromSelection = function(feature, layer){
+        if (typeof layer.selectedFeatures === 'undefined') {
+            return;
+        }
+        var idx = layer.selectedFeatures.indexOf(feature);
+        if (idx > -1) {
+            layer.selectedFeatures.splice(idx, 1);
+        }
+        this.notify();
+        var source = sourceFromLayer(layer);
+        source.dispatchEvent('change');
+    };
+
+    this.setSelection = function(features, layer){
+        layer.selectedFeatures = [];
+        $.merge(layer.selectedFeatures, features);
+        this.notify();
+        var source = sourceFromLayer(layer);
+        source.dispatchEvent('change');
+    };
+
+    this.getSelection = function(layer){
+        if (typeof layer.selectedFeatures === 'undefined') {
+           return [];
+        }
+        else{
+            return layer.selectedFeatures;
+        }
+    };
+
+    this.listen = function(listener) {
+        if (typeof listener === 'function' && this.listeners.indexOf(listener) == -1) {
+            this.listeners.push(listener);
+        }
+    };
+
+    this.notify = function() {
+        for (var i = 0; i < this.listeners.length; i++){
+            this.listeners[i].apply(this);
+        }
+    };
+
+};
+
+var selectionManager = new SelectionManager();
 
 //=======================================================
 
@@ -43,21 +152,18 @@ showAttributesTable_ = function() {
         this.panel.style.display = 'block';
         return;
     }
-    var selectedFeatures = selectInteraction.getFeatures().getArray();
+    //var selectedFeatures = selectInteraction.getFeatures().getArray();
     this.selectedRowIndices = [];
 
     var this_ = this;
     this.filterTable = function(){
-        if (isDuringMultipleSelection){
-            return;
-        }
         if (this_.panel.style.display === 'none'){
             return;
         }
 
         var filterText = this_.tableFilterBox.value.toUpperCase();
         var passesFilter = function(f){
-            if (filterText == ""){
+            if (filterText === ""){
                 return true;
             }
             var keys = f.getKeys();
@@ -75,7 +181,8 @@ showAttributesTable_ = function() {
         this_.selectedRowIndices = [];
         var rows = this_.table.getElementsByTagName("tr");
         var layerFeatures = sourceFromLayer(this_.currentLayer).getFeatures();
-        for (i = 0; i < layerFeatures.length; i++) {
+        var selectedFeatures = selectionManager.getSelection(this_.currentLayer)
+        for (var i = 0; i < layerFeatures.length; i++) {
             var row = rows[i + 1];
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
             if (idx !== -1){
@@ -90,7 +197,7 @@ showAttributesTable_ = function() {
             }
         }
     };
-    selectInteraction.getFeatures().on('change:length', function(evt){this.filterTable()}, this);
+    selectionManager.listen(this.filterTable);
 
     this.renderPanel = function() {
         this.formContainer = document.createElement("form");
@@ -100,7 +207,7 @@ showAttributesTable_ = function() {
         this.createButtons();
         var p = document.createElement('p');
         this.panel.appendChild(p);
-        this.currentLayer = selectableLayersList[0];
+        this.currentLayer = getSelectableLayers()[0];
         this.tablePanel = document.createElement('div');
         this.tablePanel.className = 'table-panel';
         this.panel.appendChild(this.tablePanel);
@@ -116,7 +223,7 @@ showAttributesTable_ = function() {
         zoomTo.onclick = function(){
             features = sourceFromLayer(this_.currentLayer).getFeatures();
             extent = ol.extent.createEmpty();
-            for (i = 0; i < this_.selectedRowIndices.length; i++){
+            for (var i = 0; i < this_.selectedRowIndices.length; i++){
                 extent = ol.extent.extend(extent,
                     features[this_.selectedRowIndices[i]].getGeometry().getExtent());
             }
@@ -134,15 +241,7 @@ showAttributesTable_ = function() {
         clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected';
         clear.className = "btn btn-default";
         clear.onclick = function(){
-            var rows = this_.table.getElementsByTagName("tr");
-            var sel = this_.selectedRowIndices.slice();
-            features = sourceFromLayer(this_.currentLayer).getFeatures()
-            isDuringMultipleSelection = true;
-            for (var i = 0; i < sel.length - 1; i++) {
-                selectInteraction.getFeatures().remove(features[sel[i]]);
-            }
-            isDuringMultipleSelection = false;
-            selectInteraction.getFeatures().remove(features[sel[sel.length - 1]]);
+            selectionManager.setSelection(this_.currentLayer, []);
         };
         this.formContainer.appendChild(clear);
 
@@ -179,7 +278,7 @@ showAttributesTable_ = function() {
         this.table = document.createElement("TABLE");
         this.table.border = "1";
 
-        cols = sourceFromLayer(this.currentLayer).getFeatures()[0].getKeys();
+        var cols = sourceFromLayer(this.currentLayer).getFeatures()[0].getKeys();
         var row = this.table.insertRow(-1);
 
         for (var i = 0; i < cols.length; i++) {
@@ -192,8 +291,9 @@ showAttributesTable_ = function() {
 
         this_ = this;
         this.selectedRowIndices = [];
+        var selectedFeatures = selectionManager.getSelection(this.currentLayer)
         layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
-        for (i = 0; i < layerFeatures.length; i++) {
+        for (var i = 0; i < layerFeatures.length; i++) {
             feature = layerFeatures[i];
             keys = feature.getKeys();
             row = this_.table.insertRow(-1);
@@ -223,9 +323,9 @@ showAttributesTable_ = function() {
             }
         }
 
-        if (selectableLayersList.indexOf(this.currentLayer) != -1){
+        if (getSelectableLayers().indexOf(this.currentLayer) != -1){
             var rows = this.table.getElementsByTagName("tr");
-            for (i = 1; i < rows.length; i++) {
+            for (var i = 1; i < rows.length; i++) {
                 (function (idx) {
                     rows[idx].addEventListener("click",function(){
                         this_.rowClicked(rows[idx], idx)}, false);
@@ -248,10 +348,10 @@ showAttributesTable_ = function() {
         layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
         feature = layerFeatures[idx - 1];
         if (row.className != "row-selected"){
-            selectInteraction.getFeatures().push(feature);
+            selectionManager.addToSelection([feature], this.currentLayer);
         }
         else{
-            selectInteraction.getFeatures().remove(feature);
+            selectionManager.removeFromSelection(feature, this.currentLayer);
         }
     }
 
@@ -263,17 +363,17 @@ showAttributesTable_ = function() {
         this.sel.className = "form-control";
         this_ = this;
         this.sel.onchange = function(){
-            for (i = 0; i < selectableLayersList.length; i++){
-                if (selectableLayersList[i].get('title') == this.value){
-                    this_.currentLayer = selectableLayersList[i];
+            for (var i = 0; i < getSelectableLayers().length; i++){
+                if (getSelectableLayers()[i].get('title') == this.value){
+                    this_.currentLayer = getSelectableLayers()[i];
                     break;
                 }
             }
             this_.renderTable();
         };
 
-        for (var i = 0, l; i < selectableLayersList.length; i++) {
-            l = selectableLayersList[i];
+        for (var i = 0, l; i < getSelectableLayers().length; i++) {
+            l = getSelectableLayers()[i];
             var option = document.createElement('option');
             option.value = option.textContent = l.get('title');
             this.sel.appendChild(option);
@@ -431,18 +531,16 @@ var measureTooltips=[];
 
 measureTool = function(measureType){
 
-    selectInteraction.setActive(false);
     if (currentInteraction){
         map.removeInteraction(currentInteraction)
     }
 
     if (measureType === null){
-        for (i=0; i<measureTooltips.length; i++){
+        for (var i=0; i<measureTooltips.length; i++){
             map.removeOverlay(measureTooltips[i]);
         }
         measureSource.clear();
         map.on('pointermove', onPointerMove);
-        selectInteraction.setActive(true);
         return;
     }
 
@@ -574,9 +672,6 @@ openChart = function(c){
     chartPanel.style.display = 'block';
 
     this.drawFromSelection = function(){
-        if (isDuringMultipleSelection){
-            return;
-        }
         if (chartPanel.style.display === 'none'){
             return;
         }
@@ -585,64 +680,57 @@ openChart = function(c){
         var layerName = charts[c].layer;
         var categoryField = charts[c].categoryField;
         var valueFields = charts[c].valueFields;
-        var selectedFeatures = selectInteraction.getFeatures().getArray();
         var lyrs = map.getLayers().getArray();
         var lyr = null;
-        for (i = 0; i < lyrs.length; i++){
+        for (var i = 0; i < lyrs.length; i++){
             if (lyrs[i].get('title') == layerName){
                 lyr = lyrs[i];
                 break;
             }
         }
-        layerFeatures = sourceFromLayer(lyr).getFeatures();
+        var selectedFeatures = selectionManager.getSelection(lyr);
         var columns = [["x"]];
         if (charts[c].displayMode === DISPLAY_MODE_COUNT){
             columns.push(["Feature count"]);
         }
         else{
-            for (i = 0; i < valueFields.length; i++) {
+            for (var i = 0; i < valueFields.length; i++) {
                 columns.push([valueFields[i]]);
             }
         }
         var selectedCount = 0;
         if (charts[c].displayMode === DISPLAY_MODE_FEATURE){
-            for (i = 0; i < selectedFeatures.length; i++) {
-                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                    selectedCount++;
-                    columns[0].push(selectedFeatures[i].get(categoryField));
-                    for (j = 0; j < valueFields.length; j++) {
-                        columns[j+1].push(selectedFeatures[i].get(valueFields[j]));
-                    }
+            for (var i = 0; i < selectedFeatures.length; i++) {
+                columns[0].push(selectedFeatures[i].get(categoryField));
+                for (var j = 0; j < valueFields.length; j++) {
+                    columns[j+1].push(selectedFeatures[i].get(valueFields[j]));
                 }
             }
         }
         else if (charts[c].displayMode === DISPLAY_MODE_CATEGORY){
             values = {};
-            for (i = 0; i < selectedFeatures.length; i++) {
-                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                    selectedCount++;
-                    cat = selectedFeatures[i].get(categoryField);
-                    if (cat == null){
-                        continue;
+            for (var i = 0; i < selectedFeatures.length; i++) {
+                cat = selectedFeatures[i].get(categoryField);
+                if (cat == null){
+                    continue;
+                }
+                cat = cat.toString();
+                if (!(cat in values)){
+                    values[cat] = [];
+                    for (j = 0; j < valueFields.length; j++) {
+                        values[cat].push([selectedFeatures[i].get(valueFields[j])]);
                     }
-                    cat = cat.toString();
-                    if (!(cat in values)){
-                        values[cat] = [];
-                        for (j = 0; j < valueFields.length; j++) {
-                            values[cat].push([selectedFeatures[i].get(valueFields[j])]);
-                        }
-                    }
-                    else{
-                        for (j = 0; j < valueFields.length; j++) {
-                            values[cat][j].push(selectedFeatures[i].get(valueFields[j]));
-                        }
+                }
+                else{
+                    for (j = 0; j < valueFields.length; j++) {
+                        values[cat][j].push(selectedFeatures[i].get(valueFields[j]));
                     }
                 }
             }
             for (var key in values){
                 columns[0].push(key);
                 aggregated = [];
-                for (i = 0; i < valueFields.length; i++) {
+                for (var i = 0; i < valueFields.length; i++) {
                     if (charts[c].operation === AGGREGATION_SUM || charts[c].operation === AGGREGATION_AVG){
                         v = 0;
                         for (var j = 0; j < values[key][i].length; j++){
@@ -664,20 +752,17 @@ openChart = function(c){
         }
         else if (charts[c].displayMode === DISPLAY_MODE_COUNT){
             values = {};
-            for (i = 0; i < selectedFeatures.length; i++) {
-                if (layerFeatures.indexOf(selectedFeatures[i]) !== -1){
-                    selectedCount++;
-                    cat = selectedFeatures[i].get(categoryField)
-                    if (cat == null){
-                        continue;
-                    }
-                    cat = cat.toString();
-                    if (!(cat in values)){
-                        values[cat] = 1;
-                    }
-                    else{
-                        values[cat]++;
-                    }
+            for (var i = 0; i < selectedFeatures.length; i++) {
+                cat = selectedFeatures[i].get(categoryField)
+                if (cat == null){
+                    continue;
+                }
+                cat = cat.toString();
+                if (!(cat in values)){
+                    values[cat] = 1;
+                }
+                else{
+                    values[cat]++;
                 }
             }
 
@@ -687,13 +772,13 @@ openChart = function(c){
             }
             sorted.sort(function(a, b) {return b[1] - a[1]});
 
-            for (i = 0; i < sorted.length; i++) {
+            for (var i = 0; i < sorted.length; i++) {
                 columns[0].push(sorted[i][0]);
                 columns[1].push(sorted[i][1]);
             }
         }
         var info = document.getElementById('chart-panel-info');
-        info.innerHTML = selectedCount.toString() + " features selected in layer " + layerName;
+        info.innerHTML = selectedFeatures.length.toString() + " features selected in layer " + layerName;
 
         var chart = c3.generate({
             bindto: '#chart',
@@ -718,7 +803,7 @@ openChart = function(c){
 
     this.drawFromSelection();
 
-    selectInteraction.getFeatures().on('change:length', this.drawFromSelection, this);
+    selectionManager.listen(this.drawFromSelection);
 
     var this_ = this;
     var closer = document.getElementById('chart-panel-closer');
@@ -737,8 +822,8 @@ showQueryPanel = function(){
 
     var select = document.getElementById('query-layer');
     if (select.options.length === 0){
-        for (var i = 0, l; i < selectableLayersList.length; i++) {
-            l = selectableLayersList[i];
+        for (var i = 0, l; i < getSelectableLayers().length; i++) {
+            l = getSelectableLayers()[i];
             var option = document.createElement('option');
             option.value = option.textContent = l.get('title');
             select.appendChild(option);
@@ -772,65 +857,64 @@ showQueryPanel = function(){
     };
     this.selectFromQuery = function(mode) {
         if (this_.queryFilter){
-            isDuringMultipleSelection = true;
             var layer = null;
             var layerName = document.getElementById('query-layer').value;
             var lyrs = map.getLayers().getArray().slice().reverse();
-            for (i = 0; i < lyrs.length; i++){
+            for (var i = 0; i < lyrs.length; i++){
                 if (lyrs[i].get('title') === layerName){
                     layer = lyrs[i];
                     break;
                 }
             }
             var layerFeatures = sourceFromLayer(layer).getFeatures();
-            var selectedFeatures = selectInteraction.getFeatures();
-            var selectedFeaturesArray = selectedFeatures.getArray();
-            if (mode === NEW_SELECTION){
-                var toRemove = [];
-                for (i = 0; i < selectedFeatures.getLength(); i++) {
-                    feature = selectedFeaturesArray[i];
-                    if (layerFeatures.indexOf(feature) != -1){
-                        toRemove.push(feature);
-                    }
-                }
-                for (i = 0; i < toRemove.length; i++){
-                    selectedFeatures.remove(toRemove[i]);
-                }
-            }
-
-            for (i = 0; i < layerFeatures.length; i++) {
-                feature_ = layerFeatures[i];
-                if (mode === IN_SELECTION){
-                    if (selectedFeaturesArray.indexOf(feature_) == -1){
-                        continue;
-                    }
-                }
-                keys = feature_.getKeys();
+            var selectedFeatures = selectionManager.getSelection(layer);
+            var createFeatureObject = function(feature_){
                 feature = {};
+                keys = feature_.getKeys();
                 for (var j = 0; j < keys.length; j++){
                     feature[keys[j]] = feature_.get(keys[j]);
                 }
-                if (this_.queryFilter(feature)){
-                    if (mode !== IN_SELECTION){
-                        selectedFeatures.push(feature_);
+                return feature;
+            }
+            if (mode === NEW_SELECTION){
+                var newSelection = [];
+                for (var i = 0; i < layerFeatures.length; i++) {
+                    var feature = createFeatureObject(layerFeatures[i]);
+                    if (this_.queryFilter(feature)){
+                        newSelection.push(layerFeatures[i]);
                     }
                 }
-                else if (mode === IN_SELECTION){
-                    selectedFeatures.remove(feature_);
-                }
+                selectionManager.setSelection(newSelection, layer)
             }
-
-            if (selectedFeatures.getLength()){
-                var f = selectedFeatures.pop()
-                isDuringMultipleSelection = false;
-                selectedFeatures.push(f);
+            else if (mode === IN_SELECTION){
+                var newSelection = [];
+                for (var i = 0; i < selectedFeatures.length; i++) {
+                    var feature = createFeatureObject(selectedFeatures[i]);
+                    if (this_.queryFilter(feature)){
+                        newSelection.push(selectedFeatures[i]);
+                    }
+                }
+                selectionManager.setSelection(newSelection, layer)
             }
             else{
-                selectedFeatures.push(feature_);
-                isDuringMultipleSelection = false;
-                selectedFeatures.pop();
-
+                var newSelection = [];
+                for (var i = 0; i < layerFeatures.length; i++) {
+                    if (selectedFeatures.indexOf(layerFeatures[i]) != -1){
+                        newSelection.push(layerFeatures[i]);
+                    }
+                    else{
+                        var feature = createFeatureObject(layerFeatures[i]);
+                        if (this_.queryFilter(feature)){
+                            newSelection.push(layerFeatures[i]);
+                        }
+                    }
+                }
+                selectionManager.setSelection(newSelection, layer)
             }
+            selectionManager.setSelection(newSelection, layer)
+
+
+
         }
     };
 
@@ -878,29 +962,20 @@ selectByRectangle = function(){
     });
 
     dragBoxInteraction.on('boxend', function(e) {
-        var toAdd = [];
         var extent = dragBoxInteraction.getGeometry().getExtent();
-        var selectedFeatures = selectInteraction.getFeatures();
-        for (i = 0; i < selectableLayersList.length; i++) {
-            source = sourceFromLayer(selectableLayersList[i])
+        for (var i = 0; i < getSelectableLayers().length; i++) {
+            var toAdd = [];
+            var layer = getSelectableLayers()[i]
+            var source = sourceFromLayer(layer);
             source.forEachFeatureIntersectingExtent(extent, function(feature) {
                 toAdd.push(feature);
             });
-        }
-        if (toAdd.length !== 0){
-            isDuringMultipleSelection = true;
-            selectedFeatures.extend(toAdd.slice(0, -1));
-            isDuringMultipleSelection = false;
-            selectedFeatures.push(toAdd[toAdd.length - 1]);
+            selectionManager.setSelection(toAdd, layer);
         }
 
     });
 
     dragBoxInteraction.on('boxstart', function(e) {
-        var selectedFeatures = selectInteraction.getFeatures();
-        isDuringMultipleSelection = true;
-        selectedFeatures.clear();
-        isDuringMultipleSelection = false;
     });
 
     map.addInteraction(dragBoxInteraction);
@@ -910,7 +985,7 @@ selectByRectangle = function(){
 
 //===========================================================================
 
-selectSingleFeature = function(){
+removeSelectionTool = function(){
 
     measureTool(null);
     if (currentInteraction){
@@ -958,15 +1033,6 @@ selectByPolygon = function(){
         })
       });
 
-      selectByPolygonInteraction.on('drawstart',
-          function(evt) {
-          var selectedFeatures = selectInteraction.getFeatures();
-            isDuringMultipleSelection = true;
-            selectedFeatures.clear();
-            isDuringMultipleSelection = false;
-            polygon = evt.feature;
-          }, this);
-
       selectByPolygonInteraction.on('drawend',
           function(evt) {
             doSelection();
@@ -982,25 +1048,21 @@ selectByPolygon = function(){
 
     var doSelection = function() {
         //Only correct for points and this might not be the most efficient way...
-        var toAdd = [];
-        selectedFeatures.clear();
-        if (polygon)
+        if (polygon){
             var geom = polygon.getGeometry();
             var polygExtent = geom.getExtent();
-            for (i = 0; i < selectableLayersList.length; i++) {
-                source = sourceFromLayer(selectableLayersList[i])
+            for (var i = 0; i < getSelectableLayers().length; i++) {
+                var toAdd = [];
+                var layer = getSelectableLayers()[i]
+                var source = sourceFromLayer(layer);
                 source.forEachFeatureIntersectingExtent(polygExtent, function(feature) {
                     var extent = feature.getGeometry().getExtent();
                     if (geom.intersectsExtent(extent)){
                         toAdd.push(feature);
                     }
-            });
-        }
-        if (toAdd.length !== 0){
-            isDuringMultipleSelection = true;
-            selectedFeatures.extend(toAdd.slice(0, -1));
-            isDuringMultipleSelection = false;
-            selectedFeatures.push(toAdd[toAdd.length - 1]);
+                });
+                selectionManager.setSelection(toAdd, layer);
+            }
         }
 
     };

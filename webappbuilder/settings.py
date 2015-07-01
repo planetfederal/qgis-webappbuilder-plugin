@@ -81,8 +81,7 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                         "showDownload": False,
                                         "allowReordering": False,
                                         "showGroupContent":False},
-                        "Selection tools": {"Select single feature": True,
-                                            "Select by rectangle": True,
+                        "Selection tools": {"Select by rectangle": True,
                                             "Select by polygon": True
                                             },
                         "Links": {"links":{}}

@@ -59,23 +59,19 @@ def writeWebApp(appdef, folder, imports):
     if "Selection tools" in widgets:
         params = widgets["Selection tools"]
         selectTools = []
-        if params["Select single feature"]:
-            selectTools.append(["selectSingleFeature()", "Select single feature"])
+        selectTools.append(["removeSelectionTool()", "No selection tool (zoom/pan)"])
         if params["Select by polygon"]:
             selectTools.append(["selectByPolygon()", "Select by polygon"])
-        if params["Select by point and radius"]:
-            selectTools.append(["selectByPointAndRadius()", "Select by point and radius"])
         if params["Select by rectangle"]:
             selectTools.append(["selectByRectangle()", "Select by rectangle"])
-        if selectTools:
-            li = "\n".join(['<li><a onclick="%s" href="#">%s</a></li>' % (sel[0], sel[1]) for sel in selectTools])
-            tools.append('''<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Selection <span class="caret"><span></a>
-                            <ul class="dropdown-menu">
-                              %s
-                            </ul>
-                          </li>''' % li)
+        li = "\n".join(['<li><a onclick="%s" href="#">%s</a></li>' % (sel[0], sel[1]) for sel in selectTools])
+        tools.append('''<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Selection <span class="caret"><span></a>
+                        <ul class="dropdown-menu">
+                          %s
+                        </ul>
+                      </li>''' % li)
 
     if "Query" in widgets:
         imports.append('''<script src="./resources/filtrex.js"></script>''')
