@@ -30,8 +30,6 @@ var map = new ol.Map({
 var originalExtent = @BOUNDS@;
 map.getView().fitExtent(originalExtent, map.getSize());
 
-var selectionStyle = @SELECTIONSTYLE@;
-
 var currentInteraction;
 
 @CESIUM@

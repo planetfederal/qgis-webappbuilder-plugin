@@ -88,25 +88,6 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                         }
 
 
-selectedFeaturesStyle = '''new ol.style.Style({
-    fill: new ol.style.Fill({
-        color: 'rgba(255, 100, 50, 0.3)'
-    }),
-    stroke: new ol.style.Stroke({
-        width: 2,
-        color: 'rgba(255, 100, 50, 0.8)'
-    }),
-    image: new ol.style.Circle({
-        fill: new ol.style.Fill({
-            color: 'rgba(255, 100, 50, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-            width: 2,
-            color: 'rgba(255, 100, 50, 0.8)'
-        }),
-        radius: 7
-    })
-  })'''
 
 highlightedFeaturesStyle = '''new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -130,7 +111,6 @@ defaultAppSettings = {
                 "Zoom level when zooming to point feature": ("16", zoomLevels),
                 "Show popups on hover": False,
                 "Highlight features on hover": False,
-                "Style for selected features": selectedFeaturesStyle,
                 "Style for highlighted features": highlightedFeaturesStyle,
                 "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326")),
                 "Use view CRS for WFS connections": True}
