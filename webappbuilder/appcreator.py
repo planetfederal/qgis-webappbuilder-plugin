@@ -82,7 +82,7 @@ def checkAppCanBeCreated(appdef):
 			problems.append("Bookmarks widget added, but no bookmarks have been defined"
 						"You should configure the bookmars widget and define at least one bookmark")
 
-	for applayer in appdef["Layers"]:
+	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms" and layer.crs().authid() != viewCrs:
 			problems.append("Layer %s uses CRS %s. Reprojection is not supported for WMS services. "
@@ -95,6 +95,9 @@ def checkAppCanBeCreated(appdef):
 					"Your web app uses %s" % viewCrs)
 
 	for applayer in layers:
+		layer = applayer.layer
+		if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
+			continue
 		renderer = applayer.layer.rendererV2()
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
 									QgsGraduatedSymbolRendererV2)):
