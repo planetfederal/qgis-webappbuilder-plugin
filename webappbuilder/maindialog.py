@@ -29,13 +29,14 @@ import traceback
 
 class Layer():
 
-    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection):
+    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection, refreshInterval):
         self.layer = layer
         self.visible = visible
         self.popup = popup
         self.method = method
         self.clusterDistance = clusterDistance
         self.allowSelection = allowSelection
+        self.refreshInterval = refreshInterval
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -242,7 +243,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                     item.setCheckState(0, Qt.Checked)
                     layer = layers[item.layer.name()]
                     item.setValues(layer["visible"], layer["popup"], layer["method"],
-                                   layer["clusterDistance"], layer["allowSelection"])
+                                   layer["clusterDistance"], layer["allowSelection"],
+                                   layer["refreshInterval"])
                 else:
                     item.setCheckState(0, Qt.Unchecked)
         except Exception, e:
@@ -708,6 +710,17 @@ class TreeLayerItem(QTreeWidgetItem):
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
 
+        if layer.providerType().lower() in ["wms"]:
+            self.refreshItem = QTreeWidgetItem(self)
+            self.refreshItem.setCheckState(0, Qt.Unchecked)
+            self.refreshItem.setText(0, "Refresh layer automatically")
+            self.refreshIntervalItem = QTreeWidgetItem(self.refreshItem)
+            self.refreshIntervalItem.setText(0, "Refresh interval (millisecs)")
+            self.refreshIntervalItem.setText(1, "3000")
+            self.refreshIntervalItem.setFlags(self.flags() | Qt.ItemIsEditable)
+            self.refreshItem.addChild(self.refreshIntervalItem)
+            self.addChild(self.refreshItem)
+
     def connTypeChanged(self):
         try:
             current = self.connTypeCombo.currentIndex()
@@ -770,7 +783,22 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-    def setValues(self, visible, popup, method, clusterDistance, allowSelection):
+    @property
+    def refreshInterval(self):
+        try:
+            if self.refreshItem.checkState(0) == Qt.Checked:
+                t = self.refreshIntervalItem.text(1)
+            else:
+                return 0
+        except:
+            return 0
+        try:
+            interval = int(t)
+            return interval
+        except:
+            raise WrongValueException()
+
+    def setValues(self, visible, popup, method, clusterDistance, allowSelection, refreshInterval):
         if clusterDistance:
             self.clusterItem.setCheckState(0, Qt.Checked)
             self.clusterDistanceItem.setText(1, str(clusterDistance))
@@ -780,6 +808,15 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterDistanceItem.setText(1, "40")
             except AttributeError:
                 pass # raster layers wont have this clusterItem
+        if refreshInterval:
+            self.refreshItem.setCheckState(0, Qt.Checked)
+            self.refreshIntervalItem.setText(1, str(refreshInterval))
+        else:
+            try:
+                self.refreshItem.setCheckState(0, Qt.Unchecked)
+                self.refreshIntervalItem.setText(1, "3000")
+            except AttributeError:
+                pass
         try:
             self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
         except:
@@ -792,6 +829,7 @@ class TreeLayerItem(QTreeWidgetItem):
         self.popup = popup
 
     def appLayer(self):
-        return Layer(self.layer, self.visible, self.popup, self.method, self.clusterDistance, self.allowSelection)
+        return Layer(self.layer, self.visible, self.popup, self.method,
+                     self.clusterDistance, self.allowSelection, self.refreshInterval)
 
 

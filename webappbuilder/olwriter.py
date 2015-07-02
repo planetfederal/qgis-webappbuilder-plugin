@@ -115,15 +115,25 @@ def writeWebApp(appdef, folder):
                                 and layer.method == METHOD_FILE])
     imports.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
-
+    refresh = []
     for applayer in layers:
         layer = applayer.layer
+        if applayer.refreshInterval:
+            refresh.append(
+            '''map.once("postcompose", function(){
+                    window.setInterval(function(){
+                        lyr_%s.getSource().updateParams({'dummy': Math.random()});
+                    }, %s);
+                  }); ''' % (safeName(layer.name()), str(applayer.refreshInterval)))
         useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
                 imports.append('<script src="./resources/proj4.js"></script>')
                 imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+
+    if refresh:
+        imports.append("<script>$(document).ready(function(){%s});</script>" % "\n".join(refresh))
 
     if "Mouse position" in widgets:
         projection = widgets["Mouse position"]["projection"]
