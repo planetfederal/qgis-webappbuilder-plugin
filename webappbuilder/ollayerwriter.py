@@ -55,7 +55,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             isSelectable: %(selectable)s
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
-                         "min": min, "max": max})
+                         "min": min, "max": max, "selectable": str(isSelectable).lower()})
     return wfsSource + vectorLayer
 
 
