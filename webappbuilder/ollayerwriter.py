@@ -66,7 +66,7 @@ def layerToJavascript(applayer, settings, deploy):
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
-    layerOpacity = 1 - (layer.layerTransparency() / 100.0)
+
     if useViewCrs:
         layerCrs = viewCrs
     else:
@@ -80,6 +80,7 @@ def layerToJavascript(applayer, settings, deploy):
         maxResolution = ""
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
+        layerOpacity = 1 - (layer.layerTransparency() / 100.0)
         if layer.providerType().lower() == "wfs":
             url = layer.source().split("?")[0]
             parsed = urlparse.urlparse(layer.source())
@@ -136,6 +137,7 @@ def layerToJavascript(applayer, settings, deploy):
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": layer.name()}
     elif layer.type() == layer.RasterLayer:
+        layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
             source = layer.source()
             layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
