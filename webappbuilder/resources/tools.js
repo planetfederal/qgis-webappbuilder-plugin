@@ -132,12 +132,10 @@ var selectionManager = new SelectionManager();
 //=======================================================
 
 saveAsPng = function(){
-    map.once('postcompose', function(event) {
-      var canvas = event.context.canvas;
-      button = document.getElementById('export-as-image');
-      button.href = canvas.toDataURL('image/png');
-    });
-    map.renderSync();
+  canvas = document.getElementsByTagName('canvas')[0];
+  canvas.toBlob(function (blob) {
+    saveAs(blob, 'map.png');
+  });
 };
 
 //=======================================================
@@ -147,7 +145,7 @@ showAttributesTable = function(){
 }
 
 showAttributesTable_ = function() {
-    panels = document.getElementsByClassName('table-panel');
+    var panels = document.getElementsByClassName('table-panel');
     if (panels.length != 0){
         this.panel.style.display = 'block';
         return;
@@ -169,8 +167,8 @@ showAttributesTable_ = function() {
             var keys = f.getKeys();
             for (var i = 0; i< keys.length; i++) {
                 if (keys[i] != 'geometry') {
-                    var text = f.get(keys[i]).toString();
-                    if (text.indexOf(filterText).toUpperCase() != -1){
+                    var text = f.get(keys[i]).toString().toUpperCase();
+                    if (text.indexOf(filterText) != -1){
                         return true;
                     }
                 }
@@ -215,7 +213,7 @@ showAttributesTable_ = function() {
     };
 
     this.createButtons = function() {
-        this_ = this;
+        var this_ = this;
         zoomTo = document.createElement("button");
         zoomTo.setAttribute("type", "button");
         zoomTo.innerHTML = '<i class="glyphicon glyphicon-search"></i> Zoom to selected';
@@ -338,15 +336,15 @@ showAttributesTable_ = function() {
 
     this.isLink = function(text){
         var regexpUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-        isUrl = regexpUrl.test(text);
-        var regexpFile = /.*[^\w -.].*/
-        isFile = regexpFile.test(text);
+        var isUrl = regexpUrl.test(text);
+        var regexpFile = /.*[\\\\/].*\..*/
+        var isFile = regexpFile.test(text);
         return isUrl || isFile;
     };
 
     this.rowClicked = function(row, idx){
-        layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
-        feature = layerFeatures[idx - 1];
+        var layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
+        var feature = layerFeatures[idx - 1];
         if (row.className != "row-selected"){
             selectionManager.addToSelection([feature], this.currentLayer);
         }
