@@ -28,7 +28,7 @@ var map = new ol.Map({
 });
 
 var originalExtent = @BOUNDS@;
-map.getView().fitExtent(originalExtent, map.getSize());
+map.getView().fit(originalExtent, map.getSize());
 
 var currentInteraction;
 
@@ -36,10 +36,17 @@ var currentInteraction;
 
 @POPUPLAYERS@
 
-var highlightOverlay = new ol.FeatureOverlay({
+var highlightCollection = new ol.Collection();
+var highlightOverlay = new ol.layer.Vector({
   map: map,
-  style: [@HIGHLIGHTSTYLE@]
+  source: new ol.source.Vector({
+    features: collection,
+  }),
+  style: [@HIGHLIGHTSTYLE@],
+  updateWhileAnimating: true,
+  updateWhileInteracting: true
 });
+
 
 var doHighlight = @DOHIGHLIGHT@;
 var doHover = @ONHOVER@;
@@ -82,10 +89,10 @@ var onPointerMove = function(evt) {
     if (doHighlight) {
         if (currentFeature !== highlight) {
             if (highlight) {
-                highlightOverlay.removeFeature(highlight);
+                highlightOverlay.getSource().removeFeature(highlight);
             }
             if (currentFeature) {
-                highlightOverlay.addFeature(currentFeature);
+                highlightOverlay.getSource().addFeature(currentFeature);
             }
             highlight = currentFeature;
         }

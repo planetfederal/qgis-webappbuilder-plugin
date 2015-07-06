@@ -40,7 +40,7 @@ ol.control.HomeButton = function(opt_options) {
 
   var this_ = this;
   var goHome = function(e) {
-    map.getView().fitExtent(originalExtent, map.getSize());
+    map.getView().fit(originalExtent, map.getSize());
   };
 
   button.addEventListener('click', goHome, false);
@@ -236,7 +236,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         $('.layer-zoom-to').on('click', function() {
             var layername = $(this).closest('li').data('layerid');
             var layer = findBy(map.getLayerGroup(), layername);
-            map.getView().fitExtent(layer.getSource().getExtent(), map.getSize());
+            map.getView().fit(layer.getSource().getExtent(), map.getSize());
         });
     }
     if (this.showDownload){

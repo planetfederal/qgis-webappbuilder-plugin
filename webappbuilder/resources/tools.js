@@ -230,7 +230,7 @@ showAttributesTable_ = function() {
                 map.getView().setZoom(pointZoom);
             }
             else{
-                map.getView().fitExtent(extent, map.getSize());
+                map.getView().fit(extent, map.getSize());
             }
         };
         this.formContainer.appendChild(zoomTo);
@@ -474,7 +474,7 @@ getBookmarkExtentInViewCrs = function(extent){
 goToBookmarkByName = function(name){
     for(var i=0; i<bookmarks.length; i++){
         if (bookmarks[i][0] === name){
-            map.getView().fitExtent(getBookmarkExtentInViewCrs(bookmarks[i][1]),
+            map.getView().fit(getBookmarkExtentInViewCrs(bookmarks[i][1]),
                 map.getSize());
         }
     }
@@ -498,10 +498,10 @@ panToBookmark = function(i){
 goToBookmark = function(i){
     bookmark = bookmarks[i];
     if (bookmark){
-        map.getView().fitExtent(getBookmarkExtentInViewCrs(bookmark[1]), map.getSize());
+        map.getView().fit(getBookmarkExtentInViewCrs(bookmark[1]), map.getSize());
     }
     else{
-        map.getView().fitExtent(originalExtent, map.getSize());
+        map.getView().fit(originalExtent, map.getSize());
     }
 };
 
