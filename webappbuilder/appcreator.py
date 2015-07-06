@@ -14,6 +14,7 @@ import jsbeautifier
 from json.encoder import JSONEncoder
 import json
 import utils
+import requests
 
 class WrongAppDefinitionException(Exception):
 	pass
@@ -193,9 +194,10 @@ def publishGeoserver(appdef, progress):
 		layer = applayer.layer
 		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
 			name = safeName(layer.name())
-			sld = getGsCompatibleSld(layer)
+			sld, icons = getGsCompatibleSld(layer)
 			if sld is not None:
 				catalog.create_style(name, sld, True)
+				uploadIcons(icons, geoserverUsername, geoserverPassword, catalog.gs_base_url)
 			if layer.type() == layer.VectorLayer:
 				if applayer.method == METHOD_WFS_POSTGIS or applayer.method == METHOD_WMS_POSTGIS:
 					if store is None:
@@ -227,6 +229,18 @@ def publishGeoserver(appdef, progress):
 				catalog.save(publishing)
 		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
+
+
+def uploadIcons(icons, url, geoserverUsername, geoserverPassword):
+	url = url + "app/api/icons"
+	for icon in icons:
+		files = {'file': (icon[1], icon[2])}
+		r = requests.post(url, files=files, auth=(geoserverUsername, geoserverPassword))
+		try:
+			r.raise_for_status()
+		except Exception, e:
+			raise Exception ("Error uploading SVG icon to GeoServer:\n" + str(e))
+		break
 
 def getDataFromLayer(layer, crsid):
 	if layer.type() == layer.RasterLayer:
@@ -329,7 +343,6 @@ class AppDefProblemsDialog(QDialog):
 			def loadResource(self, type_, name):
 				return None
 		self.textBrowser = MyBrowser()
-		#self.textBrowser.connect(self.textBrowser, QtCore.SIGNAL("anchorClicked(const QUrl&)"), self.linkClicked)
 		problems = ['<li><img src="%s"/> &nbsp; %s</li>' % (warningIcon, p) for p in self.problems]
 		text = '<html><ul>%s</ul></html>' % "".join(problems)
 		self.textBrowser.setHtml(text)
