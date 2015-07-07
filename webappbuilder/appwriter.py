@@ -47,7 +47,10 @@ def writeJs(appdef, folder):
         controls.append("new ol.control.Geolocation()")
     if "Overview map" in widgets:
         collapsed = str(widgets["Overview map"]["collapsed"]).lower()
-        controls.append("new ol.control.OverviewMap({collapsed: %s})" % collapsed)
+        overviewLayers = ",".join(["lyr_%s" % safeName(layer.layer.name())
+                        for layer in layers if layer.showInOverview])
+        controls.append("new ol.control.OverviewMap({collapsed: %s, layers: [baseLayer, %s]})"
+                        % (collapsed, overviewLayers))
     if "Mouse position" in widgets:
         coord = str(widgets["Mouse position"]["coordinateFormat"])
         s = json.dumps(widgets["Mouse position"])

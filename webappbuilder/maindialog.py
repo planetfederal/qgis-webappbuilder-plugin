@@ -29,7 +29,8 @@ import traceback
 
 class Layer():
 
-    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection, refreshInterval):
+    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection,
+                 refreshInterval, showInOverview):
         self.layer = layer
         self.visible = visible
         self.popup = popup
@@ -37,6 +38,7 @@ class Layer():
         self.clusterDistance = clusterDistance
         self.allowSelection = allowSelection
         self.refreshInterval = refreshInterval
+        self.showInOverview = showInOverview
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -660,6 +662,9 @@ class TreeLayerItem(QTreeWidgetItem):
         self.visibleItem = QTreeWidgetItem(self)
         self.visibleItem.setCheckState(0, Qt.Checked)
         self.visibleItem.setText(0, "Visible on startup")
+        self.showInOverviewItem = QTreeWidgetItem(self)
+        self.showInOverviewItem.setCheckState(0, Qt.Checked)
+        self.showInOverviewItem.setText(0, "Show in overview map")
         self.addChild(self.visibleItem)
         if layer.type() == layer.VectorLayer:
             if layer.providerType().lower() != "wfs":
@@ -762,6 +767,10 @@ class TreeLayerItem(QTreeWidgetItem):
         return self.visibleItem.checkState(0) == Qt.Checked
 
     @property
+    def showInOverview(self):
+        return self.showInOverviewItem.checkState(0) == Qt.Checked
+
+    @property
     def method(self):
         try:
             return self.connTypeCombo.currentIndex()
@@ -798,7 +807,8 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-    def setValues(self, visible, popup, method, clusterDistance, allowSelection, refreshInterval):
+    def setValues(self, visible, popup, method, clusterDistance, allowSelection,
+                  refreshInterval, showInOverview):
         if clusterDistance:
             self.clusterItem.setCheckState(0, Qt.Checked)
             self.clusterDistanceItem.setText(1, str(clusterDistance))
@@ -827,9 +837,11 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             pass
         self.popup = popup
+        self.showInOverviewItem.setCheckState(0, Qt.Checked if showInOverview else Qt.Unchecked)
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method,
-                     self.clusterDistance, self.allowSelection, self.refreshInterval)
+                     self.clusterDistance, self.allowSelection, self.refreshInterval,
+                     self.showInOverview)
 
 
