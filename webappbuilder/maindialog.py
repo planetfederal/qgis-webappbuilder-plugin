@@ -6,7 +6,7 @@ from PyQt4.QtWebKit import *
 from ui_maindialog import Ui_MainDialog
 import utils
 from collections import defaultdict
-from olwriter import writeOL
+from appwriter import writeWebApp
 from qgis.utils import iface
 from appcreator import createApp, WrongAppDefinitionException,\
     AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
@@ -420,7 +420,7 @@ class MainDialog(QDialog, Ui_MainDialog):
     def updatePreview(self):
         try:
             appdef = self.createAppDefinition(True)
-            path = self._run(lambda: writeOL(appdef, utils.tempFolder(), True, self.progress))
+            path = self._run(lambda: writeWebApp(appdef, utils.tempFolder(), True, self.progress))
             path = "file:///" + path.replace("\\","/")
             webbrowser.open_new(path)
         except WrongValueException:

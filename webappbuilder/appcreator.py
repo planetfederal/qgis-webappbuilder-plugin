@@ -1,5 +1,5 @@
 import os
-from olwriter import writeOL
+from appwriter import writeWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -34,7 +34,7 @@ def createApp(appdef, deployData, folder, progress):
 			importPostgis(appdef, progress)
 		if usesGeoServer:
 			publishGeoserver(appdef, progress)
-	writeOL(appdef, folder, deployData, progress)
+	writeWebApp(appdef, folder, deployData, progress)
 	files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
 	for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
 		for f in fs:

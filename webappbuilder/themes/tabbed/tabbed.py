@@ -1,32 +1,15 @@
 import os
 import json
 import shutil
-from webappbuilder.utils import SHOW_BOOKMARKS_IN_MENU, safeName, replaceInTemplate
+from utils import SHOW_BOOKMARKS_IN_MENU, replaceInTemplate
 
-def writeWebApp(appdef, folder, imports):
-    layers = appdef["Layers"]
+def writeWebApp(appdef, folder, scripts):
     widgets = appdef["Widgets"]
     tools = []
     initialize = []
     tabs =[]
     panels = []
-    importsAfter = []
 
-    for applayer in layers:
-        layer = applayer.layer
-        useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
-        if layer.providerType().lower() == "wfs":
-            epsg = layer.crs().authid().split(":")[-1]
-        if not useViewCrs and epsg not in ["3857", "4326"]:
-            imports.append('<script src="./resources/proj4.js"></script>')
-            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-
-    if "Mouse position" in widgets:
-        projection = widgets["Mouse position"]["projection"]
-        epsg = projection.split(":")[-1]
-        if epsg not in ["3857", "4326"]:
-            imports.append('<script src="./resources/proj4.js"></script>')
-            imports.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
     if "About panel" in widgets:
         params = widgets["About panel"]
         tabs.append('<li><a href="#about-tab" role="tab" data-toggle="tab">About</a></li>')
@@ -74,7 +57,7 @@ def writeWebApp(appdef, folder, imports):
                       </li>''' % li)
 
     if "Query" in widgets:
-        imports.append('''<script src="./resources/filtrex.js"></script>''')
+        scripts.append('''<script src="./resources/filtrex.js"></script>''')
         tabs.append('<li><a href="#query-tab" role="tab" data-toggle="tab">Query</a></li>')
         panels.append('''<div class="tab-pane" id="query-tab">
                             <div class="query-panel" id="query-panel">
@@ -118,7 +101,7 @@ def writeWebApp(appdef, folder, imports):
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         tabs.append('<li><a href="#charts-tab" role="tab" data-toggle="tab">Charts</a></li>')
-        imports.append('''<script src="./resources/d3.min.js"></script>
+        scripts.append('''<script src="./resources/d3.min.js"></script>
                         <script src="./resources/c3.min.js"></script>
                         <link href="./resources/c3.min.css" rel="stylesheet" type="text/css"/>
                         <script src="./charts.js"></script>''')
@@ -161,7 +144,7 @@ def writeWebApp(appdef, folder, imports):
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
         if bookmarks:
-            importsAfter.append('<script src="./bookmarks.js"></script>')
+            scripts.append('<script src="./bookmarks.js"></script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -221,11 +204,11 @@ def writeWebApp(appdef, folder, imports):
                 f.write(bookmarkEvents)
 
     if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
-        imports.append('<script src="./resources/bootstrap-slider.js"></script>')
-        imports.append('<link href="./resources/slider.css" rel="stylesheet"/>')
+        scripts.append('<script src="./resources/bootstrap-slider.js"></script>')
+        scripts.append('<link href="./resources/slider.css" rel="stylesheet"/>')
     if "3D view" in widgets:
-        imports.append('<script src="./resources/cesium/Cesium.js"></script>')
-        imports.append('<script src="./resources/ol3cesium.js"></script>')
+        scripts.append('<script src="./resources/cesium/Cesium.js"></script>')
+        scripts.append('<script src="./resources/ol3cesium.js"></script>')
         dst = os.path.join(folder, "resources", "cesium")
         if not os.path.exists(dst):
             shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
@@ -244,8 +227,7 @@ def writeWebApp(appdef, folder, imports):
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
-                "@IMPORTS@": "\n".join(set(imports)),
-                "@IMPORTSAFTER@": "\n".join(importsAfter),
+                "@SCRIPTS@": "\n".join(set(scripts)),
                 "@TABS@": "\n".join(tabs),
                 "@TABPANELS@": "\n".join(panels),
                 "@TOOLBAR@": "\n".join(tools),
