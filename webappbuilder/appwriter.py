@@ -207,7 +207,33 @@ def defaultWriteHtml(appdef, folder, scripts):
                           %s
                         </ul>
                       </li>''' % li)
-
+    if "Analysis tools" in widgets:
+        params = widgets["Analysis tools"]
+        allAnalysisTools = {"Add random points layer": "addRandomLayer()",
+                         "Buffer": "buffer()",
+                         "Extract selected features from layer": "extractSelected()",
+                         "Aggregate": "aggregatePoints()",
+                         "Density layer (heatmap)": "addDensityLayer()",
+                         "Select within": "selectWithin()",
+                         "Count features": "countFeatures()",
+                         "Calculate line length": "lineLength()",
+                         "Nearest point": "nearestPoint()"}
+        analysisTools = []
+        for toolName, tool in allAnalysisTools.iteritems():
+            if params[toolName]:
+                analysisTools.append([tool, toolName])
+        if analysisTools:
+            li = "\n".join(['<li><a onclick="runAlgorithm(new %s)" href="#">%s</a></li>' % (t[0], t[1]) for t in analysisTools])
+            tools.append('''<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Analysis <span class="caret"><span></a>
+                            <ul class="dropdown-menu">
+                              %s
+                            </ul>
+                          </li>''' % li)
+            scripts.append('''<script src="./resources/analysis.js"></script>''')
+            scripts.append('''<script src="./resources/turf.min.js"></script>''')
+            scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
     if "Query" in widgets:
         scripts.append('''<script src="./resources/filtrex.js"></script>''')
         tools.append('<li><a onclick="showQueryPanel()" href="#"><i class="glyphicon glyphicon-filter"></i>Query</a></li>')

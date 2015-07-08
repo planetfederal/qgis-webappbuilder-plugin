@@ -84,7 +84,17 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                         "Selection tools": {"Select by rectangle": True,
                                             "Select by polygon": True
                                             },
-                        "Links": {"links":{}}
+                        "Links": {"links":{}},
+                        "Analysis tools":{"Add random points layer": False,
+                                          "Buffer": False,
+                                          "Extract selected features from layer": False,
+                                          "Aggregate": False,
+                                          "Density layer (heatmap)": False,
+                                          "Select within": False,
+                                          "Count features": False,
+                                          "Calculate line length": False,
+                                          "Nearest point": False,
+                                          }
                         }
 
 

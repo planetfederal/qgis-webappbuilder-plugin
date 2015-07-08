@@ -174,11 +174,8 @@ ol.inherits(ol.control.LayerSwitcher, ol.control.Control);
 ol.control.LayerSwitcher.prototype.showPanel = function() {
     if (this.element.className != this.shownClassName) {
         this.element.className = this.shownClassName;
-        if (this.firstTime){
             this.renderPanel();
             this.firstTime = false;
-        }
-
     }
 };
 
@@ -225,6 +222,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         }
         return null;
     };
+
     if (this.showOpacity){
         $('input.opacity').slider().on('slide', function(ev) {
             var layername = $(this).closest('li').data('layerid');
@@ -286,6 +284,17 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         layer.setVisible(!layer.getVisible());
         $(this).checked = layer.getVisible();
     });
+    $('.layer-remove').on('click', function() {
+        var layername = $(this).closest('li').data('layerid');
+        var layer = findBy(map.getLayerGroup(), layername);
+        map.removeLayer(layer);
+        idx = selectableLayersList.indexOf(layer);
+        if (idx > -1){
+            selectableLayersList.splice(idx, 1);
+        }
+        //TODO: remove selected features from this layer
+        this_.renderPanel();
+    });
 
 };
 
@@ -319,6 +328,9 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
         if (layer.get("type") != "base" && this.allowReordering && !isInGroup){
             div += "<a title='Move up' href='#' style='padding-left:15px;' href='#'><i class='layer-move-up glyphicon glyphicon-triangle-top'></i></a>";
             div += "<a title='Move dowm' href='#' style='padding-left:15px;' href='#'><i class='layer-move-down glyphicon glyphicon-triangle-bottom'></i></a>";
+        }
+        if (layer.get("type") == "analysis"){
+            div += "<a title='Remove' href='#' style='padding-left:15px;' href='#'><i class='layer-remove glyphicon glyphicon-remove'></i></a>";
         }
 
         if (layer.getLayers && this.showGroupContent) {

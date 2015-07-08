@@ -96,7 +96,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.helpButton: "Help",
                         self.bookmarksButton: "Bookmarks",
                         self.queryButton: "Query",
-                        self.selectionToolsButton: "Selection tools"}
+                        self.selectionToolsButton: "Selection tools",
+                        self.analysisToolsButton: "Analysis tools"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
@@ -673,7 +674,8 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.addChild(self.connTypeItem)
                 self.connTypeCombo = QComboBox()
                 self.connTypeCombo.setStyleSheet(self.comboStyle)
-                options = ["Use file directly", "GeoServer->WMS", "GeoServer->WFS", "PostGIS->GeoServer->WMS", "PostGIS->GeoServer->WFS"]
+                options = ["Use file directly", "GeoServer->WMS", "GeoServer->WFS",
+                           "PostGIS->GeoServer->WMS", "PostGIS->GeoServer->WFS"]
                 for option in options:
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
