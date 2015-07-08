@@ -288,11 +288,6 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         var layername = $(this).closest('li').data('layerid');
         var layer = findBy(map.getLayerGroup(), layername);
         map.removeLayer(layer);
-        idx = selectableLayersList.indexOf(layer);
-        if (idx > -1){
-            selectableLayersList.splice(idx, 1);
-        }
-        //TODO: remove selected features from this layer
         this_.renderPanel();
     });
 

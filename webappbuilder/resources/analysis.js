@@ -3,6 +3,7 @@
 var getSourceFromLayerName = function(name){
 
     var layer;
+    var selectableLayersList = getSelectableLayers();
     for (i = 0; i < selectableLayersList.length; i++){
         if (selectableLayersList[i].get('title') == name){
             layer = selectableLayersList[i];
@@ -22,27 +23,29 @@ var getTurfGeoJsonFromOL3LayerName = function(name){
 
     features = getFeaturesFromLayerName(name);
     geoj =  new ol.format.GeoJSON().writeFeatures(features,
-                        {dataProjection: 'EPSG:4326',
-                        featureProjection: 'EPSG:3857'})
+                        {featureProjection: map.getView().getProjection().getCode(),
+                        dataProjection: EPSG4326})
     return JSON.parse(geoj);
 
 };
 
-var createAndAddLayer = function(layerData, title, epsg){
+var createAndAddLayer = function(layerData, title, epsg, isSelectable){
 
-    epsg = epsg || "4326";
+    crsid = epsg || map.getView().getProjection().getCode();
+    if (typeof(isSelectable)==='undefined') isSelectable = true;
     if (!(layerData instanceof ol.source.Vector)){
         layerData = new ol.source.Vector({
             features: new ol.format.GeoJSON().readFeatures(layerData,
-                {dataProjection: 'EPSG:' + epsg,
-                featureProjection: 'EPSG:3857'})
+                {dataProjection: crsid,
+                featureProjection: map.getView().getProjection().getCode()}),
         });
     }
 
     var lyr = new ol.layer.Vector({
         source: layerData,
         title: title,
-        type: "analysis"
+        type: "analysis",
+        isSelectable: isSelectable
     });
 
     addLayer(lyr);
@@ -51,7 +54,6 @@ var createAndAddLayer = function(layerData, title, epsg){
 var addLayer = function(layer){
 
     map.addLayer(layer);
-    selectableLayersList.push(layer);
 
 }
 
@@ -71,6 +73,7 @@ var runAlgorithm = function(alg){
                     '" for="' + paramName +'">' + paramProperties.description +'</label> '
             if (paramProperties.type == PARAMETER_LAYER){
                 var options = "";
+                var selectableLayersList = getSelectableLayers();
                 for (var i = 0, l; i < selectableLayersList.length; i++) {
                     l = selectableLayersList[i];
                     options += '<option>' + l.get('title') + '</option>';
@@ -121,7 +124,13 @@ var runAlgorithm = function(alg){
                     values = {};
                     for (var paramName in params) {
                         if (params.hasOwnProperty(paramName)) {
-                            values[paramName] = $("#" + paramName).val();
+                            var paramProperties = params[paramName];
+                            if (paramProperties.type == PARAMETER_BOOLEAN){
+                                values[paramName] = $("#" + paramName).is(":checked");
+                            }
+                            else{
+                                values[paramName] = $("#" + paramName).val();
+                            }
                         }
                     }
                     alg.run(values);
@@ -157,6 +166,8 @@ var PARAMETER_STRING = 3;
 var PARAMETER_FIELD = 4;
 var PARAMETER_BOOLEAN = 5;
 
+var EPSG4326 = "EPSG:4326"
+
 /*******Algorithms************/
 
 var addRandomLayer = function(){
@@ -178,7 +189,7 @@ var addRandomLayer = function(){
         var points = turf.random('points', params.count, {
           bbox: bbox
         });
-        createAndAddLayer(points, "points", "3857")
+        createAndAddLayer(points, "points")
     };
 
 
@@ -203,7 +214,7 @@ var buffer = function(){
     this.run = function(params){
         var input = getTurfGeoJsonFromOL3LayerName(params.layer);
         var buffered = turf.buffer(input, parseInt(params.distance), "meters");
-        createAndAddLayer(buffered, "buffer")
+        createAndAddLayer(buffered, "buffer", EPSG4326)
     };
 
 
@@ -232,7 +243,7 @@ var extractSelected = function(){
                 source.addFeature(layerFeatures[i]);
             }
         }
-        createAndAddLayer(source, "Selection from " + params.layer, "3857");
+        createAndAddLayer(source, "Selection from " + params.layer);
     };
 
 }
@@ -292,7 +303,7 @@ var aggregatePoints = function(){
                               }]
         var aggregated = turf.aggregate(polygons, points, aggregations);
         createAndAddLayer(aggregated, "Aggregated (" + params.points +
-                                    " + " + params.polygons + ")")
+                                    " + " + params.polygons + ")", EPSG4326)
     };
 
 }
@@ -347,7 +358,7 @@ var selectWithin = function(params){
         var polygons = getTurfGeoJsonFromOL3LayerName(params.polygons);
         var selection = turf.within(points, polygons);
         createAndAddLayer(selection, "within (" + params.points +
-                                    " in " + params.polygons + ")")
+                                    " in " + params.polygons + ")", EPSG4326)
     };
 
 }
@@ -387,12 +398,11 @@ var lineLength = function(params){
     };
 
     this.run = function(params){
-        var points = getTurfGeoJsonFromOL3LayerName(params.lines);
         var length = 0;
-        var layerFeatures = getFeaturesFromLayerName(params.layer);
+        var layerFeatures = getFeaturesFromLayerName(params.lines);
         var format = ol.format.GeoJSON();
         for (var i = 0; i < layerFeatures.length; i++) {
-            line = JSON.parse(format.writeFeature(layerFeatures[i]));
+            var line = JSON.parse(format.writeFeature(layerFeatures[i]));
             length += turf.lineDistance(line, "kilometers");
         }
 
@@ -420,25 +430,40 @@ var nearestPoint = function(params){
                         parent: "origin"
                         },
                 addLines: {type: PARAMETER_BOOLEAN,
-                        description:"create origin-destination lines"}
+                        description:"Create origin-destination lines"}
                 };
     };
 
     this.run = function(params){
-        var origin = getTurfGeoJsonFromOL3LayerName(params.origin);
         var destination = getTurfGeoJsonFromOL3LayerName(params.destination);
         var layerFeatures = getFeaturesFromLayerName(params.origin);
-        var format = ol.format.GeoJSON();
+        var format = new ol.format.GeoJSON();
         var source = new ol.source.Vector();
+        var linesSource = new ol.source.Vector();
         for (var i = 0; i < layerFeatures.length; i++) {
-            var nearest = turf.nearest(format.writeFeature(layerFeatures[i]), destination);
-            var nearestFeature = format.readFeature(nearest);
-            var feature = layerFeatures[i].clone();
-            feature.setProperties({"nearest": nearestFeature[params.field]})
+            var feature = JSON.parse(format.writeFeature(layerFeatures[i],
+                        {dataProjection: EPSG4326,
+                        featureProjection: map.getView().getProjection().getCode()}));
+            var nearest = turf.nearest(feature, destination);
+            var nearestFeature = format.readFeature(nearest, {dataProjection: EPSG4326,
+                                    featureProjection: map.getView().getProjection().getCode()});
+            feature = layerFeatures[i].clone();
+            feature.setProperties({"nearest": nearestFeature.get(params.field)});
             source.addFeature(feature);
+            if (params.addLines){
+                c1 = layerFeatures[i].getGeometry().getFirstCoordinate();
+                c2 = nearestFeature.getGeometry().getFirstCoordinate();
+                var line = new ol.geom.LineString([c1, c2]);
+                var lineFeature = new ol.Feature(line);
+                linesSource.addFeature(lineFeature);
+            }
         }
-        createAndAddLayer(source, params.layer + "(nearest)", "3857")
+        createAndAddLayer(source, params.origin + "(nearest)");
+        if (params.addLines){
+            createAndAddLayer(linesSource, "Connection lines");
+        }
+
     };
 
-}
+};
 
