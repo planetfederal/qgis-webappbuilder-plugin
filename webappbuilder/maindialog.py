@@ -247,7 +247,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                     layer = layers[item.layer.name()]
                     item.setValues(layer["visible"], layer["popup"], layer["method"],
                                    layer["clusterDistance"], layer["allowSelection"],
-                                   layer["refreshInterval"])
+                                   layer["refreshInterval"], layer["showInOverview"])
                 else:
                     item.setCheckState(0, Qt.Unchecked)
         except Exception, e:
