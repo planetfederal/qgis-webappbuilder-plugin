@@ -15,7 +15,7 @@ from olwriter import exportStyles, layerToJavascript
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
 
-    progress.setText("Creating local files (3/3)")
+    progress.setText("Creating local files")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
     resourcesFolder = os.path.join(os.path.dirname(__file__), "resources")

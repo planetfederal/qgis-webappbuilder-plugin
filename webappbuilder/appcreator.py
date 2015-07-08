@@ -110,7 +110,7 @@ def checkAppCanBeCreated(appdef):
 
 
 def importPostgis(appdef, progress):
-	progress.setText("Importing into PostGIS (1/3)")
+	progress.setText("Importing into PostGIS")
 	progress.setProgress(0)
 	host = appdef["Deploy"]["PostGIS host"]
 	port = appdef["Deploy"]["PostGIS port"]
@@ -161,7 +161,7 @@ def publishGeoserver(appdef, progress):
 				usesGeoServer = True
 	if not usesGeoServer:
 		return
-	progress.setText("Publishing to GeoServer (2/3)")
+	progress.setText("Publishing to GeoServer")
 	progress.setProgress(0)
 	geoserverUrl = appdef["Deploy"]["GeoServer url"] + "/rest"
 	geoserverPassword = appdef["Deploy"]["GeoServer password"]
