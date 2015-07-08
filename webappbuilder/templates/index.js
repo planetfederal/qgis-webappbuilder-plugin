@@ -40,7 +40,7 @@ var highlightCollection = new ol.Collection();
 var highlightOverlay = new ol.layer.Vector({
   map: map,
   source: new ol.source.Vector({
-    features: collection,
+    features: highlightCollection,
   }),
   style: [@HIGHLIGHTSTYLE@],
   updateWhileAnimating: true,
