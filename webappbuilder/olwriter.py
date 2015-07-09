@@ -463,7 +463,7 @@ def getShape(props, alpha, color_):
         return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth)
     elif "pentagon" == shape.lower():
         return getRegularShape(color, 5,  size, None, outlineColor, outlineWidth)
-    elif "square" == shape.lower():
+    elif "rectangle" == shape.lower():
         return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth, 3.14159 / 4.0)
     elif "cross" == shape.lower():
         return getRegularShape(color, 4,  size, 0, outlineColor, outlineWidth)
