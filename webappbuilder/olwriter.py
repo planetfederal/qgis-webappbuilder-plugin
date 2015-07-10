@@ -4,6 +4,7 @@ from qgis.core import *
 import codecs
 import shutil
 import traceback
+from string import digits
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                  geometryType, layerCrs, viewCrs, layerOpacity, isSelectable):
@@ -370,7 +371,13 @@ def exportStyles(layers, folder, settings):
 SIZE_FACTOR = 3.8
 
 def getRGBAColor(color, alpha):
-    r,g,b,a = color.split(",")
+    try:
+        r,g,b,a = color.split(",")
+    except:
+        color = color.lstrip('#')
+        lv = len(color)
+        r,g,b = tuple(str(int(color[i:i + lv // 3], 16)) for i in range(0, lv, lv // 3))
+        a = 255.0
     a = float(a) / 255.0
     return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
@@ -385,18 +392,16 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
             style = "image: %s" % getShape(props, alpha, color)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             if color is None:
-                path = os.path.join(stylesFolder, os.path.basename(sl.path()))
-                shutil.copy(sl.path(), path)
-                style = "image: %s" % getIcon(path, sl.size())
-            else:
-                with open(sl.path()) as f:
-                    svg = "".join(f.readlines())
-                svg = re.sub(r'\"param\(outline\).*?\"', color, svg)
-                svg = re.sub(r'\"param\(fill\).*?\"', color, svg)
-                filename, ext = os.path.splitext(os.path.basename(sl.path()))
-                path = os.path.join(stylesFolder, filename + "_selected" + ext)
-                with open(path, "w") as f:
-                    f.write(svg)
+                color = getRGBAColor(props["color"], alpha)
+            with open(sl.path()) as f:
+                svg = "".join(f.readlines())
+            svg = re.sub(r'\"param\(outline\).*?\"', color, svg)
+            svg = re.sub(r'\"param\(fill\).*?\"', color, svg)
+            filename, ext = os.path.splitext(os.path.basename(sl.path()))
+            filename = filename + ''.join(c for c in color if c in digits) + ext
+            path = os.path.join(stylesFolder, filename)
+            with open(path, "w") as f:
+                f.write(svg)
             style = "image: %s" % getIcon(path, sl.size())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
             # Check for old version
