@@ -43,6 +43,9 @@ def writeJs(appdef, folder):
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]))
+    if "Legend" in widgets:
+        writeLegendFiles(appdef, folder)
+        controls.append("new ol.control.Legend()")
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
     if "Overview map" in widgets:
@@ -147,6 +150,9 @@ def writeHtml(appdef, folder):
         if epsg not in ["3857", "4326"]:
             scripts.append('<script src="./resources/proj4.js"></script>')
             scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+
+    if "Legend" in widgets:
+        scripts.append('<script src="./legend/legend.js"></script>')
 
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
@@ -456,7 +462,39 @@ def writeLayersAndGroups(appdef, folder):
         f.write(layersList + "\n")
 
 
+def writeLegendFiles(appdef, folder):
+    layers = appdef["Layers"]
+    legend = {}
+    legendFolder = os.path.join(folder, "legend")
+    if not QDir(legendFolder).exists():
+        QDir().mkpath(legendFolder)
+    for ilayer, applayer in enumerate(layers):
+        layer = applayer.layer
+        symbols = {}
+        size = QSize(20,20)
+        if layer.type() == layer.VectorLayer:
+            renderer = layer.rendererV2()
+            if isinstance(renderer, QgsSingleSymbolRendererV2):
+                    img = renderer.symbol().asImage(size)
+                    symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
+                    img.save(symbolPath)
+                    symbols[""] = os.path.basename(symbolPath)
+            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+                for isymbol, cat in enumerate(renderer.categories()):
+                    img = cat.symbol().asImage(size)
+                    symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
+                    img.save(symbolPath)
+                    symbols[cat.label()] = os.path.basename(symbolPath)
+            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+                for ran in renderer.ranges():
+                    img = ran.symbol().asImage(size)
+                    symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
+                    img.save(symbolPath)
+                    symbols["%s-%s" % (ran.lowerValue(), ran.upperValue())] = os.path.basename(symbolPath)
+            legend[layer.name()] = symbols
 
+    with open(os.path.join(legendFolder, "legend.js"), "w") as f:
+        f.write("var legendData = %s;" % json.dumps(legend))
 
 def bounds(useCanvas, layers, crsid):
     if useCanvas:

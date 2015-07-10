@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Jul 08 08:00:58 2015
+# Created: Thu Jul 09 14:19:31 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(703, 711)
+        MainDialog.resize(746, 710)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -134,7 +134,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 659, 285))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 702, 284))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -152,7 +152,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 659, 284))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 702, 284))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -181,20 +181,23 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 659, 596))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 702, 595))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
-        self.scaleBarButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.scaleBarButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.queryButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.queryButton.sizePolicy().hasHeightForWidth())
+        self.queryButton.setSizePolicy(sizePolicy)
+        self.queryButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -203,14 +206,169 @@ class Ui_MainDialog(object):
 " }"))
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.scaleBarButton.setIcon(icon3)
-        self.scaleBarButton.setIconSize(QtCore.QSize(32, 32))
-        self.scaleBarButton.setCheckable(True)
-        self.scaleBarButton.setChecked(True)
-        self.scaleBarButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.scaleBarButton.setObjectName(_fromUtf8("scaleBarButton"))
-        self.gridLayout_3.addWidget(self.scaleBarButton, 0, 0, 1, 1)
+        self.queryButton.setIcon(icon3)
+        self.queryButton.setIconSize(QtCore.QSize(32, 32))
+        self.queryButton.setCheckable(True)
+        self.queryButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.queryButton.setObjectName(_fromUtf8("queryButton"))
+        self.gridLayout_3.addWidget(self.queryButton, 3, 2, 1, 1)
+        self.geolocationButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.geolocationButton.sizePolicy().hasHeightForWidth())
+        self.geolocationButton.setSizePolicy(sizePolicy)
+        self.geolocationButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.geolocationButton.setIcon(icon3)
+        self.geolocationButton.setIconSize(QtCore.QSize(32, 32))
+        self.geolocationButton.setCheckable(True)
+        self.geolocationButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.geolocationButton.setObjectName(_fromUtf8("geolocationButton"))
+        self.gridLayout_3.addWidget(self.geolocationButton, 2, 2, 1, 1)
+        self.zoomSliderButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.zoomSliderButton.sizePolicy().hasHeightForWidth())
+        self.zoomSliderButton.setSizePolicy(sizePolicy)
+        self.zoomSliderButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.zoomSliderButton.setIcon(icon3)
+        self.zoomSliderButton.setIconSize(QtCore.QSize(32, 32))
+        self.zoomSliderButton.setCheckable(True)
+        self.zoomSliderButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.zoomSliderButton.setObjectName(_fromUtf8("zoomSliderButton"))
+        self.gridLayout_3.addWidget(self.zoomSliderButton, 1, 5, 1, 1)
+        self.exportAsImageButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.exportAsImageButton.sizePolicy().hasHeightForWidth())
+        self.exportAsImageButton.setSizePolicy(sizePolicy)
+        self.exportAsImageButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.exportAsImageButton.setIcon(icon3)
+        self.exportAsImageButton.setIconSize(QtCore.QSize(32, 32))
+        self.exportAsImageButton.setCheckable(True)
+        self.exportAsImageButton.setChecked(False)
+        self.exportAsImageButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.exportAsImageButton.setObjectName(_fromUtf8("exportAsImageButton"))
+        self.gridLayout_3.addWidget(self.exportAsImageButton, 5, 0, 1, 1)
+        self.overviewButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.overviewButton.sizePolicy().hasHeightForWidth())
+        self.overviewButton.setSizePolicy(sizePolicy)
+        self.overviewButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.overviewButton.setIcon(icon3)
+        self.overviewButton.setIconSize(QtCore.QSize(32, 32))
+        self.overviewButton.setCheckable(True)
+        self.overviewButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.overviewButton.setObjectName(_fromUtf8("overviewButton"))
+        self.gridLayout_3.addWidget(self.overviewButton, 0, 5, 1, 1)
+        self.helpButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.helpButton.sizePolicy().hasHeightForWidth())
+        self.helpButton.setSizePolicy(sizePolicy)
+        self.helpButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.helpButton.setIcon(icon3)
+        self.helpButton.setIconSize(QtCore.QSize(32, 32))
+        self.helpButton.setCheckable(True)
+        self.helpButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.helpButton.setObjectName(_fromUtf8("helpButton"))
+        self.gridLayout_3.addWidget(self.helpButton, 5, 3, 1, 1)
+        self.analysisToolsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.analysisToolsButton.sizePolicy().hasHeightForWidth())
+        self.analysisToolsButton.setSizePolicy(sizePolicy)
+        self.analysisToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.analysisToolsButton.setIcon(icon3)
+        self.analysisToolsButton.setIconSize(QtCore.QSize(32, 32))
+        self.analysisToolsButton.setCheckable(True)
+        self.analysisToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.analysisToolsButton.setObjectName(_fromUtf8("analysisToolsButton"))
+        self.gridLayout_3.addWidget(self.analysisToolsButton, 5, 5, 1, 1)
         self.zoomControlsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.zoomControlsButton.sizePolicy().hasHeightForWidth())
+        self.zoomControlsButton.setSizePolicy(sizePolicy)
         self.zoomControlsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -218,8 +376,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -234,8 +390,41 @@ class Ui_MainDialog(object):
         self.zoomControlsButton.setAutoRaise(False)
         self.zoomControlsButton.setArrowType(QtCore.Qt.NoArrow)
         self.zoomControlsButton.setObjectName(_fromUtf8("zoomControlsButton"))
-        self.gridLayout_3.addWidget(self.zoomControlsButton, 0, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.zoomControlsButton, 0, 2, 1, 1)
+        self.scaleBarButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scaleBarButton.sizePolicy().hasHeightForWidth())
+        self.scaleBarButton.setSizePolicy(sizePolicy)
+        self.scaleBarButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.scaleBarButton.setIcon(icon3)
+        self.scaleBarButton.setIconSize(QtCore.QSize(32, 32))
+        self.scaleBarButton.setCheckable(True)
+        self.scaleBarButton.setChecked(True)
+        self.scaleBarButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.scaleBarButton.setObjectName(_fromUtf8("scaleBarButton"))
+        self.gridLayout_3.addWidget(self.scaleBarButton, 0, 0, 1, 1)
+        spacerItem3 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem3, 8, 0, 1, 1)
         self.layersListButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.layersListButton.sizePolicy().hasHeightForWidth())
+        self.layersListButton.setSizePolicy(sizePolicy)
         self.layersListButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -256,52 +445,13 @@ class Ui_MainDialog(object):
         self.layersListButton.setChecked(True)
         self.layersListButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.layersListButton.setObjectName(_fromUtf8("layersListButton"))
-        self.gridLayout_3.addWidget(self.layersListButton, 0, 2, 1, 1)
-        self.overviewButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.overviewButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.overviewButton.setIcon(icon3)
-        self.overviewButton.setIconSize(QtCore.QSize(32, 32))
-        self.overviewButton.setCheckable(True)
-        self.overviewButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.overviewButton.setObjectName(_fromUtf8("overviewButton"))
-        self.gridLayout_3.addWidget(self.overviewButton, 0, 3, 1, 1)
-        self.northArrowButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.northArrowButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.northArrowButton.setIcon(icon3)
-        self.northArrowButton.setIconSize(QtCore.QSize(32, 32))
-        self.northArrowButton.setCheckable(True)
-        self.northArrowButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.northArrowButton.setObjectName(_fromUtf8("northArrowButton"))
-        self.gridLayout_3.addWidget(self.northArrowButton, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.layersListButton, 0, 3, 1, 1)
         self.fullScreenButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.fullScreenButton.sizePolicy().hasHeightForWidth())
+        self.fullScreenButton.setSizePolicy(sizePolicy)
         self.fullScreenButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -309,8 +459,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -322,8 +470,13 @@ class Ui_MainDialog(object):
         self.fullScreenButton.setCheckable(True)
         self.fullScreenButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.fullScreenButton.setObjectName(_fromUtf8("fullScreenButton"))
-        self.gridLayout_3.addWidget(self.fullScreenButton, 1, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.fullScreenButton, 1, 2, 1, 1)
         self.attributionButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.attributionButton.sizePolicy().hasHeightForWidth())
+        self.attributionButton.setSizePolicy(sizePolicy)
         self.attributionButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -331,8 +484,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -344,74 +495,113 @@ class Ui_MainDialog(object):
         self.attributionButton.setCheckable(True)
         self.attributionButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.attributionButton.setObjectName(_fromUtf8("attributionButton"))
-        self.gridLayout_3.addWidget(self.attributionButton, 1, 2, 1, 1)
-        self.zoomSliderButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.zoomSliderButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.gridLayout_3.addWidget(self.attributionButton, 1, 3, 1, 1)
+        self.linksButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.linksButton.sizePolicy().hasHeightForWidth())
+        self.linksButton.setSizePolicy(sizePolicy)
+        self.linksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.zoomSliderButton.setIcon(icon3)
-        self.zoomSliderButton.setIconSize(QtCore.QSize(32, 32))
-        self.zoomSliderButton.setCheckable(True)
-        self.zoomSliderButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.zoomSliderButton.setObjectName(_fromUtf8("zoomSliderButton"))
-        self.gridLayout_3.addWidget(self.zoomSliderButton, 1, 3, 1, 1)
-        self.cesiumButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.cesiumButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.linksButton.setIcon(icon3)
+        self.linksButton.setIconSize(QtCore.QSize(32, 32))
+        self.linksButton.setCheckable(True)
+        self.linksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.linksButton.setObjectName(_fromUtf8("linksButton"))
+        self.gridLayout_3.addWidget(self.linksButton, 5, 2, 1, 1)
+        self.northArrowButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.northArrowButton.sizePolicy().hasHeightForWidth())
+        self.northArrowButton.setSizePolicy(sizePolicy)
+        self.northArrowButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.cesiumButton.setIcon(icon3)
-        self.cesiumButton.setIconSize(QtCore.QSize(32, 32))
-        self.cesiumButton.setCheckable(True)
-        self.cesiumButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.cesiumButton.setObjectName(_fromUtf8("cesiumButton"))
-        self.gridLayout_3.addWidget(self.cesiumButton, 2, 0, 1, 1)
-        self.homeButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.homeButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.northArrowButton.setIcon(icon3)
+        self.northArrowButton.setIconSize(QtCore.QSize(32, 32))
+        self.northArrowButton.setCheckable(True)
+        self.northArrowButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.northArrowButton.setObjectName(_fromUtf8("northArrowButton"))
+        self.gridLayout_3.addWidget(self.northArrowButton, 0, 6, 1, 1)
+        self.measureToolButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.measureToolButton.sizePolicy().hasHeightForWidth())
+        self.measureToolButton.setSizePolicy(sizePolicy)
+        self.measureToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.homeButton.setIcon(icon3)
-        self.homeButton.setIconSize(QtCore.QSize(32, 32))
-        self.homeButton.setCheckable(True)
-        self.homeButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.homeButton.setObjectName(_fromUtf8("homeButton"))
-        self.gridLayout_3.addWidget(self.homeButton, 2, 1, 1, 1)
+        self.measureToolButton.setIcon(icon3)
+        self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
+        self.measureToolButton.setCheckable(True)
+        self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.measureToolButton.setObjectName(_fromUtf8("measureToolButton"))
+        self.gridLayout_3.addWidget(self.measureToolButton, 1, 6, 1, 1)
+        self.selectionToolsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.selectionToolsButton.sizePolicy().hasHeightForWidth())
+        self.selectionToolsButton.setSizePolicy(sizePolicy)
+        self.selectionToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.selectionToolsButton.setIcon(icon3)
+        self.selectionToolsButton.setIconSize(QtCore.QSize(32, 32))
+        self.selectionToolsButton.setCheckable(True)
+        self.selectionToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.selectionToolsButton.setObjectName(_fromUtf8("selectionToolsButton"))
+        self.gridLayout_3.addWidget(self.selectionToolsButton, 2, 0, 1, 1)
         self.mousePositionButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.mousePositionButton.sizePolicy().hasHeightForWidth())
+        self.mousePositionButton.setSizePolicy(sizePolicy)
         self.mousePositionButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -419,8 +609,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -433,96 +621,38 @@ class Ui_MainDialog(object):
         self.mousePositionButton.setAutoRepeat(False)
         self.mousePositionButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.mousePositionButton.setObjectName(_fromUtf8("mousePositionButton"))
-        self.gridLayout_3.addWidget(self.mousePositionButton, 2, 2, 1, 1)
-        self.geolocationButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.geolocationButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.gridLayout_3.addWidget(self.mousePositionButton, 3, 0, 1, 1)
+        self.homeButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.homeButton.sizePolicy().hasHeightForWidth())
+        self.homeButton.setSizePolicy(sizePolicy)
+        self.homeButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.geolocationButton.setIcon(icon3)
-        self.geolocationButton.setIconSize(QtCore.QSize(32, 32))
-        self.geolocationButton.setCheckable(True)
-        self.geolocationButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.geolocationButton.setObjectName(_fromUtf8("geolocationButton"))
-        self.gridLayout_3.addWidget(self.geolocationButton, 2, 3, 1, 1)
-        self.measureToolButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.measureToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.measureToolButton.setIcon(icon3)
-        self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
-        self.measureToolButton.setCheckable(True)
-        self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.measureToolButton.setObjectName(_fromUtf8("measureToolButton"))
-        self.gridLayout_3.addWidget(self.measureToolButton, 3, 0, 1, 1)
-        self.selectionToolsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.selectionToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.selectionToolsButton.setIcon(icon3)
-        self.selectionToolsButton.setIconSize(QtCore.QSize(32, 32))
-        self.selectionToolsButton.setCheckable(True)
-        self.selectionToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.selectionToolsButton.setObjectName(_fromUtf8("selectionToolsButton"))
-        self.gridLayout_3.addWidget(self.selectionToolsButton, 3, 1, 1, 1)
-        self.attributesTableButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.attributesTableButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.attributesTableButton.setIcon(icon3)
-        self.attributesTableButton.setIconSize(QtCore.QSize(32, 32))
-        self.attributesTableButton.setCheckable(True)
-        self.attributesTableButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.attributesTableButton.setObjectName(_fromUtf8("attributesTableButton"))
-        self.gridLayout_3.addWidget(self.attributesTableButton, 3, 2, 1, 1)
+        self.homeButton.setIcon(icon3)
+        self.homeButton.setIconSize(QtCore.QSize(32, 32))
+        self.homeButton.setCheckable(True)
+        self.homeButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.homeButton.setObjectName(_fromUtf8("homeButton"))
+        self.gridLayout_3.addWidget(self.homeButton, 1, 0, 1, 1)
         self.chartToolButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chartToolButton.sizePolicy().hasHeightForWidth())
+        self.chartToolButton.setSizePolicy(sizePolicy)
         self.chartToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -530,8 +660,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -543,8 +671,13 @@ class Ui_MainDialog(object):
         self.chartToolButton.setCheckable(True)
         self.chartToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.chartToolButton.setObjectName(_fromUtf8("chartToolButton"))
-        self.gridLayout_3.addWidget(self.chartToolButton, 3, 3, 1, 1)
+        self.gridLayout_3.addWidget(self.chartToolButton, 2, 5, 1, 1)
         self.geocodingButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.geocodingButton.sizePolicy().hasHeightForWidth())
+        self.geocodingButton.setSizePolicy(sizePolicy)
         self.geocodingButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -552,8 +685,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -565,30 +696,13 @@ class Ui_MainDialog(object):
         self.geocodingButton.setCheckable(True)
         self.geocodingButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.geocodingButton.setObjectName(_fromUtf8("geocodingButton"))
-        self.gridLayout_3.addWidget(self.geocodingButton, 4, 0, 1, 1)
-        self.queryButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.queryButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.queryButton.setIcon(icon3)
-        self.queryButton.setIconSize(QtCore.QSize(32, 32))
-        self.queryButton.setCheckable(True)
-        self.queryButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.queryButton.setObjectName(_fromUtf8("queryButton"))
-        self.gridLayout_3.addWidget(self.queryButton, 4, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.geocodingButton, 3, 3, 1, 1)
         self.bookmarksButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bookmarksButton.sizePolicy().hasHeightForWidth())
+        self.bookmarksButton.setSizePolicy(sizePolicy)
         self.bookmarksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -596,8 +710,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -609,8 +721,13 @@ class Ui_MainDialog(object):
         self.bookmarksButton.setCheckable(True)
         self.bookmarksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.bookmarksButton.setObjectName(_fromUtf8("bookmarksButton"))
-        self.gridLayout_3.addWidget(self.bookmarksButton, 4, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.bookmarksButton, 3, 5, 1, 1)
         self.aboutPanelButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.aboutPanelButton.sizePolicy().hasHeightForWidth())
+        self.aboutPanelButton.setSizePolicy(sizePolicy)
         self.aboutPanelButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
@@ -618,8 +735,6 @@ class Ui_MainDialog(object):
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
@@ -632,98 +747,85 @@ class Ui_MainDialog(object):
         self.aboutPanelButton.setChecked(False)
         self.aboutPanelButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.aboutPanelButton.setObjectName(_fromUtf8("aboutPanelButton"))
-        self.gridLayout_3.addWidget(self.aboutPanelButton, 4, 3, 1, 1)
-        self.exportAsImageButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.exportAsImageButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.gridLayout_3.addWidget(self.aboutPanelButton, 3, 6, 1, 1)
+        self.attributesTableButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.attributesTableButton.sizePolicy().hasHeightForWidth())
+        self.attributesTableButton.setSizePolicy(sizePolicy)
+        self.attributesTableButton.setMinimumSize(QtCore.QSize(104, 0))
+        self.attributesTableButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
+"     min-width: 70px;\n"
+"     max-widht: 70px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.exportAsImageButton.setIcon(icon3)
-        self.exportAsImageButton.setIconSize(QtCore.QSize(32, 32))
-        self.exportAsImageButton.setCheckable(True)
-        self.exportAsImageButton.setChecked(False)
-        self.exportAsImageButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.exportAsImageButton.setObjectName(_fromUtf8("exportAsImageButton"))
-        self.gridLayout_3.addWidget(self.exportAsImageButton, 5, 0, 1, 1)
-        self.linksButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.linksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.attributesTableButton.setIcon(icon3)
+        self.attributesTableButton.setIconSize(QtCore.QSize(32, 32))
+        self.attributesTableButton.setCheckable(True)
+        self.attributesTableButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.attributesTableButton.setObjectName(_fromUtf8("attributesTableButton"))
+        self.gridLayout_3.addWidget(self.attributesTableButton, 2, 3, 1, 1)
+        self.legendButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.legendButton.sizePolicy().hasHeightForWidth())
+        self.legendButton.setSizePolicy(sizePolicy)
+        self.legendButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.linksButton.setIcon(icon3)
-        self.linksButton.setIconSize(QtCore.QSize(32, 32))
-        self.linksButton.setCheckable(True)
-        self.linksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.linksButton.setObjectName(_fromUtf8("linksButton"))
-        self.gridLayout_3.addWidget(self.linksButton, 5, 1, 1, 1)
-        self.helpButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.helpButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+        self.legendButton.setIcon(icon3)
+        self.legendButton.setIconSize(QtCore.QSize(32, 32))
+        self.legendButton.setCheckable(True)
+        self.legendButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.legendButton.setObjectName(_fromUtf8("legendButton"))
+        self.gridLayout_3.addWidget(self.legendButton, 2, 6, 1, 1)
+        self.cesiumButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.cesiumButton.sizePolicy().hasHeightForWidth())
+        self.cesiumButton.setSizePolicy(sizePolicy)
+        self.cesiumButton.setStyleSheet(_fromUtf8("QToolButton {\n"
 "     background-color: #bbbbbb;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
 "     border-radius: 10px;\n"
 "     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
 "     padding: 15px;\n"
 " }\n"
 " QToolButton:checked {\n"
 "     background-color: #9ABEED;\n"
 "     border-style: inset;\n"
 " }"))
-        self.helpButton.setIcon(icon3)
-        self.helpButton.setIconSize(QtCore.QSize(32, 32))
-        self.helpButton.setCheckable(True)
-        self.helpButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.helpButton.setObjectName(_fromUtf8("helpButton"))
-        self.gridLayout_3.addWidget(self.helpButton, 5, 2, 1, 1)
-        self.analysisToolsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        self.analysisToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
-"     border-radius: 10px;\n"
-"     border-color: beige;\n"
-"     font: bold 11px;\n"
-"     min-width: 100px;\n"
-"     max-widht: 100px;\n"
-"     padding: 15px;\n"
-" }\n"
-" QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
-" }"))
-        self.analysisToolsButton.setIcon(icon3)
-        self.analysisToolsButton.setIconSize(QtCore.QSize(32, 32))
-        self.analysisToolsButton.setCheckable(True)
-        self.analysisToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-        self.analysisToolsButton.setObjectName(_fromUtf8("analysisToolsButton"))
-        self.gridLayout_3.addWidget(self.analysisToolsButton, 5, 3, 1, 1)
-        spacerItem3 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem3, 6, 0, 1, 1)
+        self.cesiumButton.setIcon(icon3)
+        self.cesiumButton.setIconSize(QtCore.QSize(32, 32))
+        self.cesiumButton.setCheckable(True)
+        self.cesiumButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.cesiumButton.setObjectName(_fromUtf8("cesiumButton"))
+        self.gridLayout_3.addWidget(self.cesiumButton, 5, 6, 1, 1)
         self.scrollArea_3.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout_7.addWidget(self.scrollArea_3)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
@@ -907,30 +1009,41 @@ class Ui_MainDialog(object):
         self.label_18.setText(_translate("MainDialog", "<b>Overlays</b>", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.baseLayerTab), _translate("MainDialog", "Other Layers", None))
         self.label_2.setText(_translate("MainDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Controls</span> (right click to configure)</p></body></html>", None))
-        self.scaleBarButton.setText(_translate("MainDialog", "Scale bar", None))
-        self.zoomControlsButton.setText(_translate("MainDialog", "Zoom", None))
-        self.layersListButton.setText(_translate("MainDialog", "Layers list", None))
-        self.overviewButton.setText(_translate("MainDialog", "Overview map", None))
-        self.northArrowButton.setText(_translate("MainDialog", "North arrow", None))
-        self.fullScreenButton.setText(_translate("MainDialog", "Full screen", None))
-        self.attributionButton.setText(_translate("MainDialog", "Attribution", None))
-        self.zoomSliderButton.setText(_translate("MainDialog", "Zoom slider", None))
-        self.cesiumButton.setText(_translate("MainDialog", "3D View", None))
-        self.homeButton.setText(_translate("MainDialog", "Home button", None))
-        self.mousePositionButton.setText(_translate("MainDialog", "Mouse Position", None))
-        self.geolocationButton.setText(_translate("MainDialog", "Geolocation", None))
-        self.measureToolButton.setText(_translate("MainDialog", "Measure", None))
-        self.selectionToolsButton.setText(_translate("MainDialog", "Selection", None))
-        self.attributesTableButton.setText(_translate("MainDialog", "Attributes table", None))
-        self.chartToolButton.setText(_translate("MainDialog", "Charts", None))
-        self.geocodingButton.setText(_translate("MainDialog", "Geocoding", None))
         self.queryButton.setText(_translate("MainDialog", "Query", None))
-        self.bookmarksButton.setText(_translate("MainDialog", "Bookmarks", None))
-        self.aboutPanelButton.setText(_translate("MainDialog", "About panel", None))
-        self.exportAsImageButton.setText(_translate("MainDialog", "Export as image", None))
-        self.linksButton.setText(_translate("MainDialog", "Links", None))
+        self.geolocationButton.setText(_translate("MainDialog", "Geolocation", None))
+        self.zoomSliderButton.setText(_translate("MainDialog", "Zoom\n"
+"slider", None))
+        self.exportAsImageButton.setText(_translate("MainDialog", "Export as\n"
+"image", None))
+        self.overviewButton.setText(_translate("MainDialog", "Overview\n"
+"map", None))
         self.helpButton.setText(_translate("MainDialog", "Help", None))
         self.analysisToolsButton.setText(_translate("MainDialog", "Analysis", None))
+        self.zoomControlsButton.setText(_translate("MainDialog", "Zoom", None))
+        self.scaleBarButton.setText(_translate("MainDialog", "Scale bar", None))
+        self.layersListButton.setText(_translate("MainDialog", "Layers\n"
+"list", None))
+        self.fullScreenButton.setText(_translate("MainDialog", "Full \n"
+"screen", None))
+        self.attributionButton.setText(_translate("MainDialog", "Attribution", None))
+        self.linksButton.setText(_translate("MainDialog", "Links", None))
+        self.northArrowButton.setText(_translate("MainDialog", "North\n"
+"arrow", None))
+        self.measureToolButton.setText(_translate("MainDialog", "Measure", None))
+        self.selectionToolsButton.setText(_translate("MainDialog", "Selection", None))
+        self.mousePositionButton.setText(_translate("MainDialog", "Mouse \n"
+"position", None))
+        self.homeButton.setText(_translate("MainDialog", "Home \n"
+"button", None))
+        self.chartToolButton.setText(_translate("MainDialog", "Charts", None))
+        self.geocodingButton.setText(_translate("MainDialog", "Geocoding", None))
+        self.bookmarksButton.setText(_translate("MainDialog", "Bookmarks", None))
+        self.aboutPanelButton.setText(_translate("MainDialog", "About\n"
+"panel", None))
+        self.attributesTableButton.setText(_translate("MainDialog", "Attributes\n"
+"table", None))
+        self.legendButton.setText(_translate("MainDialog", "Legend", None))
+        self.cesiumButton.setText(_translate("MainDialog", "3D View", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Controls", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))
         self.label_8.setText(_translate("MainDialog", "Password", None))
