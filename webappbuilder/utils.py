@@ -31,6 +31,20 @@ TYPE_MAP = {
     QGis.WKBMultiPolygon: 'MultiPolygon',
     }
 
+class Layer():
+
+    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection,
+                 refreshInterval, showInOverview, timeInfo):
+        self.layer = layer
+        self.visible = visible
+        self.popup = popup
+        self.method = method
+        self.clusterDistance = clusterDistance
+        self.allowSelection = allowSelection
+        self.refreshInterval = refreshInterval
+        self.showInOverview = showInOverview
+        self.timeInfo = timeInfo
+
 
 def replaceInTemplate(template, values):
     path = os.path.join(os.path.dirname(__file__), "templates", template)

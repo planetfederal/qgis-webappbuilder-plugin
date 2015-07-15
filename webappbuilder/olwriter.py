@@ -7,7 +7,7 @@ import traceback
 from string import digits
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
-                 geometryType, layerCrs, viewCrs, layerOpacity, isSelectable):
+                 geometryType, layerCrs, viewCrs, layerOpacity, isSelectable, timeInfo):
     wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
@@ -42,21 +42,24 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(layerName)s,
                     title: "%(title)s",
+                    timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
                  "min": min,"max": max, "dist": str(clusterDistance),
-                 "selectable": str(isSelectable).lower()})
+                 "selectable": str(isSelectable).lower(), "timeInfo": timeInfo})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
                             opacity: %(opacity)s,
                             source: wfsSource_%(layerName)s, %(min)s %(max)s
                             style: style_%(layerName)s,
                             title: "%(title)s",
+                            timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
-                         "min": min, "max": max, "selectable": str(isSelectable).lower()})
+                         "min": min, "max": max, "selectable": str(isSelectable).lower(),
+                         "timeInfo": timeInfo})
     return wfsSource + vectorLayer
 
 
@@ -89,7 +92,7 @@ def layerToJavascript(applayer, settings, deploy):
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layer.geometryType(), layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection)
+                                applayer.allowSelection, applayer.timeInfo)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -101,11 +104,13 @@ def layerToJavascript(applayer, settings, deploy):
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
                     title: "%(name)s",
+                    timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
-                 "selectable": str(applayer.allowSelection).lower()})
+                 "selectable": str(applayer.allowSelection).lower(),
+                 "timeInfo": str(applayer.timeInfo)})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -113,30 +118,35 @@ def layerToJavascript(applayer, settings, deploy):
                     %(min)s %(max)s
                     style: style_%(n)s,
                     title: "%(name)s",
+                    timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
                  "min": minResolution, "max": maxResolution,
-                 "selectable": str(applayer.allowSelection).lower()})
+                 "selectable": str(applayer.allowSelection).lower(),
+                 "timeInfo": str(applayer.timeInfo)})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
                             maxResolution, applayer.clusterDistance, layer.geometryType(),
-                            layerCrs, viewCrs, layerOpacity, applayer.allowSelection)
+                            layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
+                            applayer.timeInfo)
         else:
             source = layer.source()
             layers = layer.name()
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
+                        timeInfo: %(timeInfo)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
-                                "url": url, "n": layerName, "name": layer.name()}
+                                "url": url, "n": layerName, "name": layer.name(),
+                                "timeInfo": str(applayer.timeInfo)}
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
@@ -146,6 +156,7 @@ def layerToJavascript(applayer, settings, deploy):
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
+                        timeInfo: %(timeInfo)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
@@ -153,7 +164,7 @@ def layerToJavascript(applayer, settings, deploy):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": layer.name(),
-                                "styles": styles}
+                                "styles": styles, "timeInfo": str(applayer.timeInfo)}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
@@ -164,6 +175,7 @@ def layerToJavascript(applayer, settings, deploy):
                 return '''var lyr_%(n)s = new ol.layer.Image({
                                 opacity: %(opacity)s,
                                 title: "%(name)s",
+                                timeInfo: %(timeInfo)s,
                                 source: new ol.source.ImageStatic({
                                    url: "./layers/%(n)s.jpg",
                                     projection: %(crs)s',
@@ -174,18 +186,20 @@ def layerToJavascript(applayer, settings, deploy):
                             });''' % {"opacity": layerOpacity, "n": layerName,
                                       "extent": sExtent, "col": provider.xSize(),
                                         "name": layer.name(), "row": provider.ySize(),
-                                        "crs": viewCrs}
+                                        "crs": viewCrs, "timeInfo": str(applayer.timeInfo)}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
+                        timeInfo: %(timeInfo)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
-                                "url": url, "n": layerName, "name": layer.name()}
+                                "url": url, "n": layerName, "name": layer.name(),
+                                "timeInfo": str(applayer.timeInfo)}
 
 def exportStyles(layers, folder, settings):
     stylesFolder = os.path.join(folder, "styles")
