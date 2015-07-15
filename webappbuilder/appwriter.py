@@ -49,10 +49,10 @@ def writeJs(appdef, folder):
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
     if "Overview map" in widgets:
-        collapsed = str(widgets["Overview map"]["collapsed"]).lower()
+        collapsed = str(widgets["Overview map"]["Collapsed"]).lower()
         overviewLayers = ",".join(["lyr_%s" % safeName(layer.layer.name())
                         for layer in layers if layer.showInOverview])
-        controls.append("new ol.control.OverviewMap({collapsed: %s, layers: [baseLayer, %s]})"
+        controls.append("new ol.control.OverviewMap({collapsed: %s, layers: [overviewMapBaseLayer, %s]})"
                         % (collapsed, overviewLayers))
     if "Mouse position" in widgets:
         coord = str(widgets["Mouse position"]["coordinateFormat"])
@@ -414,13 +414,23 @@ def writeLayersAndGroups(appdef, folder):
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
     groups = appdef["Groups"]
+    widgets = appdef["Widgets"]
     baseJs =[]
     for b in base:
         if b in baseLayers:
             baseJs.append(baseLayers[b])
         elif b in baseOverlays:
             baseJs.append(baseOverlays[b])
-    baseLayer = "var baseLayer = new ol.layer.Group({'type': 'base', 'title': 'Base maps',layers: [%s]});" % ",".join(baseJs)
+    baseLayer = "baseLayers = [%s];" % ",".join(baseJs)
+    baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
+
+    if "Overview map" in widgets:
+        overviewMapBaseLayerName = widgets["Overview map"]["Base layer"]
+        if overviewMapBaseLayerName == "Use main map base layer":
+            baseLayer += "var overviewMapBaseLayer = baseLayersGroup"
+        else:
+            baseLayer += "var overviewMapBaseLayer = %s;" % baseLayers[overviewMapBaseLayerName]
+
     layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
     groupVars = ""
     groupedLayers = {}
@@ -436,7 +446,7 @@ def writeLayersAndGroups(appdef, folder):
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
                                                 str(layer.visible).lower()) for layer in layers])
 
-    layersList = ["baseLayer"] if base else []
+    layersList = ["baseLayersGroup"] if base else []
     usedGroups = []
     for appLayer in layers:
         layer = appLayer.layer

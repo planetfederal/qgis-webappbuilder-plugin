@@ -57,6 +57,9 @@ outputFolders = {}
 
 defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
+overviewPanelBaseLayers = ["Use main map base layer"]
+overviewPanelBaseLayers.extend(baseLayers.keys())
+
 defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                         "isClosable": True,
                                         "showNavBarLink": True},
@@ -67,7 +70,8 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                       "introTitle": "",
                                       "showIndicators": True},
                         "Chart tool": {"charts": {}},
-                        "Overview map": {"collapsed":True},
+                        "Overview map": {"Base layer": ("Use main map base layer", overviewPanelBaseLayers),
+                                         "Collapsed":True},
                         "Scale bar": {"minWidth": 64,
                                       "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
                                       },
