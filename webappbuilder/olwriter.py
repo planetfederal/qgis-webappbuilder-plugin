@@ -20,7 +20,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                                 dataType: 'jsonp'
                             });
                         },
-                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({maxZoom: 19})),
+                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
                     });
                     var loadFeatures_%(layerName)s = function(response) {
                         wfsSource_%(layerName)s.addFeatures(
