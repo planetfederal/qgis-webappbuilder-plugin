@@ -215,8 +215,9 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
                     for paramName, value in appdef["Widgets"][widgetName].iteritems():
-                        if isinstance(value, tuple):
-                            settings.widgetsParams[widgetName][paramName][0] = value
+                        if isinstance(settings.widgetsParams[widgetName][paramName], tuple):
+                            settings.widgetsParams[widgetName][paramName] = (value,
+                                    settings.widgetsParams[widgetName][paramName][1])
                         else:
                             settings.widgetsParams[widgetName][paramName] = value
             for name in self.settingsItems:
