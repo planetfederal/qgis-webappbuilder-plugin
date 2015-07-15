@@ -11,6 +11,8 @@ from utils import *
 from settings import *
 import json
 import importlib
+import urlparse
+import requests
 from olwriter import exportStyles, layerToJavascript
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
@@ -481,26 +483,41 @@ def writeLegendFiles(appdef, folder):
     for ilayer, applayer in enumerate(layers):
         layer = applayer.layer
         symbols = {}
-        size = QSize(20,20)
+        size = 20
+        qsize = QSize(size, size)
         if layer.type() == layer.VectorLayer:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
-                    img = renderer.symbol().asImage(size)
+                    img = renderer.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     symbols[""] = os.path.basename(symbolPath)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 for isymbol, cat in enumerate(renderer.categories()):
-                    img = cat.symbol().asImage(size)
+                    img = cat.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     symbols[cat.label()] = os.path.basename(symbolPath)
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 for ran in renderer.ranges():
-                    img = ran.symbol().asImage(size)
+                    img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     symbols["%s-%s" % (ran.lowerValue(), ran.upperValue())] = os.path.basename(symbolPath)
+            legend[layer.name()] = symbols
+        elif layer.providerType() == "wms":
+            source = layer.source()
+            layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+            styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
+            fullUrl = ("%s?LAYER=%s&STYLES=%s&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=%i&HEIGHT=%i"
+                       % (url, layerName, styles, size, size))
+            response = requests.get(fullUrl, stream=True)
+            symbolPath = os.path.join(legendFolder, "%i_0.png" % ilayer)
+            with open(symbolPath, 'wb') as f:
+                shutil.copyfileobj(response.raw, f)
+            del response
+            symbols[""] = os.path.basename(symbolPath)
             legend[layer.name()] = symbols
 
     with open(os.path.join(legendFolder, "legend.js"), "w") as f:
