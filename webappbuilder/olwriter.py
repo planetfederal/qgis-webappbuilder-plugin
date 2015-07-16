@@ -70,7 +70,7 @@ def layerToJavascript(applayer, settings, deploy):
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
-
+    timeInfo = str(applayer.timeInfo) if applayer.timeInfo is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
     else:
@@ -92,7 +92,7 @@ def layerToJavascript(applayer, settings, deploy):
             return _getWfsLayer(url, layer.name(), layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layer.geometryType(), layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, applayer.timeInfo)
+                                applayer.allowSelection, timeInfo)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -110,7 +110,7 @@ def layerToJavascript(applayer, settings, deploy):
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": str(applayer.timeInfo)})
+                 "timeInfo": timeInfo})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -124,14 +124,14 @@ def layerToJavascript(applayer, settings, deploy):
                 {"opacity": layerOpacity, "name": layer.name(), "n":layerName,
                  "min": minResolution, "max": maxResolution,
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": str(applayer.timeInfo)})
+                 "timeInfo": timeInfo})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, layer.name(), layerName, typeName, minResolution,
                             maxResolution, applayer.clusterDistance, layer.geometryType(),
                             layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            applayer.timeInfo)
+                            timeInfo)
         else:
             source = layer.source()
             layers = layer.name()
@@ -146,7 +146,7 @@ def layerToJavascript(applayer, settings, deploy):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": layer.name(),
-                                "timeInfo": str(applayer.timeInfo)}
+                                "timeInfo": timeInfo}
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
@@ -164,7 +164,7 @@ def layerToJavascript(applayer, settings, deploy):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": layer.name(),
-                                "styles": styles, "timeInfo": str(applayer.timeInfo)}
+                                "styles": styles, "timeInfo": timeInfo}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
@@ -186,7 +186,7 @@ def layerToJavascript(applayer, settings, deploy):
                             });''' % {"opacity": layerOpacity, "n": layerName,
                                       "extent": sExtent, "col": provider.xSize(),
                                         "name": layer.name(), "row": provider.ySize(),
-                                        "crs": viewCrs, "timeInfo": str(applayer.timeInfo)}
+                                        "crs": viewCrs, "timeInfo": timeInfo}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
@@ -199,7 +199,7 @@ def layerToJavascript(applayer, settings, deploy):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": layer.name(),
-                                "timeInfo": str(applayer.timeInfo)}
+                                "timeInfo": timeInfo}
 
 def exportStyles(layers, folder, settings):
     stylesFolder = os.path.join(folder, "styles")

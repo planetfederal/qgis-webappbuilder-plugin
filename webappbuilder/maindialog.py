@@ -78,7 +78,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.queryButton: "Query",
                         self.selectionToolsButton: "Selection tools",
                         self.analysisToolsButton: "Analysis tools",
-                        self.legendButton: "Legend"}
+                        self.legendButton: "Legend",
+                        self.timelineButton: "Timeline"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
