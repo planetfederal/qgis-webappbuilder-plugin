@@ -115,7 +115,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.timeInfoItem.setText(0, "Layer time info")
             self.calendar = NullableDateWidget()
             self.calendar.setCalendarPopup(True)
-            self.calendar.setDate(QDate())
+            self.calendar.setDateTime(QDateTime())
             tree.setItemWidget(self.timeInfoItem, 1, self.calendar)
             self.addChild(self.timeInfoItem)
 
@@ -219,7 +219,7 @@ class TreeLayerItem(QTreeWidgetItem):
     @property
     def timeInfo(self):
         try:
-            return self.calendar.nullDate()
+            return self.calendar.nullDateTime()
         except:
             return None
 
@@ -237,7 +237,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 pass # raster layers wont have this clusterItem
 
         try:
-            self.calendar.setDate(QDate.fromString(timeInfo))
+            self.calendar.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo))
         except:
             pass
 
@@ -284,7 +284,7 @@ class TreeGroupItem(QTreeWidgetItem):
                 item.toggleChildren()
                 self.addChild(item)
 
-class NullableDateWidget(QDateEdit):
+class NullableDateWidget(QDateTimeEdit):
 
     def __init__(self):
         QDateEdit.__init__(self)
@@ -294,16 +294,16 @@ class NullableDateWidget(QDateEdit):
     def clear(self):
         self.setDate(self.minimumDate())
 
-    def nullDate(self):
-        if self.date() == self.minimumDate():
+    def nullDateTime(self):
+        if self.dateTime() == self.minimumDateTime():
             return None;
-        return self.date().toString();
+        return self.dateTime().toMSecsSinceEpoch();
 
-    def setDate(self, date):
+    def setDateTime(self, date):
         if (date.isNull() or not date.isValid()):
-            QDateEdit.setDate(self, self.minimumDate())
+            QDateEdit.setDateTime(self, self.minimumDateTime())
         else:
-            QDateEdit.setDate(self, date)
+            QDateEdit.setDateTime(self, date)
 
 
 

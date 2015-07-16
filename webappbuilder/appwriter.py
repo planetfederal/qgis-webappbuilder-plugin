@@ -63,6 +63,8 @@ def writeJs(appdef, folder):
         controls.append("new ol.control.MousePosition(%s)" % s)
     if "Home button" in widgets:
         controls.append("new ol.control.HomeButton()")
+    if "Timeline" in widgets:
+        controls.append("new ol.control.TimeLine()")
     if "Zoom slider" in widgets:
         controls.append("new ol.control.ZoomSlider()")
     if "North arrow" in widgets:
@@ -489,7 +491,7 @@ def writeLegendFiles(appdef, folder):
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                     img = renderer.symbol().asImage(qsize)
-                    symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
+                    symbolPath = os.path.join(legendFolder, "%i_0.png" % (ilayer))
                     img.save(symbolPath)
                     symbols[""] = os.path.basename(symbolPath)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
