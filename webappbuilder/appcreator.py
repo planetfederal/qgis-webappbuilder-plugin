@@ -103,8 +103,31 @@ def checkAppCanBeCreated(appdef):
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
 									QgsGraduatedSymbolRendererV2)):
 			problems.append("Symbology used by layer %s includes unsupported elements. "
-						"This layer will not be correctly styled in the web app"
+						"This layer will not be correctly styled in the web app."
 						% layer.name())
+
+	qgisLayers = {layer.layer.id():layer for layer in layers}
+	groups = appdef["Groups"]
+	groupedLayers = []
+	hasTimeInfo = False
+	for group, groupLayers in groups.iteritems():
+		groupedLayers.extend(groupLayers)
+		groupTimeLayers = [lay for lay in groupLayers if qgisLayers[lay.id()].timeInfo is not None]
+		if len(groupTimeLayers):
+			hasTimeInfo = True
+		if len(groupTimeLayers) != len(groupLayers):
+			problems.append("Not all layers in group %s have time information."
+						% group)
+	for applayer in layers:
+		if applayer.timeInfo is not None and applayer.layer not in groupedLayers:
+			problems.append("Layer %s has time information but does not belong to a group."
+						% applayer.layer.name())
+
+	if hasTimeInfo and "Timeline" not in appdef["Widgets"]:
+		problems.append("There are layers with time information, but timeline widget is not used.")
+
+	if not hasTimeInfo and "Timeline" in appdef["Widgets"]:
+		problems.append("Timeline widget is used but there are no layers with time information")
 
 	return problems
 
