@@ -3,7 +3,7 @@ import json
 import shutil
 from utils import SHOW_BOOKMARKS_IN_MENU, replaceInTemplate
 
-def writeWebApp(appdef, folder, scripts):
+def writeWebApp(appdef, folder, scripts, scriptsBottom):
     widgets = appdef["Widgets"]
     tools = []
     initialize = []
@@ -144,7 +144,7 @@ def writeWebApp(appdef, folder, scripts):
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
         if bookmarks:
-            scripts.append('<script src="./bookmarks.js"></script>')
+            scriptsBottom.append('<script src="./bookmarks.js"></script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -228,6 +228,7 @@ def writeWebApp(appdef, folder, scripts):
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
                 "@SCRIPTS@": "\n".join(set(scripts)),
+                "@SCRIPTSBOTTOM@": "\n".join(set(scriptsBottom)),
                 "@TABS@": "\n".join(tabs),
                 "@TABPANELS@": "\n".join(panels),
                 "@TOOLBAR@": "\n".join(tools),

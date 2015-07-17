@@ -122,7 +122,7 @@ def writeHtml(appdef, folder):
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
     scripts = []
-
+    scriptsBottom = []
     scripts.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer
                                 and layer.method == METHOD_FILE])
@@ -164,9 +164,9 @@ def writeHtml(appdef, folder):
             func = getattr(module, 'writeHtml')
             html = func(appdef, folder, scripts)
         else:
-            html = defaultWriteHtml(appdef, folder, scripts)
+            html = defaultWriteHtml(appdef, folder, scripts, scriptsBottom)
     except ImportError:
-        html = defaultWriteHtml(appdef, folder, scripts)
+        html = defaultWriteHtml(appdef, folder, scripts, scriptsBottom)
 
 
     indexFilepath = os.path.join(folder, "index.html")
@@ -180,7 +180,7 @@ def writeHtml(appdef, folder):
         f.write(pretty)
     return indexFilepath
 
-def defaultWriteHtml(appdef, folder, scripts):
+def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
     tools = []
@@ -330,7 +330,7 @@ def defaultWriteHtml(appdef, folder, scripts):
         params = widgets["Bookmarks"]
         bookmarks = params["bookmarks"]
         if bookmarks:
-            scripts.append('<script src="./bookmarks.js"></script>')
+            scriptsBottom.append('<script src="./bookmarks.js"></script>')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -404,6 +404,7 @@ def defaultWriteHtml(appdef, folder, scripts):
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
                 "@SCRIPTS@": "\n".join(set(scripts)),
+                "@SCRIPTSBOTTOM@": "\n".join(set(scriptsBottom)),
                 "@MAPPANELS@": "\n".join(mappanels),
                 "@PANELS@": "\n".join(panels),
                 "@TOOLBAR@": "\n".join(tools)}
