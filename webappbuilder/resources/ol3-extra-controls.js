@@ -327,12 +327,26 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
 
         if (layer.getLayers && this.showGroupContent) {
             var sublayersElem = '';
-            var layers = layer.getLayers().getArray(),
-                    len = layers.length;
-            for (var i = len - 1; i >= 0; i--) {
-                sublayersElem += this.buildLayerTree(layers[i], true);
+            var layers = layer.getLayers().getArray()
+            var len = layers.length;
+            var timeFound = false;
+            for(var i = 0; i < len; i++){
+                var layer = layers[i];
+                var timeInfo = layer.get('timeInfo');
+                if (timeInfo){
+                    timeFound = true;
+                    break;
+                }
             }
-            elem = div + " <ul>" + sublayersElem + "</ul></li>";
+            if (!timeFound){
+                for (var i = len - 1; i >= 0; i--) {
+                    sublayersElem += this.buildLayerTree(layers[i], true);
+                }
+                elem = div + " <ul>" + sublayersElem + "</ul></li>";
+            }
+            else{
+                elem = div + " </li>";
+            }
         } else {
             elem = div + " </li>";
         }
@@ -341,7 +355,7 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
         elem = "";
     }
     return elem;
-}
+};
 
 
 
