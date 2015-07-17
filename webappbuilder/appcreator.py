@@ -115,7 +115,7 @@ def checkAppCanBeCreated(appdef):
 		groupTimeLayers = [lay for lay in groupLayers if qgisLayers[lay.id()].timeInfo is not None]
 		if len(groupTimeLayers):
 			hasTimeInfo = True
-		if len(groupTimeLayers) != len(groupLayers):
+		if len(groupTimeLayers) != len(groupLayers) and hasTimeInfo:
 			problems.append("Not all layers in group %s have time information."
 						% group)
 	for applayer in layers:
