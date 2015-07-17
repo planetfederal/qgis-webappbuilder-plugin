@@ -81,7 +81,11 @@ def checkAppCanBeCreated(appdef):
 	if "Bookmarks" in appdef["Widgets"]:
 		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
 			problems.append("Bookmarks widget added, but no bookmarks have been defined"
-						"You should configure the bookmars widget and define at least one bookmark")
+						"You should configure the bookmarks widget and define at least one bookmark")
+
+	if "Analysis" in appdef["Widgets"]:
+		if len(appdef["Widgets"]["Analysis tools"]) == 0:
+			problems.append("Analysis component has been added, but no analysis functionality has been selected for it.")
 
 	for applayer in layers:
 		layer = applayer.layer
