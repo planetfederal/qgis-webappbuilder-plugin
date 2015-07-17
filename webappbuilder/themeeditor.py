@@ -42,7 +42,8 @@ class ThemeEditorDialog(QtGui.QDialog):
     def resetDefaultValues(self):
         settings.currentCss =  settings.themes[settings.currentTheme]
         self.styles = settings.splitElements(settings.currentCss)
-        self.editor.setText(self.styles[self.currentItem.text()])
+        if self.currentItem is not None:
+            self.editor.setText(self.styles[self.currentItem.text()])
 
     def selectionChanged(self):
         if self.currentItem:
