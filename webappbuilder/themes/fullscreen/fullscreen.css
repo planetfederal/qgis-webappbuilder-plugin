@@ -925,9 +925,8 @@ display: inline;
 #timelineDate{
   background: #ccc;
   background: linear-gradient(90deg, #ddd, #ccc);
-  border: 3px solid #eee;
+  border: 1px solid #eee;
   border-radius: 8px;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.1);
   color: #222;
   font: 16px Helvetica,Arial,sans-serif;
   line-height: 20px;
@@ -935,4 +934,17 @@ display: inline;
   width: 200px;
   margin-left: 15px;
   vertical-align: middle;
+}
+
+#timelineButton{
+  background: #ccc;
+  background: linear-gradient(90deg, #ddd, #ccc);
+  border: 1px solid #eee;
+  color: #222;
+  font: 16px Helvetica,Arial,sans-serif;
+  height: 20px;
+  outline: 0;
+  width: 40px;
+  vertical-align: middle;
+  display: inline
 }

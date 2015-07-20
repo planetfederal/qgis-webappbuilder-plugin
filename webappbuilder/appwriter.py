@@ -436,7 +436,16 @@ def writeLayersAndGroups(appdef, folder):
         else:
             baseLayer += "var overviewMapBaseLayer = %s;" % baseLayers[overviewMapBaseLayerName]
 
-    layerVars = "\n".join([layerToJavascript(layer, appdef["Settings"], deploy) for layer in layers])
+    layerVars = []
+    for layer in layers:
+        layerTitle = layer.layer.name()
+        if layer.timeInfo is not None:
+            for group, groupLayers in groups.iteritems():
+                if layer.layer in groupLayers:
+                    layerTitle = group + "[%s]" % QDateTime.fromMSecsSinceEpoch(layer.timeInfo).toString()
+                    break
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle))
+    layerVars = "\n".join(layerVars)
     groupVars = ""
     groupedLayers = {}
     for group, groupLayers in groups.iteritems():

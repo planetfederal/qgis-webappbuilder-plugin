@@ -5,12 +5,12 @@ ol.control.CesiumControl = function(ol3d) {
 
   var enable3DView = function(e) {
     if (ol3d.getEnabled()){
-        ol3d.setEnabled(false)
+        ol3d.setEnabled(false);
         button.innerHTML = '3D';
     }
     else{
         button.innerHTML = '2D';
-        ol3d.setEnabled(true)
+        ol3d.setEnabled(true);
     }
   };
 
@@ -22,7 +22,7 @@ ol.control.CesiumControl = function(ol3d) {
   element.appendChild(button);
 
   ol.control.Control.call(this, {
-    element: element,
+    element: element
   });
 
 };
@@ -93,7 +93,7 @@ ol.control.Geolocation = function() {
             this_.marker.bindTo('position', this_.geolocation);
             this_.getMap().addOverlay(this_.marker);
         }
-    }
+    };
     var button = document.createElement('button');
 
     button.addEventListener('click', geolocate, false);
@@ -143,7 +143,7 @@ ol.control.LayerSwitcher = function(opt_options) {
 
     this.panel = document.createElement('div');
     this.panel.className = 'layer-tree-panel';
-    this.panel.id = "layertree"
+    this.panel.id = "layertree";
     element.appendChild(this.panel);
 
     var this_ = this;
@@ -191,7 +191,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
     var layers = map.getLayerGroup().getLayers().getArray();
     var len = layers.length;
     for (var i = len -1; i >=0; i--){
-        list.append(this.buildLayerTree(layers[i]), false)
+        list.append(this.buildLayerTree(layers[i]), false);
     }
     function indexOf(layers, layer) {
         var length = layers.getLength();
@@ -203,7 +203,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         return -1;
     }
     var findBy = function(layer, value) {
-        name = layer.get('title')
+        name = layer.get('title');
         if (name === value) {
             return layer;
         }
@@ -297,14 +297,14 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
     if (name){
         var div = "<li data-layerid='" + name + "'>";
         if (layer instanceof ol.layer.Group){
-            name = "<b>" + name + "</b>"
+            name = "<b>" + name + "</b>";
         }
 
         if (layer.getVisible()){
-            div += "<input class='layer-check' type='checkbox' checked>" + name
+            div += "<input class='layer-check' type='checkbox' checked>" + name;
         }
         else{
-            div += "<input class='layer-check' type='checkbox'>" + name
+            div += "<input class='layer-check' type='checkbox'>" + name;
         }
         if (!(layer instanceof ol.layer.Group)){
             if (this.showOpacity){
@@ -380,7 +380,7 @@ ol.control.Legend = function(opt_options) {
 
     this.panel = document.createElement('div');
     this.panel.className = 'legend-panel';
-    this.panel.id = "legend"
+    this.panel.id = "legend";
     element.appendChild(this.panel);
 
     var this_ = this;
@@ -424,7 +424,7 @@ ol.control.Legend.prototype.renderPanel = function() {
     this_ = this;
     $('#legend').empty();
     var list = $('<ul/>').appendTo('#legend');
-    list.addClass("expandableList")
+    list.addClass("expandableList");
     for (var name in legendData){
         var element = "<li><label for='legend-layer-"+ name +"'>" + name +
             "</label><input type='checkbox' checked id='legend-layer-" + name + "' /><ul> ";
@@ -435,7 +435,6 @@ ol.control.Legend.prototype.renderPanel = function() {
         element += " </li>";
         list.append(element);
     }
-
 };
 
 //=======================================================
@@ -449,34 +448,49 @@ ol.control.TimeLine = function(opt_options) {
     var ul = document.createElement('ul');
 
     var li = document.createElement('li');
-    this.range = document.createElement("input");
-    this.range.setAttribute("type", "range");
-    //this.range.setAttribute("step", "86400000");
-    this.range.setAttribute("id", "timelineRange");
-    li.appendChild(this.range);
+    this.button = document.createElement("button");
+    this.button.innerHTML = '<i class="glyphicon glyphicon-play"></i>';
+    this.button.setAttribute("id", "timelineButton");
+    var this_ = this;
+    this.button.onclick = function(){
+        if (this.innerHTML == '<i class="glyphicon glyphicon-play"></i>'){
+            this.innerHTML = '<i class="glyphicon glyphicon-pause"></i>';
+            this.autoplayTimer = setInterval(this_.autoplay, 1000);
+        }
+        else{
+            this.innerHTML = '<i class="glyphicon glyphicon-play"></i>';
+            clearInterval(this.autoplayTimer);
+        }
+    };
+    li.appendChild(this.button);
     ul.appendChild(li);
 
     var li2 = document.createElement('li');
+    this.range = document.createElement("input");
+    this.range.setAttribute("type", "range");
+    this.range.setAttribute("id", "timelineRange");
+    li2.appendChild(this.range);
+    ul.appendChild(li2);
+
+    var li3 = document.createElement('li');
     this.date = document.createElement("input");
     this.date.setAttribute("type", "date");
     this.date.setAttribute("required", "required");
     this.date.setAttribute("id", "timelineDate");
-    li2.appendChild(this.date);
-    ul.appendChild(li2);
-
-    var this_ = this;
+    li3.appendChild(this.date);
+    ul.appendChild(li3);
 
     this.range.onchange = function() {
         this_.date.valueAsNumber = this_.range.valueAsNumber;
         this_.currentTime = this_.range.valueAsNumber;
         this_.toggleLayers();
-    }
+    };
 
     this.date.onchange = function() {
         this_.range.valueAsNumber = this_.date.valueAsNumber;
         this_.currentTime = this_.range.valueAsNumber;
         this_.toggleLayers();
-    }
+    };
 
     element.appendChild(ul);
 
@@ -526,9 +540,22 @@ ol.control.TimeLine.prototype.setMap = function(map) {
 
     this.date.valueAsNumber = this.range.valueAsNumber;
     this.currentTime = this.range.valueAsNumber;
+
+    var this_ = this;
+    autoplayInterval = (maxDateMilli - minDateMilli) / 10.0;
+    this.autoplay = function(){
+        var newTime = this_.range.valueAsNumber + autoplayInterval;
+        if (newTime > maxDateMilli){
+            newTime = minDateMilli;
+        }
+        this_.range.valueAsNumber = newTime;
+        this_.date.valueAsNumber = newTime
+        this_.currentTime = newTime;
+        this_.toggleLayers();
+    }
     this.toggleLayers();
 
-}
+};
 
 ol.control.TimeLine.prototype.toggleLayers = function() {
     var map = this.getMap();
@@ -539,7 +566,7 @@ ol.control.TimeLine.prototype.toggleLayers = function() {
             this.toggleLayersInGroup(layer);
         }
     }
-}
+};
 
 ol.control.TimeLine.prototype.toggleLayersInGroup = function(group) {
     var timeFound = false;
