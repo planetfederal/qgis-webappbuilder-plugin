@@ -335,7 +335,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-65</y>
             <width>685</width>
             <height>635</height>
            </rect>
@@ -1528,7 +1528,51 @@ image</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0" colspan="2">
+           <item row="5" column="1">
+            <widget class="QToolButton" name="addLayerButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QToolButton {
+     background-color: #bbbbbb;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 11px;
+     padding: 15px;
+ }
+ QToolButton:checked {
+     background-color: #9ABEED;
+     border-style: inset;
+ }</string>
+             </property>
+             <property name="text">
+              <string>Add layer</string>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="toolButtonStyle">
+              <enum>Qt::ToolButtonTextUnderIcon</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
             <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1569,6 +1613,7 @@ image</string>
           <zorder>legendButton</zorder>
           <zorder>cesiumButton</zorder>
           <zorder>timelineButton</zorder>
+          <zorder>addLayerButton</zorder>
          </widget>
         </widget>
        </item>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Jul 15 17:42:32 2015
+# Created: Mon Jul 20 16:35:09 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -181,7 +181,7 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 685, 635))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -65, 685, 635))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
@@ -849,8 +849,33 @@ class Ui_MainDialog(object):
         self.timelineButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.timelineButton.setObjectName(_fromUtf8("timelineButton"))
         self.gridLayout_3.addWidget(self.timelineButton, 5, 0, 1, 1)
+        self.addLayerButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.addLayerButton.sizePolicy().hasHeightForWidth())
+        self.addLayerButton.setSizePolicy(sizePolicy)
+        self.addLayerButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #bbbbbb;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #9ABEED;\n"
+"     border-style: inset;\n"
+" }"))
+        self.addLayerButton.setIcon(icon3)
+        self.addLayerButton.setIconSize(QtCore.QSize(32, 32))
+        self.addLayerButton.setCheckable(True)
+        self.addLayerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.addLayerButton.setObjectName(_fromUtf8("addLayerButton"))
+        self.gridLayout_3.addWidget(self.addLayerButton, 5, 1, 1, 1)
         spacerItem3 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem3, 6, 0, 1, 2)
+        self.gridLayout_3.addItem(spacerItem3, 6, 0, 1, 1)
         self.scrollArea_3.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout_7.addWidget(self.scrollArea_3)
         self.tabPanel.addTab(self.widgetsTab, _fromUtf8(""))
@@ -1070,6 +1095,7 @@ class Ui_MainDialog(object):
         self.analysisToolsButton.setText(_translate("MainDialog", "Analysis", None))
         self.cesiumButton.setText(_translate("MainDialog", "3D View", None))
         self.timelineButton.setText(_translate("MainDialog", "Timeline", None))
+        self.addLayerButton.setText(_translate("MainDialog", "Add layer", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Controls", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))
         self.label_8.setText(_translate("MainDialog", "Password", None))

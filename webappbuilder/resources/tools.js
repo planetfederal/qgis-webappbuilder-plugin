@@ -1067,3 +1067,50 @@ selectByPolygon = function(){
 
     addInteraction();
 };
+
+//==========================================
+
+var addLayerFromFile = function(){
+
+    var _addLayerFromFile = function(f){
+        if (f) {
+            var r = new FileReader();
+            r.onload = function(e) {
+                var contents = e.target.result;
+                var format = new ol.format.GeoJSON();
+                var crs = format.readProjection(contents);
+                var layerData = new ol.source.Vector({
+                    features: format.readFeatures(contents,
+                        {dataProjection: crs.getCode(),
+                        featureProjection: map.getView().getProjection().getCode()})
+                });
+                var lyr = new ol.layer.Vector({
+                    source: layerData,
+                    title: f.name,
+                    type: "analysis",
+                    isSelectable: true
+                });
+                map.addLayer(lyr);
+                $("html").css("cursor", "default");
+            }
+            r.readAsText(f);
+            $("html").css("cursor", "default");
+        } else {
+            alert("Failed to load file");
+        }
+    };
+
+    var input = document.createElement('input');
+    input.type = "file";
+    input.accept=".geojson"
+    $(input).on("change", function(){
+        var filename = input.files[0];
+        $("html").css("cursor", "progress");
+        window.setTimeout(function(){_addLayerFromFile(filename)}, 1000);
+        ;
+    });
+    $(input).trigger('click');
+
+    return false;
+
+};
