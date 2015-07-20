@@ -859,7 +859,7 @@ button.ol-full-screen-true:after {
 .timeline {
   top: 10px;
   left: 100px;
-  width: 650px
+  width: 700px
 }
 
 .timeline ul
@@ -879,10 +879,6 @@ display: inline;
 display: inline;
 }
 
-#timelineDate {
-    margin-left: 5px;
-    width: 200px;
-}
 #timelineRange {
     margin-left: 5px;
     width: 400px;
