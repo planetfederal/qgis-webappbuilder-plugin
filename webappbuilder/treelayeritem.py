@@ -34,6 +34,25 @@ class TreeLayerItem(QTreeWidgetItem):
                      border-bottom-right-radius: 3px;
                  }
                 '''
+    dateTimeEditStyle = '''QDateTimeEdit {
+                     border: 1px solid gray;
+                     border-radius: 3px;
+                     padding: 1px 18px 1px 3px;
+                     min-width: 6em;
+                 }
+
+                 QDateTimeEdit::drop-down {
+                     subcontrol-origin: padding;
+                     subcontrol-position: top right;
+                     width: 15px;
+                     border-left-width: 1px;
+                     border-left-color: darkgray;
+                     border-left-style: solid;
+                     border-top-right-radius: 3px;
+                     border-bottom-right-radius: 3px;
+                 }
+                '''
+
     def __init__(self, layer, tree, isInGroup = False):
         self.popup = ""
         self.combos = []
@@ -116,6 +135,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.calendar = NullableDateWidget()
             self.calendar.setCalendarPopup(True)
             self.calendar.setDateTime(QDateTime())
+            self.calendar.setStyleSheet(self.dateTimeEditStyle)
             tree.setItemWidget(self.timeInfoItem, 1, self.calendar)
             self.addChild(self.timeInfoItem)
 
