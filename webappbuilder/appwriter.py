@@ -326,7 +326,6 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
     if "Add layer" in widgets:
         tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
-        scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
 
     bookmarkEvents = ""
     if "Bookmarks" in widgets:
