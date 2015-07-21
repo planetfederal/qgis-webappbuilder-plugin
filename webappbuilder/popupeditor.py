@@ -18,9 +18,13 @@ class PopupEditorDialog(QtGui.QDialog):
         layout = QtGui.QVBoxLayout()
         label = QtGui.QLabel()
         label.setWordWrap(True);
-        label.setText("Enter the expression to use for popup texts.\n"
-                      "Use [field_name] to use the value of a given field.\n\n"
-                      "Available fields:" + ", ".join(fields))
+        labelText = ("Enter the expression to use for popup texts.\n"
+                      "Use [field_name] to use the value of a given field.\n")
+        if fields:
+            labelText += "\nAvailable fields:" + ", ".join(fields)
+        else:
+            labelText += "Use #AllAttributes to add all attributes values"
+        label.setText(labelText)
         addAllButton = QtGui.QPushButton()
         addAllButton.setText("Add all attributes")
         addAllButton.clicked.connect(self.addAllAttributes)
@@ -39,7 +43,10 @@ class PopupEditorDialog(QtGui.QDialog):
         buttonBox.rejected.connect(self.cancelPressed)
 
     def addAllAttributes(self):
-        t = "<br>".join(["<b>%s</b>: [%s]" % (f,f) for f in self.fields])
+        if self.fields:
+            t = "<br>".join(["<b>%s</b>: [%s]" % (f,f) for f in self.fields])
+        else:
+            t = "#AllAttributes"
         self.editor.setPlainText(t)
 
     def openText(self, event):

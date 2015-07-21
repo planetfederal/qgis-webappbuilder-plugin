@@ -92,17 +92,6 @@ class TreeLayerItem(QTreeWidgetItem):
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
                 self.connTypeCombo.currentIndexChanged.connect(self.connTypeChanged)
-            self.popupItem = QTreeWidgetItem(self)
-            self.popupItem.setText(0, "Info popup content")
-            self.popupLabel = QLabel()
-            self.popupLabel.setText("<a href='#'>Edit</a>")
-            tree.setItemWidget(self.popupItem, 1, self.popupLabel)
-            def edit():
-                dlg = PopupEditorDialog(self.popup, [f.name() for f in self.layer.pendingFields()])
-                dlg.exec_()
-                self.popup = dlg.text.strip()
-            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), edit)
-            self.addChild(self.popupItem)
             self.allowSelectionItem = QTreeWidgetItem(self)
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
@@ -117,8 +106,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterDistanceItem.setFlags(self.flags() | Qt.ItemIsEditable)
                 self.clusterItem.addChild(self.clusterDistanceItem)
                 self.addChild(self.clusterItem)
-        else:
-            if layer.providerType().lower() != "wms":
+        elif layer.providerType().lower() != "wms":
                 self.connTypeItem = QTreeWidgetItem(self)
                 self.connTypeItem.setText(0, "Connect to this layer using")
                 self.addChild(self.connTypeItem)
@@ -128,6 +116,21 @@ class TreeLayerItem(QTreeWidgetItem):
                 for option in options:
                     self.connTypeCombo.addItem(option)
                 tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
+
+        if layer.providerType().lower() == "wms" or layer.type() == layer.VectorLayer:
+            self.popupItem = QTreeWidgetItem(self)
+            self.popupItem.setText(0, "Info popup content")
+            self.popupLabel = QLabel()
+            self.popupLabel.setText("<a href='#'>Edit</a>")
+            tree.setItemWidget(self.popupItem, 1, self.popupLabel)
+            def edit():
+                fields = ([f.name() for f in self.layer.pendingFields()]
+                                if layer.type() == layer.VectorLayer else [])
+                dlg = PopupEditorDialog(self.popup, fields)
+                dlg.exec_()
+                self.popup = dlg.text.strip()
+            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), edit)
+            self.addChild(self.popupItem)
 
         if isInGroup:
             self.timeInfoItem = QTreeWidgetItem(self)

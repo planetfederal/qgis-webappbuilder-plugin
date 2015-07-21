@@ -6,6 +6,7 @@ closer.onclick = function() {
   closer.blur();
   return false;
 };
+
 var overlayPopup = new ol.Overlay({
   element: container
 });
@@ -36,126 +37,91 @@ var currentInteraction;
 
 @POPUPLAYERS@
 
-var highlightCollection = new ol.Collection();
-var highlightOverlay = new ol.layer.Vector({
-  map: map,
-  source: new ol.source.Vector({
-    features: highlightCollection,
-  }),
-  style: [@HIGHLIGHTSTYLE@],
-  updateWhileAnimating: true,
-  updateWhileInteracting: true
-});
-
-
-var doHighlight = @DOHIGHLIGHT@;
-var doHover = @ONHOVER@;
-
-var highlight;
-var onPointerMove = function(evt) {
-    if (!doHover && !doHighlight) {
-        return;
-    }
+var popupEventTriggered = function(evt) {
     var pixel = map.getEventPixel(evt.originalEvent);
     var coord = evt.coordinate;
-    var popupText = "";
+    var popupTexts = [];
     var currentFeature;
-    var toAdd = [];
+    var allLayers = getAllNonBaseLayers();
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
         if (feature) {
-            currentFeature = feature;
-            if (popupText == "") {
-                popupText = popupLayers[getAllNonBaseLayers().indexOf(layer)];
-                if (popupText) {
-                    var currentFeatureKeys = currentFeature.getKeys();
-                    for (var i = 0; i < currentFeatureKeys.length; i++) {
-                        if (currentFeatureKeys[i] != 'geometry') {
-                            var value = currentFeature.get(currentFeatureKeys[i]);
-                            if (value) {
-                                popupText = popupText.replace("[" + currentFeatureKeys[i] + "]",
-                                    String(currentFeature.get(currentFeatureKeys[i])))
-                            }
-                            else{
-                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join("NULL")
-                            }
+            popupDef = popupLayers[allLayers.indexOf(layer)];
+            if (popupDef) {
+                var featureKeys = feature.getKeys();
+                for (var i = 0; i < featureKeys.length; i++) {
+                    if (featureKeys[i] != 'geometry') {
+                        var value = feature.get(featureKeys[i]);
+                        if (value) {
+                            popupDef = popupDef.split("[" + featureKeys[i] + "]").join(
+                                String(feature.get(featureKeys[i])))
+                        } else {
+                            popupDef = popupDef.split("[" + featureKeys[i] + "]").join("NULL")
                         }
                     }
                 }
+                popupTexts.push(popupDef);
             }
         }
     });
 
-    if (doHighlight) {
-        if (currentFeature !== highlight) {
-            if (highlight) {
-                highlightOverlay.getSource().removeFeature(highlight);
-            }
-            if (currentFeature) {
-                highlightOverlay.getSource().addFeature(currentFeature);
-            }
-            highlight = currentFeature;
-        }
-    }
-
-    if (doHover) {
-        if (popupText) {
-            overlayPopup.setPosition(coord);
-            content.innerHTML = popupText;
-            container.style.display = 'block';
-        } else {
-            container.style.display = 'none';
-            closer.blur();
-        }
-    }
-};
-
-var onSingleClick = function(evt) {
-    if (doHover) {
-        return;
-    }
-    var pixel = map.getEventPixel(evt.originalEvent);
-    var coord = evt.coordinate;
-    var popupText = "";
-    var currentFeature;
-    var toAdd = [];
-    map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-        feature = decluster(feature);
-        if (feature) {
-            currentFeature = feature;
-            if (popupText == "") {
-                popupText = popupLayers[getAllNonBaseLayers().indexOf(layer)];
-                if (popupText) {
-                    var currentFeatureKeys = currentFeature.getKeys();
-                    for (var i = 0; i < currentFeatureKeys.length; i++) {
-                        if (currentFeatureKeys[i] != 'geometry') {
-                            var value = currentFeature.get(currentFeatureKeys[i]);
-                            if (value) {
-                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join(
-                                    String(currentFeature.get(currentFeatureKeys[i])))
-                            }
-                            else{
-                                popupText = popupText.split("[" + currentFeatureKeys[i] + "]").join("NULL")
+    var len = allLayers.length;
+    for (var i = 0; i < len; i++) {
+        var layer = allLayers[i];
+        if (layer.getSource() instanceof ol.source.TileWMS) {
+            var popupDef = popupLayers[allLayers.indexOf(layer)];
+            if (popupDef == "#AllAttributes") {
+                var url = layer.getSource().getGetFeatureInfoUrl(
+                    evt.coordinate,
+                    map.getView().getResolution(),
+                    map.getView().getProjection(), {
+                        'INFO_FORMAT': 'text/plain'
+                    }
+                );
+                $.get(url, {}, function(data) {
+                        popupTexts.push(data);
+                    });
+            } else if (popupDef !== "") {
+                var url = layer.getSource().getGetFeatureInfoUrl(
+                    evt.coordinate,
+                    map.getView().getResolution(),
+                    map.getView().getProjection(), {
+                        'INFO_FORMAT': 'application/json'
+                    }
+                );
+                $.get(url, {}, function(data) {
+                    for (var f = 0; f < data.features.length; f++) {
+                        var feature = data.features[f];
+                        for (var property in feature) {
+                            if (feature.hasOwnProperty(property)) {
+                                if (property != 'geometry') {
+                                    var value = feature[property];
+                                    if (value) {
+                                        popupDef = popupDef.split("[" + property + "]").join(
+                                            String(value));
+                                    } else {
+                                        popupDef = popupDef.split("[" + property + "]").join("NULL");
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    popupTexts.push(popupDef);
+                });
             }
-
         }
-    });
-    if (popupText) {
+    }
+    if (popupTexts.length) {
         overlayPopup.setPosition(coord);
-        content.innerHTML = popupText;
+        content.innerHTML = popupTexts.join("<hr>");
         container.style.display = 'block';
     } else {
         container.style.display = 'none';
         closer.blur();
     }
 };
-map.on('pointermove', function(evt) {
-  onPointerMove(evt);
+
+map.on('@POPUPEVENT@', function(evt) {
+  popupEventTriggered(evt);
 });
-map.on('singleclick', function(evt) {
-  onSingleClick(evt);
-});
+

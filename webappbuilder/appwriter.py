@@ -92,19 +92,15 @@ def writeJs(appdef, folder):
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
     pointZoom = str(appdef["Settings"]["Zoom level when zooming to point feature"])
-    onHover = str(appdef["Settings"]["Show popups on hover"]).lower()
-    highlight = str(appdef["Settings"]["Highlight features on hover"]).lower()
-    highlightedFeaturesStyle = appdef["Settings"]["Style for highlighted features"]
+    popupEvent = "pointermove" if appdef["Settings"]["Show popups on hover"] else "singleclick"
     view = "%s, maxZoom: %d, minZoom: %d, projection: '%s'" % (mapextent, maxZoom, minZoom, viewCrs)
     values = {"@BOUNDS@": mapbounds,
                 "@CONTROLS@": ",\n".join(controls),
                 "@POPUPLAYERS@": popupLayers,
                 "@VIEW@": view,
                 "@POINTZOOM@": pointZoom,
-                "@ONHOVER@": onHover,
-                "@DOHIGHLIGHT@": highlight,
-                "@CESIUM@": cesium,
-                "@HIGHLIGHTSTYLE@": highlightedFeaturesStyle}
+                "@POPUPEVENT@": popupEvent,
+                "@CESIUM@": cesium}
     indexJsFilepath = os.path.join(folder, "index.js")
     template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
     with open(indexJsFilepath, "w") as f:

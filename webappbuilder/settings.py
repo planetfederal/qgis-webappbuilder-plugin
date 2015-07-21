@@ -101,18 +101,6 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                           }
                         }
 
-
-
-highlightedFeaturesStyle = '''new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: '#f00',
-      width: 1
-    }),
-    fill: new ol.style.Fill({
-      color: 'rgba(255,0,0,0.1)'
-    }),
-    })'''
-
 zoomLevels = list((str(i) for i in xrange(1,33)))
 precisionLevels = list((str(i) for i in range(6)))
 defaultAppSettings = {
@@ -124,8 +112,6 @@ defaultAppSettings = {
                 "Min zoom level": ("1", zoomLevels),
                 "Zoom level when zooming to point feature": ("16", zoomLevels),
                 "Show popups on hover": False,
-                "Highlight features on hover": False,
-                "Style for highlighted features": highlightedFeaturesStyle,
                 "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326")),
                 "Use view CRS for WFS connections": True}
 
