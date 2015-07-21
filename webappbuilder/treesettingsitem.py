@@ -2,6 +2,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from texteditor import TextEditorDialog, JSON
 from settings import WrongValueException
+from qgis.core import *
+from qgis.gui import *
 
 class TreeSettingItem(QTreeWidgetItem):
 
@@ -31,7 +33,30 @@ class TreeSettingItem(QTreeWidgetItem):
         self.name = name
         self._value = value
         self.setText(0, name)
-        if isinstance(value, bool):
+        if unicode(value).upper().startswith("EPSG:"):
+            layout = QHBoxLayout()
+            layout.setContentsMargins(0, 0, 0, 0)
+            self.crsLabel = QLabel()
+            self.crsLabel.setText(value)
+            self.label = QLabel()
+            self.label.setText("<a href='#'> Edit</a>")
+            self.crsLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            layout.addWidget(self.crsLabel)
+            layout.addWidget(self.label)
+            self.newValue = value
+            def edit():
+                selector = QgsGenericProjectionSelector()
+                selector.setSelectedAuthId(value)
+                if selector.exec_():
+                    authId = selector.selectedAuthId()
+                    if authId.upper().startswith("EPSG:"):
+                        self.newValue = authId
+                        self.crsLabel.setText(authId)
+            self.label.connect(self.label, SIGNAL("linkActivated(QString)"), edit)
+            w = QWidget()
+            w.setLayout(layout)
+            self.tree.setItemWidget(self, 1, w)
+        elif isinstance(value, bool):
             if value:
                 self.setCheckState(1, Qt.Checked)
             else:
@@ -71,7 +96,8 @@ class TreeSettingItem(QTreeWidgetItem):
                 return float(self.text(1))
             elif isinstance(self._value, tuple):
                 return self.combo.currentText()
-            elif "\n" in unicode(self._value):
+            elif ("\n" in unicode(self._value) or
+                        unicode(self._value).upper().startswith("EPSG:")):
                 return self.newValue
             else:
                 return self.text(1)
@@ -91,5 +117,8 @@ class TreeSettingItem(QTreeWidgetItem):
             self.combo.setCurrentIndex(idx)
         elif "\n" in unicode(self._value):
             self.newValue = value
+        elif unicode(value).upper().startswith("EPSG:"):
+            self.newValue = value
+            self.crsLabel.setText(value)
         else:
             self.setText(1, unicode(value))

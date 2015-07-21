@@ -1,5 +1,6 @@
 import os
 import copy
+from qgis.core import *
 
 class WrongValueException(Exception):
     pass
@@ -112,7 +113,7 @@ defaultAppSettings = {
                 "Min zoom level": ("1", zoomLevels),
                 "Zoom level when zooming to point feature": ("16", zoomLevels),
                 "Show popups on hover": False,
-                "App view CRS": ("EPSG:3857",("EPSG:3857", "EPSG:4326")),
+                "App view CRS": "EPSG:3857",
                 "Use view CRS for WFS connections": True}
 
 

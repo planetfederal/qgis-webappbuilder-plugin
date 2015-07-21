@@ -117,6 +117,7 @@ def writeHtml(appdef, folder):
     layers = appdef["Layers"]
     widgets = appdef["Widgets"]
     theme = appdef["Settings"]["Theme"]["Name"]
+    viewCrs = appdef["Settings"]["App view CRS"]
     scripts = []
     scriptsBottom = []
     scripts.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
@@ -143,6 +144,11 @@ def writeHtml(appdef, folder):
 
     if refresh:
         scripts.append("<script>$(document).ready(function(){%s});</script>" % "\n".join(refresh))
+
+    viewEpsg = viewCrs.split(":")[-1]
+    if viewEpsg not in ["3857", "4326"]:
+            scripts.append('<script src="./resources/proj4.js"></script>')
+            scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
     if "Mouse position" in widgets:
         projection = widgets["Mouse position"]["projection"]
