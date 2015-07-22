@@ -52,12 +52,25 @@ var getAllNonBaseLayers = function(rootLayer){
     return nonBaseLayers;
 };
 
+var getVectorLayers = function(){
+    var allLayers = getAllNonBaseLayers();
+    var vectorLayers = [];
+    var len = allLayers.length;
+    for (var i = 0; i < len; i++){
+        if (allLayers[i] instanceof ol.layer.Vector){
+            vectorLayers.push(allLayers[i]);
+        }
+    }
+    return vectorLayers;
+};
+
+
 var getSelectableLayers = function(){
     var allLayers = getAllNonBaseLayers();
     var selectableLayers = [];
     var len = allLayers.length;
     for (var i = 0; i < len; i++){
-        if (allLayers[i].get("isSelectable") == true){
+        if (allLayers[i].get("isSelectable")){
             selectableLayers.push(allLayers[i]);
         }
     }
@@ -205,7 +218,7 @@ showAttributesTable_ = function() {
         this.createButtons();
         var p = document.createElement('p');
         this.panel.appendChild(p);
-        this.currentLayer = getSelectableLayers()[0];
+        this.currentLayer = getVectorLayers()[0];
         this.tablePanel = document.createElement('div');
         this.tablePanel.className = 'table-panel';
         this.panel.appendChild(this.tablePanel);
@@ -321,7 +334,7 @@ showAttributesTable_ = function() {
             }
         }
 
-        if (getSelectableLayers().indexOf(this.currentLayer) != -1){
+        if (this.currentLayer.get("isSelectable")){
             var rows = this.table.getElementsByTagName("tr");
             for (var i = 1; i < rows.length; i++) {
                 (function (idx) {
@@ -360,18 +373,19 @@ showAttributesTable_ = function() {
         this.sel = document.createElement('select');
         this.sel.className = "form-control";
         this_ = this;
+        var vectorLayers = getVectorLayers()
         this.sel.onchange = function(){
-            for (var i = 0; i < getSelectableLayers().length; i++){
-                if (getSelectableLayers()[i].get('title') == this.value){
-                    this_.currentLayer = getSelectableLayers()[i];
+            for (var i = 0; i < vectorLayers.length; i++){
+                if (vectorLayers[i].get('title') == this.value){
+                    this_.currentLayer = vectorLayers[i];
                     break;
                 }
             }
             this_.renderTable();
         };
 
-        for (var i = 0, l; i < getSelectableLayers().length; i++) {
-            l = getSelectableLayers()[i];
+        for (var i = 0, l; i < vectorLayers.length; i++) {
+            l = vectorLayers[i];
             var option = document.createElement('option');
             option.value = option.textContent = l.get('title');
             this.sel.appendChild(option);
