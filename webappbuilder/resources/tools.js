@@ -1072,26 +1072,43 @@ selectByPolygon = function(){
 
 var addLayerFromFile = function(){
 
+    var readFeatures = function(text){
+        var formats = [new ol.format.GeoJSON(), new ol.format.KML(), new ol.format.GPX()]
+        for(var i=0, len=formats.length; i< len; i++){
+            var format = formats[i];
+            try {
+                var crs = format.readProjection(text);
+                var features = format.readFeatures(text,
+                        {dataProjection: crs.getCode(),
+                        featureProjection: map.getView().getProjection().getCode()});
+                return features;
+            } catch (e) {}
+        }
+        return null;
+    }
+
     var _addLayerFromFile = function(f){
         if (f) {
             var r = new FileReader();
             r.onload = function(e) {
                 var contents = e.target.result;
-                var format = new ol.format.GeoJSON();
-                var crs = format.readProjection(contents);
-                var layerData = new ol.source.Vector({
-                    features: format.readFeatures(contents,
-                        {dataProjection: crs.getCode(),
-                        featureProjection: map.getView().getProjection().getCode()})
-                });
-                var lyr = new ol.layer.Vector({
-                    source: layerData,
-                    title: f.name,
-                    type: "analysis",
-                    isSelectable: true
-                });
-                map.addLayer(lyr);
-                $("html").css("cursor", "default");
+                var features = readFeatures(contents);
+                if (features){
+                    var lyr = new ol.layer.Vector({
+                        source:  new ol.source.Vector({
+                                    features: features
+                                }),
+                        title: f.name,
+                        type: "analysis",
+                        isSelectable: true
+                    });
+                    map.addLayer(lyr);
+                    $("html").css("cursor", "default");
+                }
+                else{
+                    $("html").css("cursor", "default");
+                    alert("Failed to load file");
+                }
             }
             r.readAsText(f);
             $("html").css("cursor", "default");
@@ -1102,7 +1119,7 @@ var addLayerFromFile = function(){
 
     var input = document.createElement('input');
     input.type = "file";
-    input.accept=".geojson"
+    input.accept=".geojson, .gpx, .kml"
     $(input).on("change", function(){
         var filename = input.files[0];
         $("html").css("cursor", "progress");
