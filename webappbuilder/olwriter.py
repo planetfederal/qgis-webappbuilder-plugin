@@ -138,6 +138,7 @@ def layerToJavascript(applayer, settings, deploy, title):
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
+                        %(min)s %(max)s
                         timeInfo: %(timeInfo)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
@@ -146,6 +147,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
+                                "min": minResolution, "max": maxResolution,
                                 "timeInfo": timeInfo}
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
@@ -157,6 +159,7 @@ def layerToJavascript(applayer, settings, deploy, title):
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
                         timeInfo: %(timeInfo)s,
+                        %(min)s %(max)s
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
@@ -164,6 +167,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": title,
+                                "min": minResolution, "max": maxResolution,
                                 "styles": styles, "timeInfo": timeInfo}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
@@ -174,6 +178,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                                         extent.xMaximum(), extent.yMaximum())
                 return '''var lyr_%(n)s = new ol.layer.Image({
                                 opacity: %(opacity)s,
+                                %(min)s %(max)s
                                 title: "%(name)s",
                                 timeInfo: %(timeInfo)s,
                                 source: new ol.source.ImageStatic({
@@ -185,12 +190,14 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 })
                             });''' % {"opacity": layerOpacity, "n": layerName,
                                       "extent": sExtent, "col": provider.xSize(),
-                                        "name": title, "row": provider.ySize(),
-                                        "crs": viewCrs, "timeInfo": timeInfo}
+                                      "min": minResolution, "max": maxResolution,
+                                      "name": title, "row": provider.ySize(),
+                                      "crs": viewCrs, "timeInfo": timeInfo}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = new ol.layer.Tile({
                         opacity: %(opacity)s,
+                        %(min)s %(max)s
                         timeInfo: %(timeInfo)s,
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
@@ -199,6 +206,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                         title: "%(name)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
+                                "min": minResolution, "max": maxResolution,
                                 "timeInfo": timeInfo}
 
 def exportStyles(layers, folder, settings):
