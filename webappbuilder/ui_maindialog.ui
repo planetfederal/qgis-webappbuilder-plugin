@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
-    <height>685</height>
+    <width>721</width>
+    <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -258,8 +258,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>702</width>
-            <height>272</height>
+            <width>677</width>
+            <height>244</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -289,8 +289,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>702</width>
-            <height>271</height>
+            <width>677</width>
+            <height>243</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -335,33 +335,46 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-65</y>
-            <width>685</width>
-            <height>635</height>
+            <y>0</y>
+            <width>670</width>
+            <height>774</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
             <widget class="QToolButton" name="scaleBarButton">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -391,24 +404,37 @@
            <item row="0" column="1">
             <widget class="QToolButton" name="zoomControlsButton">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -444,25 +470,37 @@
            <item row="0" column="2">
             <widget class="QToolButton" name="layersListButton">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+	 border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
-     min-width: 100px;
      padding: 15px;
+	color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+	 border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -498,19 +536,32 @@ list</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -543,19 +594,32 @@ map</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -588,19 +652,32 @@ arrow</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -633,19 +710,32 @@ button</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -678,19 +768,32 @@ screen</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -722,19 +825,32 @@ screen</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -767,19 +883,32 @@ slider</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -811,19 +940,32 @@ slider</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -855,19 +997,32 @@ slider</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -901,25 +1056,30 @@ slider</string>
              </property>
              <property name="minimumSize">
               <size>
-               <width>104</width>
-               <height>0</height>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
               </size>
              </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
-     min-width: 70px;
-     max-widht: 70px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -952,19 +1112,32 @@ table</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -996,19 +1169,32 @@ table</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1040,19 +1226,32 @@ table</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1088,19 +1287,32 @@ position</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1132,19 +1344,32 @@ position</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1176,19 +1401,32 @@ position</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1220,19 +1458,32 @@ position</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1268,19 +1519,32 @@ panel</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1316,19 +1580,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1360,19 +1637,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1404,19 +1694,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1448,19 +1751,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1492,19 +1808,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">
@@ -1536,19 +1865,32 @@ image</string>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>120</width>
+               <height>120</height>
+              </size>
+             </property>
              <property name="styleSheet">
               <string notr="true">QToolButton {
-     background-color: #bbbbbb;
-     border-style: outset;
-     border-width: 2px;
+     background-color: #7c899f;
+   border-color: #7c899f;
+     border-style: solid;
+     border-width: 3px;
      border-radius: 10px;
-     border-color: beige;
      font: bold 11px;
      padding: 15px;
+  color: white;
  }
  QToolButton:checked {
-     background-color: #9ABEED;
-     border-style: inset;
+     background-color: #2d67c6;
+   border-color:#4d8ef7;
  }</string>
              </property>
              <property name="text">

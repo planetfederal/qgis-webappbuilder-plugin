@@ -278,11 +278,21 @@ class MainDialog(QDialog, Ui_MainDialog):
             dlg.exec_()
             settings.widgetsParams[widgetName] = dlg.params
 
-    buttonStyle = '''QToolButton {
-                background-color: #bbbbbb; border-style: outset; border-width: 2px;
-                border-radius: 10px; border-color: beige; font: bold;
-                min-width: 100px; max-width: 250px; padding:10px;}
-                QToolButton:checked { background-color: #9ABEED; border-style: inset;}'''
+    buttonStyle = '''QToolButton {background-color: #7c899f;
+                                     border-color: #7c899f;
+                                     border-style: solid;
+                                     border-width: 3px;
+                                     border-radius: 10px;
+                                     font: bold 11px;
+                                     padding: 15px;
+                                     min-width:100px;
+                                     max-width:250px;
+                                    color: white;
+                                 }
+                                 QToolButton:checked {
+                                     background-color: #2d67c6;
+                                     border-color:#4d8ef7;
+                                 }'''
 
     def populateThemes(self):
         self.themesButtons = {}

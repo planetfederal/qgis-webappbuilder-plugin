@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Mon Jul 20 16:35:09 2015
+# Created: Wed Jul 22 12:29:41 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(746, 685)
+        MainDialog.resize(721, 629)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -134,7 +134,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 702, 272))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 677, 244))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -152,7 +152,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 702, 271))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 677, 243))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -181,28 +181,31 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -65, 685, 635))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 670, 774))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.scaleBarButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scaleBarButton.sizePolicy().hasHeightForWidth())
         self.scaleBarButton.setSizePolicy(sizePolicy)
+        self.scaleBarButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.scaleBarButton.setMaximumSize(QtCore.QSize(120, 120))
         self.scaleBarButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -214,23 +217,26 @@ class Ui_MainDialog(object):
         self.scaleBarButton.setObjectName(_fromUtf8("scaleBarButton"))
         self.gridLayout_3.addWidget(self.scaleBarButton, 0, 0, 1, 1)
         self.zoomControlsButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.zoomControlsButton.sizePolicy().hasHeightForWidth())
         self.zoomControlsButton.setSizePolicy(sizePolicy)
+        self.zoomControlsButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.zoomControlsButton.setMaximumSize(QtCore.QSize(120, 120))
         self.zoomControlsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.zoomControlsButton.setIcon(icon3)
         self.zoomControlsButton.setIconSize(QtCore.QSize(32, 32))
@@ -242,24 +248,26 @@ class Ui_MainDialog(object):
         self.zoomControlsButton.setObjectName(_fromUtf8("zoomControlsButton"))
         self.gridLayout_3.addWidget(self.zoomControlsButton, 0, 1, 1, 1)
         self.layersListButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.layersListButton.sizePolicy().hasHeightForWidth())
         self.layersListButton.setSizePolicy(sizePolicy)
+        self.layersListButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.layersListButton.setMaximumSize(QtCore.QSize(120, 120))
         self.layersListButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"     border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 100px;\n"
 "     padding: 15px;\n"
+"    color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"     border-color:#4d8ef7;\n"
 " }"))
         self.layersListButton.setIcon(icon3)
         self.layersListButton.setIconSize(QtCore.QSize(32, 32))
@@ -274,18 +282,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.overviewButton.sizePolicy().hasHeightForWidth())
         self.overviewButton.setSizePolicy(sizePolicy)
+        self.overviewButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.overviewButton.setMaximumSize(QtCore.QSize(120, 120))
         self.overviewButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.overviewButton.setIcon(icon3)
         self.overviewButton.setIconSize(QtCore.QSize(32, 32))
@@ -299,18 +310,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.northArrowButton.sizePolicy().hasHeightForWidth())
         self.northArrowButton.setSizePolicy(sizePolicy)
+        self.northArrowButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.northArrowButton.setMaximumSize(QtCore.QSize(120, 120))
         self.northArrowButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.northArrowButton.setIcon(icon3)
         self.northArrowButton.setIconSize(QtCore.QSize(32, 32))
@@ -324,18 +338,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.homeButton.sizePolicy().hasHeightForWidth())
         self.homeButton.setSizePolicy(sizePolicy)
+        self.homeButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.homeButton.setMaximumSize(QtCore.QSize(120, 120))
         self.homeButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.homeButton.setIcon(icon3)
         self.homeButton.setIconSize(QtCore.QSize(32, 32))
@@ -349,18 +366,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fullScreenButton.sizePolicy().hasHeightForWidth())
         self.fullScreenButton.setSizePolicy(sizePolicy)
+        self.fullScreenButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.fullScreenButton.setMaximumSize(QtCore.QSize(120, 120))
         self.fullScreenButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.fullScreenButton.setIcon(icon3)
         self.fullScreenButton.setIconSize(QtCore.QSize(32, 32))
@@ -374,18 +394,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.attributionButton.sizePolicy().hasHeightForWidth())
         self.attributionButton.setSizePolicy(sizePolicy)
+        self.attributionButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.attributionButton.setMaximumSize(QtCore.QSize(120, 120))
         self.attributionButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.attributionButton.setIcon(icon3)
         self.attributionButton.setIconSize(QtCore.QSize(32, 32))
@@ -399,18 +422,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.zoomSliderButton.sizePolicy().hasHeightForWidth())
         self.zoomSliderButton.setSizePolicy(sizePolicy)
+        self.zoomSliderButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.zoomSliderButton.setMaximumSize(QtCore.QSize(120, 120))
         self.zoomSliderButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.zoomSliderButton.setIcon(icon3)
         self.zoomSliderButton.setIconSize(QtCore.QSize(32, 32))
@@ -424,18 +450,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.measureToolButton.sizePolicy().hasHeightForWidth())
         self.measureToolButton.setSizePolicy(sizePolicy)
+        self.measureToolButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.measureToolButton.setMaximumSize(QtCore.QSize(120, 120))
         self.measureToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.measureToolButton.setIcon(icon3)
         self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
@@ -449,18 +478,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.selectionToolsButton.sizePolicy().hasHeightForWidth())
         self.selectionToolsButton.setSizePolicy(sizePolicy)
+        self.selectionToolsButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.selectionToolsButton.setMaximumSize(QtCore.QSize(120, 120))
         self.selectionToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.selectionToolsButton.setIcon(icon3)
         self.selectionToolsButton.setIconSize(QtCore.QSize(32, 32))
@@ -474,18 +506,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.geolocationButton.sizePolicy().hasHeightForWidth())
         self.geolocationButton.setSizePolicy(sizePolicy)
+        self.geolocationButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.geolocationButton.setMaximumSize(QtCore.QSize(120, 120))
         self.geolocationButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.geolocationButton.setIcon(icon3)
         self.geolocationButton.setIconSize(QtCore.QSize(32, 32))
@@ -499,21 +534,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.attributesTableButton.sizePolicy().hasHeightForWidth())
         self.attributesTableButton.setSizePolicy(sizePolicy)
-        self.attributesTableButton.setMinimumSize(QtCore.QSize(104, 0))
+        self.attributesTableButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.attributesTableButton.setMaximumSize(QtCore.QSize(120, 120))
         self.attributesTableButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
-"     min-width: 70px;\n"
-"     max-widht: 70px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.attributesTableButton.setIcon(icon3)
         self.attributesTableButton.setIconSize(QtCore.QSize(32, 32))
@@ -527,18 +562,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.chartToolButton.sizePolicy().hasHeightForWidth())
         self.chartToolButton.setSizePolicy(sizePolicy)
+        self.chartToolButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.chartToolButton.setMaximumSize(QtCore.QSize(120, 120))
         self.chartToolButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.chartToolButton.setIcon(icon3)
         self.chartToolButton.setIconSize(QtCore.QSize(32, 32))
@@ -552,18 +590,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.legendButton.sizePolicy().hasHeightForWidth())
         self.legendButton.setSizePolicy(sizePolicy)
+        self.legendButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.legendButton.setMaximumSize(QtCore.QSize(120, 120))
         self.legendButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.legendButton.setIcon(icon3)
         self.legendButton.setIconSize(QtCore.QSize(32, 32))
@@ -577,18 +618,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mousePositionButton.sizePolicy().hasHeightForWidth())
         self.mousePositionButton.setSizePolicy(sizePolicy)
+        self.mousePositionButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.mousePositionButton.setMaximumSize(QtCore.QSize(120, 120))
         self.mousePositionButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.mousePositionButton.setIcon(icon3)
         self.mousePositionButton.setIconSize(QtCore.QSize(32, 32))
@@ -603,18 +647,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.queryButton.sizePolicy().hasHeightForWidth())
         self.queryButton.setSizePolicy(sizePolicy)
+        self.queryButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.queryButton.setMaximumSize(QtCore.QSize(120, 120))
         self.queryButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.queryButton.setIcon(icon3)
         self.queryButton.setIconSize(QtCore.QSize(32, 32))
@@ -628,18 +675,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.geocodingButton.sizePolicy().hasHeightForWidth())
         self.geocodingButton.setSizePolicy(sizePolicy)
+        self.geocodingButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.geocodingButton.setMaximumSize(QtCore.QSize(120, 120))
         self.geocodingButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.geocodingButton.setIcon(icon3)
         self.geocodingButton.setIconSize(QtCore.QSize(32, 32))
@@ -653,18 +703,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.bookmarksButton.sizePolicy().hasHeightForWidth())
         self.bookmarksButton.setSizePolicy(sizePolicy)
+        self.bookmarksButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.bookmarksButton.setMaximumSize(QtCore.QSize(120, 120))
         self.bookmarksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.bookmarksButton.setIcon(icon3)
         self.bookmarksButton.setIconSize(QtCore.QSize(32, 32))
@@ -678,18 +731,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.aboutPanelButton.sizePolicy().hasHeightForWidth())
         self.aboutPanelButton.setSizePolicy(sizePolicy)
+        self.aboutPanelButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.aboutPanelButton.setMaximumSize(QtCore.QSize(120, 120))
         self.aboutPanelButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.aboutPanelButton.setIcon(icon3)
         self.aboutPanelButton.setIconSize(QtCore.QSize(32, 32))
@@ -704,18 +760,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.exportAsImageButton.sizePolicy().hasHeightForWidth())
         self.exportAsImageButton.setSizePolicy(sizePolicy)
+        self.exportAsImageButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.exportAsImageButton.setMaximumSize(QtCore.QSize(120, 120))
         self.exportAsImageButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.exportAsImageButton.setIcon(icon3)
         self.exportAsImageButton.setIconSize(QtCore.QSize(32, 32))
@@ -730,18 +789,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.linksButton.sizePolicy().hasHeightForWidth())
         self.linksButton.setSizePolicy(sizePolicy)
+        self.linksButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.linksButton.setMaximumSize(QtCore.QSize(120, 120))
         self.linksButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.linksButton.setIcon(icon3)
         self.linksButton.setIconSize(QtCore.QSize(32, 32))
@@ -755,18 +817,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.helpButton.sizePolicy().hasHeightForWidth())
         self.helpButton.setSizePolicy(sizePolicy)
+        self.helpButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.helpButton.setMaximumSize(QtCore.QSize(120, 120))
         self.helpButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.helpButton.setIcon(icon3)
         self.helpButton.setIconSize(QtCore.QSize(32, 32))
@@ -780,18 +845,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.analysisToolsButton.sizePolicy().hasHeightForWidth())
         self.analysisToolsButton.setSizePolicy(sizePolicy)
+        self.analysisToolsButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.analysisToolsButton.setMaximumSize(QtCore.QSize(120, 120))
         self.analysisToolsButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.analysisToolsButton.setIcon(icon3)
         self.analysisToolsButton.setIconSize(QtCore.QSize(32, 32))
@@ -805,18 +873,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cesiumButton.sizePolicy().hasHeightForWidth())
         self.cesiumButton.setSizePolicy(sizePolicy)
+        self.cesiumButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.cesiumButton.setMaximumSize(QtCore.QSize(120, 120))
         self.cesiumButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.cesiumButton.setIcon(icon3)
         self.cesiumButton.setIconSize(QtCore.QSize(32, 32))
@@ -830,18 +901,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.timelineButton.sizePolicy().hasHeightForWidth())
         self.timelineButton.setSizePolicy(sizePolicy)
+        self.timelineButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.timelineButton.setMaximumSize(QtCore.QSize(120, 120))
         self.timelineButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.timelineButton.setIcon(icon3)
         self.timelineButton.setIconSize(QtCore.QSize(32, 32))
@@ -855,18 +929,21 @@ class Ui_MainDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.addLayerButton.sizePolicy().hasHeightForWidth())
         self.addLayerButton.setSizePolicy(sizePolicy)
+        self.addLayerButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.addLayerButton.setMaximumSize(QtCore.QSize(120, 120))
         self.addLayerButton.setStyleSheet(_fromUtf8("QToolButton {\n"
-"     background-color: #bbbbbb;\n"
-"     border-style: outset;\n"
-"     border-width: 2px;\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
 "     border-radius: 10px;\n"
-"     border-color: beige;\n"
 "     font: bold 11px;\n"
 "     padding: 15px;\n"
+"  color: white;\n"
 " }\n"
 " QToolButton:checked {\n"
-"     background-color: #9ABEED;\n"
-"     border-style: inset;\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
 " }"))
         self.addLayerButton.setIcon(icon3)
         self.addLayerButton.setIconSize(QtCore.QSize(32, 32))
