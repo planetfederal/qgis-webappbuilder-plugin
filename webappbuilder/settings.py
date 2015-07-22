@@ -114,7 +114,8 @@ defaultAppSettings = {
                 "Zoom level when zooming to point feature": ("16", zoomLevels),
                 "Show popups on hover": False,
                 "App view CRS": "EPSG:3857",
-                "Use view CRS for WFS connections": True}
+                "Use view CRS for WFS connections": True,
+                "Group base layers": True}
 
 
 

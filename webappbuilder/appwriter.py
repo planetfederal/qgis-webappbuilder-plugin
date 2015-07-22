@@ -431,7 +431,10 @@ def writeLayersAndGroups(appdef, folder):
         elif b in baseOverlays:
             baseJs.append(baseOverlays[b])
     baseLayer = "baseLayers = [%s];" % ",".join(baseJs)
-    baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
+
+    groupBaseLayers = appdef["Settings"]["Group base layers"]
+    if groupBaseLayers:
+        baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
 
     if "Overview map" in widgets:
         overviewMapBaseLayerName = widgets["Overview map"]["Base layer"]
@@ -464,7 +467,7 @@ def writeLayersAndGroups(appdef, folder):
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
                                                 str(layer.visible).lower()) for layer in layers])
 
-    layersList = ["baseLayersGroup"] if base else []
+    layersList = []
     usedGroups = []
     for appLayer in layers:
         layer = appLayer.layer
@@ -477,6 +480,11 @@ def writeLayersAndGroups(appdef, folder):
             layersList.append("lyr_" + safeName(layer.name()))
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
+    if base:
+        if groupBaseLayers:
+            layersList += "layersList.unshift(baseLayersGroup);"
+        else:
+            layersList += "baseLayers.forEach(function(v){layersList.unshift(v)});"
 
     path = os.path.join(folder, "layers")
     if not QDir(path).exists():
