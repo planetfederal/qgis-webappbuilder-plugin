@@ -563,26 +563,31 @@ def getLegendSymbols(layer, ilayer, legendFolder):
     return symbols
 
 def bounds(useCanvas, layers, crsid):
+    extent = None
     if useCanvas:
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapSettings().destinationCrs()
         transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem(crsid))
         try:
             extent = transform.transform(canvas.extent())
-        except QgsCsException:
-            extent = QgsRectangle()
-    else:
-        extent = None
+        except:
+            extent = None
+    if extent is None:
         for layer in layers:
             transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem(crsid))
             try:
                 layerExtent = transform.transform(layer.layer.extent())
+                if extent is None:
+                    extent = layerExtent
+                else:
+                    extent.combineExtentWith(layerExtent)
             except QgsCsException:
-                layerExtent = QgsRectangle()
-            if extent is None:
-                extent = layerExtent
-            else:
-                extent.combineExtentWith(layerExtent)
-        extent = extent or QgsRectangle(0, 0, 0, 0)
+                pass
+
+    if extent is None:
+        extent = QgsRectangle(-180, -90, 180, 90)
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("ESPG:4326"), QgsCoordinateReferenceSystem(crsid))
+        extent = transform.transform(extent)
+
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
