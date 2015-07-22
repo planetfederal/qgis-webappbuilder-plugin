@@ -65,6 +65,7 @@ var popupEventTriggered = function(evt) {
         }
     });
 
+    var geojsonFormat = new ol.format.GeoJSON();
     var len = allLayers.length;
     for (var i = 0; i < len; i++) {
         var layer = allLayers[i];
@@ -89,24 +90,27 @@ var popupEventTriggered = function(evt) {
                         'INFO_FORMAT': 'application/json'
                     }
                 );
-                $.get(url, {}, function(data) {
-                    for (var f = 0; f < data.features.length; f++) {
-                        var feature = data.features[f];
-                        for (var property in feature) {
-                            if (feature.hasOwnProperty(property)) {
-                                if (property != 'geometry') {
-                                    var value = feature[property];
+                $.ajax({
+                    url: url,
+                    success: function(data) {
+                        var features = geojsonFormat.readFeatures(data);
+                        for (var f = 0; f < feature.length; f++){
+                            var feature = features[f];
+                            var values = feature.getProperties();
+                            for (var key in values) {
+                                if (key != 'geometry') {
+                                    var value = values[key];
                                     if (value) {
-                                        popupDef = popupDef.split("[" + property + "]").join(
+                                        popupDef = popupDef.split("[" + key + "]").join(
                                             String(value));
                                     } else {
-                                        popupDef = popupDef.split("[" + property + "]").join("NULL");
+                                        popupDef = popupDef.split("[" + key + "]").join("NULL");
                                     }
                                 }
                             }
+                            popupTexts.push(popupDef);
                         }
                     }
-                    popupTexts.push(popupDef);
                 });
             }
         }
