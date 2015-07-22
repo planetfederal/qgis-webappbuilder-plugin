@@ -39,7 +39,7 @@ var getAllNonBaseLayers = function(rootLayer){
     var nonBaseLayers = [];
     var layers = rootLayer.getLayers().getArray();
     var len = layers.length;
-    for (var i = len -1; i >=0; i--){
+    for (var i = 0; i < len; i++){
         var layer = layers[i];
         if (layer.getLayers) {
             var groupLayers = getAllNonBaseLayers(layer);
