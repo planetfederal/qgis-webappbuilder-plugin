@@ -85,7 +85,7 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                         "showZoomTo": False,
                                         "showDownload": False,
                                         "allowReordering": False,
-                                        "showGroupContent":False},
+                                        "showGroupContent":True},
                         "Selection tools": {"Select by rectangle": True,
                                             "Select by polygon": True
                                             },
