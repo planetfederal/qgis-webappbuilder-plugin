@@ -70,7 +70,8 @@ def layerToJavascript(applayer, settings, deploy, title):
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
-    timeInfo = str(applayer.timeInfo) if applayer.timeInfo is not None else "null"
+    timeInfo = ('["%s","%s"]' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
+                            if applayer.timeInfo is not None else "null")
     title = '"%s"' % unicode(title) if title is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
@@ -210,13 +211,13 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 "min": minResolution, "max": maxResolution,
                                 "timeInfo": timeInfo}
 
-def exportStyles(layers, folder, settings):
+def exportStyles(layers, folder, settings, addTimeInfo):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
     for appLayer in layers:
         cannotWriteStyle = False
         layer = appLayer.layer
-        if layer.type() != layer.VectorLayer or appLayer.method == METHOD_WMS:
+        if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
             continue
         labelsEnabled = str(layer.customProperty("labeling/enabled")).lower() == "true"
         if labelsEnabled:
@@ -269,7 +270,7 @@ def exportStyles(layers, folder, settings):
                                 }
                             }
                             ''' % {"v": varName}
-                selectionStyle = "var selectionStyle = style";
+                #selectionStyle = "var selectionStyle = style";
             else:
                 cannotWriteStyle = True
             try:
@@ -326,7 +327,9 @@ def exportStyles(layers, folder, settings):
             else:
                 cluster = ""
 
+            timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
             style = '''function(feature, resolution){
+                        %(time)s
                         %(cluster)s
                         %(value)s
                         %(style)s;
@@ -355,7 +358,7 @@ def exportStyles(layers, folder, settings):
                         return allStyles;
                     }''' % {"style": style, "label": labelText, "layerName": safeName(layer.name()),
                             "size": size, "color": color, "value": value, "cluster": cluster,
-                            "selectionStyle": selectionStyle}
+                            "selectionStyle": selectionStyle, "time": timeInfo}
         except Exception, e:
             traceback.print_exc()
             cannotWriteStyle = True
@@ -389,6 +392,36 @@ def exportStyles(layers, folder, settings):
                         var selectedClusterStyleCache_%(name)s={}
                         var style_%(name)s = %(style)s;''' %
                     {"defs":defs, "name":safeName(layer.name()), "style":style})
+
+def getTimeBasedStyleCondition(applayer):
+
+    if applayer.timeInfo is None:
+        return ""
+    elif isinstance(applayer.timeInfo[0], basestring):
+        return '''
+                minFeatureTime = Date.parse(feature.get("%s"))
+                if (isNaN(minFeatureTime) ||currentTimelineTime < minFeatureTime){
+                    return null;
+                }
+                maxFeatureTime = Date.parse(feature.get("%s"))
+                if (isNaN(maxFeatureTime) || currentTimelineTime > maxFeatureTime){
+                    return null;
+                }
+
+
+        ''' % (applayer.timeInfo[0], applayer.timeInfo[1])
+    else:
+        return '''
+            try{
+                if (currentTimelineTime < %i){
+                    return null;
+                }
+                if (currentTimelineTime > %i){
+                    return null;
+                }
+            }
+            catch (e){}
+        ''' % (applayer.timeInfo[0], applayer.timeInfo[1])
 
 
 SIZE_FACTOR = 3.8

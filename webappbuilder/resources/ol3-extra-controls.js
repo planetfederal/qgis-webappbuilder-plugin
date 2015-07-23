@@ -330,24 +330,10 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
             var sublayersElem = '';
             var layers = layer.getLayers().getArray()
             var len = layers.length;
-            var timeFound = false;
-            for(var i = 0; i < len; i++){
-                var layer = layers[i];
-                var timeInfo = layer.get('timeInfo');
-                if (timeInfo){
-                    timeFound = true;
-                    break;
-                }
+            for (var i = len - 1; i >= 0; i--) {
+                sublayersElem += this.buildLayerTree(layers[i], true);
             }
-            if (!timeFound){
-                for (var i = len - 1; i >= 0; i--) {
-                    sublayersElem += this.buildLayerTree(layers[i], true);
-                }
-                elem = div + " <ul>" + sublayersElem + "</ul></li>";
-            }
-            else{
-                elem = div + " </li>";
-            }
+            elem = div + " <ul>" + sublayersElem + "</ul></li>";
         } else {
             elem = div + " </li>";
         }
@@ -441,7 +427,7 @@ ol.control.Legend.prototype.renderPanel = function() {
 //=======================================================
 ol.control.TimeLine = function(opt_options) {
 
-    var options = opt_options || {};
+    var options = opt_options || {minDate: 0, maxDate:1, interval:1, numIntervals:2};
 
     var element = document.createElement('div');
     element.className = "timeline ol-control";
@@ -456,7 +442,7 @@ ol.control.TimeLine = function(opt_options) {
     this.button.onclick = function(){
         if (this.innerHTML == '<i class="glyphicon glyphicon-play"></i>'){
             this.innerHTML = '<i class="glyphicon glyphicon-pause"></i>';
-            this.autoplayTimer = setInterval(this_.autoplay, 1000);
+            this.autoplayTimer = setInterval(this_.autoplay, options.interval);
         }
         else{
             this.innerHTML = '<i class="glyphicon glyphicon-play"></i>';
@@ -481,17 +467,49 @@ ol.control.TimeLine = function(opt_options) {
     li3.appendChild(this.date);
     ul.appendChild(li3);
 
+    var minDateMilli = options.minDate;
+    var maxDateMilli = options.maxDate;
+
+    currentTimelineTime = minDateMilli;
+
+    this.range.setAttribute("min", minDateMilli);
+    this.range.setAttribute("max", maxDateMilli);
+    this.range.setAttribute("value", minDateMilli);
+
+    var minDate = new Date(minDateMilli);
+    minDate = minDate.getFullYear().toString() + "-" + (minDate.getMonth() + 1).toString()
+                + "-" + (minDate.getDate() + 1).toString();
+    var maxDate = new Date(minDateMilli);
+    maxDate = maxDate.getFullYear().toString() + "-" + (maxDate.getMonth() + 1).toString()
+                + "-" + (maxDate.getDate() + 1).toString();
+    this.date.setAttribute("min", minDate);
+    this.date.setAttribute("max", maxDate);
+    this.date.valueAsNumber = this.range.valueAsNumber;
+
+    var this_ = this;
     this.range.onchange = function() {
         this_.date.valueAsNumber = this_.range.valueAsNumber;
-        this_.currentTime = this_.range.valueAsNumber;
-        this_.toggleLayers();
+        currentTimelineTime = this_.range.valueAsNumber;
+        this_.refreshTimeLayers();
     };
 
     this.date.onchange = function() {
         this_.range.valueAsNumber = this_.date.valueAsNumber;
-        this_.currentTime = this_.range.valueAsNumber;
-        this_.toggleLayers();
+        currentTimelineTime = this_.range.valueAsNumber;
+        this_.refreshTimeLayers();
     };
+
+    autoplayInterval = (maxDateMilli - minDateMilli) / options.numIntervals;
+    this.autoplay = function(){
+        var newTime = this_.range.valueAsNumber + autoplayInterval;
+        if (newTime > maxDateMilli){
+            newTime = minDateMilli;
+        }
+        this_.range.valueAsNumber = newTime;
+        this_.date.valueAsNumber = newTime
+        currentTimelineTime = newTime;
+        this_.refreshTimeLayers();
+    }
 
     element.appendChild(ul);
 
@@ -504,94 +522,32 @@ ol.inherits(ol.control.TimeLine, ol.control.Control);
 
 ol.control.TimeLine.prototype.setMap = function(map) {
     ol.control.Control.prototype.setMap.call(this, map);
-    var maxDateMilli = Number.NEGATIVE_INFINITY;
-    var minDateMilli = Number.POSITIVE_INFINITY;
-    var layers = map.getLayerGroup().getLayers().getArray();
-    for(var i=0,len=layers.length; i<len; i++){
-        var layer = layers[i];
-        if (layer.getLayers){
-            var groupLayers = layer.getLayers().getArray();
-            for(var j=0,groupLen=groupLayers.length; j<groupLen; j++){
-                var groupLayer = groupLayers[j];
-                var timeInfo = groupLayer.get('timeInfo');
+    this.refreshTimeLayers();
+};
+
+ol.control.TimeLine.prototype.refreshTimeLayers = function() {
+    var map = this.getMap();
+    if (map){
+        var layers = map.getLayerGroup().getLayers().getArray();
+        for(var i=0,len=layers.length; i<len; i++){
+            var layer = layers[i];
+            if (layer.getLayers){
+                var groupLayers = layer.getLayers().getArray();
+                for(var j=0,groupLen=groupLayers.length; j<groupLen; j++){
+                    var groupLayer = groupLayers[j];
+                    var timeInfo = groupLayer.get('timeInfo');
+                    if (timeInfo){
+                        groupLayer.getSource().changed();
+                    }
+                }
+            }
+            else{
+                var timeInfo = layer.get('timeInfo');
                 if (timeInfo){
-                    maxDateMilli = Math.max(maxDateMilli, timeInfo);
-                    minDateMilli = Math.min(minDateMilli, timeInfo);
+                    layer.getSource().changed();
                 }
             }
         }
     }
-
-    var margin = (maxDateMilli - minDateMilli) / 20.;
-
-    this.currentTime = maxDateMilli;
-
-    this.range.setAttribute("min", minDateMilli - margin);
-    this.range.setAttribute("max", maxDateMilli + margin);
-    this.range.setAttribute("value", maxDateMilli);
-
-    var minDate = new Date(minDateMilli - margin);
-    minDate = minDate.getFullYear().toString() + "-" + (minDate.getMonth() + 1).toString()
-                + "-" + (minDate.getDate() + 1).toString();
-    var maxDate = new Date(minDateMilli + margin);
-    maxDate = maxDate.getFullYear().toString() + "-" + (maxDate.getMonth() + 1).toString()
-                + "-" + (maxDate.getDate() + 1).toString();
-    this.date.setAttribute("min", minDate);
-    this.date.setAttribute("max", maxDate);
-
-    this.date.valueAsNumber = this.range.valueAsNumber;
-    this.currentTime = this.range.valueAsNumber;
-
-    var this_ = this;
-    autoplayInterval = (maxDateMilli - minDateMilli) / 10.0;
-    this.autoplay = function(){
-        var newTime = this_.range.valueAsNumber + autoplayInterval;
-        if (newTime > maxDateMilli){
-            newTime = minDateMilli;
-        }
-        this_.range.valueAsNumber = newTime;
-        this_.date.valueAsNumber = newTime
-        this_.currentTime = newTime;
-        this_.toggleLayers();
-    }
-    this.toggleLayers();
-
 };
 
-ol.control.TimeLine.prototype.toggleLayers = function() {
-    var map = this.getMap();
-    var layers = map.getLayerGroup().getLayers().getArray();
-    for(var i=0,len=layers.length; i<len; i++){
-        var layer = layers[i];
-        if (layer.getLayers){
-            this.toggleLayersInGroup(layer);
-        }
-    }
-};
-
-ol.control.TimeLine.prototype.toggleLayersInGroup = function(group) {
-    var timeFound = false;
-    var latestLayer = null;
-    var latestTime = Number.POSITIVE_INFINITY;
-    var map = this.getMap();
-    var layers = group.getLayers().getArray();
-    for(var i=0,len=layers.length; i<len; i++){
-        var layer = layers[i];
-        var timeInfo = layer.get('timeInfo');
-        if (timeInfo){
-            timeFound = true;
-            var diff = this.currentTime - timeInfo;
-            if (diff >= 0 && diff < latestTime){
-                latestTime = diff;
-                latestLayer = layer;
-            }
-        }
-    }
-
-    if (timeFound){
-        for(var i=0,len=layers.length; i<len; i++){
-            var layer = layers[i];
-            layer.setVisible(layer == latestLayer)
-        }
-    }
-}

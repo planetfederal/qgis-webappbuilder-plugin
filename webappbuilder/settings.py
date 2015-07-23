@@ -90,6 +90,7 @@ defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
                                             "Select by polygon": True
                                             },
                         "Links": {"links":{}},
+                        "Timeline": {"interval": 500, "numIntervals": 100},
                         "Analysis tools":{"Add random points layer": False,
                                           "Buffer": False,
                                           "Extract selected features from layer": False,

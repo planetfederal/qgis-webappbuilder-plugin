@@ -110,22 +110,13 @@ def checkAppCanBeCreated(appdef):
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
 
-	qgisLayers = {layer.layer.id():layer for layer in layers}
-	groups = appdef["Groups"]
-	groupedLayers = []
+	#TODO: check that layers using time attributes are not published using WMS
+
 	hasTimeInfo = False
-	for group, groupLayers in groups.iteritems():
-		groupedLayers.extend(groupLayers)
-		groupTimeLayers = [lay for lay in groupLayers if qgisLayers[lay.id()].timeInfo is not None]
-		if len(groupTimeLayers):
-			hasTimeInfo = True
-		if len(groupTimeLayers) != len(groupLayers) and hasTimeInfo:
-			problems.append("Not all layers in group %s have time information."
-						% group)
 	for applayer in layers:
-		if applayer.timeInfo is not None and applayer.layer not in groupedLayers:
-			problems.append("Layer %s has time information but does not belong to a group."
-						% applayer.layer.name())
+		if applayer.timeInfo is not None:
+			hasTimeInfo = True
+			break;
 
 	if hasTimeInfo and "Timeline" not in appdef["Widgets"]:
 		problems.append("There are layers with time information, but timeline widget is not used.")

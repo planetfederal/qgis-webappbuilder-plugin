@@ -16,7 +16,6 @@ import requests
 from olwriter import exportStyles, layerToJavascript
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
-
     progress.setText("Creating local files")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
@@ -29,7 +28,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         exportLayers(layers, folder, progress,
                      appdef["Settings"]["Precision for GeoJSON export"],
                      appdef["Settings"]["App view CRS"])
-    exportStyles(layers, folder, appdef["Settings"])
+    exportStyles(layers, folder, appdef["Settings"], "Timeline" in appdef["Widgets"])
     writeLayersAndGroups(appdef, folder)
     writeJs(appdef, folder)
     writeCss(appdef, folder)
@@ -64,7 +63,11 @@ def writeJs(appdef, folder):
     if "Home button" in widgets:
         controls.append("new ol.control.HomeButton()")
     if "Timeline" in widgets:
-        controls.append("new ol.control.TimeLine()")
+        timelineOptions = getTimelineOptions(appdef);
+        controls.append("new ol.control.TimeLine({minDate:%s, maxDate:%s, interval:%s, numIntervals:%s})"
+                            % (timelineOptions[0], timelineOptions[1],
+                               widgets["Timeline"]["interval"],
+                               widgets["Timeline"]["numIntervals"]))
     if "Zoom slider" in widgets:
         controls.append("new ol.control.ZoomSlider()")
     if "North arrow" in widgets:
@@ -106,6 +109,34 @@ def writeJs(appdef, folder):
     with open(indexJsFilepath, "w") as f:
         f.write(replaceInTemplate(template, values))
 
+def getTimelineOptions(appdef):
+    layers = appdef["Layers"]
+    times = set()
+    for layer in layers:
+        if layer.timeInfo is not None:
+            if isinstance(layer.timeInfo[0], basestring):
+                features = layer.layer.getFeatures()
+                for feature in features:
+                    for field in layer.timeInfo:
+                        try:
+                            value = feature[field]
+                            if isinstance(value, QDate):
+                                t = QDateTime()
+                                t.setDate(value)
+                            else:
+                                t = QDateTime.fromString(unicode(value), Qt.ISODate)
+                            if t.isValid():
+                                times.add(t.toMSecsSinceEpoch())
+                        except:
+                            pass
+            else:
+                times.add(layer.timeInfo[0])
+                times.add(layer.timeInfo[1])
+
+    if times:
+        return [min(times), max(times)]
+    else:
+        return [0,1]
 
 def writeCss(appdef, folder):
     cssFilepath = os.path.join(folder, "webapp.css")
@@ -445,14 +476,7 @@ def writeLayersAndGroups(appdef, folder):
 
     layerVars = []
     for layer in layers:
-        layerTitle = layer.layer.name()
-        if layer.timeInfo is not None:
-            for group, groupLayers in groups.iteritems():
-                if layer.layer in groupLayers:
-                    layerTitle = group + "[%s]" % QDateTime.fromMSecsSinceEpoch(layer.timeInfo).toString()
-                    break
-        if not layer.showInLayersList:
-            layerTitle = None
+        layerTitle = layer.layer.name() if layer.showInControls else None
         layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle))
     layerVars = "\n".join(layerVars)
     groupVars = ""
@@ -544,7 +568,7 @@ def getLegendSymbols(layer, ilayer, legendFolder):
                 img.save(symbolPath)
                 symbols[cat.label()] = os.path.basename(symbolPath)
         elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-            for ran in renderer.ranges():
+            for isymbol, ran in renderer.ranges():
                 img = ran.symbol().asImage(qsize)
                 symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                 img.save(symbolPath)

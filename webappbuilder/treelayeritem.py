@@ -6,6 +6,7 @@ from popupeditor import PopupEditorDialog
 from utils import *
 from settings import WrongValueException
 from qgis.utils import iface
+from timeinfodialog import TimeInfoDialog
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -55,6 +56,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def __init__(self, layer, tree, isInGroup = False):
         self.popup = ""
+        self.timeInfo = None
         self.combos = []
         QTreeWidgetItem.__init__(self)
         self.layer = layer
@@ -126,23 +128,27 @@ class TreeLayerItem(QTreeWidgetItem):
             self.popupLabel = QLabel()
             self.popupLabel.setText("<a href='#'>Edit</a>")
             tree.setItemWidget(self.popupItem, 1, self.popupLabel)
-            def edit():
-                fields = ([f.name() for f in self.layer.pendingFields()]
+            def editPopup():
+                fields = ([f.name() for f in layer.pendingFields()]
                                 if layer.type() == layer.VectorLayer else [])
                 dlg = PopupEditorDialog(self.popup, fields)
                 dlg.exec_()
                 self.popup = dlg.text.strip()
-            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), edit)
+            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), editPopup)
             self.addChild(self.popupItem)
 
-        if isInGroup:
+        if layer.type() == layer.VectorLayer:
             self.timeInfoItem = QTreeWidgetItem(self)
             self.timeInfoItem.setText(0, "Layer time info")
-            self.calendar = NullableDateWidget()
-            self.calendar.setCalendarPopup(True)
-            self.calendar.setDateTime(QDateTime())
-            self.calendar.setStyleSheet(self.dateTimeEditStyle)
-            tree.setItemWidget(self.timeInfoItem, 1, self.calendar)
+            self.timeInfoLabel = QLabel()
+            self.timeInfoLabel.setText("<a href='#'>Edit</a>")
+            tree.setItemWidget(self.timeInfoItem, 1, self.timeInfoLabel)
+            def editTimeInfo():
+                dlg = TimeInfoDialog(self.timeInfo, layer)
+                dlg.exec_()
+                if dlg.ok:
+                    self.timeInfo = dlg.timeInfo
+            self.timeInfoLabel.connect(self.timeInfoLabel, SIGNAL("linkActivated(QString)"), editTimeInfo)
             self.addChild(self.timeInfoItem)
 
         if layer.providerType().lower() in ["wms"]:
@@ -155,7 +161,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.refreshIntervalItem.setFlags(self.flags() | Qt.ItemIsEditable)
             self.refreshItem.addChild(self.refreshIntervalItem)
             self.addChild(self.refreshItem)
-
 
     def connTypeChanged(self):
         try:
@@ -246,16 +251,9 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-    @property
-    def timeInfo(self):
-        try:
-            return self.calendar.nullDateTime()
-        except:
-            return None
-
-
     def setValues(self, visible, popup, method, clusterDistance, allowSelection,
                   refreshInterval, showInOverview, timeInfo, showInControls):
+        self.timeInfo = timeInfo
         if clusterDistance:
             self.clusterItem.setCheckState(0, Qt.Checked)
             self.clusterDistanceItem.setText(1, str(clusterDistance))
@@ -265,11 +263,6 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterDistanceItem.setText(1, "40")
             except AttributeError:
                 pass # raster layers wont have this clusterItem
-
-        try:
-            self.calendar.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo))
-        except:
-            pass
 
         if refreshInterval:
             self.refreshItem.setCheckState(0, Qt.Checked)
@@ -314,28 +307,5 @@ class TreeGroupItem(QTreeWidgetItem):
                 item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
                 item.toggleChildren()
                 self.addChild(item)
-
-class NullableDateWidget(QDateTimeEdit):
-
-    def __init__(self):
-        QDateEdit.__init__(self)
-        self._date = None
-        self.setSpecialValueText("Not set");
-
-    def clear(self):
-        self.setDate(self.minimumDate())
-
-    def nullDateTime(self):
-        if self.dateTime() == self.minimumDateTime():
-            return None;
-        return self.dateTime().toMSecsSinceEpoch();
-
-    def setDateTime(self, date):
-        if (date.isNull() or not date.isValid()):
-            QDateEdit.setDateTime(self, self.minimumDateTime())
-        else:
-            QDateEdit.setDateTime(self, date)
-
-
 
 

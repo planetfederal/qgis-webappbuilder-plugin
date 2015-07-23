@@ -34,7 +34,7 @@ TYPE_MAP = {
 class Layer():
 
     def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection,
-                 refreshInterval, showInOverview, timeInfo, showInLayersList):
+                 refreshInterval, showInOverview, timeInfo, showInControls):
         self.layer = layer
         self.visible = visible
         self.popup = popup
@@ -44,7 +44,7 @@ class Layer():
         self.refreshInterval = refreshInterval
         self.showInOverview = showInOverview
         self.timeInfo = timeInfo
-        self.showInLayersList = showInLayersList
+        self.showInControls = showInControls
 
 
 def replaceInTemplate(template, values):
