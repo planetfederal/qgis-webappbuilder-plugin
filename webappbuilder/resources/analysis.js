@@ -44,7 +44,7 @@ var createAndAddLayer = function(layerData, title, epsg, isSelectable){
     var lyr = new ol.layer.Vector({
         source: layerData,
         title: title,
-        type: "analysis",
+        isRemovable: true,
         isSelectable: isSelectable
     });
 
@@ -332,7 +332,7 @@ var addDensityLayer = function(params){
             source: getSourceFromLayerName(params.layer),
             radius: 5,
             title: "Density (" + params.layer + ")",
-            type: "analysis"
+            isRemovable: true
         });
         map.addLayer(heatmap);
     };

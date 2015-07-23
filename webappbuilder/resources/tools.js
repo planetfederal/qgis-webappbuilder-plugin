@@ -1116,7 +1116,7 @@ var addLayerFromFile = function(){
                                     features: features
                                 }),
                         title: f.name,
-                        type: "analysis",
+                        isRemovable: true,
                         isSelectable: true
                     });
                     map.addLayer(lyr);
