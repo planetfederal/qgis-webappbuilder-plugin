@@ -41,7 +41,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(layerName)s,
-                    title: "%(title)s",
+                    title: %(title)s,
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -53,7 +53,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             opacity: %(opacity)s,
                             source: wfsSource_%(layerName)s, %(min)s %(max)s
                             style: style_%(layerName)s,
-                            title: "%(title)s",
+                            title: %(title)s,
                             timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s
                         });''' %
@@ -71,6 +71,7 @@ def layerToJavascript(applayer, settings, deploy, title):
     workspace = safeName(settings["Title"])
     layer = applayer.layer
     timeInfo = str(applayer.timeInfo) if applayer.timeInfo is not None else "null"
+    title = '"%s"' % unicode(title) if title is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
     else:
@@ -103,7 +104,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
-                    title: "%(name)s",
+                    title: %(name)s,
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -117,7 +118,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
                     %(min)s %(max)s
                     style: style_%(n)s,
-                    title: "%(name)s",
+                    title: %(name)s,
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -144,7 +145,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
-                        title: "%(name)s"
+                        title: %(name)s
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
@@ -164,7 +165,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
                         })),
-                        title: "%(name)s"
+                        title: %(name)s
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
@@ -179,7 +180,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                 return '''var lyr_%(n)s = new ol.layer.Image({
                                 opacity: %(opacity)s,
                                 %(min)s %(max)s
-                                title: "%(name)s",
+                                title: %(name)s,
                                 timeInfo: %(timeInfo)s,
                                 source: new ol.source.ImageStatic({
                                    url: "./layers/%(n)s.jpg",
@@ -203,7 +204,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
                         })),
-                        title: "%(name)s"
+                        title: %(name)s
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,

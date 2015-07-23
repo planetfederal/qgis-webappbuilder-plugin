@@ -386,9 +386,12 @@ showAttributesTable_ = function() {
 
         for (var i = 0, l; i < vectorLayers.length; i++) {
             l = vectorLayers[i];
-            var option = document.createElement('option');
-            option.value = option.textContent = l.get('title');
-            this.sel.appendChild(option);
+            var title = l.get('title');
+            if (title){
+                var option = document.createElement('option');
+                option.value = option.textContent = title;
+                this.sel.appendChild(option);
+            }
         }
 
         this.formContainer.appendChild(this.sel);

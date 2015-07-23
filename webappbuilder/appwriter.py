@@ -451,6 +451,8 @@ def writeLayersAndGroups(appdef, folder):
                 if layer.layer in groupLayers:
                     layerTitle = group + "[%s]" % QDateTime.fromMSecsSinceEpoch(layer.timeInfo).toString()
                     break
+        if not layer.showInLayersList:
+            layerTitle = None
         layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle))
     layerVars = "\n".join(layerVars)
     groupVars = ""

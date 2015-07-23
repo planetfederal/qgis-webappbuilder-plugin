@@ -76,8 +76,10 @@ var runAlgorithm = function(alg){
                 var selectableLayersList = getSelectableLayers();
                 for (var i = 0, l; i < selectableLayersList.length; i++) {
                     l = selectableLayersList[i];
-                    options += '<option>' + l.get('title') + '</option>';
-
+                    var title = l.get('title')
+                    if (title){
+                        options += '<option>' + title + '</option>';
+                    }
                 }
                 parametersHtml += '<div class="col-md-4"><select class="form-control" id="' +
                             paramName + '">' + options + '</select></div>'
