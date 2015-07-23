@@ -306,10 +306,11 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
         else{
             div += "<input class='layer-check' type='checkbox'>" + name;
         }
+        if (this.showOpacity){
+            div += "<input style='width:80px;' class='opacity' type='text' data-slider-value='" + layer.getOpacity().toString()
+                 + "' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
+        }
         if (!(layer instanceof ol.layer.Group)){
-            if (this.showOpacity){
-                div += "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
-            }
             if (layer.get("type") != "base" && this.showZoomTo){
                 div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
             }
