@@ -512,7 +512,7 @@ def writeLayersAndGroups(appdef, folder):
         if groupBaseLayers:
             layersList += "layersList.unshift(baseLayersGroup);"
         else:
-            layersList += "baseLayers.forEach(function(v){layersList.unshift(v)});"
+            layersList += "Array.prototype.splice.apply(layersList, [0, 0].concat(baseLayers));"
 
     path = os.path.join(folder, "layers")
     if not QDir(path).exists():
