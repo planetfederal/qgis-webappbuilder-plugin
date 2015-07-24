@@ -318,7 +318,8 @@ class DefaultEncoder(JSONEncoder):
 def saveAppdef(appdef, filename):
 	toSave = {k:v for k,v in appdef.iteritems()}
 	for group in toSave["Groups"]:
-		toSave["Groups"][group] = [layer.name() for layer in toSave["Groups"][group]]
+		toSave["Groups"][group]["layers"] = [layer.name()
+								for layer in toSave["Groups"][group]["layers"]]
 	layers = []
 	for layer in toSave["Layers"]:
 		layer.layer = layer.layer.name()

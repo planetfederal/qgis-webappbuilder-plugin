@@ -297,6 +297,9 @@ class TreeGroupItem(QTreeWidgetItem):
         visibleLayers = iface.mapCanvas().layers()
         QTreeWidgetItem.__init__(self)
         skipType = [2]
+        self.showContentItem = QTreeWidgetItem(self)
+        self.showContentItem.setCheckState(0, Qt.Checked)
+        self.showContentItem.setText(0, "Show group content in layers list")
         self.layers = layers
         self.name = name
         self.setText(0, name)
@@ -307,5 +310,11 @@ class TreeGroupItem(QTreeWidgetItem):
                 item.setCheckState(0, Qt.Checked if layer in visibleLayers else Qt.Unchecked)
                 item.toggleChildren()
                 self.addChild(item)
+
+    def showContent(self):
+        return self.showContentItem.checkState(0) == Qt.Checked
+
+    def setShowContent(self, showContent):
+        return self.showContentItem.setCheckState(0, Qt.Checked if showContent else Qt.Unchecked)
 
 

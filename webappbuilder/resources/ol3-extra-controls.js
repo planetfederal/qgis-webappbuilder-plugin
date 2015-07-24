@@ -129,7 +129,6 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.showDownload = options.showDownload === true;
     this.showZoomTo = options.showZoomTo === true;
     this.allowReordering = options.allowReordering === true;
-    this.showGroupContent = options.showGroupContent === true;
 
     this.hiddenClassName = 'ol-unselectable ol-control layer-switcher';
     this.shownClassName = this.hiddenClassName + ' shown';
@@ -326,7 +325,7 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
             div += "<a title='Remove' href='#' style='padding-left:15px;' href='#'><i class='layer-remove glyphicon glyphicon-remove'></i></a>";
         }
 
-        if (layer.getLayers && this.showGroupContent) {
+        if (layer.getLayers && layer.get("showContent")) {
             var sublayersElem = '';
             var layers = layer.getLayers().getArray()
             var len = layers.length;

@@ -481,14 +481,16 @@ def writeLayersAndGroups(appdef, folder):
     layerVars = "\n".join(layerVars)
     groupVars = ""
     groupedLayers = {}
-    for group, groupLayers in groups.iteritems():
-        groupVars +=  ('''var %s = new ol.layer.Group({
+    for group, groupDef in groups.iteritems():
+		groupLayers = groupDef["layers"]
+		groupVars +=  ('''var %s = new ol.layer.Group({
                                 layers: [%s],
+                                showContent: %s,
                                 title: "%s"});\n''' %
                 ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
-                group))
-        for layer in groupLayers:
-            groupedLayers[layer.id()] = safeName(group)
+                str(groupDef["showContent"]).lower(), group))
+		for layer in groupLayers:
+			groupedLayers[layer.id()] = safeName(group)
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
                                                 str(layer.visible).lower()) for layer in layers])
@@ -537,15 +539,6 @@ def writeLegendFiles(appdef, folder):
         symbols = getLegendSymbols(layer, ilayer, legendFolder)
         if symbols:
             legend[layer.name()] = symbols
-
-    qgisLayers = {applayer.layer.id(): applayer for applayer in layers}
-    groups = appdef["Groups"]
-    for group, groupLayers in groups.iteritems():
-        hasTimeInfo = any([qgisLayers[lay.id()].timeInfo is not None for lay in groupLayers])
-        if hasTimeInfo:
-            symbols = getLegendSymbols(groupLayers[0], ilayer, legendFolder)
-            if symbols:
-                legend[group] = symbols
 
     with open(os.path.join(legendFolder, "legend.js"), "w") as f:
         f.write("var legendData = %s;" % json.dumps(legend))

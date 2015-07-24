@@ -221,9 +221,15 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if isinstance(item, TreeLayerItem):
                     items.append(item)
                 else:
+                    try:
+                        item.setShowContent(appdef["Groups"][item.text(0)]["showContent"])
+                    except:
+                        pass
                     for j in xrange(item.childCount()):
                         subitem = item.child(j)
-                        items.append(subitem)
+                        if isinstance(subitem, TreeLayerItem):
+                            items.append(subitem)
+
             layers = {lay["layer"]: lay for lay in appdef["Layers"]}
             for item in items:
                 if item.layer.name() in layers:
@@ -586,15 +592,16 @@ class MainDialog(QDialog, Ui_MainDialog):
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.appLayer())
-            else:
+            elif isinstance(item, TreeGroupItem):
                 groupLayers = []
                 for j in xrange(item.childCount()):
                     subitem = item.child(j)
-                    if subitem.checkState(0) == Qt.Checked:
+                    if isinstance(subitem, TreeLayerItem) and subitem.checkState(0) == Qt.Checked:
                         layers.append(subitem.appLayer())
                         groupLayers.append(subitem.layer)
                 if groupLayers:
-                    groups[item.name] = groupLayers[::-1]
+                    groups[item.name] = {"showContent": item.showContent(),
+                                         "layers": groupLayers[::-1]}
 
         return layers[::-1], groups
 
