@@ -32,14 +32,14 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "viewCrs": viewCrs})
 
-    if clusterDistance > 0 and geometryType:
-        vectorLayer = ('''var cluster_%(n)s = new ol.source.Cluster({
+    if clusterDistance > 0 and geometryType== QGis.Point:
+        vectorLayer = ('''var cluster_%(layerName)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: wfsSource_%(layerName)s,
                 });
                 var lyr_%(layerName)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
-                    source: cluster_%(n)s, %(min)s %(max)s
+                    source: cluster_%(layerName)s, %(min)s %(max)s
                     style: style_%(layerName)s,
                     title: %(title)s,
                     timeInfo: %(timeInfo)s,
