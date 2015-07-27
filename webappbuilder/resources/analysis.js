@@ -1,6 +1,6 @@
 /*********Helper functions***************/
 
-var getSourceFromLayerName = function(name){
+var getLayerFromLayerName = function(name){
 
     var layer;
     var selectableLayersList = getSelectableLayers();
@@ -10,7 +10,13 @@ var getSourceFromLayerName = function(name){
             break;
         }
     }
-    return sourceFromLayer(layer);
+    return layer;
+
+}
+
+var getSourceFromLayerName = function(name){
+
+    return sourceFromLayer(getLayerFromLayerName(name));
 
 }
 
@@ -216,7 +222,7 @@ var buffer = function(){
     this.run = function(params){
         var input = getTurfGeoJsonFromOL3LayerName(params.layer);
         var buffered = turf.buffer(input, parseInt(params.distance), "meters");
-        createAndAddLayer(buffered, "buffer", EPSG4326)
+        createAndAddLayer(buffered, "buffer", EPSG4326);
     };
 
 
@@ -236,14 +242,11 @@ var extractSelected = function(){
     };
 
     this.run = function(params){
-        var layerFeatures = getFeaturesFromLayerName(params.layer);
         var source = new ol.source.Vector()
-        var selectedFeatures = selectInteraction.getFeatures().getArray();
-        for (i = 0; i < layerFeatures.length; i++) {
-            var idx = selectedFeatures.indexOf(layerFeatures[i]);
-            if (idx !== -1){
-                source.addFeature(layerFeatures[i]);
-            }
+        var layer = getLayerFromLayerName(params.layer);
+        var selectedFeatures = selectionManager.getSelection(layer);
+        for (i = 0; i < selectedFeatures.length; i++) {
+            source.addFeature(selectedFeatures[i]);
         }
         createAndAddLayer(source, "Selection from " + params.layer);
     };
