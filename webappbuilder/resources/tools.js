@@ -555,7 +555,6 @@ measureTool = function(measureType){
             map.removeOverlay(measureTooltips[i]);
         }
         measureSource.clear();
-        map.on('pointermove', onPointerMove);
         return;
     }
 
@@ -1047,6 +1046,11 @@ selectByPolygon = function(){
           })
         })
       });
+
+      selectByPolygonInteraction.on('drawstart',
+          function(evt) {
+            polygon = evt.feature;
+          }, this);
 
       selectByPolygonInteraction.on('drawend',
           function(evt) {
