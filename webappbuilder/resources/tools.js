@@ -180,7 +180,11 @@ showAttributesTable_ = function() {
             var keys = f.getKeys();
             for (var i = 0; i< keys.length; i++) {
                 if (keys[i] != 'geometry') {
-                    var text = f.get(keys[i]).toString().toUpperCase();
+                    var text = "";
+                    var value = f.get(keys[i]);
+                    if (value){
+                        text = value.toString().toUpperCase();
+                    }
                     if (text.indexOf(filterText) != -1){
                         return true;
                     }
