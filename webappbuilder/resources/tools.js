@@ -77,6 +77,14 @@ var getSelectableLayers = function(){
     return selectableLayers;
 };
 
+function busyProcess(f) {
+    $("html").css("cursor", "progress");
+    funct = function() {
+            f();
+            $("html").css("cursor", "default");
+        };
+    window.setTimeout(funct, 500);
+}
 
 //=======================================================
 //Selection functions
@@ -153,13 +161,14 @@ saveAsPng = function(){
 
 //=======================================================
 showAttributesTable = function(){
-    $("html").css("cursor", "progress");
-    window.setTimeout(showAttributesTable_, 10);
-}
+    busyProcess(showAttributesTable_);
+    //$("html").css("cursor", "progress");
+    //window.setTimeout(showAttributesTable_, 10);
+};
 
 showAttributesTable_ = function() {
     var panels = document.getElementsByClassName('table-panel');
-    if (panels.length != 0){
+    if (panels.length !== 0){
         this.panel.style.display = 'block';
         return;
     }
@@ -413,7 +422,6 @@ showAttributesTable_ = function() {
             return false;
         };
     }
-    $("html").css("cursor", "default");
 
 };
 
@@ -1128,7 +1136,6 @@ var addLayerFromFile = function(){
                         isSelectable: true
                     });
                     map.addLayer(lyr);
-                    $("html").css("cursor", "default");
                 }
                 else{
                     $("html").css("cursor", "default");
@@ -1136,7 +1143,6 @@ var addLayerFromFile = function(){
                 }
             }
             r.readAsText(f);
-            $("html").css("cursor", "default");
         } else {
             alert("Failed to load file");
         }
@@ -1147,8 +1153,7 @@ var addLayerFromFile = function(){
     input.accept=".geojson, .gpx, .kml"
     $(input).on("change", function(){
         var filename = input.files[0];
-        $("html").css("cursor", "progress");
-        window.setTimeout(function(){_addLayerFromFile(filename)}, 1000);
+        busyProcess(function(){_addLayerFromFile(filename)}, 500);
         ;
     });
     $(input).trigger('click');
