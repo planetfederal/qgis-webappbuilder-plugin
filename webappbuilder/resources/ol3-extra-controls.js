@@ -202,7 +202,7 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         return -1;
     }
     var findBy = function(layer, value) {
-        name = layer.get('title');
+        var name = layer.get('title');
         if (name === value) {
             return layer;
         }
@@ -237,11 +237,11 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         $('.layer-download').on('click', function() {
             var layername = $(this).closest('li').data('layerid');
             var layer = findBy(map.getLayerGroup(), layername);
-            var geojson = new ol.format.GeoJSON;
+            var geojson = new ol.format.GeoJSON();
             var features = layer.getSource().getFeatures();
             var json = geojson.writeFeatures(features);
             var dl = document.createElement('a');
-            dl.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(content));
+            dl.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(json));
             dl.setAttribute('download', layername + '.geojson');
             dl.click();
         });
