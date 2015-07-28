@@ -107,7 +107,7 @@ var runAlgorithm = function(alg){
             else{
                 parametersHtml += '<div class="col-md-4"> <input id="' + paramName +'" value="' +
                     paramProperties.defaultValue + '" name="' + paramName +
-                    '" type="text" class="form-control input-md"> </div>'
+                    '" type="text" class="form-control input-md"> </div>';
             }
             parametersHtml += '</div> ';
         }

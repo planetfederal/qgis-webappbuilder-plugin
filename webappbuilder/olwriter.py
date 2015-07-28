@@ -42,6 +42,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     source: cluster_%(layerName)s, %(min)s %(max)s
                     style: style_%(layerName)s,
                     title: %(title)s,
+                    filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -54,6 +55,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             source: wfsSource_%(layerName)s, %(min)s %(max)s
                             style: style_%(layerName)s,
                             title: %(title)s,
+                            filters: [],
                             timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s
                         });''' %
@@ -106,6 +108,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
                     title: %(name)s,
+                    filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -120,6 +123,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     %(min)s %(max)s
                     style: style_%(n)s,
                     title: %(name)s,
+                    filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s
                 });''' %
@@ -142,6 +146,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                         opacity: %(opacity)s,
                         %(min)s %(max)s
                         timeInfo: %(timeInfo)s,
+                        filters: [],
                         source: new ol.source.TileWMS(({
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s", "TILED": "true"},
@@ -327,8 +332,13 @@ def exportStyles(layers, folder, settings, addTimeInfo):
             else:
                 cluster = ""
 
+            filters = '''if (feature.get("hide") === true){
+                return null;
+            }
+            '''
             timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
             style = '''function(feature, resolution){
+                        %(filters)s
                         %(time)s
                         %(cluster)s
                         %(value)s
@@ -358,7 +368,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         return allStyles;
                     }''' % {"style": style, "label": labelText, "layerName": safeName(layer.name()),
                             "size": size, "color": color, "value": value, "cluster": cluster,
-                            "selectionStyle": selectionStyle, "time": timeInfo}
+                            "selectionStyle": selectionStyle, "time": timeInfo, "filters": filters}
         except Exception, e:
             traceback.print_exc()
             cannotWriteStyle = True

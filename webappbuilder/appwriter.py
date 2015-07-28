@@ -156,6 +156,7 @@ def writeHtml(appdef, folder):
                                 and layer.method == METHOD_FILE])
     scripts.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
                             for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+
     refresh = []
     for applayer in layers:
         layer = applayer.layer
@@ -190,6 +191,10 @@ def writeHtml(appdef, folder):
 
     if "Legend" in widgets:
         scripts.append('<script src="./legend/legend.js"></script>')
+
+    if "Layers list" in widgets:
+        scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
+        scripts.append('''<script src="./resources/filtrex.js"></script>''')
 
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))

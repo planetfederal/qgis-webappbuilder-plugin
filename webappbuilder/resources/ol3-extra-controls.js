@@ -129,6 +129,7 @@ ol.control.LayerSwitcher = function(opt_options) {
     this.showDownload = options.showDownload === true;
     this.showZoomTo = options.showZoomTo === true;
     this.allowReordering = options.allowReordering === true;
+    this.allowFiltering = options.allowFiltering === true;
 
     this.hiddenClassName = 'ol-unselectable ol-control layer-switcher';
     this.shownClassName = this.hiddenClassName + ' shown';
@@ -286,6 +287,11 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
         map.removeLayer(layer);
         this_.renderPanel();
     });
+    $('.layer-set-filters').on('click', function() {
+        var layername = $(this).closest('li').data('layerid');
+        var layer = findBy(map.getLayerGroup(), layername);
+        editLayerFilters(layer);
+    });
 
 };
 
@@ -315,6 +321,9 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
             }
             if (layer instanceof ol.layer.Vector && this.showDownload){
                 div += "<a title='Download layer' href='#' style='padding-left:15px;'><i class='layer-download glyphicon glyphicon-download-alt'></i></a>";
+            }
+            if (layer instanceof ol.layer.Vector && this.allowFiltering){
+                div += "<a title='Filter layer' href='#' style='padding-left:15px;'><i class='layer-set-filters glyphicon glyphicon-filter'></i></a>";
             }
         }
         if (layer.get("type") != "base" && this.allowReordering && !isInGroup){

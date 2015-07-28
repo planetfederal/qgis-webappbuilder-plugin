@@ -289,8 +289,6 @@ showAttributesTable_ = function() {
         onlySelected.appendChild(document.createTextNode(" Show only selected features"));
         this.formContainer.appendChild(onlySelected);
 
-
-
     }
 
     this.renderTable = function() {
@@ -422,6 +420,7 @@ showAttributesTable_ = function() {
             return false;
         };
     }
+    $("html").css("cursor", "default");
 
 };
 
@@ -1159,5 +1158,121 @@ var addLayerFromFile = function(){
     $(input).trigger('click');
 
     return false;
+
+};
+
+var editLayerFilters = function(layer){
+    var layername = layer.get("title");
+    var filters = layer.get("filters");
+
+    var html =  '<div class="row">  ' +
+            '<div class="col-md-12"> <form class="form-horizontal"> ' +
+            '<div class="form-group"> ' +
+            '<div class="col-sm-10"><input id="filter-textbox" value="" type="text" class="form-control input-md"/></div>' +
+            '<div class="col-sm-2"><button type="button" onclick="addFilterToLayer(\'' + layername + '\')" class="btn btn-primary">Add</button></div>' +
+            '</div></form><hr><form id="layer-filters" class="form-horizontal">'
+
+    for (var i = 0; i < filters.length; i++) {
+        var filter = filters[i];
+        var filterName = filter.replace(/\W+/g,"");
+        html +=  ' <div class="form-group" id="filter_' + filterName + '"> ' +
+                '<div class="col-sm-10"><label>' + filter + '</label></div>' +
+                '<div class="col-sm-2"><button type="button"' +
+                ' onclick="removeFilterFromLayer(\'' + filterName + "','" + layername + '\')"  class="btn btn-link">Remove</button></div>' +
+                '</div>';
+    }
+    html += '</form></div></div>';
+    bootbox.dialog({
+        title: "Filters for layer " + layer.get("title"),
+        message: html,
+        buttons: {
+            success: {
+                label: "Close",
+                className: "btn-success",
+                callback: function () {
+                }
+            }
+        }
+    });
+
+}
+
+var getLayerFromLayerName = function(name){
+
+    var layer;
+    var selectableLayersList = getAllNonBaseLayers();
+    for (i = 0; i < selectableLayersList.length; i++){
+        if (selectableLayersList[i].get('title') == name){
+            layer = selectableLayersList[i];
+            break;
+        }
+    }
+    return layer;
+
+}
+
+var removeFilterFromLayer = function(filter, layername){
+    var layer = getLayerFromLayerName(layername);
+    var filters = layer.get("filters");
+    for (var i = 0; i < filters.length; i++){
+        var filterName = filters[i].replace(/\W+/g,"");
+        if (filterName == filter){
+            filters.splice(i, 1);
+            break;
+        }
+    }
+    layer.set("filters", filters);
+    var div = $("#filter_" + filter);
+    div.remove();
+    updateLayerFilteredRendering(layer);
+};
+
+var addFilterToLayer = function(layername){
+    var layer = getLayerFromLayerName(layername);
+    var filters = layer.get("filters");
+    var filter = $("#filter-textbox").val()
+    filters.push(filter)
+    layer.set("filters", filters);
+    var filterName = filter.replace(/\W+/g,"");
+    html =  ' <div class="form-group" id="filter_' + filterName  + '"> ' +
+            '<div class="col-sm-10"><label>' + filter + '</label></div>' +
+            '<div class="col-sm-2"><button type="button"' +
+            ' onclick="removeFilterFromLayer(\'' + filterName + "','" + layername + '\')"  class="btn btn-link">Remove</button></div>' +
+            '</div>';
+    $("#layer-filters").append(html);
+    updateLayerFilteredRendering(layer);
+
+
+};
+
+var updateLayerFilteredRendering = function(layer){
+
+    var filterExpressions = layer.get("filters");
+    var filters = [];
+    for(var i = 0; i<filterExpressions.length; i++){
+        filters.push(compileExpression(filterExpressions[i]));
+    }
+    var layerFeatures = sourceFromLayer(layer).getFeatures();
+    var createFeatureObject = function(feature_){
+        feature = {};
+        keys = feature_.getKeys();
+        for (var j = 0; j < keys.length; j++){
+            feature[keys[j]] = feature_.get(keys[j]);
+        }
+        return feature;
+    };
+
+    for (var i = 0; i < layerFeatures.length; i++) {
+        var feature = createFeatureObject(layerFeatures[i]);
+        var hide = false;
+        for (var j = 0; j < filters.length; j++){
+            if (!filters[j](feature)){
+                hide = true;
+                continue;
+            }
+        }
+        layerFeatures[i].set("hide", hide);
+    }
+    layer.getSource().changed();
 
 };
