@@ -1173,7 +1173,7 @@ var editLayerFilters = function(layer){
 
     var html =  '<div class="row">  ' +
             '<div class="col-md-12"> <form class="form-horizontal"> ' +
-            '<div class="form-group"> ' +
+            '<div id="filter-form-group" class="form-group"> ' +
             '<div class="col-sm-10"><input id="filter-textbox" value="" type="text" class="form-control input-md"/></div>' +
             '<div class="col-sm-2"><button type="button" onclick="addFilterToLayer(\'' + layername + '\')" class="btn btn-primary">Add</button></div>' +
             '</div></form><hr><form id="layer-filters" class="form-horizontal">'
@@ -1237,6 +1237,14 @@ var addFilterToLayer = function(layername){
     var layer = getLayerFromLayerName(layername);
     var filters = layer.get("filters");
     var filter = $("#filter-textbox").val()
+    try{
+        compileExpression(filter);
+        $("#filter-form-group").attr("class", "form-group")
+    }
+    catch(e){
+        $("#filter-form-group").attr("class", "form-group has-error")
+        return;
+    }
     filters.push(filter)
     layer.set("filters", filters);
     var filterName = filter.replace(/\W+/g,"");
