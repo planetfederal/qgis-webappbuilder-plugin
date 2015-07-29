@@ -332,7 +332,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
             else:
                 cluster = ""
 
-            filters = '''if (feature.get("hide") === true){
+            filters = '''if (feature.hide === true){
                 return null;
             }
             '''

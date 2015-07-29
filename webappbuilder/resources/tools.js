@@ -219,6 +219,9 @@ showAttributesTable_ = function() {
                 row.style.display = ! this_.onlySelectedCheck.checked
                     && passesFilter(layerFeatures[i]) ? 'table-row' : 'none';
             }
+            if (layerFeatures[i].hide){
+                row.className = row.className + " row-hidden-feature";
+            }
         }
     };
     selectionManager.listen(this.filterTable);
@@ -265,7 +268,7 @@ showAttributesTable_ = function() {
         clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected';
         clear.className = "btn btn-default";
         clear.onclick = function(){
-            selectionManager.setSelection(this_.currentLayer, []);
+            selectionManager.setSelection([], this_.currentLayer);
         };
         this.formContainer.appendChild(clear);
 
@@ -332,6 +335,9 @@ showAttributesTable_ = function() {
                     row.style.display = 'table-row';
                 }
             }
+            if (feature.hide === true){
+                row.className = row.className + " row-hidden-feature";
+            }
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] != 'geometry') {
                     var cell = row.insertCell(-1);
@@ -369,7 +375,7 @@ showAttributesTable_ = function() {
     this.rowClicked = function(row, idx){
         var layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
         var feature = layerFeatures[idx - 1];
-        if (row.className != "row-selected"){
+        if (row.className != "row-selected" && row.className != "row-selected row-hidden-feature"){
             selectionManager.addToSelection([feature], this.currentLayer);
         }
         else{
@@ -1271,7 +1277,7 @@ var updateLayerFilteredRendering = function(layer){
                 continue;
             }
         }
-        layerFeatures[i].set("hide", hide);
+        layerFeatures[i].hide = hide;
     }
     layer.getSource().changed();
 

@@ -213,7 +213,9 @@ html, body {
   background-color: #ffff99;
 }
 
-
+.row-hidden-feature {
+  color: #bbbbbb;
+}
 
 .row-selected {
   background: #b8d1f3;

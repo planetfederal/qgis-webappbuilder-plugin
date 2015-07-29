@@ -246,6 +246,10 @@ html, body {
   background: white;
 }
 
+.row-hidden-feature {
+  color: #bbbbbb;
+}
+
 /*Attribution*/
 .ol-attribution {
   text-align: right;
