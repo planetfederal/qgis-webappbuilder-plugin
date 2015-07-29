@@ -192,7 +192,7 @@ def writeHtml(appdef, folder):
     if "Legend" in widgets:
         scripts.append('<script src="./legend/legend.js"></script>')
 
-    if "Layers list" in widgets:
+    if "Layers list" in widgets and widgets["Layers list"]["allowFiltering"]:
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
         scripts.append('''<script src="./resources/filtrex.js"></script>''')
 
