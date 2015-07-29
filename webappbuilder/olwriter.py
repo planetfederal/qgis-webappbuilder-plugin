@@ -292,40 +292,47 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                             if (size != 1){
                                 var features = feature.get('features');
                                 var numSelected = 0;
-                                var selected = lyr_%(name)s.selectedFeatures;
-                                for (var i = 0; i < size; i++){
-                                     if (selected && selected.indexOf(features[i]) != -1){
-                                         numSelected++;
-                                     }
+                                var numVisible = 0;
+                                for (var i = 0; i < size; i++) {
+                                    if (features[i].hide != true) {
+                                        numVisible++;
+                                        if (selected && selected.indexOf(features[i]) != -1) {
+                                            numSelected++;
+                                        }
+                                    }
                                 }
-                                var color = numSelected == 0 ? '#3399CC' : '#FFCC00'
-                                var style = numSelected == 0 ? clusterStyleCache_%(name)s[size] : selectedClusterStyleCache_%(name)s[size];
-                                if (!style) {
-                                  style = [new ol.style.Style({
-                                    image: new ol.style.Circle({
-                                      radius: 10,
-                                      stroke: new ol.style.Stroke({
-                                        color: '#fff'
-                                      }),
-                                      fill: new ol.style.Fill({
-                                        color: color
-                                      })
-                                    }),
-                                    text: new ol.style.Text({
-                                      text: size.toString(),
-                                      fill: new ol.style.Fill({
-                                        color: '#fff'
-                                      })
-                                    })
-                                  })];
-                                  if (numSelected == 0){
-                                      clusterStyleCache_%(name)s[size] = style;
-                                  }
-                                  else{
-                                      selectedClusterStyleCache_%(name)s[size] = style;
-                                  }
+                                if (numVisible === 0) {
+                                    return null;
                                 }
-                                return style;
+                                if (numVisible != 1) {
+                                    var color = numSelected == 0 ? '#3399CC' : '#FFCC00'
+                                    var style = numSelected == 0 ? clusterStyleCache_popp[numVisible] : selectedClusterStyleCache_popp[numVisible];
+                                    if (!style) {
+                                        style = [new ol.style.Style({
+                                            image: new ol.style.Circle({
+                                                radius: 10,
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#fff'
+                                                }),
+                                                fill: new ol.style.Fill({
+                                                    color: color
+                                                })
+                                            }),
+                                            text: new ol.style.Text({
+                                                text: numVisible.toString(),
+                                                fill: new ol.style.Fill({
+                                                    color: '#fff'
+                                                })
+                                            })
+                                        })];
+                                        if (numSelected == 0) {
+                                            clusterStyleCache_popp[numVisible] = style;
+                                        } else {
+                                            selectedClusterStyleCache_popp[numVisible] = style;
+                                        }
+                                    }
+                                    return style;
+                                }
                             }
                             feature = feature.get('features')[0]
                             ''' % {"name": safeName(layer.name())}
@@ -338,9 +345,9 @@ def exportStyles(layers, folder, settings, addTimeInfo):
             '''
             timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
             style = '''function(feature, resolution){
+                        %(cluster)s
                         %(filters)s
                         %(time)s
-                        %(cluster)s
                         %(value)s
                         %(style)s;
                         %(selectionStyle)s;
