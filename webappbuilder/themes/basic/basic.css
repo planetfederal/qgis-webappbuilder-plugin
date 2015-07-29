@@ -365,6 +365,8 @@ button.ol-full-screen-true:after {
     border: 1px solid #cccccc;
     background-color: white;
     overflow: auto;
+    height: auto;
+    max-height:500px;
 }
 
 .layer-switcher .layer-tree-panel {
@@ -810,7 +812,8 @@ display: inline;
     padding-right: 50px;
     border: 1px solid #cccccc;
     background-color: white;
-    height:500px;
+    height: auto;
+    max-height:500px;
     overflow: auto;
 
 }

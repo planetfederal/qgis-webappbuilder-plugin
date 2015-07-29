@@ -423,6 +423,9 @@ button.ol-full-screen-true:after {
     padding-right: 50px;
     border: 1px solid #cccccc;
     background-color: white;
+    height: auto;
+    max-height:500px;
+    overflow:auto;
 }
 
 .layer-switcher .layer-tree-panel {
@@ -779,9 +782,9 @@ button.ol-full-screen-true:after {
     padding-right: 50px;
     border: 1px solid #cccccc;
     background-color: white;
-    height:500px;
-    overflow: auto;
-
+    height: auto;
+    max-height:500px;
+    overflow:auto;
 }
 
 .legend .legend-panel {
