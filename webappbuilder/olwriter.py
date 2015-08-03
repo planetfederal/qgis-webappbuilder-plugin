@@ -5,6 +5,7 @@ import codecs
 import shutil
 import traceback
 from string import digits
+import math
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                  geometryType, layerCrs, viewCrs, layerOpacity, isSelectable, timeInfo):
@@ -475,7 +476,7 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
             path = os.path.join(stylesFolder, filename)
             with open(path, "w") as f:
                 f.write(svg)
-            style = "image: %s" % getIcon(path, sl.size())
+            style = "image: %s" % getIcon(path, sl.size(), sl.angle())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
             # Check for old version
             if color is None:
@@ -567,7 +568,7 @@ def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth,
                  getStrokeStyle(outlineColor, False, outlineWidth),
                  getFillStyle(color), angle))
 
-def getIcon(path, size):
+def getIcon(path, size, rotation):
     size  = float(size) * 0.005
     return '''new ol.style.Icon({
                   scale: %(s)f,
@@ -575,8 +576,10 @@ def getIcon(path, size):
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "%(path)s"
-            })''' % {"s": size, "path": "styles/" + os.path.basename(path)}
+                  src: "%(path)s",
+                  rotation: %(rad)f
+            })''' % {"s": size, "path": "styles/" + os.path.basename(path),
+                     "rad": math.radians(rotation)}
 
 def getStrokeStyle(color, dashed, width):
     width  = float(width) * SIZE_FACTOR
