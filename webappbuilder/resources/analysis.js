@@ -1,29 +1,5 @@
 /*********Helper functions***************/
 
-var getLayerFromLayerName = function(name){
-
-    var layer;
-    var selectableLayersList = getSelectableLayers();
-    for (i = 0; i < selectableLayersList.length; i++){
-        if (selectableLayersList[i].get('title') == name){
-            layer = selectableLayersList[i];
-            break;
-        }
-    }
-    return layer;
-
-}
-
-var getSourceFromLayerName = function(name){
-
-    return sourceFromLayer(getLayerFromLayerName(name));
-
-}
-
-var getFeaturesFromLayerName = function(name){
-
-    return getSourceFromLayerName(name).getFeatures();
-}
 
 var getTurfGeoJsonFromOL3LayerName = function(name){
 

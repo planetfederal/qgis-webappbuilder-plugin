@@ -1,4 +1,24 @@
-sourceFromLayer = function(layer){
+var getLayerFromLayerName = function(name){
+    var layer;
+    var selectableLayersList = getSelectableLayers();
+    for (i = 0; i < selectableLayersList.length; i++){
+        if (selectableLayersList[i].get('title') == name){
+            layer = selectableLayersList[i];
+            break;
+        }
+    }
+    return layer;
+};
+
+var getSourceFromLayerName = function(name){
+    return sourceFromLayer(getLayerFromLayerName(name));
+};
+
+var getFeaturesFromLayerName = function(name){
+    return getSourceFromLayerName(name).getFeatures();
+};
+
+var sourceFromLayer = function(layer){
     var source = layer.getSource();
     if (source instanceof ol.source.Cluster){
         return source.getSource();
@@ -9,7 +29,7 @@ sourceFromLayer = function(layer){
 
 };
 
-toggleAboutPanel = function(show){
+var toggleAboutPanel = function(show){
     var panel = document.getElementById('about-panel');
     if (show){
         panel.style.display = 'block';
@@ -1203,19 +1223,6 @@ var editLayerFilters = function(layer){
 
 }
 
-var getLayerFromLayerName = function(name){
-
-    var layer;
-    var selectableLayersList = getAllNonBaseLayers();
-    for (i = 0; i < selectableLayersList.length; i++){
-        if (selectableLayersList[i].get('title') == name){
-            layer = selectableLayersList[i];
-            break;
-        }
-    }
-    return layer;
-
-}
 
 var removeFilterFromLayer = function(filter, layername){
     var layer = getLayerFromLayerName(layername);
