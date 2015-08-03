@@ -80,7 +80,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                         self.analysisToolsButton: "Analysis tools",
                         self.legendButton: "Legend",
                         self.timelineButton: "Timeline",
-                        self.addLayerButton: "Add layer"}
+                        self.addLayerButton: "Add layer",
+                        self.printButton: "Print"}
 
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
@@ -393,6 +394,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             if isinstance(item, TreeLayerItem):
                 item.toggleChildren()
         self.layersTree.itemChanged.connect(toggleLayerItemChildren)
+        self.collapseLayers()
 
     def populateConfigParams(self):
         self.settingsItems = defaultdict(dict)

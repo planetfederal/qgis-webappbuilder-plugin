@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Wed Jul 22 12:29:41 2015
+# Created: Fri Jul 31 09:25:05 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(721, 629)
+        MainDialog.resize(742, 627)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -134,7 +134,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 677, 244))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 698, 243))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -152,7 +152,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 677, 243))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 698, 242))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -181,7 +181,7 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 670, 774))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 681, 774))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
@@ -951,6 +951,34 @@ class Ui_MainDialog(object):
         self.addLayerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.addLayerButton.setObjectName(_fromUtf8("addLayerButton"))
         self.gridLayout_3.addWidget(self.addLayerButton, 5, 1, 1, 1)
+        self.printButton = QtGui.QToolButton(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.printButton.sizePolicy().hasHeightForWidth())
+        self.printButton.setSizePolicy(sizePolicy)
+        self.printButton.setMinimumSize(QtCore.QSize(120, 120))
+        self.printButton.setMaximumSize(QtCore.QSize(120, 120))
+        self.printButton.setStyleSheet(_fromUtf8("QToolButton {\n"
+"     background-color: #7c899f;\n"
+"   border-color: #7c899f;\n"
+"     border-style: solid;\n"
+"     border-width: 3px;\n"
+"     border-radius: 10px;\n"
+"     font: bold 11px;\n"
+"     padding: 15px;\n"
+"  color: white;\n"
+" }\n"
+" QToolButton:checked {\n"
+"     background-color: #2d67c6;\n"
+"   border-color:#4d8ef7;\n"
+" }"))
+        self.printButton.setIcon(icon3)
+        self.printButton.setIconSize(QtCore.QSize(32, 32))
+        self.printButton.setCheckable(True)
+        self.printButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.printButton.setObjectName(_fromUtf8("printButton"))
+        self.gridLayout_3.addWidget(self.printButton, 5, 2, 1, 1)
         spacerItem3 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_3.addItem(spacerItem3, 6, 0, 1, 1)
         self.scrollArea_3.setWidget(self.scrollAreaWidgetContents)
@@ -1173,6 +1201,7 @@ class Ui_MainDialog(object):
         self.cesiumButton.setText(_translate("MainDialog", "3D View", None))
         self.timelineButton.setText(_translate("MainDialog", "Timeline", None))
         self.addLayerButton.setText(_translate("MainDialog", "Add layer", None))
+        self.printButton.setText(_translate("MainDialog", "Print", None))
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.widgetsTab), _translate("MainDialog", "Controls", None))
         self.postgisGroupBox.setTitle(_translate("MainDialog", "PostGIS", None))
         self.label_8.setText(_translate("MainDialog", "Password", None))

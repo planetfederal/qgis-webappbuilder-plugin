@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 from utils import SHOW_BOOKMARKS_IN_MENU, replaceInTemplate
+from appwriter import writePrintFiles
 
 def writeWebApp(appdef, folder, scripts, scriptsBottom):
     widgets = appdef["Widgets"]
@@ -81,6 +82,9 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
                               </div>
                               </div>''')
         initialize.append("showQueryPanel();")
+    if "Print" in widgets:
+        tools.append('<li><a onclick="printMap()" href="#"><i class="glyphicon glyphicon-print"></i>Print</a></li>')
+        writePrintFiles(appdef, folder)
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
     if "Attributes table" in widgets:

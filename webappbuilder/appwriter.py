@@ -314,6 +314,9 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
+    if "Print" in widgets:
+        tools.append('<li><a onclick="printMap()" href="#"><i class="glyphicon glyphicon-print"></i>Print</a></li>')
+        writePrintFiles(appdef, folder)
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
@@ -615,3 +618,74 @@ def bounds(useCanvas, layers, crsid):
 
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
+
+def writePrintFiles(appdef, folder):
+    printFolder = os.path.join(folder, "print")
+    if not QDir(printFolder).exists():
+        QDir().mkpath(printFolder)
+    dpis = [75, 150, 300]
+    layoutDefs = {}
+    def getCoords(item):
+        coords = {}
+        pos = item.pos()
+        coords["x"] = pos.x()
+        coords["y"] = pos.y()
+        rect = item.rect()
+        coords["width"] = rect.width()
+        coords["height"] = rect.height()
+        return coords
+    for composer in iface.activeComposers():
+        name = composer.composerWindow().windowTitle()
+        layoutDef = []
+        composition = composer.composition()
+        for item in composition.items():
+            element = None
+            if isinstance(item, QgsComposerLegend):
+                element = getCoords(item)
+                for dpi in dpis:
+                    root = QgsProject.instance().layerTreeRoot()
+                    model = QgsLayerTreeModel(root)
+                    settings = QgsLegendSettings()
+                    settings.setTitle("")
+                    settings.setSymbolSize(QSizeF(item.symbolWidth(), item.symbolHeight()))
+                    settings.setBoxSpace(item.boxSpace())
+                    r = QgsLegendRenderer(model, settings)
+                    size = r.minimumSize()
+                    dpmm = dpi / 25.4
+                    s = QSize(size.width() * dpmm, size.height() * dpmm)
+                    img = QImage(s, QImage.Format_ARGB32_Premultiplied)
+                    img.fill(Qt.transparent)
+                    painter = QPainter(img)
+                    painter.scale(dpmm, dpmm)
+                    item.paintAndDetermineSize(painter)
+                    painter.end()
+                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % ("compo", str(dpi))))
+            elif isinstance(item, QgsComposerScaleBar):
+                element = getCoords(item)
+                for dpi in dpis:
+                    width = item.rect().width()
+                    height = item.rect().height()
+                    dpmm = dpi / 25.4
+                    s = QSize(width * dpmm, height * dpmm)
+                    img = QImage(s, QImage.Format_ARGB32_Premultiplied)
+                    img.fill(Qt.transparent)
+                    painter = QPainter(img)
+                    painter.scale(dpmm, dpmm)
+                    item.paint(painter, None, None)
+                    painter.end()
+                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % ("compo", str(dpi))))
+            elif isinstance(item, QgsComposerLabel):
+                element = getCoords(item)
+                element["name"] = item.text()
+                element["size"] = item.font().pointSize()
+                element["font"] = item.font().rawName()
+            elif isinstance(item, (QgsComposerMap, QgsComposerArrow)):
+                element = getCoords(item)
+            if element is not None:
+                element["type"] = item.__class__.__name__[11:].lower()
+                layoutDef.append(element)
+        if layoutDef:
+            layoutDefs[name] = layoutDef
+
+    with open(os.path.join(printFolder, "layouts.js"), "w") as f:
+        f.write("var printLayouts = %s;" % json.dumps(layoutDefs))
