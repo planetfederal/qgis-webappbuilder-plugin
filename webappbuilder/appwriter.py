@@ -315,7 +315,16 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Print" in widgets:
-        tools.append('<li><a onclick="printMap()" href="#"><i class="glyphicon glyphicon-print"></i>Print</a></li>')
+        li = "\n".join(["<li><a onclick=\"printMap('%(lay)s')\" href=\"#\">%(lay)s</a></li>"
+                        % {"lay": c.composerWindow().windowTitle()} for c in iface.activeComposers()])
+        tools.append('''<li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Print <span class="caret"><span></a>
+            <ul class="dropdown-menu">
+              %s
+            </ul>
+          </li>''' % li)
+        scriptsBottom.append('<script src="print/layouts.js"></script>')
+        scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
         writePrintFiles(appdef, folder)
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
@@ -638,6 +647,9 @@ def writePrintFiles(appdef, folder):
         name = composer.composerWindow().windowTitle()
         layoutDef = []
         composition = composer.composition()
+        img = composition.printPageAsRaster(0)
+        img = img.scaledToHeight(100, Qt.SmoothTransformation)
+        img.save(os.path.join(printFolder, "%s_thumbnail.png" % name))
         for item in composition.items():
             element = None
             if isinstance(item, QgsComposerLegend):
@@ -659,7 +671,7 @@ def writePrintFiles(appdef, folder):
                     painter.scale(dpmm, dpmm)
                     item.paintAndDetermineSize(painter)
                     painter.end()
-                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % ("compo", str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % (name, str(dpi))))
             elif isinstance(item, QgsComposerScaleBar):
                 element = getCoords(item)
                 for dpi in dpis:
@@ -673,7 +685,7 @@ def writePrintFiles(appdef, folder):
                     painter.scale(dpmm, dpmm)
                     item.paint(painter, None, None)
                     painter.end()
-                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % ("compo", str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % (name, str(dpi))))
             elif isinstance(item, QgsComposerLabel):
                 element = getCoords(item)
                 element["name"] = item.text()

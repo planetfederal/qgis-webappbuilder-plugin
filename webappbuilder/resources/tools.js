@@ -1297,3 +1297,47 @@ var updateLayerFilteredRendering = function(layer){
     layer.getSource().changed();
 
 };
+
+//=====================================
+var printMap = function(layoutName){
+
+    var html = '<div class="row">  ' +
+            '<div class="col-md-12"> ' +
+            '<form class="form-horizontal"> '
+
+    var layout = printLayouts[layoutName];
+
+    for (var i = 0; i < layout.length; i++) {
+        if (layout[i].type === "label"){
+            html += '<div class="form-inline"> ' +
+                    '<label class="col-md-6 control-label"' +
+                    '" for="layout-label-' + layout[i].name +'">' + layout[i].type +'</label> ' +
+                    '<div class="col-md-4"> <input id="layout-label-' + layout[i].name +'" name="' + layout[i].name +
+                    '" type="text" class="form-control input-md"> </div></div>';
+        }
+    }
+
+    html += '<div class="form-inline"> ' +
+            '<label class="col-md-6 control-label" for="resolution-dropdown"> Resolution</label> ' +
+            '<div class="col-md-4">' +
+            '<select class="form-control" id="resolution-dropdown">'+
+            '<option>72</option>'+
+            '<option>150</option>'+
+            '<option>300</option>'+
+            '</select></div></div>'
+
+    html += '</form></div></div>';
+    bootbox.dialog({
+        title: "Print map",
+        message: html,
+        buttons: {
+            success: {
+                label: "Print",
+                className: "btn-success",
+                callback: function () {
+                }
+            }
+        }
+    });
+
+}
