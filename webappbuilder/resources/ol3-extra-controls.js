@@ -66,12 +66,12 @@ ol.control.Geolocation = function() {
     geolocate = function(){
         if (this_.geolocation){
             if (this_.geolocation.getTracking()){
-                this_.getMap().removeOverlay(this_.marker)
-                this_.geolocation.setTracking(false)
+                this_.getMap().removeOverlay(this_.marker);
+                this_.geolocation.setTracking(false);
             }
             else{
-                this_.getMap().addOverlay(this_.marker)
-                this_.geolocation.setTracking(true)
+                this_.getMap().addOverlay(this_.marker);
+                this_.geolocation.setTracking(true);
                 view.setCenter(this_.geolocation.getPosition());
             }
         }
@@ -316,7 +316,7 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
                  + "' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
         }
         if (!(layer instanceof ol.layer.Group)){
-            if (layer.get("type") != "base" && this.showZoomTo){
+            if (!(layer instanceof ol.layer.Tile) && this.showZoomTo){
                 div += "<a title='Zoom to layer' href='#' style='padding-left:15px;' href='#'><i class='layer-zoom-to glyphicon glyphicon-zoom-in'></i></a>";
             }
             if (layer instanceof ol.layer.Vector && this.showDownload){
