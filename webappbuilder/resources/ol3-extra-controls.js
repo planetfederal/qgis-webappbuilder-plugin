@@ -298,11 +298,16 @@ ol.control.LayerSwitcher.prototype.renderPanel = function() {
 
 ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
     var elem;
+    var view = this.getMap().getView();
     var name = layer.get('title');
     if (name){
         var div = "<li data-layerid='" + name + "'>";
         if (layer instanceof ol.layer.Group){
             name = "<b>" + name + "</b>";
+        }
+        else if (layer.getMinResolution() > view.getResolution() ||
+                layer.getMaxResolution() < view.getResolution()){
+            name = "<font color='#bbbbbb'>" + name + "</font>";
         }
 
         if (layer.getVisible()){
