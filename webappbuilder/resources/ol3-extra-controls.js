@@ -336,7 +336,7 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
 
         if (layer.getLayers && layer.get("showContent")) {
             var sublayersElem = '';
-            var layers = layer.getLayers().getArray()
+            var layers = layer.getLayers().getArray();
             var len = layers.length;
             for (var i = len - 1; i >= 0; i--) {
                 sublayersElem += this.buildLayerTree(layers[i], true);

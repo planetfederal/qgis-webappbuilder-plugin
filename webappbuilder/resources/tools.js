@@ -584,7 +584,7 @@ var measureTooltips=[];
 measureTool = function(measureType){
 
     if (currentInteraction){
-        map.removeInteraction(currentInteraction)
+        map.removeInteraction(currentInteraction);
     }
 
     if (measureType === null){

@@ -283,6 +283,20 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                 size = str(float(layer.customProperty("labeling/fontSize")) * 2)
             except:
                 size = 1
+
+            if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":
+                rHalo = int(layer.customProperty("labeling/bufferColorR"))
+                gHalo = int(layer.customProperty("labeling/bufferColorG"))
+                bHalo = int(layer.customProperty("labeling/bufferColorB"))
+                strokeWidth = str(float(layer.customProperty("labeling/bufferSize")) * SIZE_FACTOR)
+                halo = ''',
+                          stroke: new ol.style.Stroke({
+                            color: "rgba(%s, %s, %s, 255)",
+                            width: %s
+                          })''' % (rHalo, gHalo, bHalo, strokeWidth)
+            else:
+                halo = ""
+
             r = layer.customProperty("labeling/textColorR")
             g = layer.customProperty("labeling/textColorG")
             b = layer.customProperty("labeling/textColorB")
@@ -361,7 +375,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                                   text: labelText,
                                   fill: new ol.style.Fill({
                                     color: "%(color)s"
-                                  }),
+                                  }) %(halo)s
                                 });
                             textStyleCache_%(layerName)s[key] = new ol.style.Style({"text": text});
                         }
@@ -376,7 +390,8 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         return allStyles;
                     }''' % {"style": style, "label": labelText, "layerName": safeName(layer.name()),
                             "size": size, "color": color, "value": value, "cluster": cluster,
-                            "selectionStyle": selectionStyle, "time": timeInfo, "filters": filters}
+                            "selectionStyle": selectionStyle, "time": timeInfo, "filters": filters,
+                            "halo": halo}
         except Exception, e:
             traceback.print_exc()
             cannotWriteStyle = True
