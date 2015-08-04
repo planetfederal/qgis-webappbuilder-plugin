@@ -188,13 +188,16 @@ def writeHtml(appdef, folder):
         if epsg not in ["3857", "4326"]:
             scripts.append('<script src="./resources/proj4.js"></script>')
             scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-
     if "Legend" in widgets:
         scripts.append('<script src="./legend/legend.js"></script>')
-
     if "Layers list" in widgets and widgets["Layers list"]["allowFiltering"]:
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
         scripts.append('''<script src="./resources/filtrex.js"></script>''')
+    if "Help" in widgets:
+        tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
+        writeHelpFiles(appdef, folder)
+    if "Add layer" in widgets:
+        tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
 
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
@@ -315,11 +318,15 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Print" in widgets:
-        li = "\n".join(["<li><a onclick=\"printMap('%(lay)s')\" href=\"#\">%(lay)s</a></li>"
+        li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(lay)s_thumbnail.png"/>
+                            <a onclick="printMap('%(lay)s')" href="#">%(lay)s</a></li>
+                            <li class="nav-divider"></li>'''
                         % {"lay": c.composerWindow().windowTitle()} for c in iface.activeComposers()])
         tools.append('''<li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Print <span class="caret"><span></a>
-            <ul class="dropdown-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-print"></i> Print
+            <span class="caret"><span></a>
+            <ul class="dropdown-menu" style="text-align:center;">
               %s
             </ul>
           </li>''' % li)
@@ -372,10 +379,6 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                         %s</div>''' % (closer, params["content"]))
         if params["showNavBarLink"]:
             tools.append('<li><a onclick="toggleAboutPanel(true)" href="#" id="about-panel-link">About</a></li>')
-    if "Help" in widgets:
-        tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
-    if "Add layer" in widgets:
-        tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
 
     bookmarkEvents = ""
     if "Bookmarks" in widgets:
@@ -701,3 +704,31 @@ def writePrintFiles(appdef, folder):
 
     with open(os.path.join(printFolder, "layouts.js"), "w") as f:
         f.write("var printLayouts = %s;" % json.dumps(layoutDefs))
+
+def writeHelpFiles(appdef, folder):
+    helpFolder = os.path.join(folder, "help")
+    if not QDir(helpFolder).exists():
+        QDir().mkpath(helpFolder)
+    content = ""
+    sections = ""
+    for widget in appdef["Widgets"]:
+        widgetName = safeName(widget)
+        widgetFolder = os.path.join(os.path.dirname(__file__), "help", widgetName)
+        file = os.path.join(widgetFolder, "description.html")
+        if os.path.exists(file):
+            with open(path) as f:
+                content += "".join(f.readlines())
+                sections += '<li><a href="%s">%s</a></li>' % (widget, widgetName)
+            fileList = [os.path.join(widgetFolder, fname) for fname in os.listdir(widgetFolder)
+                                                        if fname.lower().endswith("png")]
+            for f in fileList:
+                shutil.copy2(f, helpFolder)
+
+    values = {"@SECTIONS@": sections, "@TITLE@": appdef["Settings"]["Title"],
+              "@CONTENT@": content}
+    templatePath = os.path.join(os.path.dirname(__file__), "help", "base.html")
+    html = replaceInTemplate(templatePath, values)
+
+    with open(os.path.join(helpFolder, "help.html"), "w") as f:
+        f.write(html)
+

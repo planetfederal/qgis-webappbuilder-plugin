@@ -140,11 +140,6 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
             f.write("var DISPLAY_MODE_COUNT = 2;")
             f.write("var charts = " + json.dumps(params["charts"]))
 
-    if "Help" in widgets:
-        tools.append('<li><a href="./help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
-    if "Add layer" in widgets:
-        tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
-
     bookmarkEvents = ""
     if "Bookmarks" in widgets:
         params = widgets["Bookmarks"]
