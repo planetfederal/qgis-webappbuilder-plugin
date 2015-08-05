@@ -382,7 +382,7 @@
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/scale-bar.png</normaloff>:/plugins/qgis2ol/icons/scale-bar.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -442,7 +442,7 @@
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/zoom-controls.png</normaloff>:/plugins/qgis2ol/icons/zoom-controls.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -509,7 +509,7 @@ list</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/layer-list.png</normaloff>:/plugins/qgis2ol/icons/layer-list.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -570,7 +570,7 @@ map</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/overview-map.png</normaloff>:/plugins/qgis2ol/icons/overview-map.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -628,7 +628,7 @@ arrow</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/north-arrow.png</normaloff>:/plugins/qgis2ol/icons/north-arrow.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -686,7 +686,7 @@ button</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/home.png</normaloff>:/plugins/qgis2ol/icons/home.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -744,7 +744,7 @@ screen</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/full-screen.png</normaloff>:/plugins/qgis2ol/icons/full-screen.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -801,7 +801,7 @@ screen</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/attribution.png</normaloff>:/plugins/qgis2ol/icons/attribution.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -859,7 +859,7 @@ slider</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/zoom-slider.png</normaloff>:/plugins/qgis2ol/icons/zoom-slider.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -916,7 +916,7 @@ slider</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/measure-tool.png</normaloff>:/plugins/qgis2ol/icons/measure-tool.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -973,7 +973,7 @@ slider</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/selection-tool.png</normaloff>:/plugins/qgis2ol/icons/selection-tool.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1030,7 +1030,7 @@ slider</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/geolocation.png</normaloff>:/plugins/qgis2ol/icons/geolocation.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1088,7 +1088,7 @@ table</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/attribute-table.png</normaloff>:/plugins/qgis2ol/icons/attribute-table.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1145,7 +1145,7 @@ table</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/chart-tool.png</normaloff>:/plugins/qgis2ol/icons/chart-tool.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1260,7 +1260,7 @@ position</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/mouse-position.png</normaloff>:/plugins/qgis2ol/icons/mouse-position.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1320,7 +1320,7 @@ position</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/query.png</normaloff>:/plugins/qgis2ol/icons/query.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1377,7 +1377,7 @@ position</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/geocoding.png</normaloff>:/plugins/qgis2ol/icons/geocoding.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1434,7 +1434,7 @@ position</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/bookmarks.png</normaloff>:/plugins/qgis2ol/icons/bookmarks.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1492,7 +1492,7 @@ panel</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/about-panel.png</normaloff>:/plugins/qgis2ol/icons/about-panel.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1553,7 +1553,7 @@ image</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/export-as-image.png</normaloff>:/plugins/qgis2ol/icons/export-as-image.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1613,7 +1613,7 @@ image</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/links.png</normaloff>:/plugins/qgis2ol/icons/links.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1670,7 +1670,7 @@ image</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/help.png</normaloff>:/plugins/qgis2ol/icons/help.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -1784,7 +1784,7 @@ image</string>
              </property>
              <property name="icon">
               <iconset resource="resources.qrc">
-               <normaloff>:/plugins/qgis2ol/icons/puzzle.png</normaloff>:/plugins/qgis2ol/icons/puzzle.png</iconset>
+               <normaloff>:/plugins/qgis2ol/icons/3d-view.png</normaloff>:/plugins/qgis2ol/icons/3d-view.png</iconset>
              </property>
              <property name="iconSize">
               <size>

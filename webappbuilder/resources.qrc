@@ -1,5 +1,45 @@
 <RCC>
   <qresource prefix="/plugins/qgis2ol">
+    <file>icons/help.png</file>
+    <file>icons/layer-list.png</file>
+    <file>icons/links.png</file>
+    <file>icons/zoom-controls.png</file>
+    <file>icons/zoom-slider.png</file>
+    <file>icons/3d-view.png</file>
+    <file>icons/about-panel.png</file>
+    <file>icons/attribute-table.png</file>
+    <file>icons/attribution.png</file>
+    <file>icons/bookmarks.png</file>
+    <file>icons/chart-tool.png</file>
+    <file>icons/export.png</file>
+    <file>icons/export-as-image.png</file>
+    <file>icons/full-screen.png</file>
+    <file>icons/geocoding.png</file>
+    <file>icons/geolocation.png</file>
+    <file>icons/group.gif</file>
+    <file>icons/help.png</file>
+    <file>icons/home.png</file>
+    <file>icons/layer.png</file>
+    <file>icons/layer_line.png</file>
+    <file>icons/layer_point.png</file>
+    <file>icons/layer_polygon.png</file>
+    <file>icons/layer_raster.jpg</file>
+    <file>icons/layer-list.png</file>
+    <file>icons/links.png</file>
+    <file>icons/measure-tool.png</file>
+    <file>icons/minus.png</file>
+    <file>icons/mouse-position.png</file>
+    <file>icons/north-arrow.png</file>
+    <file>icons/ol.png</file>
+    <file>icons/opengeo.png</file>
+    <file>icons/overview-map.png</file>
+    <file>icons/plus.png</file>
+    <file>icons/preview.gif</file>
+    <file>icons/puzzle.png</file>
+    <file>icons/query.png</file>
+    <file>icons/scale-bar.png</file>
+    <file>icons/selection-tool.png</file>
+    <file>icons/warning.png</file>
     <file>themes/basic/basic.png</file>
     <file>icons/minus.png</file>
     <file>icons/plus.png</file>

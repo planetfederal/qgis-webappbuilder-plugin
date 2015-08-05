@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Fri Jul 31 09:25:05 2015
+# Created: Wed Aug 05 07:53:51 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -208,7 +208,7 @@ class Ui_MainDialog(object):
 "   border-color:#4d8ef7;\n"
 " }"))
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/scale-bar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.scaleBarButton.setIcon(icon3)
         self.scaleBarButton.setIconSize(QtCore.QSize(32, 32))
         self.scaleBarButton.setCheckable(True)
@@ -238,7 +238,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.zoomControlsButton.setIcon(icon3)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/zoom-controls.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.zoomControlsButton.setIcon(icon4)
         self.zoomControlsButton.setIconSize(QtCore.QSize(32, 32))
         self.zoomControlsButton.setCheckable(True)
         self.zoomControlsButton.setChecked(True)
@@ -269,7 +271,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "     border-color:#4d8ef7;\n"
 " }"))
-        self.layersListButton.setIcon(icon3)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/layer-list.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.layersListButton.setIcon(icon5)
         self.layersListButton.setIconSize(QtCore.QSize(32, 32))
         self.layersListButton.setCheckable(True)
         self.layersListButton.setChecked(True)
@@ -298,7 +302,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.overviewButton.setIcon(icon3)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/overview-map.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.overviewButton.setIcon(icon6)
         self.overviewButton.setIconSize(QtCore.QSize(32, 32))
         self.overviewButton.setCheckable(True)
         self.overviewButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -326,7 +332,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.northArrowButton.setIcon(icon3)
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/north-arrow.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.northArrowButton.setIcon(icon7)
         self.northArrowButton.setIconSize(QtCore.QSize(32, 32))
         self.northArrowButton.setCheckable(True)
         self.northArrowButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -354,7 +362,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.homeButton.setIcon(icon3)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/home.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.homeButton.setIcon(icon8)
         self.homeButton.setIconSize(QtCore.QSize(32, 32))
         self.homeButton.setCheckable(True)
         self.homeButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -382,7 +392,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.fullScreenButton.setIcon(icon3)
+        icon9 = QtGui.QIcon()
+        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/full-screen.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.fullScreenButton.setIcon(icon9)
         self.fullScreenButton.setIconSize(QtCore.QSize(32, 32))
         self.fullScreenButton.setCheckable(True)
         self.fullScreenButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -410,7 +422,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.attributionButton.setIcon(icon3)
+        icon10 = QtGui.QIcon()
+        icon10.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/attribution.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.attributionButton.setIcon(icon10)
         self.attributionButton.setIconSize(QtCore.QSize(32, 32))
         self.attributionButton.setCheckable(True)
         self.attributionButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -438,7 +452,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.zoomSliderButton.setIcon(icon3)
+        icon11 = QtGui.QIcon()
+        icon11.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/zoom-slider.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.zoomSliderButton.setIcon(icon11)
         self.zoomSliderButton.setIconSize(QtCore.QSize(32, 32))
         self.zoomSliderButton.setCheckable(True)
         self.zoomSliderButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -466,7 +482,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.measureToolButton.setIcon(icon3)
+        icon12 = QtGui.QIcon()
+        icon12.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/measure-tool.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.measureToolButton.setIcon(icon12)
         self.measureToolButton.setIconSize(QtCore.QSize(32, 32))
         self.measureToolButton.setCheckable(True)
         self.measureToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -494,7 +512,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.selectionToolsButton.setIcon(icon3)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/selection-tool.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.selectionToolsButton.setIcon(icon13)
         self.selectionToolsButton.setIconSize(QtCore.QSize(32, 32))
         self.selectionToolsButton.setCheckable(True)
         self.selectionToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -522,7 +542,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.geolocationButton.setIcon(icon3)
+        icon14 = QtGui.QIcon()
+        icon14.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/geolocation.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.geolocationButton.setIcon(icon14)
         self.geolocationButton.setIconSize(QtCore.QSize(32, 32))
         self.geolocationButton.setCheckable(True)
         self.geolocationButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -550,7 +572,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.attributesTableButton.setIcon(icon3)
+        icon15 = QtGui.QIcon()
+        icon15.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/attribute-table.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.attributesTableButton.setIcon(icon15)
         self.attributesTableButton.setIconSize(QtCore.QSize(32, 32))
         self.attributesTableButton.setCheckable(True)
         self.attributesTableButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -578,7 +602,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.chartToolButton.setIcon(icon3)
+        icon16 = QtGui.QIcon()
+        icon16.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/chart-tool.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.chartToolButton.setIcon(icon16)
         self.chartToolButton.setIconSize(QtCore.QSize(32, 32))
         self.chartToolButton.setCheckable(True)
         self.chartToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -606,7 +632,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.legendButton.setIcon(icon3)
+        icon17 = QtGui.QIcon()
+        icon17.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/puzzle.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.legendButton.setIcon(icon17)
         self.legendButton.setIconSize(QtCore.QSize(32, 32))
         self.legendButton.setCheckable(True)
         self.legendButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -634,7 +662,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.mousePositionButton.setIcon(icon3)
+        icon18 = QtGui.QIcon()
+        icon18.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/mouse-position.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.mousePositionButton.setIcon(icon18)
         self.mousePositionButton.setIconSize(QtCore.QSize(32, 32))
         self.mousePositionButton.setCheckable(True)
         self.mousePositionButton.setAutoRepeat(False)
@@ -663,7 +693,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.queryButton.setIcon(icon3)
+        icon19 = QtGui.QIcon()
+        icon19.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/query.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.queryButton.setIcon(icon19)
         self.queryButton.setIconSize(QtCore.QSize(32, 32))
         self.queryButton.setCheckable(True)
         self.queryButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -691,7 +723,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.geocodingButton.setIcon(icon3)
+        icon20 = QtGui.QIcon()
+        icon20.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/geocoding.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.geocodingButton.setIcon(icon20)
         self.geocodingButton.setIconSize(QtCore.QSize(32, 32))
         self.geocodingButton.setCheckable(True)
         self.geocodingButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -719,7 +753,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.bookmarksButton.setIcon(icon3)
+        icon21 = QtGui.QIcon()
+        icon21.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/bookmarks.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.bookmarksButton.setIcon(icon21)
         self.bookmarksButton.setIconSize(QtCore.QSize(32, 32))
         self.bookmarksButton.setCheckable(True)
         self.bookmarksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -747,7 +783,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.aboutPanelButton.setIcon(icon3)
+        icon22 = QtGui.QIcon()
+        icon22.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/about-panel.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.aboutPanelButton.setIcon(icon22)
         self.aboutPanelButton.setIconSize(QtCore.QSize(32, 32))
         self.aboutPanelButton.setCheckable(True)
         self.aboutPanelButton.setChecked(False)
@@ -776,7 +814,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.exportAsImageButton.setIcon(icon3)
+        icon23 = QtGui.QIcon()
+        icon23.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/export-as-image.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.exportAsImageButton.setIcon(icon23)
         self.exportAsImageButton.setIconSize(QtCore.QSize(32, 32))
         self.exportAsImageButton.setCheckable(True)
         self.exportAsImageButton.setChecked(False)
@@ -805,7 +845,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.linksButton.setIcon(icon3)
+        icon24 = QtGui.QIcon()
+        icon24.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/links.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.linksButton.setIcon(icon24)
         self.linksButton.setIconSize(QtCore.QSize(32, 32))
         self.linksButton.setCheckable(True)
         self.linksButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -833,7 +875,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.helpButton.setIcon(icon3)
+        icon25 = QtGui.QIcon()
+        icon25.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/help.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.helpButton.setIcon(icon25)
         self.helpButton.setIconSize(QtCore.QSize(32, 32))
         self.helpButton.setCheckable(True)
         self.helpButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -861,7 +905,7 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.analysisToolsButton.setIcon(icon3)
+        self.analysisToolsButton.setIcon(icon17)
         self.analysisToolsButton.setIconSize(QtCore.QSize(32, 32))
         self.analysisToolsButton.setCheckable(True)
         self.analysisToolsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -889,7 +933,9 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.cesiumButton.setIcon(icon3)
+        icon26 = QtGui.QIcon()
+        icon26.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/3d-view.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.cesiumButton.setIcon(icon26)
         self.cesiumButton.setIconSize(QtCore.QSize(32, 32))
         self.cesiumButton.setCheckable(True)
         self.cesiumButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -917,7 +963,7 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.timelineButton.setIcon(icon3)
+        self.timelineButton.setIcon(icon17)
         self.timelineButton.setIconSize(QtCore.QSize(32, 32))
         self.timelineButton.setCheckable(True)
         self.timelineButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -945,7 +991,7 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.addLayerButton.setIcon(icon3)
+        self.addLayerButton.setIcon(icon17)
         self.addLayerButton.setIconSize(QtCore.QSize(32, 32))
         self.addLayerButton.setCheckable(True)
         self.addLayerButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -973,7 +1019,7 @@ class Ui_MainDialog(object):
 "     background-color: #2d67c6;\n"
 "   border-color:#4d8ef7;\n"
 " }"))
-        self.printButton.setIcon(icon3)
+        self.printButton.setIcon(icon17)
         self.printButton.setIconSize(QtCore.QSize(32, 32))
         self.printButton.setCheckable(True)
         self.printButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
@@ -1133,9 +1179,9 @@ class Ui_MainDialog(object):
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
         self.horizontalLayout_2.addWidget(self.buttonCreateApp)
         self.buttonPreview = QtGui.QPushButton(self.widget)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonPreview.setIcon(icon4)
+        icon27 = QtGui.QIcon()
+        icon27.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.buttonPreview.setIcon(icon27)
         self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
         self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
