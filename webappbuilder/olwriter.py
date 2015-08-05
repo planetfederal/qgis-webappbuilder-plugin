@@ -415,7 +415,7 @@ def getLabeling(layer):
     g = layer.customProperty("labeling/textColorG")
     b = layer.customProperty("labeling/textColorB")
     color = "rgba(%s, %s, %s, 255)" % (r,g,b)
-    rotation = layer.customProperty("labeling/angleOffset")
+    rotation = str(math.radians(-1 * float(layer.customProperty("labeling/angleOffset"))))
     offsetX = layer.customProperty("labeling/xOffset")
     offsetY = layer.customProperty("labeling/yOffset")
 
