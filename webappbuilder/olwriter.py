@@ -225,12 +225,6 @@ def exportStyles(layers, folder, settings, addTimeInfo):
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
             continue
-        labelsEnabled = str(layer.customProperty("labeling/enabled")).lower() == "true"
-        if labelsEnabled:
-            labelField = layer.customProperty("labeling/fieldName")
-            labelText = 'feature.get("%s")' % labelField
-        else:
-            labelText = '""'
         defs = ""
         try:
             renderer = layer.rendererV2()
@@ -276,31 +270,9 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                                 }
                             }
                             ''' % {"v": varName}
-                #selectionStyle = "var selectionStyle = style";
             else:
                 cannotWriteStyle = True
-            try:
-                size = str(float(layer.customProperty("labeling/fontSize")) * 2)
-            except:
-                size = 1
 
-            if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":
-                rHalo = int(layer.customProperty("labeling/bufferColorR"))
-                gHalo = int(layer.customProperty("labeling/bufferColorG"))
-                bHalo = int(layer.customProperty("labeling/bufferColorB"))
-                strokeWidth = str(float(layer.customProperty("labeling/bufferSize")) * SIZE_FACTOR)
-                halo = ''',
-                          stroke: new ol.style.Stroke({
-                            color: "rgba(%s, %s, %s, 255)",
-                            width: %s
-                          })''' % (rHalo, gHalo, bHalo, strokeWidth)
-            else:
-                halo = ""
-
-            r = layer.customProperty("labeling/textColorR")
-            g = layer.customProperty("labeling/textColorG")
-            b = layer.customProperty("labeling/textColorB")
-            color = "rgba(%s, %s, %s, 255)" % (r,g,b)
             if (appLayer.clusterDistance > 0 and layer.type() == layer.VectorLayer
                                         and layer.geometryType() == QGis.Point):
                 cluster = '''var size = feature.get('features').length;
@@ -359,6 +331,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
             }
             '''
             timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
+            labels = getLabeling(layer)
             style = '''function(feature, resolution){
                         %(cluster)s
                         %(filters)s
@@ -366,20 +339,8 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         %(value)s
                         %(style)s;
                         %(selectionStyle)s;
-                        var labelText = %(label)s;
-                        var key = value + "_" + labelText
-
-                        if (!textStyleCache_%(layerName)s[key]){
-                            var text = new ol.style.Text({
-                                  font: '%(size)spx Calibri,sans-serif',
-                                  text: labelText,
-                                  fill: new ol.style.Fill({
-                                    color: "%(color)s"
-                                  }) %(halo)s
-                                });
-                            textStyleCache_%(layerName)s[key] = new ol.style.Style({"text": text});
-                        }
-                        var allStyles = [textStyleCache_%(layerName)s[key]];
+                        allStyles = [];
+                        %(labels)s
                         var selected = lyr_%(layerName)s.selectedFeatures;
                         if (selected && selected.indexOf(feature) != -1){
                             allStyles.push.apply(allStyles, selectionStyle);
@@ -388,10 +349,9 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                             allStyles.push.apply(allStyles, style);
                         }
                         return allStyles;
-                    }''' % {"style": style, "label": labelText, "layerName": safeName(layer.name()),
-                            "size": size, "color": color, "value": value, "cluster": cluster,
-                            "selectionStyle": selectionStyle, "time": timeInfo, "filters": filters,
-                            "halo": halo}
+                    }''' % {"style": style,  "layerName": safeName(layer.name()),
+                            "value": value, "cluster": cluster, "selectionStyle": selectionStyle,
+                            "time": timeInfo, "filters": filters, "labels":labels}
         except Exception, e:
             traceback.print_exc()
             cannotWriteStyle = True
@@ -425,6 +385,76 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         var selectedClusterStyleCache_%(name)s={}
                         var style_%(name)s = %(style)s;''' %
                     {"defs":defs, "name":safeName(layer.name()), "style":style})
+
+def getLabeling(layer):
+    if str(layer.customProperty("labeling/enabled")).lower() != "true":
+        return ""
+
+    labelField = layer.customProperty("labeling/fieldName")
+    labelText = 'feature.get("%s")' % labelField
+
+    try:
+        size = str(float(layer.customProperty("labeling/fontSize")) * 2)
+    except:
+        size = 1
+
+    if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":
+        rHalo = str(layer.customProperty("labeling/bufferColorR"))
+        gHalo = str(layer.customProperty("labeling/bufferColorG"))
+        bHalo = str(layer.customProperty("labeling/bufferColorB"))
+        strokeWidth = str(float(layer.customProperty("labeling/bufferSize")) * SIZE_FACTOR)
+        halo = ''',
+                  stroke: new ol.style.Stroke({
+                    color: "rgba(%s, %s, %s, 255)",
+                    width: %s
+                  })''' % (rHalo, gHalo, bHalo, strokeWidth)
+    else:
+        halo = ""
+
+    r = layer.customProperty("labeling/textColorR")
+    g = layer.customProperty("labeling/textColorG")
+    b = layer.customProperty("labeling/textColorB")
+    color = "rgba(%s, %s, %s, 255)" % (r,g,b)
+    rotation = layer.customProperty("labeling/angleOffset")
+    offsetX = layer.customProperty("labeling/xOffset")
+    offsetY = layer.customProperty("labeling/yOffset")
+
+    if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":
+        scaleToResolution = 3571.42
+        minResolution = float(layer.customProperty("labeling/scaleMin")) / scaleToResolution
+        maxResolution = float(layer.customProperty("labeling/scaleMax")) / scaleToResolution
+        resolution = '''
+            var minResolution = %(minResolution)s;
+            var maxResolution = %(maxResolution)s;
+            if (resolution > maxResolution || resolution < minResolution){
+                labelText = "";
+            } ''' % {"minResolution": minResolution, "maxResolution": maxResolution}
+    else:
+        resolution = ""
+
+    s = '''
+        var labelText = %(label)s;
+        %(resolution)s
+        var key = value + "_" + labelText;
+        if (!textStyleCache_%(layerName)s[key]){
+            var text = new ol.style.Text({
+                  font: '%(size)spx Calibri,sans-serif',
+                  text: labelText,
+                  fill: new ol.style.Fill({
+                    color: "%(color)s"
+                  }),
+                  rotation: %(rotation)s,
+                  offsetX: %(offsetX)s,
+                  offsetY: %(offsetY)s %(halo)s
+                });
+            textStyleCache_%(layerName)s[key] = new ol.style.Style({"text": text});
+        }
+        allStyles.push(textStyleCache_%(layerName)s[key]);
+        ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
+                "size": size, "color": color, "label": labelText, "resolution": resolution,
+                "layerName": safeName(layer.name())}
+
+    return s
 
 def getTimeBasedStyleCondition(applayer):
 
