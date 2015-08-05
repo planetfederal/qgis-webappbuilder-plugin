@@ -65,64 +65,84 @@ var popupEventTriggered = function(evt) {
         }
     });
 
-    var geojsonFormat = new ol.format.GeoJSON();
-    var len = allLayers.length;
-    for (var i = 0; i < len; i++) {
-        var layer = allLayers[i];
-        if (layer.getSource() instanceof ol.source.TileWMS) {
-            var popupDef = popupLayers[allLayers.indexOf(layer)];
-            if (popupDef == "#AllAttributes") {
-                var url = layer.getSource().getGetFeatureInfoUrl(
-                    evt.coordinate,
-                    map.getView().getResolution(),
-                    map.getView().getProjection(), {
-                        'INFO_FORMAT': 'text/plain'
-                    }
-                );
-                $.get(url, {}, function(data) {
-                        popupTexts.push(data);
+    var fetchData = function(cb){
+        var geojsonFormat = new ol.format.GeoJSON();
+        var len = allLayers.length;
+        var finishedQueries = 0;
+        for (var i = 0; i < len; i++) {
+            var layer = allLayers[i];
+            if (layer.getSource() instanceof ol.source.TileWMS) {
+                var popupDef = popupLayers[allLayers.indexOf(layer)];
+                if (popupDef == "#AllAttributes") {
+                    var url = layer.getSource().getGetFeatureInfoUrl(
+                        evt.coordinate,
+                        map.getView().getResolution(),
+                        map.getView().getProjection(), {
+                            'INFO_FORMAT': 'text/plain'
+                        }
+                    );
+                    $.ajax({
+                         type: 'GET',
+                         url: url,
+                         success: function(data) {
+                            popupTexts.push(data);
+                            finishedQueries++;
+                            if (len == finishedQueries){
+                                cb();
+                            }
+                         }
                     });
-            } else if (popupDef !== "") {
-                var url = layer.getSource().getGetFeatureInfoUrl(
-                    evt.coordinate,
-                    map.getView().getResolution(),
-                    map.getView().getProjection(), {
-                        'INFO_FORMAT': 'application/json'
-                    }
-                );
-                $.ajax({
-                    url: url,
-                    success: function(data) {
-                        var features = geojsonFormat.readFeatures(data);
-                        for (var f = 0; f < feature.length; f++){
-                            var feature = features[f];
-                            var values = feature.getProperties();
-                            for (var key in values) {
-                                if (key != 'geometry') {
-                                    var value = values[key];
-                                    if (value) {
-                                        popupDef = popupDef.split("[" + key + "]").join(
-                                            String(value));
-                                    } else {
-                                        popupDef = popupDef.split("[" + key + "]").join("NULL");
+                } else if (popupDef !== "") {
+                    var url = layer.getSource().getGetFeatureInfoUrl(
+                        evt.coordinate,
+                        map.getView().getResolution(),
+                        map.getView().getProjection(), {
+                            'INFO_FORMAT': 'application/json'
+                        }
+                    );
+                    $.ajax({
+                        url: url,
+                        success: function(data) {
+                            var features = geojsonFormat.readFeatures(data);
+                            for (var f = 0; f < features.length; f++) {
+                                var feature = features[f];
+                                var values = feature.getProperties();
+                                for (var key in values) {
+                                    if (key != 'geometry') {
+                                        var value = values[key];
+                                        if (value) {
+                                            popupDef = popupDef.split("[" + key + "]").join(
+                                                String(value));
+                                        } else {
+                                            popupDef = popupDef.split("[" + key + "]").join("NULL");
+                                        }
                                     }
                                 }
+                                popupTexts.push(popupDef);
+                                finishedQueries++;
                             }
-                            popupTexts.push(popupDef);
                         }
-                    }
-                });
+                    });
+                }
+            }
+            else{
+                finishedQueries++;
             }
         }
+        cb();
     }
-    if (popupTexts.length) {
-        overlayPopup.setPosition(coord);
-        content.innerHTML = popupTexts.join("<hr>");
-        container.style.display = 'block';
-    } else {
-        container.style.display = 'none';
-        closer.blur();
-    }
+
+    fetchData(function(){
+        if (popupTexts.length) {
+            overlayPopup.setPosition(coord);
+            content.innerHTML = popupTexts.join("<hr>");
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+            closer.blur();
+        }
+    });
+
 };
 
 map.on('@POPUPEVENT@', function(evt) {
