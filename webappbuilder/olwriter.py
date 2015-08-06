@@ -353,7 +353,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                             "value": value, "cluster": cluster, "selectionStyle": selectionStyle,
                             "time": timeInfo, "filters": filters, "labels":labels}
         except Exception, e:
-            traceback.print_exc()
+            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
 
         path = os.path.join(stylesFolder, safeName(layer.name()) + ".js")
