@@ -40,6 +40,10 @@ def writeJs(appdef, folder):
     popupLayers = "popupLayers = [%s];" % ",".join(["`%s`" % layer.popup for layer in layers])
     controls = []
     widgets = appdef["Widgets"]
+    if "Help" in widgets:
+        writeHelpFiles(appdef, folder)
+    if "Print" in widgets:
+        writePrintFiles(appdef, folder)
     if "Scale bar" in widgets:
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
@@ -193,11 +197,6 @@ def writeHtml(appdef, folder):
     if "Layers list" in widgets and widgets["Layers list"]["allowFiltering"]:
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
         scripts.append('''<script src="./resources/filtrex.js"></script>''')
-    if "Help" in widgets:
-        tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
-        writeHelpFiles(appdef, folder)
-    if "Add layer" in widgets:
-        tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
 
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
@@ -312,6 +311,10 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                                     </div>
                                 </form>
                             </div>''')
+    if "Help" in widgets:
+        tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
+    if "Add layer" in widgets:
+        tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
     if "Attributes table" in widgets:
@@ -332,7 +335,6 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
           </li>''' % li)
         scriptsBottom.append('<script src="print/layouts.js"></script>')
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
-        writePrintFiles(appdef, folder)
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
