@@ -27,7 +27,8 @@ class ParametersEditorDialog(QtGui.QDialog):
             subitem = TreeSettingItem(self.mainItem, self.tree, name, value)
             self.mainItem.addChild(subitem)
         self.tree.addTopLevelItem(self.mainItem)
-        self.mainItem.sortChildren(0,QtCore.Qt.AscendingOrder)
+
+        #self.mainItem.sortChildren(0,QtCore.Qt.AscendingOrder)
         self.tree.expandAll()
         self.tree.headerItem().setText(0, "Parameter")
         self.tree.headerItem().setText(1, "Value")
