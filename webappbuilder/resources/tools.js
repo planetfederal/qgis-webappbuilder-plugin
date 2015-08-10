@@ -145,6 +145,10 @@ var SelectionManager = function(){
         source.dispatchEvent('change');
     };
 
+    this.clearSelection = function(layer){
+        layer.selectedFeatures = [];
+    };
+
     this.getSelection = function(layer){
         if (typeof layer.selectedFeatures === 'undefined') {
            return [];
@@ -225,7 +229,7 @@ showAttributesTable_ = function() {
         this_.selectedRowIndices = [];
         var rows = this_.table.getElementsByTagName("tr");
         var layerFeatures = sourceFromLayer(this_.currentLayer).getFeatures();
-        var selectedFeatures = selectionManager.getSelection(this_.currentLayer)
+        var selectedFeatures = selectionManager.getSelection(this_.currentLayer);
         for (var i = 0; i < layerFeatures.length; i++) {
             var row = rows[i + 1];
             var idx = selectedFeatures.indexOf(layerFeatures[i]);
@@ -293,13 +297,13 @@ showAttributesTable_ = function() {
         this.formContainer.appendChild(clear);
 
         tableFilterLabel = document.createElement("label");
-        tableFilterLabel.innerHTML = " Filter:"
+        tableFilterLabel.innerHTML = " Filter:";
         this.formContainer.appendChild(tableFilterLabel);
         this.tableFilterBox = document.createElement("input");
         this.tableFilterBox.setAttribute("type", "text");
         this.tableFilterBox.setAttribute("value", "");
         this.tableFilterBox.className = "form-control";
-        this.tableFilterBox.setAttribute("placeholder", "Type filter expression...")
+        this.tableFilterBox.setAttribute("placeholder", "Type filter expression...");
         this.tableFilterBox.onkeyup = this.filterTable;
         this.formContainer.appendChild(this.tableFilterBox);
 
@@ -312,7 +316,7 @@ showAttributesTable_ = function() {
         onlySelected.appendChild(document.createTextNode(" Show only selected features"));
         this.formContainer.appendChild(onlySelected);
 
-    }
+    };
 
     this.renderTable = function() {
         try{
@@ -366,7 +370,7 @@ showAttributesTable_ = function() {
                         text = "<a href='" + text + "' target='_blank' >" + text + "</a>";
                     }
                     cell.innerHTML = text;
-                    cell.style.whiteSpace = "nowrap"
+                    cell.style.whiteSpace = "nowrap";
                 }
             }
         }
@@ -374,34 +378,50 @@ showAttributesTable_ = function() {
         if (this.currentLayer.get("isSelectable")){
             var rows = this.table.getElementsByTagName("tr");
             for (var i = 1; i < rows.length; i++) {
-                (function (idx) {
-                    rows[idx].addEventListener("click",function(){
-                        this_.rowClicked(rows[idx], idx)}, false);
-                    }
-                )(i);
+                (function(idx){
+                rows[idx].addEventListener("click",function(){
+                    this_.rowClicked(idx, rows[idx]);
+                }, false);})(i);
             }
         }
         this.tablePanel.appendChild(this.table);
     };
 
     this.isLink = function(text){
-        var regexpUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+        var regexpUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
         var isUrl = regexpUrl.test(text);
-        var regexpFile = /.*[\\\\/].*\..*/
+        var regexpFile = /.*[\\\\/].*\..*/;
         var isFile = regexpFile.test(text);
         return isUrl || isFile;
     };
 
-    this.rowClicked = function(row, idx){
+    this.rowClicked = function(idx, row){
         var layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
-        var feature = layerFeatures[idx - 1];
-        if (row.className != "row-selected" && row.className != "row-selected row-hidden-feature"){
-            selectionManager.addToSelection([feature], this.currentLayer);
+        if (window.event.shiftKey && this_.lastSelectedRow){
+            selFeatures = [];
+            var min = Math.min(idx, this_.lastSelectedRow);
+            var max = Math.max(idx, this_.lastSelectedRow);
+            for (var j = min; j <= max; j++){
+                selFeatures.push(layerFeatures[j - 1]);
+            }
+            selectionManager.clearSelection(this.currentLayer);
+            selectionManager.addToSelection(selFeatures, this.currentLayer);
+        }
+        else if (window.event.ctrlKey){
+            var feature = layerFeatures[idx - 1];
+            if (row.className != "row-selected" && row.className != "row-selected row-hidden-feature"){
+                selectionManager.addToSelection([feature], this.currentLayer);
+            }
+            else{
+                selectionManager.removeFromSelection(feature, this.currentLayer);
+            }
         }
         else{
-            selectionManager.removeFromSelection(feature, this.currentLayer);
+            selectionManager.clearSelection(this.currentLayer);
+            selectionManager.addToSelection([layerFeatures[idx - 1]], this.currentLayer);
         }
-    }
+        this_.lastSelectedRow = idx;
+    };
 
     this.createSelector = function(map) {
         label = document.createElement("label");
@@ -410,11 +430,12 @@ showAttributesTable_ = function() {
         this.sel = document.createElement('select');
         this.sel.className = "form-control";
         this_ = this;
-        var vectorLayers = getVectorLayers()
+        var vectorLayers = getVectorLayers();
         this.sel.onchange = function(){
             for (var i = 0; i < vectorLayers.length; i++){
                 if (vectorLayers[i].get('title') == this.value){
                     this_.currentLayer = vectorLayers[i];
+                    this_.lastSelectedRow = null;
                     break;
                 }
             }
@@ -495,17 +516,17 @@ searchAddress = function(){
 
 goToAddress = function(lat1, lng1, lat2, lng2, osm_type) {
     document.getElementById('geocoding-results').style.display = 'none';
-    var pos = ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857')
+    var pos = ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857');
     map.getView().setCenter(pos);
     map.getView().setZoom(10);
     var feat = new ol.Feature({
       geometry: new ol.geom.Point(pos),
     });
     feat.setStyle(geocodingStyle);
-    geocodingSource.clear()
-    geocodingSource.addFeature(feat)
-    map.removeLayer(geocodingLayer)
-    map.addLayer(geocodingLayer)
+    geocodingSource.clear();
+    geocodingSource.addFeature(feat);
+    map.removeLayer(geocodingLayer);
+    map.addLayer(geocodingLayer);
 };
 
 searchBoxKeyPressed = function(e){
@@ -513,15 +534,15 @@ searchBoxKeyPressed = function(e){
     if (e.keyCode == 13){
         searchAddress();
     }
-}
+};
 
 
 //===========================================
 
 getBookmarkExtentInViewCrs = function(extent){
 
-    var viewCrs = view.getProjection().getCode()
-    return ol.proj.transformExtent(extent, "EPSG:3857", viewCrs)
+    var viewCrs = view.getProjection().getCode();
+    return ol.proj.transformExtent(extent, "EPSG:3857", viewCrs);
 
 };
 
@@ -926,7 +947,7 @@ showQueryPanel = function(){
                     feature[keys[j]] = feature_.get(keys[j]);
                 }
                 return feature;
-            }
+            };
             if (mode === NEW_SELECTION){
                 var newSelection = [];
                 for (var i = 0; i < layerFeatures.length; i++) {
@@ -935,7 +956,7 @@ showQueryPanel = function(){
                         newSelection.push(layerFeatures[i]);
                     }
                 }
-                selectionManager.setSelection(newSelection, layer)
+                selectionManager.setSelection(newSelection, layer);
             }
             else if (mode === IN_SELECTION){
                 var newSelection = [];
@@ -945,7 +966,7 @@ showQueryPanel = function(){
                         newSelection.push(selectedFeatures[i]);
                     }
                 }
-                selectionManager.setSelection(newSelection, layer)
+                selectionManager.setSelection(newSelection, layer);
             }
             else{
                 var newSelection = [];
@@ -960,9 +981,9 @@ showQueryPanel = function(){
                         }
                     }
                 }
-                selectionManager.setSelection(newSelection, layer)
+                selectionManager.setSelection(newSelection, layer);
             }
-            selectionManager.setSelection(newSelection, layer)
+            selectionManager.setSelection(newSelection, layer);
 
 
 
@@ -1305,13 +1326,13 @@ var printMap = function(layoutName){
             '<div class="col-md-12"> ' +
             '<form class="form-horizontal"> '
 
-    var layout = printLayouts[layoutName];
+    var layout = printLayouts[layoutName].elements;
 
     for (var i = 0; i < layout.length; i++) {
         if (layout[i].type === "label"){
             html += '<div class="form-inline"> ' +
                     '<label class="col-md-6 control-label"' +
-                    '" for="layout-label-' + layout[i].name +'">' + layout[i].type +'</label> ' +
+                    '" for="layout-label-' + layout[i].name +'">' + layout[i].name +'</label> ' +
                     '<div class="col-md-4"> <input id="layout-label-' + layout[i].name +'" name="' + layout[i].name +
                     '" type="text" class="form-control input-md"> </div></div>';
         }
@@ -1335,9 +1356,90 @@ var printMap = function(layoutName){
                 label: "Print",
                 className: "btn-success",
                 callback: function () {
+                    var resolution = $("#resolution-dropdown").val();
+                    var labels = {};
+                    for (var i = 0; i < layout.length; i++) {
+                        if (layout[i].type === "label"){
+                            labels[layout[i].name] = $("#layout-label-" + layout[i].name).val();
+                        }
+                    }
+                    createMap(layoutName, resolution, labels)
                 }
             }
         }
     });
 
+}
+
+var createMap = function(layoutName, resolution, labels){
+    var layout = printLayouts[layoutName];
+    var layoutSafeName = layoutName.replace(/[^a-z0-9]/gi,'');
+    var elements = layout.elements;
+    var pdf = new jsPDF('landscape', "mm", [layout.width, layout.height]);
+    var loaded = 0;
+    var elementLoaded = function(){
+        loaded++;
+        if (loaded == elements.length){
+            pdf.save('map.pdf');
+        }
+    };
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        if (element.type === "label"){
+            var labelElement = element;
+            pdf.setFontSize(labelElement.size)
+            pdf.text(labelElement.x, labelElement.y + labelElement.size / 25.4, labels[labelElement.name])
+            elementLoaded();
+        }
+        else if (element.type === "map"){
+            var mapElement = element;
+            pdf.rect(mapElement.x, mapElement.y, mapElement.width, mapElement.height)
+            //TODO: add map and grid
+            elementLoaded();
+        }
+        else if (element.type === "scalebar"){
+            var scalebarImg = new Image();
+            var scalebar = element;
+            scalebarImg.crossOrigin="anonymous"
+            scalebarImg.addEventListener('load', function() {
+                pdf.addImage(scalebarImg, 'png', scalebar.x, scalebar.y, scalebar.width, scalebar.height);
+                elementLoaded();
+            });
+            scalebarImg.src = "print/" + layoutSafeName + "_scalebar_" + resolution.toString() + ".png";
+        }
+        else if (element.type === "legend"){
+            var legendImg = new Image();
+            var legend = element;
+            legendImg.crossOrigin = "anonymous"
+            legendImg.addEventListener('load', function() {
+                pdf.addImage(legendImg, 'png', legend.x, legend.y, legend.width, legend.height);
+                elementLoaded();
+            });
+            legendImg.src = "print/" + layoutSafeName + "_legend_" + resolution.toString() + ".png";
+        }
+        else if (element.type === "arrow"){
+            var arrowImg = new Image();
+            var arrow = element;
+            arrowImg.crossOrigin = "anonymous"
+            arrowImg.addEventListener('load', function() {
+                pdf.addImage(arrowImg, 'png', arrow.x, arrow.y, arrow.width, arrow.height);
+                elementLoaded();
+            });
+            arrowImg.src = "print/" + layoutSafeName + "_arrow_" + resolution.toString() + ".png";
+        }
+        else if (element.type === "picture"){
+            var pictureImg = new Image();
+            var picture = element;
+            pictureImg.crossOrigin = "anonymous"
+            pictureImg.addEventListener('load', function() {
+                pdf.addImage(pictureImg, 'png', picture.x, picture.y, picture.width, picture.height);
+                elementLoaded();
+            });
+            pictureImg.src = "print/" + picture.file;
+        }
+        else{
+            elementLoaded();
+        }
+
+    }
 }

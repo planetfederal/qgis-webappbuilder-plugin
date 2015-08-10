@@ -7,6 +7,7 @@ from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtSvg import *
 from utils import *
 from settings import *
 import json
@@ -321,10 +322,12 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
     if "Print" in widgets:
-        li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(lay)s_thumbnail.png"/>
-                            <a onclick="printMap('%(lay)s')" href="#">%(lay)s</a></li>
+        li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(safename)s_thumbnail.png"/>
+                            <a onclick="printMap('%(name)s')" href="#">%(name)s</a></li>
                             <li class="nav-divider"></li>'''
-                        % {"lay": c.composerWindow().windowTitle()} for c in iface.activeComposers()])
+                        % {"name": c.composerWindow().windowTitle(),
+                           "safename": safeName(c.composerWindow().windowTitle())}
+                                for c in iface.activeComposers()])
         tools.append('''<li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="glyphicon glyphicon-print"></i> Print
@@ -335,6 +338,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
           </li>''' % li)
         scriptsBottom.append('<script src="print/layouts.js"></script>')
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
+        scripts.append('''<script src="./resources/jspdf.min.js"></script>''')
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
@@ -637,7 +641,7 @@ def writePrintFiles(appdef, folder):
     printFolder = os.path.join(folder, "print")
     if not QDir(printFolder).exists():
         QDir().mkpath(printFolder)
-    dpis = [75, 150, 300]
+    dpis = [72, 150, 300]
     layoutDefs = {}
     def getCoords(item):
         coords = {}
@@ -650,11 +654,16 @@ def writePrintFiles(appdef, folder):
         return coords
     for composer in iface.activeComposers():
         name = composer.composerWindow().windowTitle()
-        layoutDef = []
+        layoutSafeName = safeName(name)
+        layoutDef = {}
         composition = composer.composition()
         img = composition.printPageAsRaster(0)
         img = img.scaledToHeight(100, Qt.SmoothTransformation)
-        img.save(os.path.join(printFolder, "%s_thumbnail.png" % name))
+        img.save(os.path.join(printFolder, "%s_thumbnail.png" % layoutSafeName))
+        layoutDef["width"] = composition.paperWidth()
+        layoutDef["height"] = composition.paperHeight()
+        elements = []
+        layoutDef["elements"] = elements
         for item in composition.items():
             element = None
             if isinstance(item, QgsComposerLegend):
@@ -676,7 +685,7 @@ def writePrintFiles(appdef, folder):
                     painter.scale(dpmm, dpmm)
                     item.paintAndDetermineSize(painter)
                     painter.end()
-                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % (name, str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % (layoutSafeName, str(dpi))))
             elif isinstance(item, QgsComposerScaleBar):
                 element = getCoords(item)
                 for dpi in dpis:
@@ -690,19 +699,45 @@ def writePrintFiles(appdef, folder):
                     painter.scale(dpmm, dpmm)
                     item.paint(painter, None, None)
                     painter.end()
-                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % (name, str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % (layoutSafeName, str(dpi))))
             elif isinstance(item, QgsComposerLabel):
                 element = getCoords(item)
                 element["name"] = item.text()
                 element["size"] = item.font().pointSize()
                 element["font"] = item.font().rawName()
-            elif isinstance(item, (QgsComposerMap, QgsComposerArrow)):
+            elif isinstance(item, QgsComposerMap):
                 element = getCoords(item)
+                grid = item.grid()
+                if grid is not None:
+                    element["grid"] = {}
+                    element["grid"]["intervalX"] = grid.intervalX()
+                    element["grid"]["intervalY"] = grid.intervalY()
+                    element["grid"]["crs"] = grid.crs().authid()
+                    element["grid"]["annotationEnabled"] = grid.annotationEnabled()
+            elif isinstance(item, QgsComposerArrow):
+                element = getCoords(item)
+                for dpi in dpis:
+                    width = item.rect().width()
+                    height = item.rect().height()
+                    dpmm = dpi / 25.4
+                    s = QSize(width * dpmm, height * dpmm)
+                    arrowPath = os.path.join(QgsApplication.pkgDataPath(), "svg", "Arrow_01.svg")
+                    img = QImage(s, QImage.Format_ARGB32)
+                    painter = QPainter(img)
+                    rend = QSvgRenderer(arrowPath)
+                    rend.render(painter)
+                    img.save(os.path.join(printFolder, "%s_arrow_%s.png" % (layoutSafeName, str(dpi))))
+                    painter.end()
+            elif isinstance(item, QgsComposerPicture):
+                element = getCoords(item)
+                filename = os.path.basename(item.pictureFile())
+                shutil.copy(item.pictureFile(), os.path.join(printFolder, filename))
+                element["file"] = filename
             if element is not None:
                 element["type"] = item.__class__.__name__[11:].lower()
-                layoutDef.append(element)
-        if layoutDef:
-            layoutDefs[name] = layoutDef
+                elements.append(element)
+
+        layoutDefs[name] = layoutDef
 
     with open(os.path.join(printFolder, "layouts.js"), "w") as f:
         f.write("var printLayouts = %s;" % json.dumps(layoutDefs))
@@ -720,7 +755,7 @@ def writeHelpFiles(appdef, folder):
         if os.path.exists(file):
             with open(path) as f:
                 content += "".join(f.readlines())
-                sections += '<li><a href="%s">%s</a></li>' % (widget, widgetName)
+                sections += '<li><a href="#%s">%s</a></li>' % (widget, widgetName)
             fileList = [os.path.join(widgetFolder, fname) for fname in os.listdir(widgetFolder)
                                                         if fname.lower().endswith("png")]
             for f in fileList:

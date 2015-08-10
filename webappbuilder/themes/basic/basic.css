@@ -236,7 +236,12 @@ html, body {
   background-color: #ffff99;
 }
 
-
+.attributes-table table tr{
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
 
 .row-selected {
   background: #b8d1f3;
