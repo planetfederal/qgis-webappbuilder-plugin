@@ -668,40 +668,19 @@ def writePrintFiles(appdef, folder):
         layoutDef["elements"] = elements
         for item in composition.items():
             element = None
-            if isinstance(item, QgsComposerLegend):
+            if isinstance(item, (QgsComposerLegend, QgsComposerShape, QgsComposerScaleBar)):
                 element = getBasicInfo(item)
                 for dpi in dpis:
-                    root = QgsProject.instance().layerTreeRoot()
-                    model = QgsLayerTreeModel(root)
-                    settings = QgsLegendSettings()
-                    settings.setTitle("")
-                    settings.setSymbolSize(QSizeF(item.symbolWidth(), item.symbolHeight()))
-                    settings.setBoxSpace(item.boxSpace())
-                    r = QgsLegendRenderer(model, settings)
-                    size = r.minimumSize()
                     dpmm = dpi / 25.4
-                    s = QSize(size.width() * dpmm, size.height() * dpmm)
-                    img = QImage(s, QImage.Format_ARGB32_Premultiplied)
-                    img.fill(Qt.transparent)
-                    painter = QPainter(img)
-                    painter.scale(dpmm, dpmm)
-                    item.paintAndDetermineSize(painter)
-                    painter.end()
-                    img.save(os.path.join(printFolder, "%s_legend_%s.png" % (layoutSafeName, str(dpi))))
-            elif isinstance(item, QgsComposerScaleBar):
-                element = getBasicInfo(item)
-                for dpi in dpis:
-                    width = item.rect().width()
-                    height = item.rect().height()
-                    dpmm = dpi / 25.4
-                    s = QSize(width * dpmm, height * dpmm)
+                    s = QSize(item.rect().width() * dpmm, item.rect().height() * dpmm)
                     img = QImage(s, QImage.Format_ARGB32_Premultiplied)
                     img.fill(Qt.transparent)
                     painter = QPainter(img)
                     painter.scale(dpmm, dpmm)
                     item.paint(painter, None, None)
                     painter.end()
-                    img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % (layoutSafeName, str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_%s_%s.png" %
+                            (layoutSafeName, element["id"], str(dpi))))
             elif isinstance(item, QgsComposerLabel):
                 element = getBasicInfo(item)
                 element["name"] = item.text()
@@ -728,7 +707,7 @@ def writePrintFiles(appdef, folder):
                     painter = QPainter(img)
                     rend = QSvgRenderer(arrowPath)
                     rend.render(painter)
-                    img.save(os.path.join(printFolder, "%s_arrow_%s.png" % (layoutSafeName, str(dpi))))
+                    img.save(os.path.join(printFolder, "%s_%s_%s.png" % (layoutSafeName, element["id"], str(dpi))))
                     painter.end()
             elif isinstance(item, QgsComposerPicture):
                 element = getBasicInfo(item)

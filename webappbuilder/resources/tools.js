@@ -1407,7 +1407,7 @@ var createMap = function(layoutName, resolution, labels){
                     pdf.addImage(images[el.id], 'png', el.x, el.y, el.width, el.height);
                     elementLoaded();
                 });
-                images[el.id].src = "print/" + layoutSafeName + "_" + el.type + "_" +
+                images[el.id].src = "print/" + layoutSafeName + "_" + el.id + "_" +
                                     resolution.toString() + ".png";
             })(element);
         }
