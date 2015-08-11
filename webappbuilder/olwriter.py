@@ -418,6 +418,11 @@ def getLabeling(layer):
     rotation = str(math.radians(-1 * float(layer.customProperty("labeling/angleOffset"))))
     offsetX = layer.customProperty("labeling/xOffset")
     offsetY = layer.customProperty("labeling/yOffset")
+    textBaselines = ["bottom", "middle", "top"]
+    textAligns = ["end", "center", "start"]
+    quad = int(layer.customProperty("labeling/quadOffset"))
+    textBaseline = textBaselines[quad / 3]
+    textAlign = textAligns[quad % 3]
 
     if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":
         scaleToResolution = 3571.42
@@ -443,6 +448,8 @@ def getLabeling(layer):
                   fill: new ol.style.Fill({
                     color: "%(color)s"
                   }),
+                  textBaseline: "%(textBaseline)s",
+                  textAlign: "%(textAlign)s",
                   rotation: %(rotation)s,
                   offsetX: %(offsetX)s,
                   offsetY: %(offsetY)s %(halo)s
@@ -452,7 +459,8 @@ def getLabeling(layer):
         allStyles.push(textStyleCache_%(layerName)s[key]);
         ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
                 "size": size, "color": color, "label": labelText, "resolution": resolution,
-                "layerName": safeName(layer.name())}
+                "layerName": safeName(layer.name()), "textAlign": textAlign,
+                "textBaseline": textBaseline}
 
     return s
 
