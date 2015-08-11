@@ -15,6 +15,7 @@ import importlib
 import urlparse
 import requests
 from olwriter import exportStyles, layerToJavascript
+import uuid
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Creating local files")
@@ -643,7 +644,7 @@ def writePrintFiles(appdef, folder):
         QDir().mkpath(printFolder)
     dpis = [72, 150, 300]
     layoutDefs = {}
-    def getCoords(item):
+    def getBasicInfo(item):
         coords = {}
         pos = item.pos()
         coords["x"] = pos.x()
@@ -651,6 +652,7 @@ def writePrintFiles(appdef, folder):
         rect = item.rect()
         coords["width"] = rect.width()
         coords["height"] = rect.height()
+        coords["id"] = str(uuid.uuid4())
         return coords
     for composer in iface.activeComposers():
         name = composer.composerWindow().windowTitle()
@@ -667,7 +669,7 @@ def writePrintFiles(appdef, folder):
         for item in composition.items():
             element = None
             if isinstance(item, QgsComposerLegend):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 for dpi in dpis:
                     root = QgsProject.instance().layerTreeRoot()
                     model = QgsLayerTreeModel(root)
@@ -687,7 +689,7 @@ def writePrintFiles(appdef, folder):
                     painter.end()
                     img.save(os.path.join(printFolder, "%s_legend_%s.png" % (layoutSafeName, str(dpi))))
             elif isinstance(item, QgsComposerScaleBar):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 for dpi in dpis:
                     width = item.rect().width()
                     height = item.rect().height()
@@ -701,12 +703,12 @@ def writePrintFiles(appdef, folder):
                     painter.end()
                     img.save(os.path.join(printFolder, "%s_scalebar_%s.png" % (layoutSafeName, str(dpi))))
             elif isinstance(item, QgsComposerLabel):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 element["name"] = item.text()
                 element["size"] = item.font().pointSize()
                 element["font"] = item.font().rawName()
             elif isinstance(item, QgsComposerMap):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 grid = item.grid()
                 if grid is not None:
                     element["grid"] = {}
@@ -715,7 +717,7 @@ def writePrintFiles(appdef, folder):
                     element["grid"]["crs"] = grid.crs().authid()
                     element["grid"]["annotationEnabled"] = grid.annotationEnabled()
             elif isinstance(item, QgsComposerArrow):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 for dpi in dpis:
                     width = item.rect().width()
                     height = item.rect().height()
@@ -729,7 +731,7 @@ def writePrintFiles(appdef, folder):
                     img.save(os.path.join(printFolder, "%s_arrow_%s.png" % (layoutSafeName, str(dpi))))
                     painter.end()
             elif isinstance(item, QgsComposerPicture):
-                element = getCoords(item)
+                element = getBasicInfo(item)
                 filename = os.path.basename(item.pictureFile())
                 shutil.copy(item.pictureFile(), os.path.join(printFolder, filename))
                 element["file"] = filename

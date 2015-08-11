@@ -1373,9 +1373,10 @@ var printMap = function(layoutName){
 
 var createMap = function(layoutName, resolution, labels){
     var layout = printLayouts[layoutName];
-    var layoutSafeName = layoutName.replace(/[^a-z0-9]/gi,'');
+    var layoutSafeName = layoutName.replace(/[^a-z0-9]/gi,'').toLowerCase();
     var elements = layout.elements;
     var pdf = new jsPDF('landscape', "mm", [layout.width, layout.height]);
+    var images = [];
     var loaded = 0;
     var elementLoaded = function(){
         loaded++;
@@ -1397,45 +1398,29 @@ var createMap = function(layoutName, resolution, labels){
             //TODO: add map and grid
             elementLoaded();
         }
-        else if (element.type === "scalebar"){
-            var scalebarImg = new Image();
-            var scalebar = element;
-            scalebarImg.crossOrigin="anonymous"
-            scalebarImg.addEventListener('load', function() {
-                pdf.addImage(scalebarImg, 'png', scalebar.x, scalebar.y, scalebar.width, scalebar.height);
-                elementLoaded();
-            });
-            scalebarImg.src = "print/" + layoutSafeName + "_scalebar_" + resolution.toString() + ".png";
-        }
-        else if (element.type === "legend"){
-            var legendImg = new Image();
-            var legend = element;
-            legendImg.crossOrigin = "anonymous"
-            legendImg.addEventListener('load', function() {
-                pdf.addImage(legendImg, 'png', legend.x, legend.y, legend.width, legend.height);
-                elementLoaded();
-            });
-            legendImg.src = "print/" + layoutSafeName + "_legend_" + resolution.toString() + ".png";
-        }
-        else if (element.type === "arrow"){
-            var arrowImg = new Image();
-            var arrow = element;
-            arrowImg.crossOrigin = "anonymous"
-            arrowImg.addEventListener('load', function() {
-                pdf.addImage(arrowImg, 'png', arrow.x, arrow.y, arrow.width, arrow.height);
-                elementLoaded();
-            });
-            arrowImg.src = "print/" + layoutSafeName + "_arrow_" + resolution.toString() + ".png";
+        else if (element.type === "shape" || element.type === "arrow" ||
+                    element.type === "legend" || element.type === "scalebar"){
+            (function(el){
+                images[el.id] = new Image();
+                images[el.id].crossOrigin = "anonymous"
+                images[el.id].addEventListener('load', function() {
+                    pdf.addImage(images[el.id], 'png', el.x, el.y, el.width, el.height);
+                    elementLoaded();
+                });
+                images[el.id].src = "print/" + layoutSafeName + "_" + el.type + "_" +
+                                    resolution.toString() + ".png";
+            })(element);
         }
         else if (element.type === "picture"){
-            var pictureImg = new Image();
-            var picture = element;
-            pictureImg.crossOrigin = "anonymous"
-            pictureImg.addEventListener('load', function() {
-                pdf.addImage(pictureImg, 'png', picture.x, picture.y, picture.width, picture.height);
-                elementLoaded();
-            });
-            pictureImg.src = "print/" + picture.file;
+            (function(el){
+                images[el.id] = new Image();
+                images[el.id].crossOrigin = "anonymous"
+                images[el.id].addEventListener('load', function() {
+                    pdf.addImage(images[el.id], 'png', el.x, el.y, el.width, el.height);
+                    elementLoaded();
+                });
+                images[el.id].src = "print/" + el.file;
+            })(element);
         }
         else{
             elementLoaded();
