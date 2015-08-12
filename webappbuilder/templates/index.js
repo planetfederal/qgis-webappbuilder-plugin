@@ -65,10 +65,16 @@ var popupEventTriggered = function(evt) {
         }
     });
 
-    var fetchData = function(cb){
-        var geojsonFormat = new ol.format.GeoJSON();
+    var fetchData = function(cb) {
         var len = allLayers.length;
         var finishedQueries = 0;
+        var finishedQuery = function(){
+            finishedQueries++;
+            if (len == finishedQueries) {
+                cb();
+            }
+        };
+        var geojsonFormat = new ol.format.GeoJSON();
         for (var i = 0; i < len; i++) {
             var layer = allLayers[i];
             if (layer.getSource() instanceof ol.source.TileWMS) {
@@ -82,15 +88,16 @@ var popupEventTriggered = function(evt) {
                         }
                     );
                     $.ajax({
-                         type: 'GET',
-                         url: url,
-                         success: function(data) {
+                        type: 'GET',
+                        url: url,
+                        success: function(data) {
                             popupTexts.push(data);
-                            finishedQueries++;
-                            if (len == finishedQueries){
-                                cb();
-                            }
-                         }
+                            finishedQuery();
+                        },
+                        error: function(){
+                            popupTexts.push('<iframe seamless src="' + url + '"></iframe>');
+                            finishedQuery();
+                        }
                     });
                 } else if (popupDef !== "") {
                     var url = layer.getSource().getGetFeatureInfoUrl(
@@ -119,20 +126,25 @@ var popupEventTriggered = function(evt) {
                                     }
                                 }
                                 popupTexts.push(popupDef);
-                                finishedQueries++;
+                                finishedQuery();
                             }
+                        },
+                        error: function(){
+                            popupTexts.push('<iframe seamless src="' + url + '"></iframe>');
+                            finishedQuery();
                         }
                     });
                 }
-            }
-            else{
-                finishedQueries++;
+                else{
+                    finishedQuery();
+                }
+            } else {
+                finishedQuery();
             }
         }
-        cb();
     }
 
-    fetchData(function(){
+    fetchData(function() {
         if (popupTexts.length) {
             overlayPopup.setPosition(coord);
             content.innerHTML = popupTexts.join("<hr>");
