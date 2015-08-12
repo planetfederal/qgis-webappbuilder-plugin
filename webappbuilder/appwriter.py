@@ -526,15 +526,15 @@ def writeLayersAndGroups(appdef, folder):
     groupVars = ""
     groupedLayers = {}
     for group, groupDef in groups.iteritems():
-		groupLayers = groupDef["layers"]
-		groupVars +=  ('''var %s = new ol.layer.Group({
+        groupLayers = groupDef["layers"]
+        groupVars +=  ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 showContent: %s,
                                 title: "%s"});\n''' %
                 ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
                 str(groupDef["showContent"]).lower(), group))
-		for layer in groupLayers:
-			groupedLayers[layer.id()] = safeName(group)
+        for layer in groupLayers:
+            groupedLayers[layer.id()] = safeName(group)
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
                                                 str(layer.visible).lower()) for layer in layers])
@@ -577,12 +577,11 @@ def writeLegendFiles(appdef, folder):
     if not QDir(legendFolder).exists():
         QDir().mkpath(legendFolder)
     for ilayer, applayer in enumerate(layers):
-        if applayer.timeInfo is not None:
-            continue
-        layer = applayer.layer
-        symbols = getLegendSymbols(layer, ilayer, legendFolder)
-        if symbols:
-            legend[layer.name()] = symbols
+        if applayer.showInControls:
+            layer = applayer.layer
+            symbols = getLegendSymbols(layer, ilayer, legendFolder)
+            if symbols:
+                legend[layer.name()] = symbols
 
     with open(os.path.join(legendFolder, "legend.js"), "w") as f:
         f.write("var legendData = %s;" % json.dumps(legend))
