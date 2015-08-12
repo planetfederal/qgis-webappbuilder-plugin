@@ -428,9 +428,9 @@ ol.control.Legend.prototype.renderPanel = function() {
     for (var name in legendData){
         var element = "<li><label for='legend-layer-"+ name +"'>" + name +
             "</label><input type='checkbox' checked id='legend-layer-" + name + "' /><ul> ";
-        var groups = legendData[name];
-        for (var group in groups){
-            element += "<li><img src='./legend/" + groups[group] + "'>" + group + "</li>";
+        var symbols = legendData[name];
+        for (var i = 0; i < symbols.length; i++){
+            element += "<li><img src='./legend/" + symbols[i][1] + "'>" + symbols[i][0] + "</li>";
         }
         element += " </li>";
         list.append(element);
