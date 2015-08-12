@@ -18,6 +18,7 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
                         <div class="about-panel" id="about-panel">%s</div>
                         </div>''' % params["content"])
     if "Geocoding" in widgets:
+        scripts.append('''<script src="./resources/geocoding.js"></script>''')
         tabs.append('<li><a href="#geocoding-tab" role="tab" data-toggle="tab">Geocoding</a></li>')
         panels.append('''<div class="tab-pane" id="geocoding-tab">
                             <div class="input-group">
@@ -41,6 +42,7 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
         for name, url in links.iteritems():
             tools.append('<li><a href="%s">%s</a></li>' % (url, name))
     if "Selection tools" in widgets:
+        scripts.append('''<script src="./resources/select.js"></script>''')
         params = widgets["Selection tools"]
         selectTools = []
         selectTools.append(["removeSelectionTool()", "No selection tool (zoom/pan)"])
@@ -58,6 +60,7 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
                       </li>''' % li)
 
     if "Query" in widgets:
+        scripts.append('''<script src="./resources/query.js"></script>''')
         scripts.append('''<script src="./resources/filtrex.js"></script>''')
         tabs.append('<li><a href="#query-tab" role="tab" data-toggle="tab">Query</a></li>')
         panels.append('''<div class="tab-pane" id="query-tab">
@@ -85,6 +88,7 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
     if "Help" in widgets:
         tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
     if "Add layer" in widgets:
+        scripts.append('''<script src="./resources/addlayer.js"></script>''')
         tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
     if "Print" in widgets:
         li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(lay)s_thumbnail.png"/>
@@ -101,15 +105,19 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
           </li>''' % li)
         scriptsBottom.append('<script src="print/layouts.js"></script>')
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
+        scripts.append('''<script src="./resources/print.js"></script>''')
     if "Export as image" in widgets:
+        scripts.append('''<script src="./resources/savepng.js"></script>''')
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
     if "Attributes table" in widgets:
+        scripts.append('''<script src="./resources/attributestable.js"></script>''')
         tabs.append('<li><a href="#attributes-table-tab" role="tab" data-toggle="tab">Attributes table</a></li>')
         panels.append('''<div class="tab-pane" id="attributes-table-tab">
                             <div class="attributes-table"></div>
                         </div>''')
         initialize.append("showAttributesTable();")
     if "Measure tool" in widgets:
+        scripts.append('''<script src="./resources/measure.js"></script>''')
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
                             <ul class="dropdown-menu">
@@ -124,7 +132,8 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
         scripts.append('''<script src="./resources/d3.min.js"></script>
                         <script src="./resources/c3.min.js"></script>
                         <link href="./resources/c3.min.css" rel="stylesheet" type="text/css"/>
-                        <script src="./charts.js"></script>''')
+                        <script src="./charts.js"></script>
+                        <script src="./resources/charts.js"></script>''')
         panels.append('''<div class="tab-pane" id="charts-tab">
                             <div class="chart-panel" id="chart-panel">
                             <select id="chart-selector" class="form-control"></select>
@@ -162,6 +171,7 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
         bookmarks = params["bookmarks"]
         if bookmarks:
             scriptsBottom.append('<script src="./bookmarks.js"></script>')
+            scripts.append('''<script src="./resources/bookmarks.js"></script>''')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -219,16 +229,6 @@ def writeWebApp(appdef, folder, scripts, scriptsBottom):
                 bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]
                 f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
                 f.write(bookmarkEvents)
-
-    if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
-        scripts.append('<script src="./resources/bootstrap-slider.js"></script>')
-        scripts.append('<link href="./resources/slider.css" rel="stylesheet"/>')
-    if "3D view" in widgets:
-        scripts.append('<script src="./resources/cesium/Cesium.js"></script>')
-        scripts.append('<script src="./resources/ol3cesium.js"></script>')
-        dst = os.path.join(folder, "resources", "cesium")
-        if not os.path.exists(dst):
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "resources", "cesium"), dst)
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:

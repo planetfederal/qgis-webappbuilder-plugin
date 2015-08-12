@@ -196,10 +196,23 @@ def writeHtml(appdef, folder):
             scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
     if "Legend" in widgets:
         scripts.append('<script src="./legend/legend.js"></script>')
-    if "Layers list" in widgets and widgets["Layers list"]["allowFiltering"]:
-        scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
-        scripts.append('''<script src="./resources/filtrex.js"></script>''')
-
+        scripts.append('<script src="./resources/legend.js"></script>')
+    if "Layers list" in widgets:
+        scripts.append('''<script src="./resources/layerslist.js"></script>''')
+        if widgets["Layers list"]["showOpacity"]:
+            scripts.append('<script src="./resources/bootstrap-slider.js"></script>')
+            scripts.append('<link href="./resources/slider.css" rel="stylesheet"/>')
+        if widgets["Layers list"]["allowFiltering"]:
+            scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
+            scripts.append('''<script src="./resources/filtrex.js"></script>''')
+    if "3D view" in widgets:
+        scripts.append('''<script src="./resources/cesium-control.js"></script>''')
+        scripts.append('<script src="./resources/Cesium.js"></script>')
+        scripts.append('<script src="./resources/ol3cesium.js"></script>')
+    if "Home button" in widgets:
+        scripts.append('<script src="./resources/homebutton.js"></script>')
+    if "Timeline" in widgets:
+        scripts.append('<script src="./resources/timeline.js"></script>')
     try:
         module = importlib.import_module('webappbuilder.themes.%s.%s' % (theme, theme))
         if hasattr(module, 'writeHtml'):
@@ -239,6 +252,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                           </div>
                         </div>''');
         mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
+        scripts.append('''<script src="./resources/geocoding.js"></script>''')
     if "Links" in widgets:
         links = widgets["Links"]["links"]
         for name, url in links.iteritems():
@@ -259,6 +273,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                           %s
                         </ul>
                       </li>''' % li)
+        scripts.append('''<script src="./resources/select.js"></script>''')
     if "Analysis tools" in widgets:
         params = widgets["Analysis tools"]
         allAnalysisTools = {"Add random points layer": "addRandomLayer()",
@@ -313,15 +328,19 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                                     </div>
                                 </form>
                             </div>''')
+        scripts.append('''<script src="./resources/query.js"></script>''')
     if "Help" in widgets:
         tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
     if "Add layer" in widgets:
         tools.append('<li><a onclick="addLayerFromFile()" href="#"><i class="glyphicon glyphicon-open"></i>Add layer</a></li>')
+        scripts.append('''<script src="./resources/addlayer.js"></script>''')
     if "Export as image" in widgets:
         tools.append('<li><a onclick="saveAsPng()" href="#" id="export-as-image"><i class="glyphicon glyphicon-camera"></i>Export as image</a></li>')
+        scripts.append('''<script src="./resources/savepng.js"></script>''')
     if "Attributes table" in widgets:
         tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
         panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
+        scripts.append('''<script src="./resources/attributestable.js"></script>''')
     if "Print" in widgets:
         li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(safename)s_thumbnail.png"/>
                             <a onclick="printMap('%(name)s')" href="#">%(name)s</a></li>
@@ -340,6 +359,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         scriptsBottom.append('<script src="print/layouts.js"></script>')
         scripts.append('''<script src="./resources/bootbox.min.js"></script>''')
         scripts.append('''<script src="./resources/jspdf.min.js"></script>''')
+        scripts.append('''<script src="./resources/print.js"></script>''')
     if "Measure tool" in widgets:
         tools.append('''<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Measure <span class="caret"><span> </a>
@@ -349,6 +369,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                               <li><a onclick="measureTool(null)" href="#">Remove measurements</a></li>
                             </ul>
                           </li>''')
+        scripts.append('''<script src="./resources/measure.js"></script>''')
     if "Chart tool" in widgets:
         params = widgets["Chart tool"]
         li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c) for c in params["charts"]])
@@ -362,7 +383,8 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         scripts.append('''<script src="./resources/d3.min.js"></script>
                         <script src="./resources/c3.min.js"></script>
                         <link href="./resources/c3.min.css" rel="stylesheet" type="text/css"/>
-                        <script src="./charts.js"></script>''')
+                        <script src="./charts.js"></script>
+                        <script src="./resources/charts.js"></script>''')
         panels.append('''<div class="chart-panel" id="chart-panel">
                         <span class="chart-panel-info" id="chart-panel-info"></span>
                         <a href="#" id="chart-panel-closer" class="chart-panel-closer">Close</a>
@@ -393,6 +415,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         bookmarks = params["bookmarks"]
         if bookmarks:
             scriptsBottom.append('<script src="./bookmarks.js"></script>')
+            scripts.append('''<script src="./resources/bookmarks.js"></script>''')
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 itemBase = '''<div class="item %s">
                               <div class="header-text hidden-xs">
@@ -449,13 +472,6 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
                 f.write(bookmarkEvents)
 
 
-    if "Layers list" in widgets and widgets["Layers list"]["showOpacity"]:
-        scripts.append('<script src="./resources/bootstrap-slider.js"></script>')
-        scripts.append('<link href="./resources/slider.css" rel="stylesheet"/>')
-    if "3D view" in widgets:
-        scripts.append('<script src="./resources/Cesium.js"></script>')
-        scripts.append('<script src="./resources/ol3cesium.js"></script>')
-
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
         logo = '<img class="pull-left" style="margin:5px;height:calc(100%%-10px);" src="logo.png"></img>'
@@ -463,6 +479,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
     else:
         logo = ""
+    print set(scripts)
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
                 "@SCRIPTS@": "\n".join(set(scripts)),
