@@ -333,6 +333,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
             timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
             labels = getLabeling(layer)
             style = '''function(feature, resolution){
+                        var selected = lyr_%(layerName)s.selectedFeatures;
                         %(cluster)s
                         %(filters)s
                         %(time)s
@@ -341,7 +342,6 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         %(selectionStyle)s;
                         allStyles = [];
                         %(labels)s
-                        var selected = lyr_%(layerName)s.selectedFeatures;
                         if (selected && selected.indexOf(feature) != -1){
                             allStyles.push.apply(allStyles, selectionStyle);
                         }
