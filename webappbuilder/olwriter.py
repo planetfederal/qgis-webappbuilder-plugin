@@ -217,10 +217,12 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 "min": minResolution, "max": maxResolution,
                                 "timeInfo": timeInfo}
 
-def exportStyles(layers, folder, settings, addTimeInfo):
+def exportStyles(layers, folder, settings, addTimeInfo, progress):
     stylesFolder = os.path.join(folder, "styles")
     QDir().mkpath(stylesFolder)
-    for appLayer in layers:
+    progress.setText("Writing layer styles")
+    progress.setProgress(0)
+    for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
@@ -385,6 +387,7 @@ def exportStyles(layers, folder, settings, addTimeInfo):
                         var selectedClusterStyleCache_%(name)s={}
                         var style_%(name)s = %(style)s;''' %
                     {"defs":defs, "name":safeName(layer.name()), "style":style})
+        progress.setProgress(int(ilayer*100.0/len(layers)))
 
 def getLabeling(layer):
     if str(layer.customProperty("labeling/enabled")).lower() != "true":

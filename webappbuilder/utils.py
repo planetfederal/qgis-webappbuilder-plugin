@@ -71,6 +71,7 @@ def tempFilenameInTempFolder(basename):
     return filename
 
 def exportLayers(layers, folder, progress, precision, crsid):
+    progress.setText("Writing local layer files")
     destCrs = QgsCoordinateReferenceSystem(crsid)
     layersFolder = os.path.join(folder, "layers")
     QDir().mkpath(layersFolder)

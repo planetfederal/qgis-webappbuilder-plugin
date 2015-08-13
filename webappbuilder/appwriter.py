@@ -18,7 +18,7 @@ from olwriter import exportStyles, layerToJavascript
 import uuid
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
-    progress.setText("Creating local files")
+    progress.setText("Copying resources files")
     progress.setProgress(0)
     dst = os.path.join(folder, "resources")
     resourcesFolder = os.path.join(os.path.dirname(__file__), "resources")
@@ -30,14 +30,14 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         exportLayers(layers, folder, progress,
                      appdef["Settings"]["Precision for GeoJSON export"],
                      appdef["Settings"]["App view CRS"])
-    exportStyles(layers, folder, appdef["Settings"], "Timeline" in appdef["Widgets"])
-    writeLayersAndGroups(appdef, folder)
-    writeJs(appdef, folder)
+    exportStyles(layers, folder, appdef["Settings"], "Timeline" in appdef["Widgets"], progress)
+    writeLayersAndGroups(appdef, folder, progress)
+    writeJs(appdef, folder, progress)
     writeCss(appdef, folder)
     indexFilepath = writeHtml(appdef, folder)
     return indexFilepath
 
-def writeJs(appdef, folder):
+def writeJs(appdef, folder, progress):
     layers = appdef["Layers"]
     popupLayers = "popupLayers = [%s];" % ",".join(["`%s`" % layer.popup for layer in layers])
     controls = []
@@ -45,13 +45,13 @@ def writeJs(appdef, folder):
     if "Help" in widgets:
         writeHelpFiles(appdef, folder)
     if "Print" in widgets:
-        writePrintFiles(appdef, folder)
+        writePrintFiles(appdef, folder, progress)
     if "Scale bar" in widgets:
         controls.append("new ol.control.ScaleLine(%s)" % json.dumps(widgets["Scale bar"]))
     if "Layers list" in widgets:
         controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(widgets["Layers list"]))
     if "Legend" in widgets:
-        writeLegendFiles(appdef, folder)
+        lambda: writeLegendFiles(appdef, folder)
         controls.append("new ol.control.Legend()")
     if "Geolocation" in widgets:
         controls.append("new ol.control.Geolocation()")
@@ -493,7 +493,7 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
     return html
 
 
-def writeLayersAndGroups(appdef, folder):
+def writeLayersAndGroups(appdef, folder, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
@@ -519,9 +519,11 @@ def writeLayersAndGroups(appdef, folder):
             baseLayer += "var overviewMapBaseLayer = %s;" % baseLayers[overviewMapBaseLayerName]
 
     layerVars = []
-    for layer in layers:
+    progress.setText("Writing layer definitions")
+    for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
         layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle))
+        progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""
     groupedLayers = {}
@@ -654,7 +656,9 @@ def bounds(useCanvas, layers, crsid):
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum())
 
-def writePrintFiles(appdef, folder):
+def writePrintFiles(appdef, folder, progress):
+    progress.setText("Writing print layout files")
+    progress.setProgress(0)
     printFolder = os.path.join(folder, "print")
     if not QDir(printFolder).exists():
         QDir().mkpath(printFolder)
@@ -670,7 +674,8 @@ def writePrintFiles(appdef, folder):
         coords["height"] = rect.height()
         coords["id"] = str(uuid.uuid4())
         return coords
-    for composer in iface.activeComposers():
+    composers = iface.activeComposers()
+    for i, composer in enumerate(composers):
         name = composer.composerWindow().windowTitle()
         layoutSafeName = safeName(name)
         layoutDef = {}
@@ -735,6 +740,7 @@ def writePrintFiles(appdef, folder):
                 elements.append(element)
 
         layoutDefs[name] = layoutDef
+        progress.setProgress(int((i+1)*100.0/len(composers)))
 
     with open(os.path.join(printFolder, "layouts.js"), "w") as f:
         f.write("var printLayouts = %s;" % json.dumps(layoutDefs))
@@ -750,7 +756,7 @@ def writeHelpFiles(appdef, folder):
         widgetFolder = os.path.join(os.path.dirname(__file__), "help", widgetName)
         file = os.path.join(widgetFolder, "description.html")
         if os.path.exists(file):
-            with open(path) as f:
+            with open(file) as f:
                 content += "".join(f.readlines())
                 sections += '<li><a href="#%s">%s</a></li>' % (widget, widgetName)
             fileList = [os.path.join(widgetFolder, fname) for fname in os.listdir(widgetFolder)

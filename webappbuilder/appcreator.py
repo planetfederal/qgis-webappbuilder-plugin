@@ -12,6 +12,7 @@ from geoserver.catalog import Catalog
 from utils import *
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
+from jsmin import jsmin
 from json.encoder import JSONEncoder
 import json
 import utils
@@ -36,18 +37,33 @@ def createApp(appdef, deployData, folder, progress):
 		if usesGeoServer:
 			publishGeoserver(appdef, progress)
 	writeWebApp(appdef, folder, deployData, progress)
+	progress.setText("Post-processing Web App files")
+	progress.setProgress(0)
 	files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
 	for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
 		for f in fs:
 			if f.endswith("js"):
 				files.append(os.path.join(root, f))
-	for path in files:
-		try:
-			beauty = jsbeautifier.beautify_file(path)
+	if appdef["Settings"]["Minify JavaScript"]:
+		for root, dirs, fs in os.walk(os.path.join(folder, "resources")):
+			for f in fs:
+				if f.endswith("js"):
+					files.append(os.path.join(root, f))
+
+	for i, path in enumerate(files):
+		if appdef["Settings"]["Minify JavaScript"]:
+			with open(path) as f:
+				code = f.read()
 			with open(path, "w") as f:
-				f.write(beauty)
-		except:
-			pass #jsbeautifier gives some random errors sometimes due to imports
+				f.write(jsmin(code, quote_chars="'\"`"))
+		else:
+			try:
+				beauty = jsbeautifier.beautify_file(path)
+				with open(path, "w") as f:
+					f.write(beauty)
+			except:
+				pass #jsbeautifier gives some random errors sometimes due to imports
+		progress.setProgress(int((i+1)*100.0/len(files)))
 	projFile = QgsProject.instance().fileName()
 	if projFile:
 		appdefFile =  projFile + ".appdef"
@@ -253,7 +269,7 @@ def publishGeoserver(appdef, progress):
 				publishing = catalog.get_layer(name)
 				publishing.default_style = catalog.get_style(name)
 				catalog.save(publishing)
-		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
+		progress.setProgress(int((i+1)*100.0/len(appdef["Layers"])))
 
 
 
