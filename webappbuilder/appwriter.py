@@ -479,7 +479,6 @@ def defaultWriteHtml(appdef, folder, scripts, scriptsBottom):
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
     else:
         logo = ""
-    print set(scripts)
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
                 "@SCRIPTS@": "\n".join(set(scripts)),
@@ -718,7 +717,7 @@ def writePrintFiles(appdef, folder, progress):
                     element["grid"]["annotationEnabled"] = grid.annotationEnabled()
             elif isinstance(item, QgsComposerPicture):
                 element = getBasicInfo(item)
-                filename = os.path.basename(item.pictureFile())
+                filename = os.path.basename(item.picturePath())
                 shutil.copy(item.pictureFile(), os.path.join(printFolder, filename))
                 element["file"] = filename
             if element is not None:
