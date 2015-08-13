@@ -123,9 +123,11 @@ def checkAppCanBeCreated(appdef):
 					"They will not appear correctly if the web app uses a different CRS."
 					"Your web app uses %s" % viewCrs)
 
+	nonVectorLayers = 0
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
+			nonVectorLayers += 1
 			continue
 		renderer = applayer.layer.rendererV2()
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
@@ -133,6 +135,12 @@ def checkAppCanBeCreated(appdef):
 			problems.append("Symbology used by layer %s includes unsupported elements. "
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
+
+	if "Attributes table" in appdef["Widgets"] and nonVectorLayers == len(layers):
+		problems.append("Attributes table control has been added, but there are no suitable "
+					"layers to in the web app to be used with it. "
+					"Local vector layers or WFS layers are needed")
+
 
 	#TODO: check that layers using time attributes are not published using WMS
 
