@@ -689,7 +689,7 @@ def writePrintFiles(appdef, folder, progress):
         layoutDef["elements"] = elements
         for item in composition.items():
             element = None
-            if isinstance(item, (QgsComposerLegend, QgsComposerShape, QgsComposerScaleBar)):
+            if isinstance(item, (QgsComposerLegend, QgsComposerShape, QgsComposerScaleBar, QgsComposerArrow)):
                 element = getBasicInfo(item)
                 for dpi in dpis:
                     dpmm = dpi / 25.4
@@ -716,20 +716,6 @@ def writePrintFiles(appdef, folder, progress):
                     element["grid"]["intervalY"] = grid.intervalY()
                     element["grid"]["crs"] = grid.crs().authid()
                     element["grid"]["annotationEnabled"] = grid.annotationEnabled()
-            elif isinstance(item, QgsComposerArrow):
-                element = getBasicInfo(item)
-                for dpi in dpis:
-                    width = item.rect().width()
-                    height = item.rect().height()
-                    dpmm = dpi / 25.4
-                    s = QSize(width * dpmm, height * dpmm)
-                    arrowPath = os.path.join(QgsApplication.pkgDataPath(), "svg", "Arrow_01.svg")
-                    img = QImage(s, QImage.Format_ARGB32)
-                    painter = QPainter(img)
-                    rend = QSvgRenderer(arrowPath)
-                    rend.render(painter)
-                    img.save(os.path.join(printFolder, "%s_%s_%s.png" % (layoutSafeName, element["id"], str(dpi))))
-                    painter.end()
             elif isinstance(item, QgsComposerPicture):
                 element = getBasicInfo(item)
                 filename = os.path.basename(item.pictureFile())
