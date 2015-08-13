@@ -45,9 +45,10 @@ def createApp(appdef, deployData, folder, progress):
 			if f.endswith("js"):
 				files.append(os.path.join(root, f))
 	if appdef["Settings"]["Minify JavaScript"]:
+		toDiscard = ["ol.js", "ol3cesium.js"]
 		for root, dirs, fs in os.walk(os.path.join(folder, "resources")):
 			for f in fs:
-				if f.endswith("js"):
+				if f.endswith("js") and not f.endswith("min.js") and f not in toDiscard:
 					files.append(os.path.join(root, f))
 
 	for i, path in enumerate(files):
