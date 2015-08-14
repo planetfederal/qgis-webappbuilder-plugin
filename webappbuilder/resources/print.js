@@ -55,11 +55,32 @@ var createMap = function(layoutName, resolution, labels){
     var elements = layout.elements;
     var pdf = new jsPDF('landscape', "mm", [layout.width, layout.height]);
     var images = [];
-    var loaded = 0;
+    var elementsLoaded = 0;
     var elementLoaded = function(){
-        loaded++;
-        if (loaded == elements.length){
+        elementsLoaded++;
+        if (elementsLoaded == elements.length){
             pdf.save('map.pdf');
+        }
+    };
+    var size = (map.getSize());
+    var extent = map.getView().calculateExtent(size);
+    var tileLayers = getTileLayers();
+    var tiledLayersLoaded = 0;
+    var mapElement = null;
+    var _canvas = null;
+    var paintMapInPdf = function(){
+        var data = _canvas.toDataURL('image/jpeg');
+        pdf.rect(mapElement.x, mapElement.y, mapElement.width, mapElement.height);
+        pdf.addImage(data, 'JPEG', mapElement.x, mapElement.y, mapElement.width, mapElement.height);
+        map.setSize(size);
+        map.getView().fit(extent, size);
+        map.renderSync();
+        elementLoaded();
+    };
+    var tileLayerLoaded= function(){
+        tiledLayersLoaded++;
+        if (tiledLayersLoaded == tileLayers.length){
+           paintMapInPdf();
         }
     };
     for (var i = 0; i < elements.length; i++) {
@@ -71,16 +92,46 @@ var createMap = function(layoutName, resolution, labels){
             elementLoaded();
         }
         else if (element.type === "map"){
-            var mapElement = element;
-            pdf.rect(mapElement.x, mapElement.y, mapElement.width, mapElement.height)
-            //TODO: add map and grid
-            elementLoaded();
+            mapElement = element;
+            var width = Math.round(mapElement.width * resolution / 25.4);
+            var height = Math.round(mapElement.height * resolution / 25.4);
+            map.once('postcompose', function(event) {
+                _canvas = event.context.canvas;
+                var sources = [];
+                var loaded = [];
+                var loading = [];
+                for (var j = 0; j < tileLayers.length; j++){
+                    (function(idx){
+                        source[idx] = tileLayers[idx].getSource();
+                        loading[idx] = 0;
+                        loaded[idx] = 0;
+                        sources[idx].on('tileloadstart', function() {
+                            ++loading;
+                        });
+                        sources[idx].on('tileloadend', function() {
+                            ++loaded;
+                            if (loading === loaded) {
+                                tileLayerLoaded();
+                            }
+                        });
+                        sources[idx].on('tileloaderror', function() {
+                            ++loaded;
+                        });
+                    })(j);
+                }
+            });
+            map.setSize([width, height]);
+            map.getView().fit(extent, (map.getSize()));
+            map.renderSync();
+            if (tileLayers.length == 0){
+               paintMapInPdf();
+            }
         }
         else if (element.type === "shape" || element.type === "arrow" ||
                     element.type === "legend" || element.type === "scalebar"){
             (function(el){
                 images[el.id] = new Image();
-                images[el.id].crossOrigin = "anonymous"
+                images[el.id].crossOrigin = "anonymous";
                 images[el.id].addEventListener('load', function() {
                     pdf.addImage(images[el.id], 'png', el.x, el.y, el.width, el.height);
                     elementLoaded();
@@ -92,7 +143,7 @@ var createMap = function(layoutName, resolution, labels){
         else if (element.type === "picture"){
             (function(el){
                 images[el.id] = new Image();
-                images[el.id].crossOrigin = "anonymous"
+                images[el.id].crossOrigin = "anonymous";
                 images[el.id].addEventListener('load', function() {
                     pdf.addImage(images[el.id], 'png', el.x, el.y, el.width, el.height);
                     elementLoaded();
@@ -105,4 +156,4 @@ var createMap = function(layoutName, resolution, labels){
         }
 
     }
-}
+};

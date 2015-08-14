@@ -84,6 +84,19 @@ var getVectorLayers = function(){
     return vectorLayers;
 };
 
+var getTileLayers = function(){
+    var allLayers = getAllNonBaseLayers();
+    var tileLayers = [];
+    var len = allLayers.length;
+    for (var i = 0; i < len; i++){
+        var s= allLayers[i].getSource();
+        if (s instanceof ol.source.TileWMS){
+            tileLayers.push(allLayers[i]);
+        }
+    }
+    return tileLayers;
+};
+
 
 var getSelectableLayers = function(){
     var allLayers = getAllNonBaseLayers();
