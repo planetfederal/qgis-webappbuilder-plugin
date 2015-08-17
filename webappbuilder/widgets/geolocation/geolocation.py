@@ -7,6 +7,7 @@ class Geolocation(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         app.controls.append("new ol.control.Geolocation()")
         self.addScript("geolocation.js", folder, app)
+        self.addCss("geolocation.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "geolocation.png"))

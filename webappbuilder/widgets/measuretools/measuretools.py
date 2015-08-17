@@ -14,6 +14,7 @@ class MeasureTools(WebAppWidget):
                             </ul>
                           </li>''')
         self.addScript("measure.js", folder, app)
+        self.addCss("measuretools.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "measure-tool.png"))

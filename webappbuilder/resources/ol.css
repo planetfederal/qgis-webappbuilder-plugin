@@ -1,0 +1,70 @@
+.ol-unsupported {
+  display: none;
+}
+
+.ol-viewport .ol-unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ol-control {
+  position: absolute;
+  background-color: #eee;
+  background-color: rgba(255,255,255,.4);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.ol-control:hover {
+  background-color: rgba(255,255,255,.6);
+}
+
+@media print {
+  .ol-control {
+    display: none;
+  }
+}
+
+.ol-control button {
+  display: block;
+  margin: 1px;
+  padding: 0;
+  color: #fff;
+  font-size: 1.14em;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  height: 1.375em;
+  width: 1.375em;
+  line-height: .4em;
+  background-color: #7b98bc;
+  background-color: rgba(0,60,136,.5);
+  border: none;
+  border-radius: 2px;
+}
+
+.ol-control button::-moz-focus-inner {
+  border: none;
+  padding: 0;
+}
+
+.ol-touch .ol-control button {
+  font-size: 1.5em;
+}
+
+.ol-control button:focus,.ol-control button:hover {
+  text-decoration: none;
+  background-color: #4c6079;
+  background-color: rgba(0,60,136,.7);
+}
+
+.ol-compass {
+  display: block;
+  font-weight: 400;
+  font-size: 1.2em;
+}

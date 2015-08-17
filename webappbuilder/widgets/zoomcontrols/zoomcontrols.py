@@ -10,6 +10,7 @@ class ZoomControls(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.controls.append("new ol.control.Zoom(%s)" % json.dumps(self._parameters))
+        self.addCss("zoomcontrols.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "zoom-controls.png"))

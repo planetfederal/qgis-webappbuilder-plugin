@@ -45,7 +45,7 @@ class WebAppWidget(object):
         for paramName, value in params.iteritems():
             if paramName in self._parameters:
                 if isinstance(self._parameters[paramName], tuple):
-                    self._parameters[paramName][0] = value
+                    self._parameters[paramName] = (value, self._parameters[paramName][1])
                 else:
                     self._parameters[paramName] = value
 

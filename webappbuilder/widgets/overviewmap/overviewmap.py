@@ -17,6 +17,7 @@ class OverviewMap(WebAppWidget):
                         for layer in layers if layer.showInOverview])
         app.controls.append("new ol.control.OverviewMap({collapsed: %s, layers: [overviewMapBaseLayer, %s]})"
                         % (collapsed, overviewLayers))
+        self.addCss("overviewmap.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "overview-map.png"))

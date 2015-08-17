@@ -11,6 +11,7 @@ import shutil
 class Legend(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
+        self.addCss("legend.css", folder, app)
         app.scripts.append('<script src="./legend/legend.js"></script>')
         self.addScript("legend.js", folder, app)
         self.writeLegendFiles(appdef, folder)

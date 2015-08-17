@@ -9,6 +9,7 @@ class Timeline(WebAppWidget):
     _parameters = {"interval": 500, "numIntervals": 100}
 
     def write(self, appdef, folder, app, progress):
+        self.addCss("timeline.css", folder, app)
         self.addScript("timeline.js", folder, app)
         timelineOptions = self.getTimelineOptions(appdef);
         app.controls.append("new ol.control.TimeLine({minDate:%s, maxDate:%s, interval:%s, numIntervals:%s})"

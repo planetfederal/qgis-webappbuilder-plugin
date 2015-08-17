@@ -73,6 +73,7 @@ class Bookmarks(WebAppWidget):
                       %s
                     </ul>
                   </li>''' % li)
+                self.addCss("bookmarks.css", folder, app)
             bookmarksFilepath = os.path.join(folder, "bookmarks.js")
             with open(bookmarksFilepath, "w") as f:
                 bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]

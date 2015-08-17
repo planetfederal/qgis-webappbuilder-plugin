@@ -6,6 +6,7 @@ class FullScreen(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.controls.append("new ol.control.FullScreen()")
+        self.addCss("fullscreen.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "full-screen.png"))

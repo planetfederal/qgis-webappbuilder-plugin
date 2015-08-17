@@ -13,6 +13,7 @@ class LayersList(WebAppWidget):
                     "allowFiltering": True}
 
     def write(self, appdef, folder, app, progress):
+        self.addCss("layerslist.css", folder, app)
         app.controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(self._parameters))
         self.addScript("layerslist.js", folder, app)
         if self._parameters["showOpacity"]:

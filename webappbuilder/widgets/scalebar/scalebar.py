@@ -11,6 +11,7 @@ class ScaleBar(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.controls.append("new ol.control.ScaleLine(%s)" % json.dumps(self._parameters))
+        self.addCss("scalebar.css", folder, app)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "scale-bar.png"))

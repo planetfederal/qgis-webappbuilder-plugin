@@ -8,6 +8,7 @@ class ThreeDView(WebAppWidget):
         self.addScript("cesium-control.js", folder, app)
         self.addScript("Cesium.js", folder, app)
         self.addScript("ol3cesium.js", folder, app)
+        self.addCss("3dview.css", folder, app)
         self.copyToResources("exports.js", folder)
         self.copyToResources("ol3cesium.js.map", folder)
         app.postmap.append('''var ol3d = new olcs.OLCesium({map: map});

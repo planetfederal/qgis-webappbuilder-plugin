@@ -1,0 +1,32 @@
+
+.chart-panel{
+    display: none;
+    position: absolute;
+    background:rgba(255,255,255,1);
+    padding: 15px;
+    border: 1px solid #000000;
+    bottom: 0px;
+    left: 0;
+    height: 50%;
+    width: 100%;
+    z-index: 101;
+}
+
+.chart-panel-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 10px;
+  right: 30px;
+}
+
+.chart-panel-info {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+#chart{
+    height: calc(100% - 30px);
+    width: 100%;
+    padding-top: 30px;
+}

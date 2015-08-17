@@ -7,6 +7,7 @@ class Query(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.addScript("filtrex.js", folder, app)
         self.addScript("query.js", folder, app)
+        self.addCss("query.css", folder, app)
         app.tools.append('<li><a onclick="showQueryPanel()" href="#"><i class="glyphicon glyphicon-filter"></i>Query</a></li>')
         app.mappanels.append('''<div class="query-panel" id="query-panel">
                                 <form class="form-horizontal">

@@ -9,6 +9,7 @@ class AboutPanel(WebAppWidget):
                     "showNavBarLink": True}
 
     def write(self, appdef, folder, app, progress):
+        self.addCss("about.css", folder, app)
         closer = ('<a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>'
                  if self._parameters["isClosable"] else "")
         app.mappanels.append('''<div class="about-panel" id="about-panel">

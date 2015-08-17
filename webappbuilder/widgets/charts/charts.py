@@ -22,6 +22,7 @@ class ChartTool(WebAppWidget):
         self.addScript("c3.min.js", folder, app)
         self.addScript("charts.js", folder, app)
         self.addCss("c3.min.css", folder, app)
+        self.addCss("charts.css", folder, app)
         app.scripts.append('<script src="./charts.js"></script>')
         app.panels.append('''<div class="chart-panel" id="chart-panel">
                         <span class="chart-panel-info" id="chart-panel-info"></span>
