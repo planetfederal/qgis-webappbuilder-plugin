@@ -79,4 +79,4 @@ class WebAppWidget(object):
 
     def addCss(self, name, folder, app):
         self.copyToResources(name, folder)
-        app.scripts.append('<link href="./resources/name" rel="stylesheet" type="text/css"/>' % name)
+        app.scripts.append('<link href="./resources/%s" rel="stylesheet" type="text/css"/>' % name)

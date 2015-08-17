@@ -17,7 +17,7 @@ class SelectionTools(WebAppWidget):
                           %s
                         </ul>
                       </li>''' % li)
-        self.addScript("select.js", folder, app)
+        self.addScript("selectiontools.js", folder, app)
 
 
     def icon(self):

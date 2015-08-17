@@ -48,7 +48,7 @@ class ChartTool(WebAppWidget):
     def configure(self):
         dlg = ChartToolDialog(self._parameters["charts"])
         dlg.exec_()
-        self._parameters = dlg.charts
+        self._parameters["charts"] = dlg.charts
 
     def checkProblems(self, appdef, problems):
         widgetNames = [w.name() for w in appdef["Widgets"].values()]
@@ -56,7 +56,7 @@ class ChartTool(WebAppWidget):
         if len(charts) == 0:
             problems.append("Chart tool added, but no charts have been defined. "
                         "You should configure the chart tool and define at least one chart")
-        if "selection" not in widgetNames:
+        if "selectiontools" not in widgetNames:
             problems.append("Chart tool added, but the web app has no selection tools. "
                         "Charts are created based on selected features, so you should add selection "
                         "tools to the web app, to allow the user selecting features in the map")
