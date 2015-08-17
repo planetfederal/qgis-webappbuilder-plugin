@@ -1,7 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from texteditor import TextEditorDialog, JSON
-from settings import WrongValueException
+from exceptions import WrongValueException
 from qgis.core import *
 from qgis.gui import *
 

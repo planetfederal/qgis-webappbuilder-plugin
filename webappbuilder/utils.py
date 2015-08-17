@@ -17,10 +17,7 @@ MULTIPLE_SELECTION_ALT_KEY = 1
 MULTIPLE_SELECTION_SHIFT_KEY = 2
 MULTIPLE_SELECTION_NO_KEY = 3
 
-SHOW_BOOKMARKS_IN_PANEL_GO = 0
-SHOW_BOOKMARKS_IN_PANEL_PAN = 1
-SHOW_BOOKMARKS_IN_PANEL_FLY = 2
-SHOW_BOOKMARKS_IN_MENU = 3
+
 
 TYPE_MAP = {
     QGis.WKBPoint: 'Point',
@@ -123,6 +120,11 @@ def exportLayers(layers, folder, progress, precision, crsid):
                     )
         progress.setProgress(int(i*100.0/len(layers)))
 
+
+def findLayerByName(name, layers):
+    for layer in layers:
+        if layer.layer.name() == name:
+            return layer
 
 def safeName(name):
     #TODO: we are assuming that at least one character is valid...

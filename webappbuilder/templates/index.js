@@ -33,7 +33,7 @@ map.getView().fit(originalExtent, map.getSize());
 
 var currentInteraction;
 
-@CESIUM@
+@POSTMAP@
 
 @POPUPLAYERS@
 
@@ -142,7 +142,7 @@ var popupEventTriggered = function(evt) {
                 finishedQuery();
             }
         }
-    }
+    };
 
     fetchData(function() {
         if (popupTexts.length) {

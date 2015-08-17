@@ -13,32 +13,29 @@ from appcreator import createApp, WrongAppDefinitionException,\
 import settings
 from types import MethodType
 import webbrowser
-from parameditor import ParametersEditorDialog
 from treesettingsitem import TreeSettingItem
 from utils import *
 from themeeditor import ThemeEditorDialog
 from functools import partial
-from texteditor import TextEditorDialog, HTML
-from bookmarkseditor import BookmarksEditorDialog
-from charttooldialog import ChartToolDialog
-from settings import WrongValueException, outputFolders
-from linksdialog import LinksDialog
+from settings import outputFolders, webAppWidgets
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
+from exceptions import WrongValueException
 
 
 class MainDialog(QDialog, Ui_MainDialog):
 
     items = {}
 
-
     def __init__(self, appdef):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.widgetButtons = {}
         self.populateLayers()
         self.populateBaseLayers()
         self.populateConfigParams()
         self.populateThemes()
+        self.populateWidgets()
         self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonConfigureTheme.clicked.connect(self.configureTheme)
         self.buttonPreview.clicked.connect(self.updatePreview)
@@ -54,51 +51,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
         self.buttonHelp.clicked.connect(self.showHelp)
-        widgetButtons = {self.attributesTableButton: "Attributes table",
-                        self.attributionButton: "Attribution",
-                        self.fullScreenButton: "Full screen",
-                        self.layersListButton: "Layers list",
-                        self.mousePositionButton: "Mouse position",
-                        self.northArrowButton: "North arrow",
-                        self.overviewButton: "Overview map",
-                        self.scaleBarButton: "Scale bar",
-                        self.zoomControlsButton: "Zoom controls",
-                        self.zoomSliderButton: "Zoom slider",
-                        self.homeButton: "Home button",
-                        self.cesiumButton: "3D view",
-                        self.aboutPanelButton: "About panel",
-                        self.exportAsImageButton: "Export as image",
-                        self.geolocationButton: "Geolocation",
-                        self.measureToolButton: "Measure tool",
-                        self.geocodingButton: "Geocoding",
-                        self.chartToolButton: "Chart tool",
-                        self.linksButton: "Links",
-                        self.helpButton: "Help",
-                        self.bookmarksButton: "Bookmarks",
-                        self.queryButton: "Query",
-                        self.selectionToolsButton: "Selection tools",
-                        self.analysisToolsButton: "Analysis tools",
-                        self.legendButton: "Legend",
-                        self.timelineButton: "Timeline",
-                        self.addLayerButton: "Add layer",
-                        self.printButton: "Print"}
-
-        def _mousePressEvent(selfb, event):
-            QToolButton.mousePressEvent(selfb, event)
-            if event.button() == Qt.RightButton :
-                name = widgetButtons[selfb]
-                menu = QMenu()
-                paramsAction = QAction("Configure...", None)
-                paramsAction.triggered.connect(lambda: self.editWidgetParameters(name))
-                paramsAction.setEnabled(name in settings.widgetsParams)
-                menu.addAction(paramsAction)
-                point = selfb.mapToGlobal(event.pos())
-                menu.exec_(point)
-
-        for b in widgetButtons:
-            b.mousePressEvent = MethodType(_mousePressEvent, b, QToolButton)
-
-        self.widgetButtons = widgetButtons
 
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
@@ -197,12 +149,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             for button, widgetName in self.widgetButtons.iteritems():
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
-                    for paramName, value in appdef["Widgets"][widgetName].iteritems():
-                        if isinstance(settings.widgetsParams[widgetName][paramName], tuple):
-                            settings.widgetsParams[widgetName][paramName] = (value,
-                                    settings.widgetsParams[widgetName][paramName][1])
-                        else:
-                            settings.widgetsParams[widgetName][paramName] = value
+                    button.webAppWidget.setParameters(appdef["Widgets"][widgetName])
             for name in self.settingsItems:
                 if name in appdef["Settings"]:
                     self.settingsItems[name].setValue(appdef["Settings"][name])
@@ -250,40 +197,6 @@ class MainDialog(QDialog, Ui_MainDialog):
     def deployCheckChanged(self):
         self.updateDeployGroups()
 
-    def editWidgetParameters(self, widgetName):
-        if widgetName == "Text panel":
-            dlg = TextEditorDialog(settings.widgetsParams[widgetName]["HTML content"], HTML)
-            dlg.exec_()
-            settings.widgetsParams[widgetName]["HTML content"] = dlg.text
-        elif widgetName == "Links":
-            dlg = LinksDialog(settings.widgetsParams[widgetName]["links"], self)
-            dlg.exec_()
-            if dlg.ok:
-                settings.widgetsParams[widgetName]["links"] = dlg.links
-        elif widgetName == "Bookmarks":
-            dlg = BookmarksEditorDialog(self, settings.widgetsParams[widgetName]["bookmarks"],
-                                        settings.widgetsParams[widgetName]["format"],
-                                        settings.widgetsParams[widgetName]["interval"],
-                                        settings.widgetsParams[widgetName]["introTitle"],
-                                        settings.widgetsParams[widgetName]["introText"],
-                                        settings.widgetsParams[widgetName]["showIndicators"])
-            dlg.exec_()
-            if dlg.bookmarks:
-                settings.widgetsParams[widgetName]["bookmarks"] = dlg.bookmarks
-                settings.widgetsParams[widgetName]["format"] = dlg.format
-                settings.widgetsParams[widgetName]["interval"] = dlg.interval
-                settings.widgetsParams[widgetName]["introTitle"] = dlg.introTitle
-                settings.widgetsParams[widgetName]["introText"] = dlg.introText
-                settings.widgetsParams[widgetName]["showIndicators"] = dlg.showIndicators
-
-        elif widgetName == "Chart tool":
-            dlg = ChartToolDialog(settings.widgetsParams[widgetName]["charts"], self)
-            dlg.exec_()
-            settings.widgetsParams[widgetName]["charts"] = dlg.charts
-        else:
-            dlg = ParametersEditorDialog(settings.widgetsParams[widgetName])
-            dlg.exec_()
-            settings.widgetsParams[widgetName] = dlg.params
 
     buttonStyle = '''QToolButton {background-color: #7c899f;
                                      border-color: #7c899f;
@@ -292,14 +205,51 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      border-radius: 10px;
                                      font: bold 11px;
                                      padding: 15px;
-                                     min-width:100px;
-                                     max-width:250px;
                                     color: white;
                                  }
                                  QToolButton:checked {
                                      background-color: #2d67c6;
                                      border-color:#4d8ef7;
                                  }'''
+
+
+    def populateWidgets(self):
+        def _mousePressEvent(selfb, event):
+            QToolButton.mousePressEvent(selfb, event)
+            if event.button() == Qt.RightButton :
+                menu = QMenu()
+                paramsAction = QAction("Configure...", None)
+                paramsAction.triggered.connect(selfb.webAppWidget.configure)
+                paramsAction.setEnabled(bool(selfb.webAppWidget.parameters()))
+                menu.addAction(paramsAction)
+                point = selfb.mapToGlobal(event.pos())
+                menu.exec_(point)
+
+        for i, (_, w) in enumerate(sorted(webAppWidgets.items())):
+            button = QToolButton(self.scrollAreaWidgetContents)
+            sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
+            button.setSizePolicy(sizePolicy)
+            #button.setMinimumSize(QSize(100, 100))
+            button.setMaximumSize(QSize(120, 120))
+            button.setFixedWidth(120)
+            button.setFixedHeight(120)
+            button.setStyleSheet(self.buttonStyle)
+            button.setIcon(w.icon())
+            button.setText(w.description().replace(" ", "\n"))
+            button.setIconSize(QSize(32, 32))
+            button.setCheckable(True)
+            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            button.webAppWidget = w
+            row = i / 5
+            col = i % 5
+            self.gridLayoutWidgets.addWidget(button, row, col, 1, 1)
+            button.mousePressEvent = MethodType(_mousePressEvent, button, QToolButton)
+            self.widgetButtons[button] = w.name()
+        spacerItem3 = QSpacerItem(20, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayoutWidgets.addItem(spacerItem3, row + 1, 0, 1, 1)
 
     def populateThemes(self):
         self.themesButtons = {}
@@ -314,6 +264,8 @@ class MainDialog(QDialog, Ui_MainDialog):
             button.setIconSize(QSize(80, 80))
             button.setCheckable(True)
             button.setChecked(i == 0)
+            button.setFixedWidth(250)
+            button.setFixedHeight(150)
             button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             button.setStyleSheet(self.buttonStyle)
             def clicked(button):
@@ -507,11 +459,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         widgets = {}
         for button, name in self.widgetButtons.iteritems():
             if button.isChecked():
-                params = settings.widgetsParams.get(name, {}).copy()
-                for k, v, in params.iteritems():
-                    if isinstance(v, tuple):
-                        params[k] = v[0]
-                widgets[name] = params
+                widgets[name] = button.webAppWidget
         return widgets
 
     def _getValue(self, textbox, mandatory):

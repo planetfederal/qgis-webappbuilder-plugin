@@ -1,9 +1,35 @@
 import os
 import copy
 from qgis.core import *
+import importlib
+from webbappwidget import WebAppWidget
+import widgets
+import glob
+import inspect
 
-class WrongValueException(Exception):
-    pass
+import sys
+sys.path.append('C:\Program Files\Brainwy\LiClipse 1.0.0\plugins\org.python.pydev_3.6.0.201406221719\pysrc')
+from pydevd import *
+
+def loadWidgets():
+    _widgets = {}
+    basePath = os.path.join(os.path.dirname(__file__), "widgets")
+    widgetFolders = [os.path.join(basePath,o) for o in os.listdir(basePath)
+                 if os.path.isdir(os.path.join(basePath,o))]
+    for folder in widgetFolders:
+        for f in glob.glob(folder + "/*.py"):
+            moduleName = os.path.splitext(os.path.basename(f))[0]
+            pkgName = os.path.basename(folder)
+            module = importlib.import_module("." + moduleName, package="webappbuilder.widgets." + pkgName)
+            for c in inspect.getmembers(module):
+                if inspect.isclass(c[1]):
+                    bases = [b.__name__ for b in c[1].__bases__]
+                    if (c[1].__module__ == "webappbuilder.widgets.%s.%s" % (pkgName, moduleName)
+                                and "WebAppWidget" in bases):
+                        obj = c[1]()
+                        _widgets[obj.name()] = obj
+
+    return _widgets
 
 def loadThemes():
     allCss = {}
@@ -53,56 +79,13 @@ def joinElements(els):
 baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
 themes = loadThemes()
+webAppWidgets = loadWidgets()
 
 outputFolders = {}
-
-defaultPanelContent = "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
 
 overviewPanelBaseLayers = ["Use main map base layer"]
 overviewPanelBaseLayers.extend(baseLayers.keys())
 
-defaultWidgetsParams = {"About panel": {"content": defaultPanelContent,
-                                        "isClosable": True,
-                                        "showNavBarLink": True},
-                        "Bookmarks": {"bookmarks": [],
-                                      "format": 3,
-                                      "interval": 3,
-                                      "introText": "",
-                                      "introTitle": "",
-                                      "showIndicators": True},
-                        "Chart tool": {"charts": {}},
-                        "Overview map": {"Base layer": ("Use main map base layer", overviewPanelBaseLayers),
-                                         "Collapsed":True},
-                        "Scale bar": {"minWidth": 64,
-                                      "units": ("metric", ("metric", "degrees", "imperial", "nautical", "us"))
-                                      },
-                        "Zoom controls": {"duration": 250, "zoomInLabel": "+", "zoomOutLabel": "-",
-                                         "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2},
-                        "Mouse position": {"projection": "EPSG:4326",
-                                           "coordinateFormat": "ol.coordinate.createStringXY(4)",
-                                           "undefinedHTML": "&nbsp;"},
-                        "Layers list": {"tipLabel": "Layers",
-                                        "showOpacity": False,
-                                        "showZoomTo": False,
-                                        "showDownload": False,
-                                        "allowReordering": False,
-                                        "allowFiltering": True},
-                        "Selection tools": {"Select by rectangle": True,
-                                            "Select by polygon": True
-                                            },
-                        "Links": {"links":{}},
-                        "Timeline": {"interval": 500, "numIntervals": 100},
-                        "Analysis tools":{"Add random points layer": False,
-                                          "Buffer": False,
-                                          "Extract selected features from layer": False,
-                                          "Aggregate": False,
-                                          "Density layer (heatmap)": False,
-                                          "Select within": False,
-                                          "Count features": False,
-                                          "Calculate line length": False,
-                                          "Nearest point": False,
-                                          }
-                        }
 
 zoomLevels = list((str(i) for i in xrange(1,33)))
 precisionLevels = list((str(i) for i in range(6)))
@@ -123,10 +106,12 @@ defaultAppSettings = {
 
 
 def initialize():
-    global widgetsParams
+    #global widgetsParams
     global currentCss
     global appSettings
-    widgetsParams = copy.deepcopy(defaultWidgetsParams)
+    for w in webAppWidgets.values():
+        w.resetParameters()
+    #widgetsParams = copy.deepcopy(defaultWidgetsParams)
     currentTheme = "basic" if "basic" in themes else themes.keys()[0]
     currentCss =  themes[currentTheme]
     appSettings = copy.deepcopy(defaultAppSettings)

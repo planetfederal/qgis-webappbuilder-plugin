@@ -4,7 +4,7 @@ import os
 from qgis.core import *
 from popupeditor import PopupEditorDialog
 from utils import *
-from settings import WrongValueException
+from exceptions import WrongValueException
 from qgis.utils import iface
 from timeinfodialog import TimeInfoDialog
 

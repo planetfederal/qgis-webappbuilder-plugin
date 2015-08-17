@@ -70,40 +70,15 @@ def createApp(appdef, deployData, folder, progress):
 		appdefFile =  projFile + ".appdef"
 		saveAppdef(appdef, appdefFile)
 
-def findLayerByName(name, layers):
-	for layer in layers:
-		if layer.layer.name() == name:
-			return layer
 
 def checkAppCanBeCreated(appdef):
 	viewCrs = appdef["Settings"]["App view CRS"]
 	problems = []
 	layers = appdef["Layers"]
-	if "Chart tool" in appdef["Widgets"]:
-		charts = appdef["Widgets"]["Chart tool"]["charts"]
-		if len(charts) == 0:
-			problems.append("Chart tool added, but no charts have been defined. "
-						"You should configure the chart tool and define at least one chart")
-		if "Selection tools" not in appdef["Widgets"]:
-			problems.append("Chart tool added, but the web app has no selection tools. "
-						"Charts are created based on selected features, so you should add selection "
-						"tools to the web app, to allow the user selecting features in the map")
-		for name, chart in charts.iteritems():
-			layer = findLayerByName(chart["layer"], layers)
-			if layer is None:
-				problems.append("Chart tool %s uses a layer (%s) that is not added to web app" % (name, chart["layer"]))
-			if not layer.allowSelection:
-				problems.append(("Chart tool %s uses a layer (%s) that does not allow selection. " +
-							"Selection should be enabled for that layer.") % (name, chart["layer"]))
 
-	if "Bookmarks" in appdef["Widgets"]:
-		if len(appdef["Widgets"]["Bookmarks"]["bookmarks"]) == 0:
-			problems.append("Bookmarks widget added, but no bookmarks have been defined"
-						"You should configure the bookmarks widget and define at least one bookmark")
-
-	if "Analysis" in appdef["Widgets"]:
-		if len(appdef["Widgets"]["Analysis tools"]) == 0:
-			problems.append("Analysis component has been added, but no analysis functionality has been selected for it.")
+	widgets = appdef["Widgets"].values()
+	for w in widgets:
+		w.checkProblems(appdef, problems)
 
 	for applayer in layers:
 		layer = applayer.layer
@@ -124,11 +99,9 @@ def checkAppCanBeCreated(appdef):
 					"They will not appear correctly if the web app uses a different CRS."
 					"Your web app uses %s" % viewCrs)
 
-	nonVectorLayers = 0
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
-			nonVectorLayers += 1
 			continue
 		renderer = applayer.layer.rendererV2()
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
@@ -136,11 +109,6 @@ def checkAppCanBeCreated(appdef):
 			problems.append("Symbology used by layer %s includes unsupported elements. "
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
-
-	if "Attributes table" in appdef["Widgets"] and nonVectorLayers == len(layers):
-		problems.append("Attributes table control has been added, but there are no suitable "
-					"layers to in the web app to be used with it. "
-					"Local vector layers or WFS layers are needed")
 
 
 	#TODO: check that layers using time attributes are not published using WMS
@@ -151,10 +119,10 @@ def checkAppCanBeCreated(appdef):
 			hasTimeInfo = True
 			break;
 
-	if hasTimeInfo and "Timeline" not in appdef["Widgets"]:
+	if hasTimeInfo and "timeline" not in appdef["Widgets"]:
 		problems.append("There are layers with time information, but timeline widget is not used.")
 
-	if not hasTimeInfo and "Timeline" in appdef["Widgets"]:
+	if not hasTimeInfo and "timeline" in appdef["Widgets"]:
 		problems.append("Timeline widget is used but there are no layers with time information")
 
 	return problems
@@ -349,10 +317,13 @@ class DefaultEncoder(JSONEncoder):
 		return o.__dict__
 
 def saveAppdef(appdef, filename):
-	toSave = {k:v for k,v in appdef.iteritems()}
+	toSave = {k:v for k,v in appdef.iteritems() if k != "Widgets"}
 	for group in toSave["Groups"]:
 		toSave["Groups"][group]["layers"] = [layer.name()
 								for layer in toSave["Groups"][group]["layers"]]
+	toSave["Widgets"] = {}
+	for wName, w in appdef["Widgets"].iteritems():
+		toSave["Widgets"][wName] = w.parameters()
 	layers = []
 	for layer in toSave["Layers"]:
 		layer.layer = layer.layer.name()
