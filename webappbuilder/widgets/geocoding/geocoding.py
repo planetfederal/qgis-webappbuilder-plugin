@@ -15,6 +15,7 @@ class Geocoding(WebAppWidget):
                         </div>''');
         app.mappanels.append('<div id="geocoding-results" class="geocoding-results"></div>')
         self.addScript("geocoding.js", folder, app)
+        self.addCss("geocoding.css", folder, app)
         self.copyToResources("marker.png", folder)
 
     def icon(self):
