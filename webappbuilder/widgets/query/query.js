@@ -2,10 +2,10 @@ var showQueryPanel = function(){
 
     var select = document.getElementById('query-layer');
     if (select.options.length === 0){
-        for (var i = 0, l; i < getSelectableLayers().length; i++) {
-            l = getSelectableLayers()[i];
+        for (var i = 0, lay; i < getSelectableLayers().length; i++) {
+            lay = getSelectableLayers()[i];
             var option = document.createElement('option');
-            option.value = option.textContent = l.get('title');
+            option.value = option.textContent = lay.get('title');
             select.appendChild(option);
         }
     }
