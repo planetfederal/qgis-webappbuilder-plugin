@@ -1,4 +1,4 @@
-showQueryPanel = function(){
+var showQueryPanel = function(){
 
     var select = document.getElementById('query-layer');
     if (select.options.length === 0){
@@ -37,15 +37,8 @@ showQueryPanel = function(){
     };
     this.selectFromQuery = function(mode) {
         if (this_.queryFilter){
-            var layer = null;
             var layerName = document.getElementById('query-layer').value;
-            var lyrs = map.getLayers().getArray().slice().reverse();
-            for (var i = 0; i < lyrs.length; i++){
-                if (lyrs[i].get('title') === layerName){
-                    layer = lyrs[i];
-                    break;
-                }
-            }
+            var layer = getLayerFromLayerName(layerName);
             var layerFeatures = sourceFromLayer(layer).getFeatures();
             var selectedFeatures = selectionManager.getSelection(layer);
             var createFeatureObject = function(feature_){
