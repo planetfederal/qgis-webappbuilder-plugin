@@ -71,7 +71,8 @@ class WebAppWidget(object):
         if not QDir(resourcesFolder).exists():
             QDir().mkpath(resourcesFolder)
         f = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), name)
-        shutil.copy2(f, resourcesFolder)
+        if os.path.exists(f):
+            shutil.copy2(f, resourcesFolder)
 
     def addScript(self, name, folder, app):
         self.copyToResources(name, folder)
