@@ -8,7 +8,6 @@ showAttributesTable_ = function() {
         this.panel.style.display = 'block';
         return;
     }
-    //var selectedFeatures = selectInteraction.getFeatures().getArray();
     this.selectedRowIndices = [];
 
     var this_ = this;
@@ -79,7 +78,7 @@ showAttributesTable_ = function() {
 
     this.createButtons = function() {
         var this_ = this;
-        zoomTo = document.createElement("button");
+        var zoomTo = document.createElement("button");
         zoomTo.setAttribute("type", "button");
         zoomTo.innerHTML = '<i class="glyphicon glyphicon-search"></i> Zoom to selected';
         zoomTo.className = "btn btn-default";
@@ -99,7 +98,7 @@ showAttributesTable_ = function() {
             }
         };
         this.formContainer.appendChild(zoomTo);
-        clear =  document.createElement("button");
+        var clear =  document.createElement("button");
         clear.setAttribute("type", "button");
         clear.innerHTML = '<i class="glyphicon glyphicon-trash"></i> Clear selected';
         clear.className = "btn btn-default";
@@ -108,16 +107,20 @@ showAttributesTable_ = function() {
         };
         this.formContainer.appendChild(clear);
 
-        tableFilterLabel = document.createElement("label");
-        tableFilterLabel.innerHTML = " Filter:";
-        this.formContainer.appendChild(tableFilterLabel);
+        var group = document.createElement('div');
+        group.className = "input-group";
+        var tableFilterLabel = document.createElement("span");
+        tableFilterLabel.innerHTML = "Filter";
+        tableFilterLabel.className = "input-group-addon";
+        group.appendChild(tableFilterLabel);
         this.tableFilterBox = document.createElement("input");
         this.tableFilterBox.setAttribute("type", "text");
         this.tableFilterBox.setAttribute("value", "");
         this.tableFilterBox.className = "form-control";
         this.tableFilterBox.setAttribute("placeholder", "Type filter expression...");
         this.tableFilterBox.onkeyup = this.filterTable;
-        this.formContainer.appendChild(this.tableFilterBox);
+        group.appendChild(this.tableFilterBox);
+        this.formContainer.appendChild(group);
 
         onlySelected = document.createElement("label");
         this.onlySelectedCheck = document.createElement("input");
@@ -236,11 +239,16 @@ showAttributesTable_ = function() {
     };
 
     this.createSelector = function(map) {
-        label = document.createElement("label");
-        label.innerHTML = "Layer:";
-        this.formContainer.appendChild(label);
+
+        var group = document.createElement('div');
+        group.className = "input-group";
+        label = document.createElement("span");
+        label.innerHTML = "Layer";
+        label.className = "input-group-addon";
         this.sel = document.createElement('select');
         this.sel.className = "form-control";
+        group.appendChild(label)
+        group.appendChild(this.sel)
         this_ = this;
         var vectorLayers = getVectorLayers();
         this.sel.onchange = function(){
@@ -264,7 +272,7 @@ showAttributesTable_ = function() {
             }
         }
 
-        this.formContainer.appendChild(this.sel);
+        this.formContainer.appendChild(group);
     };
 
     this.panel = document.getElementsByClassName('attributes-table')[0];
