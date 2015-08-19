@@ -80,11 +80,11 @@ var createEmptyLayer = function(){
     var html = '<div class="row">  ' +
             '<div class="col-md-12"> ' +
             '<form class="form-horizontal"> ' +
-            '<div class="form-inline"> ' +
+            '<div class="form-group"> ' +
             '<label class="col-md-6 control-label" for="new-layer-name"> Layer name </label>'+
             '<div class="col-md-4"> <input id="new-layer-name" type="text" class="form-control input-md">' +
             '</div></div>'+
-            '<div class="form-inline"> ' +
+            '<div class="form-group"> ' +
             '<label class="col-md-6 control-label" for="geom-type-dropdown"> Geometry type</label> ' +
             '<div class="col-md-4">' +
             '<select class="form-control" id="geom-type-dropdown">'+
@@ -92,13 +92,21 @@ var createEmptyLayer = function(){
             '<option>LineString</option>'+
             '<option>Polygon</option>'+
             '</select></div></div>' +
-            '<div class="form-inline"> ' +
-            '<label class="col-md-6 control-label" for="new-layer-fields"> Attributes </label>'+
+            '<div class="form-group"> ' +
+            '<label class="col-md-6 control-label" for="new-layer-fields"> Attributes (comma-separated names) </label>'+
             '<div class="col-md-4"> <input id="new-layer-fields" type="text" class="form-control input-md">' +
+            '</div></div>'+
+            '<div class="form-group"> ' +
+            '<label class="col-md-6 control-label" for="new-layer-color"> Color </label>'+
+            '<div class="col-md-4"> <input value="#000000" id="new-layer-color" type="text" class="color-picker form-control">' +
+            '</div></div>'+
+            '<div class="form-group"> ' +
+            '<label class="col-md-6 control-label" for="new-layer-fillcolor"> Fill color (polygons only) </label>'+
+            '<div class="col-md-4"> <input value="#0000aa" id="new-layer-fillcolor" type="text" class="color-picker form-control">' +
             '</div></div>'+
             '</form></div></div>';
 
-    bootbox.dialog({
+    var dialog = bootbox.dialog({
         title: "Create empty layer",
         message: html,
         buttons: {
@@ -109,14 +117,23 @@ var createEmptyLayer = function(){
                     var type = $("#geom-type-dropdown").val();
                     var attributes = $("#new-layer-fields").val();
                     var title = $("#new-layer-name").val().toString();
-                    _createEmptyLayer(title, type, attributes)
+                    var color = $("#new-layer-color").val().toString();
+                    var fillColor = $("#new-layer-fillcolor").val().toString();
+                    _createEmptyLayer(title, type, attributes, color, fillColor);
                 }
             }
-        }
+        },
+        show: false
     });
+
+    dialog.on('show.bs.modal', function(){
+        $(".color-picker").colorpicker();
+    });
+
+    dialog.modal("show");
 };
 
-var _createEmptyLayer = function(title, type, attributes){
+var _createEmptyLayer = function(title, type, attributes, color, fillColor){
 
     var layer = new ol.layer.Vector({
         title: title,
@@ -127,16 +144,16 @@ var _createEmptyLayer = function(title, type, attributes){
         source: new ol.source.Vector({features: new ol.Collection()}),
         style: new ol.style.Style({
             fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
+                color: fillColor
             }),
             stroke: new ol.style.Stroke({
-                color: '#ffcc33',
+                color: color,
                 width: 2
             }),
             image: new ol.style.Circle({
                 radius: 7,
                 fill: new ol.style.Fill({
-                    color: '#ffcc33'
+                    color: color
                 })
             })
         })
@@ -155,10 +172,10 @@ var enableEditTool = function(){
 
     var layerName = document.getElementById('edit-layer').value;
     var layer = getLayerFromLayerName(layerName);
-    var geomType = layer.get("geomType")
+    var geomType = layer.get("geomType");
     var schema;
     if (geomType){
-        schema = layer.get("schema")
+        schema = layer.get("schema");
     }
     else{
         var source = sourceFromLayer(layer);
