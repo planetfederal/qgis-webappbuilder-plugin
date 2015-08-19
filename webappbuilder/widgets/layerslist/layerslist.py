@@ -10,7 +10,8 @@ class LayersList(WebAppWidget):
                     "showZoomTo": False,
                     "showDownload": False,
                     "allowReordering": False,
-                    "allowFiltering": True}
+                    "allowFiltering": True,
+                    "expandOnHover": True}
 
     def write(self, appdef, folder, app, progress):
         self.addCss("layerslist.css", folder, app)

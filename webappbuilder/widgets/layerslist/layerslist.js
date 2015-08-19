@@ -118,14 +118,14 @@ ol.control.LayerSwitcher = function(opt_options) {
 
     var options = opt_options || {};
 
-    var tipLabel = options.tipLabel ?
-      options.tipLabel : 'Layers list';
+    var tipLabel = options.tipLabel ? options.tipLabel : 'Layers list';
 
     this.showOpacity = options.showOpacity === true;
     this.showDownload = options.showDownload === true;
     this.showZoomTo = options.showZoomTo === true;
     this.allowReordering = options.allowReordering === true;
     this.allowFiltering = options.allowFiltering === true;
+    this.expandOnHover = options.expandOnHover === true;
 
     this.hiddenClassName = 'ol-unselectable ol-control layer-switcher';
     this.shownClassName = this.hiddenClassName + ' shown';
@@ -143,18 +143,28 @@ ol.control.LayerSwitcher = function(opt_options) {
     element.appendChild(this.panel);
 
     var this_ = this;
-    element.onmouseover = function(e) {
-        this_.showPanel();
-    };
-    button.onclick = function(e) {
-        this_.showPanel();
-    };
-    element.onmouseout = function(e) {
-        e = e || window.event;
-        if (!element.contains(e.toElement)) {
-            this_.hidePanel();
-        }
-    };
+
+    if (options.expandOnHover){
+        element.onmouseover = function(e) {
+            this_.showPanel();
+        };
+        element.onmouseout = function(e) {
+            e = e || window.event;
+            if (!element.contains(e.toElement)) {
+                this_.hidePanel();
+            }
+        };
+    }
+    else{
+        button.onclick = function(e) {
+            if (this_.element.className != this_.shownClassName) {
+                this_.showPanel();
+            }
+            else{
+                this_.hidePanel();
+            }
+        };
+    }
 
     ol.control.Control.call(this, {
         element: element,
@@ -353,3 +363,9 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
     return elem;
 };
 
+ol.control.Legend.prototype.setMap = function(map) {
+    ol.control.Control.prototype.setMap.call(this, map);
+    if (map) {
+        map.getLayers().on("change:length", this.renderPanel());
+    }
+};
