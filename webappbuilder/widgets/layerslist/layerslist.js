@@ -367,8 +367,6 @@ ol.control.LayerSwitcher.prototype.setMap = function(map) {
     ol.control.Control.prototype.setMap.call(this, map);
     if (map) {
         var this_ = this;
-        map.getLayers().on("change:length", function(){
-            this_.renderPanel();
-        });
+        map.getLayers().on("change:length", function(){this_.renderPanel();});
     }
 };

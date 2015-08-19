@@ -1,25 +1,36 @@
 var showEditPanel = function(){
 
     var select = document.getElementById('edit-layer');
-    if (select.options.length === 0){
-        var populateLayers = function(){
-            $("#edit-layer").empty();
-            for (var i = 0, lay; i < getVectorLayers().length; i++) {
-                lay = getVectorLayers()[i];
-                var coll = sourceFromLayer(lay).getFeaturesCollection();
-                if (coll){
-                    var option = document.createElement('option');
-                    option.value = option.textContent = lay.get('title');
-                    select.appendChild(option);
-                }
+    var populateLayers = function(){
+        $("#edit-layer").empty();
+        var vectorLayers = getVectorLayers();
+        var editableLayersFound = false;
+        for (var i = 0, lay; i < getVectorLayers().length; i++) {
+            lay = vectorLayers[i];
+            var coll = sourceFromLayer(lay).getFeaturesCollection();
+            if (coll){
+                var option = document.createElement('option');
+                option.value = option.textContent = lay.get('title');
+                select.appendChild(option);
+                editableLayersFound = true;
             }
-        };
-        populateLayers();
+        }
+        if (!editableLayersFound){
+            var option = document.createElement('option');
+            option.value = option.textContent = "[No editable layers available]";
+            select.appendChild(option);
+        }
+    };
+    if (select.options.length === 0){
         select.onchange = function(e) {
-            enableEditTool();
+            if (currentInteraction instanceof ol.interaction.Draw){
+                enableEditTool();
+            }
         };
         map.getLayers().on("change:length", populateLayers);
     }
+    populateLayers();
+
 
     var close = document.getElementById('btn-close-edit');
     if (close){
@@ -37,14 +48,16 @@ var showEditPanel = function(){
     var toggleEdit = document.getElementById('btn-edit-tool');
     toggleEdit.onclick = function(){
         if (currentInteraction instanceof ol.interaction.Draw){
-            toggleEdit.className = "btn btn-default";
+            toggleEdit.innerHTML = "Enable edit mode";
+            toggleEdit.className = "btn btn-primary";
             disableEditTool();
         }
         else{
             var layerName = document.getElementById('edit-layer').value;
             var layer = getLayerFromLayerName(layerName);
             if (layer){
-                toggleEdit.className = "btn btn-primary"
+                toggleEdit.innerHTML = "Disable edit mode";
+                toggleEdit.className = "btn btn-success";
                 enableEditTool();
             }
             else{
