@@ -97,10 +97,11 @@ class Print(WebAppWidget):
                         element["grid"]["crs"] = grid.crs().authid()
                         element["grid"]["annotationEnabled"] = grid.annotationEnabled()
                 elif isinstance(item, QgsComposerPicture):
-                    element = getBasicInfo(item)
                     filename = os.path.basename(item.picturePath())
-                    shutil.copy(item.pictureFile(), os.path.join(printFolder, filename))
-                    element["file"] = filename
+                    if os.path.exists(filename):
+                        element = getBasicInfo(item)
+                        shutil.copy(item.pictureFile(), os.path.join(printFolder, filename))
+                        element["file"] = filename
                 if element is not None:
                     element["type"] = item.__class__.__name__[11:].lower()
                     elements.append(element)
