@@ -20,8 +20,8 @@ class Edit(WebAppWidget):
                                    <a class="btn btn-primary" href="#" id="btn-add-empty-layer">
                                     Create new empty layer
                                    </a>
-                                   <a class="btn btn-primary" href="#" id="btn-edit-tool">
-                                    Edit
+                                   <a class="btn btn-default" href="#" id="btn-edit-tool">
+                                    <i class="glyphicon glyphicon-edit"></i>
                                    </a>
                                    <a class="btn btn-default" href="#" id="btn-close-edit">
                                     Close

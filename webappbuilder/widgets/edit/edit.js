@@ -16,7 +16,7 @@ var showEditPanel = function(){
         };
         populateLayers();
         select.onchange = function(e) {
-            toggleEditTool();
+            enableEditTool();
         };
         map.getLayers().on("change:length", populateLayers);
     }
@@ -36,13 +36,29 @@ var showEditPanel = function(){
     };
     var toggleEdit = document.getElementById('btn-edit-tool');
     toggleEdit.onclick = function(){
-        toggleEditTool();
+        if (currentInteraction instanceof ol.interaction.Draw){
+            toggleEdit.className = "btn btn-default";
+            disableEditTool();
+        }
+        else{
+            var layerName = document.getElementById('edit-layer').value;
+            var layer = getLayerFromLayerName(layerName);
+            if (layer){
+                toggleEdit.className = "btn btn-primary"
+                enableEditTool();
+            }
+            else{
+                var panel = document.getElementById('edit-tool-panel');
+                var alert = document.createElement("div");
+                alert.className = "alert alert-warning";
+                alert.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                    'No editable layer is available. Create one to start editing.';
+                panel.appendChild(alert);
+            }
+        }
     };
 
-
-
     document.getElementById('edit-tool-panel').style.display = 'block';
-
 
 };
 
@@ -79,7 +95,7 @@ var createEmptyLayer = function(){
                 callback: function () {
                     var type = $("#geom-type-dropdown").val();
                     var attributes = $("#new-layer-fields").val();
-                    var title = $("#new-layer-name").val();
+                    var title = $("#new-layer-name").val().toString();
                     _createEmptyLayer(title, type, attributes)
                 }
             }
@@ -117,8 +133,12 @@ var _createEmptyLayer = function(title, type, attributes){
 
 };
 
+var disableEditTool = function(){
+    map.removeInteraction(currentInteraction);
+    currentInteraction = null;
+}
 
-var toggleEditTool = function(){
+var enableEditTool = function(){
 
     var layerName = document.getElementById('edit-layer').value;
     var layer = getLayerFromLayerName(layerName);
@@ -145,6 +165,7 @@ var toggleEditTool = function(){
 
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
+        currentInteraction = null;
     }
 
     var editInteraction = new ol.interaction.Draw({
