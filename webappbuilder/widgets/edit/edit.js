@@ -173,25 +173,7 @@ var enableEditTool = function(){
     var layerName = document.getElementById('edit-layer').value;
     var layer = getLayerFromLayerName(layerName);
     var geomType = layer.get("geomType");
-    var schema;
-    if (geomType){
-        schema = layer.get("schema");
-    }
-    else{
-        var source = sourceFromLayer(layer);
-        var geom = source.getFeatures()[0].getGeometry()
-        if (geom instanceof ol.geom.Point || geom instanceof ol.geom.Point){
-            geomType = "Point";
-        }
-        else if (geom instanceof ol.geom.LineString || geom instanceof ol.geom.MultiLineString){
-            geomType = "LineString";
-        }
-        else if (geom instanceof ol.geom.Polygon || geom instanceof ol.geom.MultiPolygon){
-            geomType = "Polygon";
-        }
-
-        //TODO
-    }
+    var schema = layer.get("schema").trim();
 
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
@@ -202,7 +184,51 @@ var enableEditTool = function(){
                                     features: layer.getSource().getFeaturesCollection(),
                                     type: geomType});
 
+
+    if (schema.length !== 0 ){
+        editInteraction.on("drawend", function(e){
+            var feature = e.feature;
+            var attributes = schema.split(",");
+            editNewFeatureAttributes(feature, attributes);
+        });
+    }
+
     map.addInteraction(editInteraction);
     currentInteraction = editInteraction;
+
+}
+
+var editNewFeatureAttributes = function(feature, attributes){
+
+    var html = '<div class="row">  ' +
+            '<div class="col-md-12"> ' +
+            '<form class="form-horizontal">';
+
+    for (var i = 0; i < attributes.length; i++) {
+        var attr = attributes[i];
+        html += '<div class="form-group"> ' +
+                '<label class="col-md-6 control-label"' +
+                '" for="new-layer-field-value-' + attr +'">' + attr +'</label> ' +
+                '<div class="col-md-4"> <input id="new-layer-field-value-' + attr +'" name="' + attr +
+                '" type="text" class="form-control input-md"> </div></div>';
+    }
+
+    html += '</form></div></div>';
+    bootbox.dialog({
+        title: "New feature attributes",
+        message: html,
+        buttons: {
+            success: {
+                label: "Ok",
+                className: "btn-success",
+                callback: function () {
+                    for (var i = 0; i < attributes.length; i++) {
+                        var value = $("#new-layer-field-value-" + attributes[i]).val();
+                        feature.set(attributes[i], value);
+                    }
+                }
+            }
+        }
+    });
 
 }
