@@ -20,7 +20,7 @@ class WebAppWidget(object):
     def description(self):
         return "Base widget"
 
-    def write(self, appdef, tools, panels, mappanels, scripts, scriptsBottom):
+    def write(self, appdef, tools, app, progress):
         pass
 
     def configure(self):
@@ -74,9 +74,12 @@ class WebAppWidget(object):
         if os.path.exists(f):
             shutil.copy2(f, resourcesFolder)
 
-    def addScript(self, name, folder, app):
+    def addScript(self, name, folder, app, toBottom = False):
         self.copyToResources(name, folder)
-        app.scripts.append('<script src="./resources/%s"></script>' % name)
+        if toBottom:
+            app.scriptsBottom.append('<script src="./resources/%s"></script>' % name)
+        else:
+            app.scripts.append('<script src="./resources/%s"></script>' % name)
 
     def addCss(self, name, folder, app):
         self.copyToResources(name, folder)
