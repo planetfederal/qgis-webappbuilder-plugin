@@ -8,7 +8,7 @@ var printMap = function(layoutName){
 
     for (var i = 0; i < layout.length; i++) {
         if (layout[i].type === "label"){
-            html += '<div class="form-inline"> ' +
+            html += '<div class="form-group"> ' +
                     '<label class="col-md-6 control-label"' +
                     '" for="layout-label-' + layout[i].name +'">' + layout[i].name +'</label> ' +
                     '<div class="col-md-4"> <input id="layout-label-' + layout[i].name +'" name="' + layout[i].name +
@@ -16,7 +16,7 @@ var printMap = function(layoutName){
         }
     }
 
-    html += '<div class="form-inline"> ' +
+    html += '<div class="form-group"> ' +
             '<label class="col-md-6 control-label" for="resolution-dropdown"> Resolution</label> ' +
             '<div class="col-md-4">' +
             '<select class="form-control" id="resolution-dropdown">'+
