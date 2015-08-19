@@ -94,6 +94,9 @@ ol.control.Legend.prototype.renderPanel = function() {
 ol.control.Legend.prototype.setMap = function(map) {
     ol.control.Control.prototype.setMap.call(this, map);
     if (map) {
-        map.getLayers().on("change:length", this.renderPanel());
+        map.getLayers().on("change:length", this.renderPanel);
+    }
+    if (this.showExpandedOnStartup){
+        this.renderPanel();
     }
 };

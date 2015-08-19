@@ -363,9 +363,9 @@ ol.control.LayerSwitcher.prototype.buildLayerTree = function(layer, isInGroup) {
     return elem;
 };
 
-ol.control.Legend.prototype.setMap = function(map) {
+ol.control.LayerSwitcher.prototype.setMap = function(map) {
     ol.control.Control.prototype.setMap.call(this, map);
     if (map) {
-        map.getLayers().on("change:length", this.renderPanel());
+        map.getLayers().on("change:length", this.renderPanel);
     }
 };
