@@ -60,3 +60,11 @@
 .row-hidden-feature {
   color: #bbbbbb;
 }
+
+.attributes-table button,select,input{
+  margin-right: 10px;
+}
+
+.attributes-table .input-group{
+  margin-right: 10px;
+}
