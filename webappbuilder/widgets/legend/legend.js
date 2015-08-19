@@ -3,8 +3,10 @@ ol.control.Legend = function(opt_options) {
 
     var options = opt_options || {};
 
-    var tipLabel = options.tipLabel ?
-      options.tipLabel : 'Legend';
+    var tipLabel = options.tipLabel ? options.tipLabel : 'Legend';
+
+    this.expandOnHover = options.expandOnHover === true;
+    this.showExpandedOnStartup = options.showExpandedOnStartup === true;
 
     this.hiddenClassName = 'ol-unselectable ol-control legend';
     this.shownClassName = this.hiddenClassName + ' shown';
@@ -22,23 +24,37 @@ ol.control.Legend = function(opt_options) {
     element.appendChild(this.panel);
 
     var this_ = this;
-    element.onmouseover = function(e) {
-        this_.showPanel();
-    };
-    button.onclick = function(e) {
-        this_.showPanel();
-    };
-    element.onmouseout = function(e) {
-        e = e || window.event;
-        if (!element.contains(e.toElement)) {
-            this_.hidePanel();
-        }
-    };
+
+    if (options.expandOnHover){
+        element.onmouseover = function(e) {
+            this_.showPanel();
+        };
+        element.onmouseout = function(e) {
+            e = e || window.event;
+            if (!element.contains(e.toElement)) {
+                this_.hidePanel();
+            }
+        };
+    }
+    else{
+        button.onclick = function(e) {
+            if (this_.element.className != this_.shownClassName) {
+                this_.showPanel();
+            }
+            else{
+                this_.hidePanel();
+            }
+        };
+    }
 
     ol.control.Control.call(this, {
         element: element,
         target: options.target
     });
+
+    if (options.showExpandedOnStartup){
+        this.showPanel();
+    }
 
 };
 
@@ -72,5 +88,12 @@ ol.control.Legend.prototype.renderPanel = function() {
         }
         element += " </li>";
         list.append(element);
+    }
+};
+
+ol.control.Legend.prototype.setMap = function(map) {
+    ol.control.Control.prototype.setMap.call(this, map);
+    if (map) {
+        map.getLayers().on("change:length", this.renderPanel());
     }
 };

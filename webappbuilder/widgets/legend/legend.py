@@ -10,12 +10,14 @@ import shutil
 
 class Legend(WebAppWidget):
 
+    _parameters = {"showExpandedOnStartup": False, "expandOnHover": True}
+
     def write(self, appdef, folder, app, progress):
         self.addCss("legend.css", folder, app)
         app.scripts.append('<script src="./legend/legend.js"></script>')
         self.addScript("legend.js", folder, app)
         self.writeLegendFiles(appdef, folder)
-        app.controls.append("new ol.control.Legend()")
+        app.controls.append("new ol.control.Legend(%s)" % json.dumps(self._parameters))
 
     def description(self):
         return "Legend"
