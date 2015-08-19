@@ -6,16 +6,18 @@ from PyQt4.Qt import Qt
 
 class Timeline(WebAppWidget):
 
-    _parameters = {"interval": 500, "numIntervals": 100}
+    _parameters = {"interval": 500, "numIntervals": 100, "autoPlayFromStartup": False}
 
     def write(self, appdef, folder, app, progress):
         self.addCss("timeline.css", folder, app)
         self.addScript("timeline.js", folder, app)
         timelineOptions = self.getTimelineOptions(appdef);
-        app.controls.append("new ol.control.TimeLine({minDate:%s, maxDate:%s, interval:%s, numIntervals:%s})"
+        app.controls.append('''new ol.control.TimeLine({minDate:%s, maxDate:%s,
+                            interval:%s, numIntervals:%s, autoPlayFromStartup:%s})'''
                             % (timelineOptions[0], timelineOptions[1],
                                self._parameters["interval"],
-                               self._parameters["numIntervals"]))
+                               self._parameters["numIntervals"],
+                               str(self._parameters["autoPlayFromStartup"]).lower()))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))

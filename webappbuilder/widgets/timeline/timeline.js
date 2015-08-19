@@ -1,6 +1,6 @@
 ol.control.TimeLine = function(opt_options) {
 
-    var options = opt_options || {minDate: 0, maxDate:1, interval:1, numIntervals:2};
+    var options = opt_options || {minDate: 0, maxDate:1, interval:1, numIntervals:2, autoPlayFromStart:false};
 
     var element = document.createElement('div');
     element.className = "timeline ol-control";
@@ -9,7 +9,6 @@ ol.control.TimeLine = function(opt_options) {
 
     var li = document.createElement('li');
     this.button = document.createElement("button");
-    this.button.innerHTML = '<i class="glyphicon glyphicon-play"></i>';
     this.button.setAttribute("id", "timelineButton");
     var this_ = this;
     this.button.onclick = function(){
@@ -82,6 +81,14 @@ ol.control.TimeLine = function(opt_options) {
         this_.date.valueAsNumber = newTime
         currentTimelineTime = newTime;
         this_.refreshTimeLayers();
+    }
+
+    if (options.autoPlayFromStartup){
+        this.button.innerHTML = '<i class="glyphicon glyphicon-pause"></i>';
+        this.autoplayTimer = setInterval(this_.autoplay, options.interval);
+    }
+    else{
+        this.button.innerHTML = '<i class="glyphicon glyphicon-play"></i>';
     }
 
     element.appendChild(ul);
