@@ -1,9 +1,9 @@
 
 selectByRectangle = function(){
 
-    //measureTool(null);
     if (currentInteraction){
         map.removeInteraction(currentInteraction)
+        currentInteraction = null;
     }
     var dragBoxInteraction = new ol.interaction.DragBox({
         condition: ol.events.condition.noModifierKeys,

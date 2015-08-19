@@ -23,6 +23,7 @@ measureTool = function(measureType){
 
     if (currentInteraction){
         map.removeInteraction(currentInteraction);
+        currentInteraction = null;
     }
 
     if (measureType === null){
