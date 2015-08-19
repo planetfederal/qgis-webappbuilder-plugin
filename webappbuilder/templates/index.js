@@ -111,23 +111,28 @@ var popupEventTriggered = function(evt) {
                         url: url,
                         success: function(data) {
                             var features = geojsonFormat.readFeatures(data);
-                            for (var f = 0; f < features.length; f++) {
-                                var feature = features[f];
-                                var values = feature.getProperties();
-                                for (var key in values) {
-                                    if (key != 'geometry') {
-                                        var value = values[key];
-                                        if (value) {
-                                            popupDef = popupDef.split("[" + key + "]").join(
-                                                String(value));
-                                        } else {
-                                            popupDef = popupDef.split("[" + key + "]").join("NULL");
+                            if (features.length)
+                                for (var f = 0; f < features.length; f++) {
+                                    var popupContent = popupDef;
+                                    var feature = features[f];
+                                    var values = feature.getProperties();
+                                    for (var key in values) {
+                                        if (key != 'geometry') {
+                                            var value = values[key];
+                                            if (value) {
+                                                popupContent = popupDef.split("[" + key + "]").join(
+                                                    String(value));
+                                            } else {
+                                                popupContent = popupDef.split("[" + key + "]").join("NULL");
+                                            }
                                         }
                                     }
+                                    popupTexts.push(popupContent);
                                 }
-                                popupTexts.push(popupDef);
-                                finishedQuery();
+                            else{
+                                popupTexts.push("No features at this location");
                             }
+                            finishedQuery();
                         },
                         error: function(){
                             popupTexts.push('<iframe seamless src="' + url + '"></iframe>');
