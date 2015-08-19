@@ -26,6 +26,8 @@ class Help(WebAppWidget):
         for widget in appdef["Widgets"].values():
             helpContent = widget.widgetHelp()
             helpImageFiles = widget.widgetHelpFiles()
+            content += '<a name="%s"></a>' % widget.name()
+            content += '<h2>%s</h2>' % widget.description()
             content += helpContent
             sections += '<li><a href="#%s">%s</a></li>' % (widget.name(), widget.description())
             for f in helpImageFiles:

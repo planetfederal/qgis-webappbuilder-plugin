@@ -57,8 +57,7 @@ class WebAppWidget(object):
                 text = f.read()
         else:
             text = "Help not available"
-        html = "<h2>%s</h2><p>%s</p>" % (self.description(), text)
-        return html
+        return text
 
     def widgetHelpFiles(self):
         return []

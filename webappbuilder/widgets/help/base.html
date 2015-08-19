@@ -1,27 +1,62 @@
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <link href="../resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-  <title>
-   Help
-  </title>
- </head>
- <body>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>Help</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="../resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            @SECTIONS@
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">@TITLE@ Help</h1>
-          @CONTENT@
-        </div>
+<header class="navbar navbar-default navbar-static-top" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">Help</a>
+    </div>
+  </div>
+</header>
+
+<!-- Begin Body -->
+<div class="container">
+	<div class="row">
+  			<div class="col-md-3" id="leftCol">
+              	
+				<div class="well"> 
+              	<ul class="nav nav-stacked" id="sidebar">
+                  @SECTIONS@
+              	</ul>
+  				</div>
+
+      		</div>  
+      		<div class="col-md-9">
+              	<h2 id="sec0">Help</h2>
+
+              	This document describes the elements available in this web map application and their usage
+            
+           
+              	<hr class="col-md-12">
+
+              	@CONTENT@
+              	
+      		</div> 
+  	</div>
+</div>
 
 
 
- </body>
-
- </html>
+	<!-- script references -->
+		<script src="../resources/jquery.min.js"></script>
+		<script src="../resources/bootstrap/js/bootstrap.min.js"></script>		
+	</body>
+</html>
