@@ -152,23 +152,47 @@ var _createEmptyLayer = function(title, type, attributes, color, fillColor){
         isSelectable: true,
         isRemovable: true,
         source: new ol.source.Vector({features: new ol.Collection()}),
-        style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: fillColor
-            }),
-            stroke: new ol.style.Stroke({
-                color: color,
-                width: 2
-            }),
-            image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: color
-                })
-            })
-        })
     });
 
+    var style = function(feature, resolution) {
+        var selected = layer.selectedFeatures;
+        if (selected && selected.indexOf(feature) != -1) {
+            return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: "rgba(255, 204, 0, 1)",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "rgba(255, 204, 0, 1)",
+                            width: 2
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 7,
+                            fill: new ol.style.Fill({
+                                color: "rgba(255, 204, 0, 1)",
+                            })
+                        })
+                    })];
+        }
+        else{
+            return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: fillColor
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: color,
+                            width: 2
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 7,
+                            fill: new ol.style.Fill({
+                                color: color
+                            })
+                        })
+                    })];
+        }
+    }
+
+    layer.setStyle(style);
     map.addLayer(layer);
 
 };
