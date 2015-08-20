@@ -190,7 +190,7 @@ var _createEmptyLayer = function(title, type, attributes, color, fillColor){
                         })
                     })];
         }
-    }
+    };
 
     layer.setStyle(style);
     map.addLayer(layer);
