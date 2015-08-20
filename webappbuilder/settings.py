@@ -78,9 +78,6 @@ webAppWidgets = loadWidgets()
 
 outputFolders = {}
 
-overviewPanelBaseLayers = ["Use main map base layer"]
-overviewPanelBaseLayers.extend(baseLayers.keys())
-
 
 zoomLevels = list((str(i) for i in xrange(1,33)))
 precisionLevels = list((str(i) for i in range(6)))

@@ -2,13 +2,17 @@ from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
 from webappbuilder.utils import safeName
+from webappbuilder.settings import *
+from webappbuilder.settings import baseLayers
 
 class OverviewMap(WebAppWidget):
 
-    overviewPanelBaseLayers = []
-    #TODO
-    _parameters = {"Base layer": ("Use main map base layer", overviewPanelBaseLayers),
+    def __init__(self):
+        overviewPanelBaseLayers = ["Use main map base layer"]
+        overviewPanelBaseLayers.extend(baseLayers.keys())
+        self._parameters = {"Base layer": ("Use main map base layer", overviewPanelBaseLayers),
                     "Collapsed":True}
+        self.defaultParameters = self._parameters.copy()
 
     def write(self, appdef, folder, app, progress):
         layers = appdef["Layers"]
