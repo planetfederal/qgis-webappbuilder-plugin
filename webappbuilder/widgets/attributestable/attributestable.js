@@ -133,7 +133,12 @@ showAttributesTable_ = function() {
 
     };
 
+    this.featureCollectionModified = function(){
+        this.renderTable();
+    };
+
     this.renderTable = function() {
+        this_ = this;
         try{
             this.tablePanel.removeChild(this.table);
         }
@@ -142,9 +147,16 @@ showAttributesTable_ = function() {
         this.table = document.createElement("TABLE");
         this.table.border = "1";
 
-        var cols = sourceFromLayer(this.currentLayer).getFeatures()[0].getKeys();
+        var source = sourceFromLayer(this.currentLayer);
+        if (this.featColl){
+            this.featColl.un("change:length", this.featureCollectionModified, this);
+        }
+        this.featColl = source.getFeaturesCollection();
+        if (this.featColl){
+            this.featColl.on("change:length", this.featureCollectionModified, this);
+        }
+        var cols = source.getFeatures()[0].getKeys();
         var row = this.table.insertRow(-1);
-
         for (var i = 0; i < cols.length; i++) {
             if (cols[i] != 'geometry') {
                 var headerCell = document.createElement("TH");
@@ -153,13 +165,12 @@ showAttributesTable_ = function() {
             }
         }
 
-        this_ = this;
         this.selectedRowIndices = [];
-        var selectedFeatures = selectionManager.getSelection(this.currentLayer)
-        layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
+        var selectedFeatures = selectionManager.getSelection(this.currentLayer);
+        var layerFeatures = sourceFromLayer(this.currentLayer).getFeatures();
         for (var i = 0; i < layerFeatures.length; i++) {
-            feature = layerFeatures[i];
-            keys = feature.getKeys();
+            var feature = layerFeatures[i];
+            var keys = feature.getKeys();
             row = this_.table.insertRow(-1);
             if (selectedFeatures.indexOf(feature) != -1){
                 row.className = "row-selected";
@@ -247,11 +258,11 @@ showAttributesTable_ = function() {
         label.className = "input-group-addon";
         this.sel = document.createElement('select');
         this.sel.className = "form-control";
-        group.appendChild(label)
-        group.appendChild(this.sel)
+        group.appendChild(label);
+        group.appendChild(this.sel);
         this_ = this;
-        var vectorLayers = getVectorLayers();
         this.sel.onchange = function(){
+            var vectorLayers = getVectorLayers();
             for (var i = 0; i < vectorLayers.length; i++){
                 if (vectorLayers[i].get('title') == this.value){
                     this_.currentLayer = vectorLayers[i];
@@ -262,17 +273,27 @@ showAttributesTable_ = function() {
             this_.renderTable();
         };
 
-        for (var i = 0, l; i < vectorLayers.length; i++) {
-            l = vectorLayers[i];
-            var title = l.get('title');
-            if (title){
-                var option = document.createElement('option');
-                option.value = option.textContent = title;
-                this.sel.appendChild(option);
+        var populateSelector = function(){
+            $(this.sel).empty();
+            var vectorLayers = getVectorLayers();
+            for (var i = 0, l; i < vectorLayers.length; i++) {
+                l = vectorLayers[i];
+                var title = l.get('title');
+                if (title){
+                    var option = document.createElement('option');
+                    option.value = option.textContent = title;
+                    this.sel.appendChild(option);
+                }
             }
         }
+        populateSelector();
 
         this.formContainer.appendChild(group);
+
+        map.getLayers().on("change:length", function(){
+                                                        populateSelector();
+                                                        this_.renderTable();
+                                                    });
     };
 
     this.panel = document.getElementsByClassName('attributes-table')[0];
