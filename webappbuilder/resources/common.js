@@ -155,7 +155,7 @@ var SelectionManager = function(){
         $.merge(layer.selectedFeatures, features);
         this.notify();
         var source = sourceFromLayer(layer);
-        source.changed();//dispatchEvent('change');
+        source.changed();
     };
 
     this.clearSelection = function(layer){
