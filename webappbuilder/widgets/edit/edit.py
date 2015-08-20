@@ -18,7 +18,7 @@ class Edit(WebAppWidget):
         app.tools.append('<li><a onclick="showEditPanel()" href="#"><i class="glyphicon glyphicon-pencil"></i>Edit</a></li>')
         app.mappanels.append('''<div class="edit-tool-panel" id="edit-tool-panel">
                                   <form class="form-inline">
-                                   <div class="input-group" style="">
+                                   <div class="input-group">
                                     <div class="input-group-addon">
                                      Layer
                                     </div>
