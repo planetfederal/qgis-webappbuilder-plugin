@@ -21,10 +21,7 @@ var measureTooltips=[];
 
 measureTool = function(measureType){
 
-    if (currentInteraction){
-        map.removeInteraction(currentInteraction);
-        currentInteraction = null;
-    }
+    removeInteractions();
 
     if (measureType === null){
         for (var i=0; i<measureTooltips.length; i++){
@@ -104,7 +101,7 @@ measureTool = function(measureType){
 
 
       map.addInteraction(measureInteraction);
-      currentInteraction = measureInteraction;
+      currentInteractions = [measureInteraction];
       createMeasureTooltip();
 
     };

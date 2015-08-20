@@ -186,3 +186,16 @@ var SelectionManager = function(){
 };
 
 var selectionManager = new SelectionManager();
+
+var currentInteractions;
+
+var removeInteractions = function(){
+
+    if (currentInteractions){
+        for (var i = 0; i < currentInteractions.length; i++){
+            map.removeInteraction(currentInteractions[i]);
+        }
+        currentInteractions = null;
+    }
+
+};

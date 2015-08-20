@@ -23,10 +23,21 @@ var showEditPanel = function(){
     };
     if (select.options.length === 0){
         select.onchange = function(e) {
-            if (currentInteraction instanceof ol.interaction.Draw){
+            if (currentInteractions && currentInteractions[1] instanceof ol.interaction.Modify){
                 enableEditTool();
             }
         };
+        map.getInteractions().on("change:length", function(){
+            var interactions = map.getInteractions().getArray();
+            for (var i = 0; i < interactions.length; i++){
+                if (interactions[i] instanceof ol.interaction.Modify){
+                    return;
+                }
+            }
+            var toggleEdit = document.getElementById('btn-edit-tool');
+            toggleEdit.innerHTML = "Enable edit mode";
+            toggleEdit.className = "btn btn-primary";
+        });
         map.getLayers().on("change:length", populateLayers);
     }
     populateLayers();
@@ -40,25 +51,24 @@ var showEditPanel = function(){
         };
     }
 
-
     var addLayer = document.getElementById('btn-add-empty-layer');
     addLayer.onclick = function(){
         createEmptyLayer();
     };
     var toggleEdit = document.getElementById('btn-edit-tool');
     toggleEdit.onclick = function(){
-        if (currentInteraction instanceof ol.interaction.Draw){
+        if (currentInteractions && currentInteractions[1] instanceof ol.interaction.Modify){
+            removeInteractions();
             toggleEdit.innerHTML = "Enable edit mode";
             toggleEdit.className = "btn btn-primary";
-            disableEditTool();
         }
         else{
             var layerName = document.getElementById('edit-layer').value;
             var layer = getLayerFromLayerName(layerName);
             if (layer){
+                enableEditTool();
                 toggleEdit.innerHTML = "Disable edit mode";
                 toggleEdit.className = "btn btn-success";
-                enableEditTool();
             }
             else{
                 var panel = document.getElementById('edit-tool-panel');
@@ -163,11 +173,6 @@ var _createEmptyLayer = function(title, type, attributes, color, fillColor){
 
 };
 
-var disableEditTool = function(){
-    map.removeInteraction(currentInteraction);
-    currentInteraction = null;
-}
-
 var enableEditTool = function(){
 
     var layerName = document.getElementById('edit-layer').value;
@@ -175,15 +180,12 @@ var enableEditTool = function(){
     var geomType = layer.get("geomType");
     var schema = layer.get("schema").trim();
 
-    if (currentInteraction){
-        map.removeInteraction(currentInteraction);
-        currentInteraction = null;
-    }
+    removeInteractions();
 
+    var featColl = layer.getSource().getFeaturesCollection();
     var editInteraction = new ol.interaction.Draw({
-                                    features: layer.getSource().getFeaturesCollection(),
+                                    features: featColl,
                                     type: geomType});
-
 
     if (schema.length !== 0 ){
         editInteraction.on("drawend", function(e){
@@ -193,8 +195,18 @@ var enableEditTool = function(){
         });
     }
 
+    var modifyInteraction = new ol.interaction.Modify({
+      features: featColl,
+      deleteCondition: function(event) {
+        return ol.events.condition.shiftKeyOnly(event) &&
+            ol.events.condition.singleClick(event);
+      }
+    });
+
+    map.addInteraction(modifyInteraction);
     map.addInteraction(editInteraction);
-    currentInteraction = editInteraction;
+
+    currentInteractions = [editInteraction, modifyInteraction];
 
 }
 

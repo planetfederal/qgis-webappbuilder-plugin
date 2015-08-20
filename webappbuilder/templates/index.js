@@ -31,7 +31,7 @@ var map = new ol.Map({
 var originalExtent = @BOUNDS@;
 map.getView().fit(originalExtent, map.getSize());
 
-var currentInteraction;
+var currentInteractions;
 
 @POSTMAP@
 

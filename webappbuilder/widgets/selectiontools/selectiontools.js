@@ -1,10 +1,7 @@
+var selectByRectangle = function(){
 
-selectByRectangle = function(){
+    removeInteractions();
 
-    if (currentInteraction){
-        map.removeInteraction(currentInteraction)
-        currentInteraction = null;
-    }
     var dragBoxInteraction = new ol.interaction.DragBox({
         condition: ol.events.condition.noModifierKeys,
         style: new ol.style.Style({
@@ -32,27 +29,15 @@ selectByRectangle = function(){
     });
 
     map.addInteraction(dragBoxInteraction);
-    currentInteraction = dragBoxInteraction;
+    currentInteractions = [dragBoxInteraction];
 
-};
-
-removeSelectionTool = function(){
-
-    measureTool(null);
-    if (currentInteraction){
-        map.removeInteraction(currentInteraction);
-        currentInteraction = null;
-    }
 };
 
 var selectByPolygonSource = new ol.source.Vector();
 
-selectByPolygon = function(){
+var selectByPolygon = function(){
 
-    measureTool(null);
-    if (currentInteraction){
-        map.removeInteraction(currentInteraction);
-    }
+    removeInteractions();
 
     var polygon;
 
@@ -94,7 +79,7 @@ selectByPolygon = function(){
 
 
       map.addInteraction(selectByPolygonInteraction);
-      currentInteraction = selectByPolygonInteraction;
+      currentInteractions = [selectByPolygonInteraction];
 
     };
 
