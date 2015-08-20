@@ -134,7 +134,7 @@ var SelectionManager = function(){
         $.merge(layer.selectedFeatures, features);
         this.notify();
         var source = sourceFromLayer(layer);
-        source.dispatchEvent('change');
+        source.changed();
     };
 
     this.removeFromSelection = function(feature, layer){
@@ -147,7 +147,7 @@ var SelectionManager = function(){
         }
         this.notify();
         var source = sourceFromLayer(layer);
-        source.dispatchEvent('change');
+        source.changed();
     };
 
     this.setSelection = function(features, layer){
@@ -155,7 +155,7 @@ var SelectionManager = function(){
         $.merge(layer.selectedFeatures, features);
         this.notify();
         var source = sourceFromLayer(layer);
-        source.dispatchEvent('change');
+        source.changed();//dispatchEvent('change');
     };
 
     this.clearSelection = function(layer){
