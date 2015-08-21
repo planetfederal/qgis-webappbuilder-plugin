@@ -65,6 +65,7 @@ class Bookmarks(WebAppWidget):
                 bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
                                           %sToBookmark($(evt.relatedTarget).index()-1)
                                     })''' % ["go", "pan", "fly"][params["format"]]
+                self.addCss("bookmarks.css", folder, app)
             else:
                 li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
                 app.tools.append('''<li class="dropdown">
@@ -73,7 +74,8 @@ class Bookmarks(WebAppWidget):
                       %s
                     </ul>
                   </li>''' % li)
-                self.addCss("bookmarks.css", folder, app)
+                bookmarkEvents = ""
+
             bookmarksFilepath = os.path.join(folder, "bookmarks.js")
             with open(bookmarksFilepath, "w") as f:
                 bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]
