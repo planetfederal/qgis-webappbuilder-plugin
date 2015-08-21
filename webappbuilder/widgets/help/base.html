@@ -10,6 +10,12 @@
 		<!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
+		<style>
+            img{
+              padding: 40px;
+              display:block;
+            }
+        </style>
 	</head>
 	<body>
 
@@ -31,25 +37,25 @@
 <div class="container">
 	<div class="row">
   			<div class="col-md-3" id="leftCol">
-              	
-				<div class="well"> 
+
+				<div class="well">
               	<ul class="nav nav-stacked" id="sidebar">
                   @SECTIONS@
               	</ul>
   				</div>
 
-      		</div>  
+      		</div>
       		<div class="col-md-9">
               	<h2 id="sec0">Help</h2>
 
               	This document describes the elements available in this web map application and their usage
-            
-           
+
+
               	<hr class="col-md-12">
 
               	@CONTENT@
-              	
-      		</div> 
+
+      		</div>
   	</div>
 </div>
 
@@ -57,6 +63,6 @@
 
 	<!-- script references -->
 		<script src="../resources/jquery.min.js"></script>
-		<script src="../resources/bootstrap/js/bootstrap.min.js"></script>		
+		<script src="../resources/bootstrap/js/bootstrap.min.js"></script>
 	</body>
 </html>
