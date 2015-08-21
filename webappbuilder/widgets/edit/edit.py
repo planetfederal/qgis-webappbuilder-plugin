@@ -8,6 +8,7 @@ class Edit(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.addScript("edit.js", folder, app)
         self.addCss("edit.css", folder, app)
+        self.addScript("bootbox.min.js", folder, app)
         app.scripts.append('<script src="./resources/colorpicker/js/bootstrap-colorpicker.min.js"></script>')
         app.scripts.append('<link href="./resources/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>')
         dst = os.path.join(folder, "resources", "colorpicker")
