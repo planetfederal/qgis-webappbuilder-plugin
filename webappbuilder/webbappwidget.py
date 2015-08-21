@@ -55,9 +55,7 @@ class WebAppWidget(object):
         if os.path.exists(path):
             with open(path) as f:
                 text = f.read()
-        else:
-            text = "Help not available"
-        return text
+            return text
 
     def widgetHelpFiles(self):
         return []

@@ -25,13 +25,14 @@ class Help(WebAppWidget):
         sections = ""
         for widget in appdef["Widgets"].values():
             helpContent = widget.widgetHelp()
-            helpImageFiles = widget.widgetHelpFiles()
-            content += '<a name="%s"></a>' % widget.name()
-            content += '<h2>%s</h2>' % widget.description()
-            content += helpContent
-            sections += '<li><a href="#%s">%s</a></li>' % (widget.name(), widget.description())
-            for f in helpImageFiles:
-                shutil.copy2(f, helpFolder)
+            if helpContent is not None:
+                helpImageFiles = widget.widgetHelpFiles()
+                content += '<a name="%s"></a>' % widget.name()
+                content += '<h2>%s</h2>' % widget.description()
+                content += helpContent
+                sections += '<li><a href="#%s">%s</a></li>' % (widget.name(), widget.description())
+                for f in helpImageFiles:
+                    shutil.copy2(f, helpFolder)
 
         values = {"@SECTIONS@": sections, "@TITLE@": appdef["Settings"]["Title"],
                   "@CONTENT@": content}
