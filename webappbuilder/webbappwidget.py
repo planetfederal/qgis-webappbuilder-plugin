@@ -58,7 +58,9 @@ class WebAppWidget(object):
             return text
 
     def widgetHelpFiles(self):
-        return []
+        basePath = os.path.dirname(inspect.getfile(self.__class__))
+        return [os.path.join(basePath,o) for o in os.listdir(basePath)
+                if o.startswith("help") and o.endswith(".png")]
 
     def checkProblems(self, appdef, problems):
         pass
