@@ -19,8 +19,8 @@ class Timeline(WebAppWidget):
                                self._parameters["numIntervals"],
                                str(self._parameters["autoPlayFromStartup"]).lower()))
 
-    def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))
+    '''def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))'''
 
     def description(self):
         return "Timeline"

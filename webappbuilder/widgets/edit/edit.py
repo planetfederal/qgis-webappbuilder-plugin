@@ -40,8 +40,8 @@ class Edit(WebAppWidget):
                                   </form>
                                 </div>''')
 
-    def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))
+    '''def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))'''
 
     def description(self):
         return "Edit"

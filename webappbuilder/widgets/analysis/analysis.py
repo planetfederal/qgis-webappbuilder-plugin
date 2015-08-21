@@ -43,8 +43,8 @@ class Analysis(WebAppWidget):
             self.addScript("bootbox.min.js", folder, app)
 
 
-    def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), "analysis.png"))
+    '''def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "analysis.png"))'''
 
     def description(self):
         return "Analysis"
