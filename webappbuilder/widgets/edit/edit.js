@@ -241,7 +241,7 @@ var editNewFeatureAttributes = function(feature, attributes){
             '<form class="form-horizontal">';
 
     for (var i = 0; i < attributes.length; i++) {
-        var attr = attributes[i];
+        var attr = attributes[i].trim();
         html += '<div class="form-group"> ' +
                 '<label class="col-md-6 control-label"' +
                 '" for="new-layer-field-value-' + attr +'">' + attr +'</label> ' +
@@ -259,8 +259,8 @@ var editNewFeatureAttributes = function(feature, attributes){
                 className: "btn-success",
                 callback: function () {
                     for (var i = 0; i < attributes.length; i++) {
-                        var value = $("#new-layer-field-value-" + attributes[i]).val();
-                        feature.set(attributes[i], value);
+                        var value = $("#new-layer-field-value-" + attributes[i].trim()).val();
+                        feature.set(attributes[i].trim(), value);
                     }
                 }
             }
