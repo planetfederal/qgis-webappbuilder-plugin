@@ -97,27 +97,9 @@ def exportLayers(layers, folder, progress, precision, crsid):
                             line = line.replace("]]", "]")
                         f.write(line)
             elif layer.type() == layer.RasterLayer:
-                orgFile = layer.source().replace("\\", "/")
                 destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg").replace("\\", "/")
-                settings = QSettings()
-                path = unicode(settings.value('/GdalTools/gdalPath', ''))
-                envval = unicode(os.getenv('PATH'))
-                if not path.lower() in envval.lower().split(os.pathsep):
-                    envval += '%s%s' % (os.pathsep, path)
-                    os.putenv('PATH', envval)
-                command = 'gdal_translate -of JPEG -a_srs %s %s %s' % (crsid, orgFile, destFile)
-                if os.name == 'nt':
-                    command = command.split(" ")
-                else:
-                    command = [command]
-                subprocess.Popen(
-                    command,
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stdin=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    universal_newlines=False,
-                    )
+                img = layer.previewAsImage(QSize(layer.width(),layer.height()))
+                img.save(destFile)
         progress.setProgress(int(i*100.0/len(layers)))
 
 
