@@ -155,9 +155,8 @@ def writeLayersAndGroups(appdef, folder, progress):
             baseJs.append(baseOverlays[b])
     baseLayer = "baseLayers = [%s];" % ",".join(baseJs)
 
-    groupBaseLayers = appdef["Settings"]["Group base layers"]
-    if groupBaseLayers:
-        baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
+
+    baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
 
     if "overviewmap" in widgets:
         overviewMapBaseLayerName = widgets["overviewmap"].parameters()["Base layer"]
@@ -202,6 +201,8 @@ def writeLayersAndGroups(appdef, folder, progress):
             layersList.append("lyr_" + safeName(layer.name()))
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
+    groupBaseLayers = appdef["Settings"]["Group base layers"]
+    
     if base:
         if groupBaseLayers:
             layersList += "layersList.unshift(baseLayersGroup);"
