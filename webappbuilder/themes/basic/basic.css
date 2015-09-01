@@ -3,6 +3,11 @@
   width: 100px;
 }
 
+.navbar-nav {
+  margin: 0;
+  padding: 0px 0px;
+}
+
 html, body {
     height: 100%;
     padding: 0;
