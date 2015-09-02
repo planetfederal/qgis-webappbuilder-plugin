@@ -18,9 +18,6 @@ import json
 import utils
 import requests
 
-class WrongAppDefinitionException(Exception):
-	pass
-
 def createApp(appdef, deployData, folder, progress):
 	if deployData:
 		usesGeoServer = False

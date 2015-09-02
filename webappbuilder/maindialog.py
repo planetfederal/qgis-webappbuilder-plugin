@@ -8,8 +8,7 @@ import utils
 from collections import defaultdict
 from appwriter import writeWebApp
 from qgis.utils import iface
-from appcreator import createApp, WrongAppDefinitionException,\
-    AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
+from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
 import settings
 from types import MethodType
 import webbrowser
@@ -376,16 +375,19 @@ class MainDialog(QDialog, Ui_MainDialog):
             QApplication.restoreOverrideCursor()
 
     def updatePreview(self):
+        appdef = self.createAppDefinition(True)
+        problems = checkAppCanBeCreated(appdef)
+        if problems:
+            dlg = AppDefProblemsDialog(problems)
+            dlg.exec_()
+            if not dlg.ok:
+                return
         try:
-            appdef = self.createAppDefinition(True)
             path = self._run(lambda: writeWebApp(appdef, utils.tempFolder(), True, self.progress))
             path = "file:///" + path.replace("\\","/")
             webbrowser.open_new(path)
         except WrongValueException:
             pass
-        except WrongAppDefinitionException, e:
-            dlg = AppDefProblemsDialog(unicode(e))
-            dlg.exec_()
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
