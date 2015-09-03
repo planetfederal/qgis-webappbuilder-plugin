@@ -6,6 +6,7 @@ class HomeButton(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         self.addScript("homebutton.js", folder, app)
+        self.addCss("homebutton.css", folder, app)
         app.controls.append("new ol.control.HomeButton()")
 
     def icon(self):
