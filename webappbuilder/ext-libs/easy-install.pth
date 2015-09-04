@@ -3,4 +3,5 @@ import sys; sys.__plen = len(sys.path)
 ./six-1.9.0-py2.7.egg
 ./beautifulsoup4-4.3.2-py2.7.egg
 ./httplib2-0.8-py2.7.egg
+./requests-2.0.1-py2.7.egg
 import sys; new=sys.path[sys.__plen:]; del sys.path[sys.__plen:]; p=getattr(sys,'__egginsert',0); sys.path[p:p]=new; sys.__egginsert = p+len(new)
