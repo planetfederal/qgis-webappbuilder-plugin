@@ -1,34 +1,31 @@
 
 var addLayerFromFile = function(){
 
-    var readFeatures = function(text, filename){
+    var readFeatures = function(text, filename, color, fillColor){
         var formats = {"geojson": new ol.format.GeoJSON(), "kml":new ol.format.KML(), "gpx":new ol.format.GPX()};
         var ext = filename.split('.').pop().toLowerCase();
         var format = formats[ext];
         if (format){
-            try {
+            try{
                 var crs = format.readProjection(text);
-                var features = format.readFeatures(text,
-                        {dataProjection: crs.getCode(),
-                        featureProjection: map.getView().getProjection().getCode()});
-                return features;
-            } catch (e) {}
-        }
-        return null;
-    }
-
-    var _addLayerFromFile = function(f, color, fillColor){
-        if (f) {
-            var r = new FileReader();
-            r.onload = function(e) {
-                var contents = e.target.result;
-                var features = readFeatures(contents, f.name);
-                if (features){
+                if (typeof(crs) === "undefined"){
+                    throw "wrong crs";
+                }
+            } catch(e){
+                $("html").css("cursor", "default");
+                alert("Could not read CRS info from layer.");
+                return;
+            }
+            var createLayer = function(){
+                try{
+                    var features = format.readFeatures(text,
+                            {dataProjection: crs.getCode(),
+                            featureProjection: map.getView().getProjection().getCode()});
                     var lyr = new ol.layer.Vector({
                         source:  new ol.source.Vector({
                                     features: features
                                 }),
-                        title: f.name,
+                        title: filename,
                         isRemovable: true,
                         isSelectable: true
                     });
@@ -71,15 +68,46 @@ var addLayerFromFile = function(){
                     };
                     lyr.setStyle(style);
                     map.addLayer(lyr);
-                }
-                else{
+                } catch(e){
                     $("html").css("cursor", "default");
                     alert("Failed to load file.");
+                    return;
                 }
+            };
+            var code = crs.getCode().split(":").pop();
+            if (code != "4326" && code != "3857" && code != "CRS84"){
+                try{
+                    var script = document.createElement('script');
+                    script.src = "http://epsg.io/" + code + ".js";
+                    script.onload = function () {
+                        createLayer();
+                    };
+                    document.head.appendChild(script);
+                } catch(e){
+                    $("html").css("cursor", "default");
+                    alert("Failed to load file. Unsupported projection.");
+                }
+            }
+            else{
+                createLayer();
+            }
+        }
+        else{
+            $("html").css("cursor", "default");
+            alert("Failed to load file. Unsupported format.");
+        }
+    };
+
+    var _addLayerFromFile = function(f, color, fillColor){
+        if (f) {
+            var r = new FileReader();
+            r.onload = function(e) {
+                var contents = e.target.result;
+                readFeatures(contents, f.name, color, fillColor);
             }
             r.readAsText(f);
         } else {
-            alert("Failed to load file");
+            alert("Failed to load file.");
         }
     };
 
