@@ -1,35 +1,40 @@
 
 ol.control.Geolocation = function() {
 
-    this_ = this;
-    geolocate = function(){
+    var this_ = this;
+    var geolocate = function(){
+        var view = this_.getMap().getView();
         if (this_.geolocation){
             if (this_.geolocation.getTracking()){
                 this_.getMap().removeOverlay(this_.marker);
                 this_.geolocation.setTracking(false);
             }
             else{
+                var pos = this_.geolocation.getPosition();
                 this_.getMap().addOverlay(this_.marker);
                 this_.geolocation.setTracking(true);
-                view.setCenter(this_.geolocation.getPosition());
+                view.setCenter(pos);
+                this_.marker.setPosition(pos);
             }
         }
         else{
-            var view = this_.getMap().getView();
             this_.geolocation = new ol.Geolocation({
                     projection: view.getProjection(),
                     tracking: true
             });
-            view.setCenter(this_.geolocation.getPosition());
-            this_.geolocation.on('change', function(evt) {
-                view.setCenter(this_.geolocation.getPosition());
-            });
+            var pos = this_.geolocation.getPosition();
+            view.setCenter(pos);
             this_.marker = new ol.Overlay({
-                element: /** @type {Element} */ ($('<i/>').addClass('icon-flag').get(0)),
+                element: $('<i/>').addClass('icon-flag').get(0),
                 positioning: 'bottom-left',
                 stopEvent: false
             });
-            this_.marker.bindTo('position', this_.geolocation);
+            this_.marker.setPosition(pos);
+            this_.geolocation.on('change:position', function() {
+                var pos = this_.geolocation.getPosition();
+                this_.marker.setPosition(pos);
+                view.setCenter(pos);
+            });
             this_.getMap().addOverlay(this_.marker);
         }
     };
