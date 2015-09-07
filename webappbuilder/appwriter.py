@@ -9,6 +9,7 @@ from PyQt4.QtSvg import *
 from utils import *
 from settings import *
 from olwriter import exportStyles, layerToJavascript
+from collections import OrderedDict
 
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
@@ -120,8 +121,8 @@ def writeHtml(appdef, folder, app, progress):
         logo = ""
     values = {"@TITLE@": appdef["Settings"]["Title"],
               "@LOGO@": logo,
-                "@SCRIPTS@": "\n".join(set(app.scripts)),
-                "@SCRIPTSBOTTOM@": "\n".join(set(app.scriptsBottom)),
+                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
+                "@SCRIPTSBOTTOM@": "\n".join(OrderedDict((item,None) for item in app.scriptsBottom).keys()),
                 "@MAPPANELS@": "\n".join(app.mappanels),
                 "@PANELS@": "\n".join(app.panels),
                 "@TOOLBAR@": "\n".join(app.tools)}
@@ -202,7 +203,7 @@ def writeLayersAndGroups(appdef, folder, progress):
 
     layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
     groupBaseLayers = appdef["Settings"]["Group base layers"]
-    
+
     if base:
         if groupBaseLayers:
             layersList += "layersList.unshift(baseLayersGroup);"
