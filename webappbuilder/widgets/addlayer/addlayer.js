@@ -1,10 +1,11 @@
 
 var addLayerFromFile = function(){
 
-    var readFeatures = function(text){
-        var formats = [new ol.format.GeoJSON(), new ol.format.KML(), new ol.format.GPX()]
-        for(var i=0, len=formats.length; i< len; i++){
-            var format = formats[i];
+    var readFeatures = function(text, filename){
+        var formats = {"geojson": new ol.format.GeoJSON(), "kml":new ol.format.KML(), "gpx":new ol.format.GPX()};
+        var ext = filename.split('.').pop().toLowerCase();
+        var format = formats[ext];
+        if (format){
             try {
                 var crs = format.readProjection(text);
                 var features = format.readFeatures(text,
@@ -21,7 +22,7 @@ var addLayerFromFile = function(){
             var r = new FileReader();
             r.onload = function(e) {
                 var contents = e.target.result;
-                var features = readFeatures(contents);
+                var features = readFeatures(contents, f.name);
                 if (features){
                     var lyr = new ol.layer.Vector({
                         source:  new ol.source.Vector({
@@ -73,7 +74,7 @@ var addLayerFromFile = function(){
                 }
                 else{
                     $("html").css("cursor", "default");
-                    alert("Failed to load file");
+                    alert("Failed to load file.");
                 }
             }
             r.readAsText(f);
@@ -126,7 +127,7 @@ var addLayerFromFile = function(){
     dialog.on('show.bs.modal', function(){
         $(".color-picker").colorpicker();
         $('input[id=new-layer-file-selector]').change(function() {
-            $('#new-layer-file-textbox').val($(this).val());
+            $('#new-layer-file-textbox').val($(this).prop("files")[0].name);
         });
     });
 
