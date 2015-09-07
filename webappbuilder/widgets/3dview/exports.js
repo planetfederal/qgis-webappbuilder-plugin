@@ -2,10 +2,11 @@ goog.require('olcs.AbstractSynchronizer');
 goog.require('olcs.Camera');
 goog.require('olcs.DragBox');
 goog.require('olcs.DragBoxEventType');
+goog.require('olcs.FeatureConverter');
 goog.require('olcs.OLCesium');
+goog.require('olcs.RasterSynchronizer');
 goog.require('olcs.VectorSynchronizer');
 goog.require('olcs.core');
-goog.require('olcs.core.OlLayerPrimitive');
 
 
 goog.exportSymbol(
@@ -88,8 +89,17 @@ goog.exportProperty(
 
 goog.exportProperty(
     olcs.Camera.prototype,
+    'readFromView',
+    olcs.Camera.prototype.readFromView);
+
+goog.exportProperty(
+    olcs.Camera.prototype,
     'updateView',
     olcs.Camera.prototype.updateView);
+
+goog.exportSymbol(
+    'olcs.core.computePixelSizeAtCoordinate',
+    olcs.core.computePixelSizeAtCoordinate);
 
 goog.exportSymbol(
     'olcs.core.applyHeightOffsetToGeometry',
@@ -102,6 +112,10 @@ goog.exportSymbol(
 goog.exportSymbol(
     'olcs.core.setHeadingUsingBottomCenter',
     olcs.core.setHeadingUsingBottomCenter);
+
+goog.exportSymbol(
+    'olcs.core.pickOnTerrainOrEllipsoid',
+    olcs.core.pickOnTerrainOrEllipsoid);
 
 goog.exportSymbol(
     'olcs.core.pickBottomPoint',
@@ -144,44 +158,12 @@ goog.exportSymbol(
     olcs.core.ol4326CoordinateArrayToCsCartesians);
 
 goog.exportSymbol(
-    'olcs.core.olCircleGeometryToCesium',
-    olcs.core.olCircleGeometryToCesium);
+    'olcs.core.olGeometryCloneTo4326',
+    olcs.core.olGeometryCloneTo4326);
 
 goog.exportSymbol(
-    'olcs.core.olLineStringGeometryToCesium',
-    olcs.core.olLineStringGeometryToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olPolygonGeometryToCesium',
-    olcs.core.olPolygonGeometryToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olPointGeometryToCesium',
-    olcs.core.olPointGeometryToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olMultiGeometryToCesium',
-    olcs.core.olMultiGeometryToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olGeometry4326TextPartToCesium',
-    olcs.core.olGeometry4326TextPartToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olStyleToCesium',
-    olcs.core.olStyleToCesium);
-
-goog.exportSymbol(
-    'olcs.core.computePlainStyle',
-    olcs.core.computePlainStyle);
-
-goog.exportSymbol(
-    'olcs.core.olFeatureToCesium',
-    olcs.core.olFeatureToCesium);
-
-goog.exportSymbol(
-    'olcs.core.olVectorLayerToCesium',
-    olcs.core.olVectorLayerToCesium);
+    'olcs.core.convertColorToCesium',
+    olcs.core.convertColorToCesium);
 
 goog.exportSymbol(
     'olcs.DragBox',
@@ -196,6 +178,75 @@ goog.exportProperty(
     olcs.DragBox.prototype,
     'listen',
     olcs.DragBox.prototype.listen);
+
+goog.exportSymbol(
+    'olcs.FeatureConverter',
+    olcs.FeatureConverter);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'csAddBillboard',
+    olcs.FeatureConverter.prototype.csAddBillboard);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olCircleGeometryToCesium',
+    olcs.FeatureConverter.prototype.olCircleGeometryToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olLineStringGeometryToCesium',
+    olcs.FeatureConverter.prototype.olLineStringGeometryToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olPolygonGeometryToCesium',
+    olcs.FeatureConverter.prototype.olPolygonGeometryToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'getHeightReference',
+    olcs.FeatureConverter.prototype.getHeightReference);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olPointGeometryToCesium',
+    olcs.FeatureConverter.prototype.olPointGeometryToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olMultiGeometryToCesium',
+    olcs.FeatureConverter.prototype.olMultiGeometryToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olGeometry4326TextPartToCesium',
+    olcs.FeatureConverter.prototype.olGeometry4326TextPartToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olStyleToCesium',
+    olcs.FeatureConverter.prototype.olStyleToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'computePlainStyle',
+    olcs.FeatureConverter.prototype.computePlainStyle);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olFeatureToCesium',
+    olcs.FeatureConverter.prototype.olFeatureToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'olVectorLayerToCesium',
+    olcs.FeatureConverter.prototype.olVectorLayerToCesium);
+
+goog.exportProperty(
+    olcs.FeatureConverter.prototype,
+    'convert',
+    olcs.FeatureConverter.prototype.convert);
 
 goog.exportSymbol(
     'olcs.OLCesium',
@@ -232,10 +283,9 @@ goog.exportProperty(
     olcs.OLCesium.prototype.warmUp);
 
 goog.exportSymbol(
+    'olcs.RasterSynchronizer',
+    olcs.RasterSynchronizer);
+
+goog.exportSymbol(
     'olcs.VectorSynchronizer',
     olcs.VectorSynchronizer);
-
-goog.exportProperty(
-    olcs.core.OlLayerPrimitive.prototype,
-    'convert',
-    olcs.core.OlLayerPrimitive.prototype.convert);

@@ -1,6 +1,7 @@
 from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
+import shutil
 
 class ThreeDView(WebAppWidget):
 
@@ -11,6 +12,9 @@ class ThreeDView(WebAppWidget):
         self.addCss("3dview.css", folder, app)
         self.copyToResources("exports.js", folder)
         self.copyToResources("ol3cesium.js.map", folder)
+        dst = os.path.join(folder, "resources", "Assets")
+        resourcesFolder = os.path.join(os.path.dirname(__file__), "Assets")
+        shutil.copytree(resourcesFolder, dst)
         app.postmap.append('''var ol3d = new olcs.OLCesium({map: map});
                     var scene = ol3d.getCesiumScene();
                     var terrainProvider = new Cesium.CesiumTerrainProvider({
