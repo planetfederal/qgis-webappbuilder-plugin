@@ -107,7 +107,7 @@ var addLayerFromFile = function(){
             '</form></div></div>';
 
     var dialog = bootbox.dialog({
-        title: "Create empty layer",
+        title: "Add layer",
         message: html,
         buttons: {
             success: {
