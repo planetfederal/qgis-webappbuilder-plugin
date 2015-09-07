@@ -42,7 +42,7 @@ searchAddress = function(){
 
 goToAddress = function(lat1, lng1, lat2, lng2, osm_type) {
     document.getElementById('geocoding-results').style.display = 'none';
-    var pos = ol.proj.transform([lng1, lat1], 'EPSG:4326', 'EPSG:3857');
+    var pos = ol.proj.transform([lng1, lat1], 'EPSG:4326', map.getView().getProjection().getCode());
     map.getView().setCenter(pos);
     map.getView().setZoom(10);
     var feat = new ol.Feature({
