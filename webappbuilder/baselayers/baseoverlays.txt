@@ -45,7 +45,7 @@ new ol.layer.Tile({
 	})
 })
 
-/*OpenWeatherMap temperature*/
+/*OpenWeatherMap temp*/
 new ol.layer.Tile({
 	type: 'base',
 	title: 'OpenWeatherMap temperature',

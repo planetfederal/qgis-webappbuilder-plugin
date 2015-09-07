@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Mon Sep 07 11:40:08 2015
+# Created: Mon Sep 07 12:13:38 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainDialog(object):
     def setupUi(self, MainDialog):
         MainDialog.setObjectName(_fromUtf8("MainDialog"))
-        MainDialog.resize(742, 553)
+        MainDialog.resize(761, 606)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/ol.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainDialog.setWindowIcon(icon)
@@ -134,7 +134,7 @@ class Ui_MainDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.widgetBaseLayers = QtGui.QWidget()
-        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 698, 206))
+        self.widgetBaseLayers.setGeometry(QtCore.QRect(0, 0, 717, 232))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -152,7 +152,7 @@ class Ui_MainDialog(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.widgetBaseOverlays = QtGui.QWidget()
-        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 698, 205))
+        self.widgetBaseOverlays.setGeometry(QtCore.QRect(0, 0, 717, 232))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -181,7 +181,7 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 698, 438))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 698, 491))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayoutWidgets = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayoutWidgets.setObjectName(_fromUtf8("gridLayoutWidgets"))

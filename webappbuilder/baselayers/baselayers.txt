@@ -9,7 +9,7 @@ new ol.layer.Tile({
 	})
 })
 
-/*CartoDB without labels*/
+/*CartoDB no labels*/
 new ol.layer.Tile({
 	type: 'base',
 	title: 'CartoDB light without labels',
@@ -31,7 +31,7 @@ new ol.layer.Tile({
 	})
 })
 
-/*CartoDB dark without labels*/
+/*CartoDB dark no labels*/
 new ol.layer.Tile({
 	type: 'base',
 	title: 'CartoDB dark without labels',

@@ -204,7 +204,8 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      border-radius: 10px;
                                      font: bold 11px;
                                      padding: 15px;
-                                    color: white;
+                                     max-width: 220px;
+                                     color: white;
                                  }
                                  QToolButton:checked {
                                      background-color: #2d67c6;
@@ -231,10 +232,9 @@ class MainDialog(QDialog, Ui_MainDialog):
             sizePolicy.setVerticalStretch(0)
             sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
             button.setSizePolicy(sizePolicy)
-            #button.setMinimumSize(QSize(100, 100))
-            button.setMaximumSize(QSize(120, 120))
-            button.setFixedWidth(120)
-            button.setFixedHeight(120)
+            button.setMaximumSize(QSize(110, 110))
+            button.setFixedWidth(110)
+            button.setFixedHeight(110)
             button.setStyleSheet(self.buttonStyle)
             button.setIcon(w.icon())
             button.setText(w.description().replace(" ", "\n"))
