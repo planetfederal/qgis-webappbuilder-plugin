@@ -6,6 +6,8 @@ import resources_rc
 from maindialog import MainDialog
 from appcreator import loadAppdef
 from settings import initialize
+import shutil
+from utils import tempFolder
 
 class WebAppBuilderPlugin:
 
@@ -30,6 +32,7 @@ class WebAppBuilderPlugin:
             removeUpdatePluginMenu("Boundless")
         except:
             pass
+        shutil.rmtree(tempFolder())
 
     def run(self):
         appdef = None
