@@ -4,6 +4,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 import subprocess
 import uuid
+import processing
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -43,6 +44,14 @@ class Layer():
         self.timeInfo = timeInfo
         self.showInControls = showInControls
 
+    @staticmethod
+    def fromDict(d):
+        layer = Layer(*[None] * 10)
+        for a, b in d.iteritems():
+            setattr(layer, a, b)
+        layer.layer = processing.getObject(layer.layer)
+        return layer
+
 
 def replaceInTemplate(template, values):
     path = os.path.join(os.path.dirname(__file__), "templates", template)
@@ -66,6 +75,13 @@ def tempFilenameInTempFolder(basename):
         QDir().mkpath(folder)
     filename =  os.path.join(folder, basename)
     return filename
+
+def tempFolderInTempFolder():
+    path = tempFolder()
+    folder = os.path.join(path, str(uuid.uuid4()).replace("-",""))
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+    return folder
 
 def exportLayers(layers, folder, progress, precision, crsid):
     progress.setText("Writing local layer files")
@@ -112,3 +128,5 @@ def safeName(name):
     #TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
     return ''.join(c for c in name if c in validChars).lower()
+
+

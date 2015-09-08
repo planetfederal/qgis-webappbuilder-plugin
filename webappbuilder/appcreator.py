@@ -4,9 +4,6 @@ from appwriter import writeWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from processing.core.Processing import Processing
-from processing.gui import AlgorithmExecutor
-from processing.algs.gdal.ogr2ogrtopostgis import Ogr2OgrToPostGis as ogr2ogr
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from geoserver.catalog import Catalog
 from utils import *
@@ -17,6 +14,7 @@ from json.encoder import JSONEncoder
 import json
 import utils
 import requests
+from settings import webAppWidgets
 
 def createApp(appdef, deployData, folder, progress):
 	if deployData:
@@ -337,6 +335,26 @@ def loadAppdef(filename):
 	except Exception, e:
 		return None
 
+'''
+Converts a appdef coming from an appdef file (a dict with only string objects)
+into a dict that contains layers, widgets, etc, so it can be passed to the methods
+that create the webapp based on it. It modifies values of objects in the appdef dict,
+based on the content of the current project.
+'''
+def processAppdef(appdef):
+	newWidgets = {}
+	for w, params in appdef["Widgets"].iteritems():
+		obj = webAppWidgets[w]
+		obj.setParameters(params)
+		newWidgets[w] = obj
+	appdef["Widgets"] = newWidgets
+	newLayers = []
+	for layer in appdef["Layers"]:
+		newLayers.append(Layer.fromDict(layer))
+	appdef["Layers"] = newLayers
+
+
+
 warningIcon = os.path.join(os.path.dirname(__file__), "icons", "warning.png")
 
 class AppDefProblemsDialog(QDialog):
@@ -381,4 +399,9 @@ class AppDefProblemsDialog(QDialog):
 	def okPressed(self):
 		self.ok = True
 		self.close()
+
+
+
+
+
 
