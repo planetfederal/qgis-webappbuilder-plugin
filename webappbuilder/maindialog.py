@@ -386,12 +386,18 @@ class MainDialog(QDialog, Ui_MainDialog):
             path = self._run(lambda: writeWebApp(appdef, utils.tempFolder(), True, self.progress))
             path = "file:///" + path.replace("\\","/")
             webbrowser.open_new(path)
+            projFile = QgsProject.instance().fileName()
+            if projFile:
+                appdefFile =  projFile + ".appdef"
+                saveAppdef(appdef, appdefFile)
+
         except WrongValueException:
             pass
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                                  "Could not create web app.\nSee QGIS log for more details.")
+
 
     def createApp(self):
         appdef = self.createAppDefinition()
