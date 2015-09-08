@@ -533,24 +533,27 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
             style = "image: %s" % getShape(props, alpha, color)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             if color is None:
-                color = getRGBAColor(props["color"], alpha)
+                svgColor = getRGBAColor(props["color"], alpha)
+            else:
+                svgColor = color
             with open(sl.path()) as f:
                 svg = "".join(f.readlines())
-            svg = re.sub(r'\"param\(outline\).*?\"', color, svg)
-            svg = re.sub(r'\"param\(fill\).*?\"', color, svg)
+            svg = re.sub(r'\"param\(outline\).*?\"', svgColor, svg)
+            svg = re.sub(r'\"param\(fill\).*?\"', svgColor, svg)
             filename, ext = os.path.splitext(os.path.basename(sl.path()))
-            filename = filename + ''.join(c for c in color if c in digits) + ext
+            filename = filename + ''.join(c for c in svgColor if c in digits) + ext
             path = os.path.join(stylesFolder, filename)
             with open(path, "w") as f:
                 f.write(svg)
             style = "image: %s" % getIcon(path, sl.size(), sl.angle())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
-            # Check for old version
             if color is None:
                 if 'color' in props:
-                    color = getRGBAColor(props["color"], alpha)
+                    strokeColor = getRGBAColor(props["color"], alpha)
                 else:
-                    color = getRGBAColor(props["line_color"], alpha)
+                    strokeColor = getRGBAColor(props["line_color"], alpha)
+            else:
+                strokeColor = color
             if 'width' in props:
                 line_width = props["width"]
             else:
@@ -559,7 +562,7 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
                 line_style = props["penstyle"]
             else:
                 line_style = props["line_style"]
-            style = "stroke: %s" % (getStrokeStyle(color, line_style != "solid", line_width))
+            style = "stroke: %s" % (getStrokeStyle(strokeColor, line_style != "solid", line_width))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             if props["style"] == "no":
                 fillAlpha = 0
@@ -567,7 +570,6 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
                 fillAlpha = alpha
             if color is None:
                 fillColor =  getRGBAColor(props["color"], fillAlpha)
-                # for old version
                 if 'color_border' in props:
                     borderColor =  getRGBAColor(props["color_border"], alpha)
                 else:
@@ -650,7 +652,7 @@ def getIcon(path, size, rotation):
 
 def getStrokeStyle(color, dashed, width):
     width  = float(width) * SIZE_FACTOR
-    dash = "[3]" if dashed else "null"
+    dash = "[6]" if dashed else "null"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
 
 def getFillStyle(color):
