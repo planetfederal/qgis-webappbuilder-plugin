@@ -45,6 +45,10 @@ class LayersTest(unittest.TestCase):
         layersFile = os.path.join(folder, "layers", "layers.js")
         self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_layergroup.js"))
 
+    def testMultipleBaseLayers(self):
+        folder = createAppFromTestAppdef("multiplebaselayers")
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_multiplebaselayers.js"))
 
 def suite():
     suite = unittest.TestSuite()
