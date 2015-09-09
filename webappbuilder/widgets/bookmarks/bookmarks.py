@@ -78,8 +78,8 @@ class Bookmarks(WebAppWidget):
 
             bookmarksFilepath = os.path.join(folder, "bookmarks.js")
             with open(bookmarksFilepath, "w") as f:
-                bookmarksWithoutDescriptions = [b[:-1] for b in bookmarks]
-                f.write("var bookmarks = " + json.dumps(bookmarksWithoutDescriptions))
+                bookmarksDict = [{"name":b[0], "extent":b[1], "description":b[2]} for b in bookmarks]
+                f.write("var bookmarks = " + json.dumps(bookmarksDict))
                 f.write(bookmarkEvents)
 
     def icon(self):

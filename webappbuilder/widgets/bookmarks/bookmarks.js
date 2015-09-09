@@ -5,8 +5,8 @@ var getBookmarkExtentInViewCrs = function(extent){
 
 var goToBookmarkByName = function(name){
     for(var i=0; i<bookmarks.length; i++){
-        if (bookmarks[i][0] === name){
-            map.getView().fit(getBookmarkExtentInViewCrs(bookmarks[i][1]),
+        if (bookmarks[1].name === name){
+            map.getView().fit(getBookmarkExtentInViewCrs(bookmarks[i].extent),
                 map.getSize());
         }
     }
@@ -30,7 +30,7 @@ var panToBookmark = function(i){
 var goToBookmark = function(i){
     bookmark = bookmarks[i];
     if (bookmark){
-        map.getView().fit(getBookmarkExtentInViewCrs(bookmark[1]), map.getSize());
+        map.getView().fit(getBookmarkExtentInViewCrs(bookmark.extent), map.getSize());
     }
     else{
         map.getView().fit(originalExtent, map.getSize());
