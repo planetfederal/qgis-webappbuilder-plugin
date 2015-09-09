@@ -38,6 +38,10 @@ widgetFiles = {"layerslist": ['resources/bootbox.min.js', 'resources/filtrex.js'
 
 class WidgetsTest(unittest.TestCase):
 
+    def testWidgetsCorrectlyLoaded(self):
+        for w in widgetFiles():
+            self.assertTrue(w in webAppWidgets)
+
     def testFilesCorrectlyCopied(self):
         appdef = testAppdef("empty")
         missing = []
