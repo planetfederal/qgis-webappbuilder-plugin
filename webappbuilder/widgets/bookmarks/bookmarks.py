@@ -77,8 +77,15 @@ class Bookmarks(WebAppWidget):
                 bookmarkEvents = ""
 
             bookmarksFilepath = os.path.join(folder, "bookmarks.js")
+            def extentInViewCrs(b):
+                rect = QgsRectangle(b[0], b[1], b[2], b[3])
+                viewCrs = QgsCoordinateReferenceSystem(appdef["Settings"]["App view CRS"])
+                transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3857"), viewCrs)
+                extent = transform.transform(rect)
+                return [extent.xMinimum(), extent.yMinimum(),
+                                extent.xMaximum(), extent.yMaximum()]
             with open(bookmarksFilepath, "w") as f:
-                bookmarksDict = [{"name":b[0], "extent":b[1], "description":b[2]} for b in bookmarks]
+                bookmarksDict = [{"name":b[0], "extent":extentInViewCrs(b[1]), "description":b[2]} for b in bookmarks]
                 f.write("var bookmarks = " + json.dumps(bookmarksDict))
                 f.write(bookmarkEvents)
 

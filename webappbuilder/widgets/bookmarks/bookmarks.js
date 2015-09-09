@@ -1,13 +1,7 @@
-var getBookmarkExtentInViewCrs = function(extent){
-    var viewCrs = view.getProjection().getCode();
-    return ol.proj.transformExtent(extent, "EPSG:3857", viewCrs);
-};
-
 var goToBookmarkByName = function(name){
     for(var i=0; i<bookmarks.length; i++){
         if (bookmarks[1].name === name){
-            map.getView().fit(getBookmarkExtentInViewCrs(bookmarks[i].extent),
-                map.getSize());
+            map.getView().fit(bookmarks[i].extent, map.getSize());
         }
     }
 };
@@ -30,7 +24,7 @@ var panToBookmark = function(i){
 var goToBookmark = function(i){
     bookmark = bookmarks[i];
     if (bookmark){
-        map.getView().fit(getBookmarkExtentInViewCrs(bookmark.extent), map.getSize());
+        map.getView().fit(bookmark.extent, map.getSize());
     }
     else{
         map.getView().fit(originalExtent, map.getSize());
