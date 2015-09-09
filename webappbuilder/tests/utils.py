@@ -10,7 +10,7 @@ from webappbuilder.utils import tempFolderInTempFolder
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
     currentProjectFile  = QgsProject.instance().fileName()
-    if currentProjectFile != projectFile:
+    if os.path.normpath(currentProjectFile) != os.path.normpath(projectFile):
         iface.addProject(projectFile)
 
 def testAppdef(name):
