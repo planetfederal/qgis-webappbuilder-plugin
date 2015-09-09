@@ -15,6 +15,7 @@ import json
 import utils
 import requests
 from settings import webAppWidgets
+import processing
 
 def createApp(appdef, deployData, folder, progress):
 	if deployData:
@@ -352,6 +353,16 @@ def processAppdef(appdef):
 	for layer in appdef["Layers"]:
 		newLayers.append(Layer.fromDict(layer))
 	appdef["Layers"] = newLayers
+	newGroups = {}
+	for groupName, group in appdef["Groups"].iteritems():
+		newGroups[groupName] = {}
+		groupLayers = []
+		for layer in group["layers"]:
+			groupLayers.append(processing.getObject(layer))
+		newGroups[groupName]["layers"] = groupLayers
+		newGroups[groupName]["showContent"] = group["showContent"]
+	appdef["Groups"] = newGroups
+
 
 
 
