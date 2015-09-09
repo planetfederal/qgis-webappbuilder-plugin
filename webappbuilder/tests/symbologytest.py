@@ -28,7 +28,7 @@ class SymbologyTest(unittest.TestCase):
 
     def testSimpleLabelsSymbology(self):
         folder = createAppFromTestAppdef("symbologysimplelabels")
-        styleFile = os.path.join(folder,"styles", "symbologysimplelabels.js")
+        styleFile = os.path.join(folder,"styles", "simplelabels.js")
         self.assertTrue(compareFiles(styleFile, "symbologysimplelabels.js"))
 
 def suite():
