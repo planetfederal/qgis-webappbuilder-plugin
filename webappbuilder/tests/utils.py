@@ -32,10 +32,9 @@ def createAppFromTestAppdef(appdefName):
     return folder
 
 def compareFiles(file1, file2):
-    filename1 = os.path.join(os.path.dirname(__file__), "data", file1)
-    with open(filename1) as f:
+    with open(file1) as f:
         content = f.read()
-    filename2 = os.path.join(os.path.dirname(__file__), "data", file1)
+    filename2 = os.path.join(os.path.dirname(__file__), "expected", file2)
     with open(filename2) as f:
         content2 = f.read()
     return content == content2
