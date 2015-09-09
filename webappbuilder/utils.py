@@ -4,7 +4,6 @@ from PyQt4.QtCore import *
 from qgis.core import *
 import subprocess
 import uuid
-import processing
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -49,7 +48,7 @@ class Layer():
         layer = Layer(*[None] * 10)
         for a, b in d.iteritems():
             setattr(layer, a, b)
-        layer.layer = processing.getObject(layer.layer)
+        layer.layer = findProjectLayerByName(layer.layer)
         return layer
 
 
@@ -130,3 +129,9 @@ def safeName(name):
     return ''.join(c for c in name if c in validChars).lower()
 
 
+def findProjectLayerByName(name):
+    layers = QgsProject.instance().layerTreeRoot().findLayers()
+    for layer in layers:
+        mapLayer = layer.layer()
+        if mapLayer.name() == name:
+            return mapLayer

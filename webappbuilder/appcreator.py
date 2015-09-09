@@ -15,7 +15,6 @@ import json
 import utils
 import requests
 from settings import webAppWidgets
-import processing
 
 def createApp(appdef, deployData, folder, progress):
 	if deployData:
@@ -23,7 +22,7 @@ def createApp(appdef, deployData, folder, progress):
 		usesPostgis = False
 		layers = appdef["Layers"]
 		for layer in layers:
-			if layer.method in [utils.METHOD_WFS_POSTGIS, utils.METHOD_WMS_POSTGIS]:
+			if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
 				usesPostgis = True
 				usesGeoServer = True
 			elif layer.method in [utils.METHOD_WFS, utils.METHOD_WMS]:
@@ -358,7 +357,7 @@ def processAppdef(appdef):
 		newGroups[groupName] = {}
 		groupLayers = []
 		for layer in group["layers"]:
-			groupLayers.append(processing.getObject(layer))
+			groupLayers.append(findProjectLayerByName(layer))
 		newGroups[groupName]["layers"] = groupLayers
 		newGroups[groupName]["showContent"] = group["showContent"]
 	appdef["Groups"] = newGroups
