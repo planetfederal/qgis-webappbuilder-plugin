@@ -31,7 +31,7 @@ def createAppFromTestAppdef(appdefName):
     writeWebApp(appdef, folder, True, SilentProgress())
     return folder
 
-def compareFiles(file1, file2):
+def compareWithExpectedOutputFile(file1, file2):
     with open(file1) as f:
         content = f.read()
     filename2 = os.path.join(os.path.dirname(__file__), "expected", file2)

@@ -13,27 +13,27 @@ class SymbologyTest(unittest.TestCase):
     def testPointsSymbology(self):
         folder = createAppFromTestAppdef("symbologypoints")
         styleFile = os.path.join(folder,"styles", "points.js")
-        self.assertTrue(compareFiles(styleFile, "symbologypoints.js"))
+        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
         folder = createAppFromTestAppdef("symbologycluster")
         styleFile = os.path.join(folder,"styles", "points.js")
-        self.assertTrue(compareFiles(styleFile, "symbologycluster.js"))
+        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         folder = createAppFromTestAppdef("symbologylines")
         styleFile = os.path.join(folder,"styles", "lines.js")
-        self.assertTrue(compareFiles(styleFile, "symbologylines.js"))
+        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologylines.js"))
 
     def testPolygonsSymbology(self):
         folder = createAppFromTestAppdef("symbologypolygons")
         styleFile = os.path.join(folder,"styles", "polygons.js")
-        self.assertTrue(compareFiles(styleFile, "symbologypolygons.js"))
+        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologypolygons.js"))
 
     def testSimpleLabelsSymbology(self):
         folder = createAppFromTestAppdef("symbologysimplelabels")
         styleFile = os.path.join(folder,"styles", "simplelabels.js")
-        self.assertTrue(compareFiles(styleFile, "symbologysimplelabels.js"))
+        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologysimplelabels.js"))
 
 def suite():
     suite = unittest.TestSuite()
