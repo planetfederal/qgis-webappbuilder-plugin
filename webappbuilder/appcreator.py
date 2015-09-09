@@ -12,7 +12,6 @@ import jsbeautifier
 from jsmin import jsmin
 from json.encoder import JSONEncoder
 import json
-import utils
 import requests
 from settings import webAppWidgets
 
@@ -25,7 +24,7 @@ def createApp(appdef, deployData, folder, progress):
 			if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
 				usesPostgis = True
 				usesGeoServer = True
-			elif layer.method in [utils.METHOD_WFS, utils.METHOD_WMS]:
+			elif layer.method in [METHOD_WFS, METHOD_WMS]:
 				usesGeoServer = True
 		if usesPostgis:
 			importPostgis(appdef, progress)
