@@ -306,7 +306,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                                 }
                                 if (numVisible != 1) {
                                     var color = numSelected == 0 ? '#3399CC' : '#FFCC00'
-                                    var style = numSelected == 0 ? clusterStyleCache_popp[numVisible] : selectedClusterStyleCache_popp[numVisible];
+                                    var style = numSelected == 0 ? clusterStyleCache_%(name)s[numVisible] : selectedClusterStyleCache_%(name)s[numVisible];
                                     if (!style) {
                                         style = [new ol.style.Style({
                                             image: new ol.style.Circle({
@@ -326,9 +326,9 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                                             })
                                         })];
                                         if (numSelected == 0) {
-                                            clusterStyleCache_popp[numVisible] = style;
+                                            clusterStyleCache_%(name)s[numVisible] = style;
                                         } else {
-                                            selectedClusterStyleCache_popp[numVisible] = style;
+                                            selectedClusterStyleCache_%(name)s[numVisible] = style;
                                         }
                                     }
                                     return style;
