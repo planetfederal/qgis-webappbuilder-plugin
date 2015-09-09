@@ -12,38 +12,39 @@ class LayersTest(unittest.TestCase):
 
     def testLocalPointsLayer(self):
         folder = createAppFromTestAppdef("localpoints")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_localpoints.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localpoints.js"))
 
     def testLocalLinesLayer(self):
         folder = createAppFromTestAppdef("locallines")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_locallines.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_locallines.js"))
 
     def testLocalPolygonsLayer(self):
         folder = createAppFromTestAppdef("localpolygons")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_localpolygons.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localpolygons.js"))
 
     def testLocalRasterLayer(self):
         folder = createAppFromTestAppdef("localraster")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_localraster.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localraster.js"))
 
     def testWMSLayer(self):
         folder = createAppFromTestAppdef("layerwms")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_wms.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_wms.js"))
 
     def testWFSLayer(self):
         folder = createAppFromTestAppdef("layerwfs")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_wfs.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_wfs.js"))
 
     def testLayerGroup(self):
         folder = createAppFromTestAppdef("layergroup")
-        styleFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "layers_layergroup.js"))
+        layersFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_layergroup.js"))
+
 
 def suite():
     suite = unittest.TestSuite()
