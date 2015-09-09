@@ -38,3 +38,8 @@ def compareWithExpectedOutputFile(file1, file2):
     with open(filename2) as f:
         content2 = f.read()
     return content == content2
+
+def checkTextInFile(filename, text):
+    with open(filename) as f:
+        content = f.read()
+    return text in content
