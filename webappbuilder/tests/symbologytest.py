@@ -1,7 +1,6 @@
 import unittest
 import sys
 import utils
-from webappbuilder.appcreator import checkAppCanBeCreated
 import os
 from utils import *
 
@@ -15,6 +14,11 @@ class SymbologyTest(unittest.TestCase):
         folder = createAppFromTestAppdef("symbologypoints")
         styleFile = os.path.join(folder,"styles", "points.js")
         self.assertTrue(compareFiles(styleFile, "symbologypoints.js"))
+
+    def testClusterSymbology(self):
+        folder = createAppFromTestAppdef("symbologycluster")
+        styleFile = os.path.join(folder,"styles", "points.js")
+        self.assertTrue(compareFiles(styleFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         folder = createAppFromTestAppdef("symbologylines")
