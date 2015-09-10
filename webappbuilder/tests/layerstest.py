@@ -50,6 +50,11 @@ class LayersTest(unittest.TestCase):
         layersFile = os.path.join(folder, "layers", "layers.js")
         self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_multiplebaselayers.js"))
 
+    def testPopups(self):
+        folder = createAppFromTestAppdef("popupsonhover")
+        outputFile = os.path.join(folder, "index.js")
+        self.assertFalse(checkTextInFile(outputFile, "popupLayers=[`<b>n</b>: [n]`];"))
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(LayersTest, 'test'))
