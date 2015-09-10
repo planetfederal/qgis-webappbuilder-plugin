@@ -80,7 +80,9 @@ var createMap = function(layoutName, resolution, labels){
     var tileLayerLoaded= function(){
         tiledLayersLoaded++;
         if (tiledLayersLoaded == tileLayers.length){
-           paintMapInPdf();
+            window.setTimeout(function() {
+                paintMapInPdf();
+            }, 0);
         }
     };
     for (var i = 0; i < elements.length; i++) {
