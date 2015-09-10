@@ -26,6 +26,12 @@ class SettingsTest(unittest.TestCase):
         outputFile = os.path.join(folder, "index.js")
         self.assertTrue(checkTextInFile(outputFile, "[55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
 
+    def testRestrictedExtent(self):
+        folder = createAppFromTestAppdef("restrictedextent")
+        outputFile = os.path.join(folder, "index.js")
+        self.assertTrue(checkTextInFile(outputFile, "extent: [55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(SettingsTest, 'test'))
