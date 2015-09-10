@@ -102,7 +102,7 @@ var createMap = function(layoutName, resolution, labels){
                 var loading = [];
                 for (var j = 0; j < tileLayers.length; j++){
                     (function(idx){
-                        source[idx] = tileLayers[idx].getSource();
+                        sources[idx] = tileLayers[idx].getSource();
                         loading[idx] = 0;
                         loaded[idx] = 0;
                         sources[idx].on('tileloadstart', function() {
