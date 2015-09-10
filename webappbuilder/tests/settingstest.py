@@ -31,6 +31,21 @@ class SettingsTest(unittest.TestCase):
         outputFile = os.path.join(folder, "index.js")
         self.assertTrue(checkTextInFile(outputFile, "extent: [55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
 
+    def testShowPopupsOnHover(self):
+        folder = createAppFromTestAppdef("popupsonhover")
+        outputFile = os.path.join(folder, "index.js")
+        self.assertTrue(checkTextInFile(outputFile, "map.on('pointermove'"))
+
+    def testScaleDependentVisibility(self):
+        folder = createAppFromTestAppdef("scaledependentvisibility")
+        outputFile = os.path.join(folder, "layers", "layers.js")
+        self.assertTrue(checkTextInFile(outputFile, "maxResolution:28000.0672002,"))
+
+    def testNoScaleDependentVisibility(self):
+        folder = createAppFromTestAppdef("noscaledependentvisibility")
+        outputFile = os.path.join(folder, "layers", "layers.js")
+        self.assertFalse(checkTextInFile(outputFile, "maxResolution:"))
+
 
 def suite():
     suite = unittest.TestSuite()
