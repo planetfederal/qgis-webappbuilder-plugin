@@ -11,26 +11,7 @@ html, body {
     font-size: small;
 }
 
-.closer-icon {
-  font-size: 30px;
-  font-weight: bold;
-  line-height: 18px;
-  color: #000000;
-  text-shadow: 0 1px 0 #ffffff;
-  opacity: 0.2;
-  filter: alpha(opacity=20);
-  text-decoration: none;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-}
-.closer-icon:hover {
-  color: #000000;
-  text-decoration: none;
-  opacity: 0.4;
-  filter: alpha(opacity=40);
-  cursor: pointer;
-}
+
 
 #map {
     width: 100%;
@@ -133,14 +114,23 @@ html, body {
     overflow: auto;
 }
 
-.ol-popup-closer {
-    text-decoration: none;
-    position: absolute;
-    top: 2px;
-    right: 8px;
-    }
-
-.ol-popup-closer:after {
-    content: "&#10006;";
+.closer-icon {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 18px;
+  color: #000000;
+  text-shadow: 0 1px 0 #ffffff;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  text-decoration: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
+.closer-icon:hover {
+  color: #000000;
+  text-decoration: none;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  cursor: pointer;
 }
