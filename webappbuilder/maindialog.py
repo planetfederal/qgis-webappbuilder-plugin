@@ -20,6 +20,7 @@ from settings import outputFolders, webAppWidgets
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
+import inspect
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -148,7 +149,9 @@ class MainDialog(QDialog, Ui_MainDialog):
             for button, widgetName in self.widgetButtons.iteritems():
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
-                    button.webAppWidget.setParameters(appdef["Widgets"][widgetName])
+                    button.webAppWidget.setParameters(appdef["Widgets"][widgetName]["Parameters"])
+                    button.webAppWidget.setCss(appdef["Widgets"][widgetName]["Css"])
+
             for name in self.settingsItems:
                 if name in appdef["Settings"]:
                     self.settingsItems[name].setValue(appdef["Settings"][name])
@@ -196,7 +199,6 @@ class MainDialog(QDialog, Ui_MainDialog):
     def deployCheckChanged(self):
         self.updateDeployGroups()
 
-
     buttonStyle = '''QToolButton {background-color: #7c899f;
                                      border-color: #7c899f;
                                      border-style: solid;
@@ -212,16 +214,19 @@ class MainDialog(QDialog, Ui_MainDialog):
                                      border-color:#4d8ef7;
                                  }'''
 
-
     def populateWidgets(self):
         def _mousePressEvent(selfb, event):
             QToolButton.mousePressEvent(selfb, event)
-            if event.button() == Qt.RightButton :
+            if event.button() == Qt.RightButton:
                 menu = QMenu()
                 paramsAction = QAction("Configure...", None)
                 paramsAction.triggered.connect(selfb.webAppWidget.configure)
                 paramsAction.setEnabled(bool(selfb.webAppWidget.parameters()))
                 menu.addAction(paramsAction)
+                cssAction = QAction("Edit CSS...", None)
+                cssAction.triggered.connect(selfb.webAppWidget.editCss)
+                cssAction.setEnabled(bool(selfb.webAppWidget.defaultCss))
+                menu.addAction(cssAction)
                 point = selfb.mapToGlobal(event.pos())
                 menu.exec_(point)
 

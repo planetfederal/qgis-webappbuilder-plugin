@@ -12,7 +12,7 @@ class OverviewMap(WebAppWidget):
         overviewPanelBaseLayers.extend(baseLayers.keys())
         self._parameters = {"Base layer": ("Use main map base layer", overviewPanelBaseLayers),
                     "Collapsed":True}
-        self.defaultParameters = self._parameters.copy()
+        WebAppWidget.__init__(self)
 
     def write(self, appdef, folder, app, progress):
         layers = appdef["Layers"]

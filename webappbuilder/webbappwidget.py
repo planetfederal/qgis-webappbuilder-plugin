@@ -3,13 +3,23 @@ import os
 from parameditor import ParametersEditorDialog
 import inspect
 import shutil
+from texteditor import TextEditorDialog, CSS
 
 class WebAppWidget(object):
 
     _parameters = {}
+    _css = ""
 
     def __init__(self):
+        path = inspect.getfile(self.__class__)
+        path = ".".join(path.split(".")[:-1]) + ".css"
+        if os.path.exists(path):
+            with open(path) as f:
+                s = f.read()
+                self._css = s
+
         self.defaultParameters = self._parameters.copy()
+        self.defaultCss = self._css
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "icons", "puzzle.png"))
@@ -28,6 +38,11 @@ class WebAppWidget(object):
         dlg.exec_()
         self._parameters = dlg.params
 
+    def editCss(self):
+        dlg = TextEditorDialog(self._css, CSS)
+        dlg.exec_()
+        self._css = dlg.text
+
     def parameters(self):
         if self._parameters:
             params = self._parameters.copy()
@@ -40,6 +55,15 @@ class WebAppWidget(object):
 
     def resetParameters(self):
         self._parameters = self.defaultParameters
+
+    def resetCss(self):
+        self._css = self.defaultCss
+
+    def setCss(self, css):
+        self._css = css
+
+    def css(self):
+        return self._css
 
     def setParameters(self, params):
         for paramName, value in params.iteritems():
@@ -81,5 +105,13 @@ class WebAppWidget(object):
             app.scripts.append('<script src="./resources/%s"></script>' % name)
 
     def addCss(self, name, folder, app):
-        self.copyToResources(name, folder)
+        if os.path.basename(inspect.getfile(self.__class__)).split(".")[0] == name.split(".")[0]:
+            resourcesFolder = os.path.join(folder, "resources")
+            if not QDir(resourcesFolder).exists():
+                QDir().mkpath(resourcesFolder)
+            path = os.path.join(resourcesFolder, name)
+            with open(path, "w") as f:
+                f.write(self._css)
+        else:
+            self.copyToResources(name, folder)
         app.scripts.append('<link href="./resources/%s" rel="stylesheet" type="text/css"/>' % name)

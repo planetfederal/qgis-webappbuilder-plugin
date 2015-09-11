@@ -78,7 +78,6 @@ webAppWidgets = loadWidgets()
 
 outputFolders = {}
 
-
 zoomLevels = list((str(i) for i in xrange(1,33)))
 precisionLevels = list((str(i) for i in range(6)))
 defaultAppSettings = {
@@ -98,12 +97,11 @@ defaultAppSettings = {
 
 
 def initialize():
-    #global widgetsParams
     global currentCss
     global appSettings
     for w in webAppWidgets.values():
         w.resetParameters()
-    #widgetsParams = copy.deepcopy(defaultWidgetsParams)
+        w.resetCss()
     currentTheme = "basic" if "basic" in themes else themes.keys()[0]
     currentCss =  themes[currentTheme]
     appSettings = copy.deepcopy(defaultAppSettings)
