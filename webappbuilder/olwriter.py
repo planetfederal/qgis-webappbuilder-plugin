@@ -305,12 +305,12 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                                     return null;
                                 }
                                 if (numVisible != 1) {
-                                    var color = numSelected == 0 ? '#3399CC' : '#FFCC00'
+                                    var color = numSelected == 0 ? '%(clusterColor)s' : '#FFCC00'
                                     var style = numSelected == 0 ? clusterStyleCache_%(name)s[numVisible] : selectedClusterStyleCache_%(name)s[numVisible];
                                     if (!style) {
                                         style = [new ol.style.Style({
                                             image: new ol.style.Circle({
-                                                radius: 10,
+                                                radius: 14,
                                                 stroke: new ol.style.Stroke({
                                                     color: '#fff'
                                                 }),
@@ -322,6 +322,10 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                                                 text: numVisible.toString(),
                                                 fill: new ol.style.Fill({
                                                     color: '#fff'
+                                                }),
+                                                stroke: new ol.style.Stroke({
+                                                  color: 'rgba(0, 0, 0, 0.6)',
+                                                  width: 3
                                                 })
                                             })
                                         })];
@@ -335,7 +339,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                                 }
                             }
                             feature = feature.get('features')[0]
-                            ''' % {"name": safeName(layer.name())}
+                            ''' % {"name": safeName(layer.name()), "clusterColor": appLayer.clusterColor}
             else:
                 cluster = ""
 

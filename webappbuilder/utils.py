@@ -30,13 +30,14 @@ TYPE_MAP = {
 
 class Layer():
 
-    def __init__(self, layer, visible, popup, method, clusterDistance, allowSelection,
-                 refreshInterval, showInOverview, timeInfo, showInControls):
+    def __init__(self, layer, visible, popup, method, clusterDistance, clusterColor,
+                 allowSelection, refreshInterval, showInOverview, timeInfo, showInControls):
         self.layer = layer
         self.visible = visible
         self.popup = popup
         self.method = method
         self.clusterDistance = clusterDistance
+        self.clusterColor = clusterColor
         self.allowSelection = allowSelection
         self.refreshInterval = refreshInterval
         self.showInOverview = showInOverview
@@ -45,7 +46,7 @@ class Layer():
 
     @staticmethod
     def fromDict(d):
-        layer = Layer(*[None] * 10)
+        layer = Layer(*[None] * 11)
         for a, b in d.iteritems():
             setattr(layer, a, b)
         layer.layer = findProjectLayerByName(layer.layer)

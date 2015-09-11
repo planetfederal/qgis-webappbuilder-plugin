@@ -56,6 +56,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def __init__(self, layer, tree, isInGroup = False):
         self.popup = ""
+        self.clusterColor = "#3399CC"
         self.timeInfo = None
         self.combos = []
         QTreeWidgetItem.__init__(self)
@@ -110,6 +111,21 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterDistanceItem.setText(1, "40")
                 self.clusterDistanceItem.setFlags(self.flags() | Qt.ItemIsEditable)
                 self.clusterItem.addChild(self.clusterDistanceItem)
+
+                self.clusterColorItem = QTreeWidgetItem(self.clusterItem)
+                self.clusterColorItem.setText(0, "Cluster color")
+                self.clusterColorLabel = QLabel()
+                self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
+                                               % (self.clusterColor, self.clusterColor))
+                tree.setItemWidget(self.clusterColorItem, 1, self.clusterColorLabel)
+                def editColor():
+                    color = QColorDialog.getColor()
+                    if color.isValid():
+                        self.clusterColor = color.name()
+                        self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
+                                               % (self.clusterColor, self.clusterColor))
+                self.clusterColorLabel.connect(self.clusterColorLabel, SIGNAL("linkActivated(QString)"), editColor)
+
                 self.addChild(self.clusterItem)
         elif layer.providerType().lower() != "wms":
                 self.connTypeItem = QTreeWidgetItem(self)
@@ -251,12 +267,18 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-    def setValues(self, visible, popup, method, clusterDistance, allowSelection,
-                  refreshInterval, showInOverview, timeInfo, showInControls):
+    def setValues(self, visible, popup, method, clusterDistance, clusterColor,
+                  allowSelection, refreshInterval, showInOverview, timeInfo,
+                  showInControls):
         self.timeInfo = timeInfo
+
         if clusterDistance:
             self.clusterItem.setCheckState(0, Qt.Checked)
             self.clusterDistanceItem.setText(1, str(clusterDistance))
+            self.clusterColor = clusterColor
+            self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
+                                               % (self.clusterColor, self.clusterColor))
+
         else:
             try:
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
@@ -288,8 +310,9 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method,
-                     self.clusterDistance, self.allowSelection, self.refreshInterval,
-                     self.showInOverview, self.timeInfo, self.showInControls)
+                     self.clusterDistance, self.clusterColor,self.allowSelection,
+                     self.refreshInterval, self.showInOverview, self.timeInfo,
+                     self.showInControls)
 
 class TreeGroupItem(QTreeWidgetItem):
 
