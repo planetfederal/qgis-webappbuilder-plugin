@@ -40,7 +40,7 @@ var popupEventTriggered = function(evt) {
     var coord = evt.coordinate;
     var popupTexts = [];
     var currentFeature;
-    var allLayers = getAllNonBaseLayers(true);
+    var allLayers = getAllNonBaseLayers();
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
         if (feature) {
