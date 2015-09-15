@@ -40,12 +40,15 @@ var popupEventTriggered = function(evt) {
     var coord = evt.coordinate;
     var popupTexts = [];
     var currentFeature;
-    var allLayers = getAllNonBaseLayers();
+    var allLayers = getAllNonBaseLayers(true);
     map.forEachFeatureAtPixel(pixel, function(feature, layer) {
         feature = decluster(feature);
         if (feature) {
-            popupDef = popupLayers[allLayers.indexOf(layer)];
-            if (popupDef) {
+            var popupDef = popupLayers[allLayers.indexOf(layer)];
+            var res = map.getView().getResolution();
+            var visible = layer.getVisible() && layer.getMaxResolution() > res 
+                                            && layer.getMinResolution() < res;
+            if (popupDef && visible) {
                 var featureKeys = feature.getKeys();
                 for (var i = 0; i < featureKeys.length; i++) {
                     if (featureKeys[i] != 'geometry') {
