@@ -108,16 +108,16 @@ var createMap = function(layoutName, resolution, labels){
                         loading[idx] = 0;
                         loaded[idx] = 0;
                         sources[idx].on('tileloadstart', function() {
-                            ++loading;
+                            ++loading[idx];
                         });
                         sources[idx].on('tileloadend', function() {
-                            ++loaded;
-                            if (loading === loaded) {
+                            ++loaded[idx];
+                            if (loading[idx] === loaded[idx]) {
                                 tileLayerLoaded();
                             }
                         });
                         sources[idx].on('tileloaderror', function() {
-                            ++loaded;
+                            ++loaded[idx];
                         });
                     })(j);
                 }
