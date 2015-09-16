@@ -170,25 +170,30 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         fields = [f.name() for f in self.layers[layerName].pendingFields()]
         self.categoryFieldCombo.clear()
         self.categoryFieldCombo.addItems(fields)
-        self.model = QtGui.QStandardItemModel(len(fields), 1)
-        item = QtGui.QStandardItem("Select fields")
-        if  sys.platform == 'darwin':
-            self.valueFieldsCombo.setVisible(False)
-            self.valueFieldsCombo.setVisible(True)
-            toUse = self.valueFieldsList
-            offset = 0
+        valueFieldsVisible = self.displayModeCombo.currentIndex() != 2
+        if valueFieldsVisible:
+            self.model = QtGui.QStandardItemModel(len(fields), 1)
+            item = QtGui.QStandardItem("Select fields")
+            if  sys.platform == 'darwin':
+                self.valueFieldsCombo.setVisible(False)
+                self.valueFieldsCombo.setVisible(True)
+                toUse = self.valueFieldsList
+                offset = 0
+            else:
+                self.valueFieldsCombo.setVisible(True)
+                self.valueFieldsList.setVisible(False)
+                toUse = self.valueFieldsCombo
+                self.model.setItem(0, 0, item);
+                offset = 1
+            for i, f in enumerate(fields):
+                item = QtGui.QStandardItem(f)
+                item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole);
+                self.model.setItem(i + offset, 0, item);
+            toUse.setModel(self.model)
         else:
-            self.valueFieldsCombo.setVisible(True)
-            self.valueFieldsList.setVisible(False)
-            toUse = self.valueFieldsCombo
-            self.model.setItem(0, 0, item);
-            offset = 1
-        for i, f in enumerate(fields):
-            item = QtGui.QStandardItem(f)
-            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole);
-            self.model.setItem(i + offset, 0, item);
-        toUse.setModel(self.model)
+            self.valueFieldsCombo.setVisible(False)
+            self.valueFieldsCombo.setVisible(False)
 
     def addChart(self):
         name = self.nameBox.text()
