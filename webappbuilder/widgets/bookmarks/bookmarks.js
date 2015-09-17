@@ -1,6 +1,6 @@
 var goToBookmarkByName = function(name){
     for(var i=0; i<bookmarks.length; i++){
-        if (bookmarks[1].name === name){
+        if (bookmarks[i].name === name){
             map.getView().fit(bookmarks[i].extent, map.getSize());
         }
     }

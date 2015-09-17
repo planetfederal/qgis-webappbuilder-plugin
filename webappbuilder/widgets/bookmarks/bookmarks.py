@@ -67,7 +67,8 @@ class Bookmarks(WebAppWidget):
                                     })''' % ["go", "pan", "fly"][params["format"]]
                 self.addCss("bookmarks.css", folder, app)
             else:
-                li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b[0],b[0]) for b in params["bookmarks"]])
+                escapedNames = [b[0].replace("'", "&apos;") for b in bookmarks]
+                li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b,b) for b in escapedNames])
                 app.tools.append('''<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Bookmarks <span class="caret"><span></a>
                     <ul class="dropdown-menu">
