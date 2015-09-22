@@ -222,6 +222,7 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         self.bookmarksList.clear()
         self.descriptionBox.setEnabled(False)
         self.removeButton.setEnabled(False)
+        self.descriptionBox.setText("")
 
     def removeBookmark(self):
         item = self.bookmarksList.currentItem()
