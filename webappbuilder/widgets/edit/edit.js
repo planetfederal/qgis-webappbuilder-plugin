@@ -71,12 +71,16 @@ var showEditPanel = function(){
                 toggleEdit.className = "btn btn-success";
             }
             else{
-                var panel = document.getElementById('edit-tool-panel');
-                var alert = document.createElement("div");
-                alert.className = "alert alert-warning";
-                alert.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                    'No editable layer is available. Create one to start editing.';
-                panel.appendChild(alert);
+                var warningPanel = !document.getElementById('edit-layer-not-available');
+                if (warningPanel){
+                    var panel = document.getElementById('edit-tool-panel');
+                    var alert = document.createElement("div");
+                    alert.id="edit-layer-not-available"
+                    alert.className = "alert alert-warning";
+                    alert.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                        'No editable layer is available. Create one to start editing.';
+                    panel.appendChild(alert);
+                }
             }
         }
     };
