@@ -41,26 +41,26 @@ class Legend(WebAppWidget):
     def getLegendSymbols(self, layer, ilayer, legendFolder):
         size = 20
         qsize = QSize(size, size)
-        symbols = []
+        symbols = {}
         if layer.type() == layer.VectorLayer:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                     img = renderer.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_0.png" % (ilayer))
                     img.save(symbolPath)
-                    symbols.append(("", os.path.basename(symbolPath)))
+                    symbols[""] =  os.path.basename(symbolPath)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 for isymbol, cat in enumerate(renderer.categories()):
                     img = cat.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
-                    symbols.append((cat.label(), os.path.basename(symbolPath)))
+                    symbols[cat.label()] =  os.path.basename(symbolPath)
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 for isymbol, ran in renderer.ranges():
                     img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
-                    symbols.append(("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath)))
+                    symbols["%s-%s" % (ran.lowerValue(), ran.upperValue())] =  os.path.basename(symbolPath)
         elif layer.providerType() == "wms":
             source = layer.source()
             layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
@@ -73,5 +73,5 @@ class Legend(WebAppWidget):
             with open(symbolPath, 'wb') as f:
                 shutil.copyfileobj(response.raw, f)
             del response
-            symbols.append(("", os.path.basename(symbolPath)))
+            symbols[""] = os.path.basename(symbolPath)
         return symbols

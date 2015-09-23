@@ -83,8 +83,8 @@ ol.control.Legend.prototype.renderPanel = function() {
         var element = "<li><label for='legend-layer-"+ name +"'>" + name +
             "</label><input type='checkbox' checked id='legend-layer-" + name + "' /><ul> ";
         var symbols = legendData[name];
-        for (var i = 0; i < symbols.length; i++){
-            element += "<li><img src='./legend/" + symbols[i][1] + "'>" + symbols[i][0] + "</li>";
+        for (symbol in symbols){
+            element += "<li><img src='./legend/" + symbols[symbol] + "'>" + symbol + "</li>";
         }
         element += " </li>";
         list.append(element);
