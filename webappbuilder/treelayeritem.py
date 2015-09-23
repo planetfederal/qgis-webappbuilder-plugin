@@ -167,6 +167,13 @@ class TreeLayerItem(QTreeWidgetItem):
             self.timeInfoLabel.connect(self.timeInfoLabel, SIGNAL("linkActivated(QString)"), editTimeInfo)
             self.addChild(self.timeInfoItem)
 
+        if layer.providerType().lower() != "wfs":
+            self.singleTileItem = QTreeWidgetItem(self)
+            self.singleTileItem.setCheckState(0, Qt.Unchecked)
+            self.singleTileItem.setText(0, "Do not consume as tiled layer")
+            self.addChild(self.singleTileItem)
+            self.singleTileItem.setDisabled(layer.providerType().lower() != "wms")
+
         if layer.providerType().lower() in ["wms"]:
             self.refreshItem = QTreeWidgetItem(self)
             self.refreshItem.setCheckState(0, Qt.Unchecked)
@@ -182,13 +189,19 @@ class TreeLayerItem(QTreeWidgetItem):
         try:
             current = self.connTypeCombo.currentIndex()
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
-            self.popupItem.setDisabled(disable)
-            self.popupLabel.setDisabled(disable)
-            self.allowSelectionItem.setDisabled(disable)
-            self.clusterItem.setDisabled(disable)
-            self.clusterDistanceItem.setDisabled(disable)
+            if self.layer.type() == self.layer.VectorLayer:
+                if self.layer.geometryType() == QGis.Point:
+                    self.clusterItem.setDisabled(disable)
+                    self.clusterDistanceItem.setDisabled(disable)
+                    self.clusterColorItem.setDisabled(disable)
+                self.popupItem.setDisabled(disable)
+                self.popupLabel.setDisabled(disable)
+                self.allowSelectionItem.setDisabled(disable)
+            self.singleTileItem.setDisabled(not disable)
         except:
-            pass
+            self.singleTileItem.setDisabled(False)
+
+
 
     def toggleChildren(self):
         disabled = self.checkState(0) == Qt.Unchecked
@@ -231,6 +244,10 @@ class TreeLayerItem(QTreeWidgetItem):
         return self.showInControlsItem.checkState(0) == Qt.Checked
 
     @property
+    def singleTile(self):
+        return self.singleTileItem.checkState(0) == Qt.Checked
+
+    @property
     def method(self):
         try:
             return self.connTypeCombo.currentIndex()
@@ -269,7 +286,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def setValues(self, visible, popup, method, clusterDistance, clusterColor,
                   allowSelection, refreshInterval, showInOverview, timeInfo,
-                  showInControls):
+                  showInControls, singleTile):
         self.timeInfo = timeInfo
 
         if clusterDistance:
@@ -299,6 +316,10 @@ class TreeLayerItem(QTreeWidgetItem):
             self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
         except:
             pass
+        try:
+            self.singleTileItem.setCheckState(0, Qt.Checked if singleTile else Qt.Unchecked)
+        except:
+            pass
         self.visibleItem.setCheckState(0, Qt.Checked if visible else Qt.Unchecked)
         try:
             self.connTypeCombo.setCurrentIndex(method)
@@ -312,7 +333,7 @@ class TreeLayerItem(QTreeWidgetItem):
         return Layer(self.layer, self.visible, self.popup, self.method,
                      self.clusterDistance, self.clusterColor,self.allowSelection,
                      self.refreshInterval, self.showInOverview, self.timeInfo,
-                     self.showInControls)
+                     self.showInControls, self.singleTile)
 
 class TreeGroupItem(QTreeWidgetItem):
 

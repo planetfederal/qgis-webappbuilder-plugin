@@ -189,7 +189,7 @@ class MainDialog(QDialog, Ui_MainDialog):
                                    layer["clusterDistance"], layer["clusterColor"],
                                    layer["allowSelection"], layer["refreshInterval"],
                                    layer["showInOverview"], layer["timeInfo"],
-                                   layer["showInControls"])
+                                   layer["showInControls"], layer["singleTile"])
                 else:
                     item.setCheckState(0, Qt.Unchecked)
         except Exception, e:

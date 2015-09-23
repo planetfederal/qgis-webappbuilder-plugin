@@ -91,6 +91,9 @@ def layerToJavascript(applayer, settings, deploy, title):
     else:
         minResolution = ""
         maxResolution = ""
+    layerClass = "ol.layer.Image" if applayer.singleTile else "ol.layer.Tile"
+    sourceClass = "ol.source.ImageWMS" if applayer.singleTile else "ol.source.TileWMS"
+    tiled = "" if applayer.singleTile else ', "TILED": "true"'
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
@@ -149,21 +152,23 @@ def layerToJavascript(applayer, settings, deploy, title):
             source = layer.source()
             layers = layer.name()
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
-            return '''var lyr_%(n)s = new ol.layer.Tile({
+            return '''var lyr_%(n)s = new %(layerClass)s({
                         opacity: %(opacity)s,
                         %(min)s %(max)s
                         timeInfo: %(timeInfo)s,
                         filters: [],
-                        source: new ol.source.TileWMS(({
+                        source: new %(sourceClass)s(({
                           url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s", "TILED": "true"},
+                          params: {"LAYERS": "%(layers)s" %(tiled)s},
                         })),
                         title: %(name)s,
                         id: "%(id)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
-                                "timeInfo": timeInfo, "id": layer.id()}
+                                "timeInfo": timeInfo, "id": layer.id(),
+                                "layerClass": layerClass, "sourceClass": sourceClass,
+                                "tiled": tiled}
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
@@ -171,13 +176,13 @@ def layerToJavascript(applayer, settings, deploy, title):
             layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
-            return '''var lyr_%(n)s = new ol.layer.Tile({
+            return '''var lyr_%(n)s = new %(layerClass)s({
                         opacity: %(opacity)s,
                         timeInfo: %(timeInfo)s,
                         %(min)s %(max)s
-                        source: new ol.source.TileWMS(({
+                        source: new %(sourceClass)s(({
                           url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s", "TILED": "true", "STYLES": "%(styles)s"},
+                          params: {"LAYERS": "%(layers)s" %(tiled)s, "STYLES": "%(styles)s"},
                         })),
                         title: %(name)s,
                         id: "%(id)s"
@@ -185,7 +190,8 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
                                 "styles": styles, "timeInfo": timeInfo,
-                                "id": layer.id()}
+                                "id": layer.id(), "layerClass": layerClass,
+                                "sourceClass": sourceClass, "tiled": tiled}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
@@ -213,20 +219,22 @@ def layerToJavascript(applayer, settings, deploy, title):
                                       "crs": viewCrs, "timeInfo": timeInfo,"id": layer.id()}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
-            return '''var lyr_%(n)s = new ol.layer.Tile({
+            return '''var lyr_%(n)s = %(layerClass)s({
                         opacity: %(opacity)s,
                         %(min)s %(max)s
                         timeInfo: %(timeInfo)s,
-                        source: new ol.source.TileWMS(({
+                        source: new %(sourceClass)s(({
                           url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s", "TILED": "true"},
+                          params: {"LAYERS": "%(layers)s" %(tiled)s},
                         })),
                         title: %(name)s,
                         id: "%(id)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
-                                "timeInfo": timeInfo, "id": layer.id()}
+                                "timeInfo": timeInfo, "id": layer.id(),
+                                "layerClass": layerClass, "sourceClass": sourceClass,
+                                "tiled": tiled}
 
 def exportStyles(layers, folder, settings, addTimeInfo, progress):
     stylesFolder = os.path.join(folder, "styles")

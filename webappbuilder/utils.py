@@ -31,7 +31,8 @@ TYPE_MAP = {
 class Layer():
 
     def __init__(self, layer, visible, popup, method, clusterDistance, clusterColor,
-                 allowSelection, refreshInterval, showInOverview, timeInfo, showInControls):
+                 allowSelection, refreshInterval, showInOverview, timeInfo, showInControls,
+                 singleTile):
         self.layer = layer
         self.visible = visible
         self.popup = popup
@@ -43,6 +44,7 @@ class Layer():
         self.showInOverview = showInOverview
         self.timeInfo = timeInfo
         self.showInControls = showInControls
+        self.singleTile = singleTile
 
     @staticmethod
     def fromDict(d):
