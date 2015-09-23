@@ -33,7 +33,7 @@ class Legend(WebAppWidget):
                 layer = applayer.layer
                 symbols = self.getLegendSymbols(layer, ilayer, legendFolder)
                 if symbols:
-                    legend[layer.name()] = symbols
+                    legend[layer.id()] = symbols
 
         with open(os.path.join(legendFolder, "legend.js"), "w") as f:
             f.write("var legendData = %s;" % json.dumps(legend))
@@ -41,26 +41,28 @@ class Legend(WebAppWidget):
     def getLegendSymbols(self, layer, ilayer, legendFolder):
         size = 20
         qsize = QSize(size, size)
-        symbols = {}
+        symbols = []
+        def appendSymbol(title, href):
+            symbols.append({'title': title, 'href':href})
         if layer.type() == layer.VectorLayer:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                     img = renderer.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_0.png" % (ilayer))
                     img.save(symbolPath)
-                    symbols[""] =  os.path.basename(symbolPath)
+                    appendSymbol("",  os.path.basename(symbolPath))
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 for isymbol, cat in enumerate(renderer.categories()):
                     img = cat.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
-                    symbols[cat.label()] =  os.path.basename(symbolPath)
+                    appendSymbol(cat.label(), os.path.basename(symbolPath))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 for isymbol, ran in renderer.ranges():
                     img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
-                    symbols["%s-%s" % (ran.lowerValue(), ran.upperValue())] =  os.path.basename(symbolPath)
+                    appendSymbol("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath))
         elif layer.providerType() == "wms":
             source = layer.source()
             layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]

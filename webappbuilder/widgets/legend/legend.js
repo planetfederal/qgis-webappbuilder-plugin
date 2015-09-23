@@ -79,12 +79,13 @@ ol.control.Legend.prototype.renderPanel = function() {
     $('#legend').empty();
     var list = $('<ul/>').appendTo('#legend');
     list.addClass("expandableList");
-    for (var name in legendData){
-        var element = "<li><label for='legend-layer-"+ name +"'>" + name +
-            "</label><input type='checkbox' checked id='legend-layer-" + name + "' /><ul> ";
-        var symbols = legendData[name];
-        for (symbol in symbols){
-            element += "<li><img src='./legend/" + symbols[symbol] + "'>" + symbol + "</li>";
+    for (var id in legendData){
+        name = getLayerFromLayerId(id).get('title')
+        var element = "<li><label for='legend-layer-"+ id +"'>" + name +
+            "</label><input type='checkbox' checked id='legend-layer-" + id + "' /><ul> ";
+        var symbols = legendData[id];
+        for (var i = 0; i < symbols.length; i++){
+            element += "<li><img src='./legend/" + symbols[i].href + "'>" + symbols[i].title + "</li>";
         }
         element += " </li>";
         list.append(element);

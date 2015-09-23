@@ -10,6 +10,19 @@ var getLayerFromLayerName = function(name){
     return layer;
 };
 
+var getLayerFromLayerId = function(name){
+    var layer;
+    var allLayers = getAllNonBaseLayers();
+    for (i = 0; i < allLayers.length; i++){
+        if (allLayers[i].get('id') == name){
+            layer = allLayers[i];
+            break;
+        }
+    }
+    return layer;
+};
+
+
 var getSourceFromLayerName = function(name){
     return sourceFromLayer(getLayerFromLayerName(name));
 };
