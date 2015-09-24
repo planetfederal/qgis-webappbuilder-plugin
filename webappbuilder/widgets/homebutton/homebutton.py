@@ -5,9 +5,7 @@ from PyQt4.QtGui import QIcon
 class HomeButton(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        self.addScript("homebutton.js", folder, app)
-        self.addCss("homebutton.css", folder, app)
-        app.controls.append("new ol.control.HomeButton()")
+        app.controls.append("<div id='home-button' className='ol-unselectable ol-control'><HomeButton map={map} /></div>")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "home.png"))

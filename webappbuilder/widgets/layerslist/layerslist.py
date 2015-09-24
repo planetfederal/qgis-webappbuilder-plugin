@@ -14,16 +14,13 @@ class LayersList(WebAppWidget):
                     "expandOnHover": True}
 
     def write(self, appdef, folder, app, progress):
-        self.addCss("layerslist.css", folder, app)
-        app.controls.append("new ol.control.LayerSwitcher(%s)" % json.dumps(self._parameters))
-        self.addScript("layerslist.js", folder, app)
-        if self._parameters["showOpacity"]:
-            self.addScript("bootstrap-slider.js", folder, app)
-            self.addCss("slider.css", folder, app)
-            app.scripts.append('<script src="./resources/bootstrap-slider.js"></script>')
-        if self._parameters["allowFiltering"]:
-            self.addScript("bootbox.min.js", folder, app)
-            self.addScript("filtrex.js", folder, app)
+        def p(name):
+            return str(self._parameters[name]).lower()
+        app.controls.append('''<div id='layerlist'>
+                            <LayerList showOpacity={%s} showDownload={%s} showGroupContent={%s}
+                            showZoomTo={%s} allowReordering={%s} map={map}/></div>'''
+                            % (p("showOpacity"),p("showDownload"),p("showGroupContent"),
+                               p("showZoomTo"),p("allowReordering")))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "layer-list.png"))

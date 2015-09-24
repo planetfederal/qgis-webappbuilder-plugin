@@ -115,3 +115,11 @@ class WebAppWidget(object):
         else:
             self.copyToResources(name, folder)
         app.scripts.append('<link href="./resources/%s" rel="stylesheet" type="text/css"/>' % name)
+
+    def addImport(self, name, fromJsx, app):
+        app.imports.append("from %s import '%s'" % (name, fromJsx))
+
+    def addReactRender(self, s, app):
+        app.react.append("React.render(%s)" % s)
+
+

@@ -15,46 +15,38 @@ from collections import OrderedDict
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
     progress.setProgress(0)
-    dst = os.path.join(folder, "resources")
-    resourcesFolder = os.path.join(os.path.dirname(__file__), "resources")
+    dst = os.path.join(folder, "webapp")
+    resourcesFolder = os.path.join(os.path.dirname(__file__), "sdk")
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(resourcesFolder, dst)
     layers = appdef["Layers"]
     if writeLayersData:
-        exportLayers(layers, folder, progress,
+        exportLayers(layers, dst, progress,
                      appdef["Settings"]["Precision for GeoJSON export"],
                      appdef["Settings"]["App view CRS"])
-    exportStyles(layers, folder, appdef["Settings"], "timeline" in appdef["Widgets"], progress)
-    writeLayersAndGroups(appdef, folder, progress)
 
-    widgets = appdef["Widgets"].values()
     class App():
         controls = []
-        scripts = []
-        scriptsBottom = []
         tools = []
         panels = []
-        mappanels = []
-        postmap = []
+        variables = []
+        scripts = []
     app = App()
-    app.scripts.extend(['<script src="layers/lyr_%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer
-                                and layer.method == METHOD_FILE])
-    app.scripts.extend(['<script src="styles/%s.js"></script>' % (safeName(layer.layer.name()))
-                            for layer in layers if layer.layer.type() == layer.layer.VectorLayer])
+    exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
+    writeLayersAndGroups(appdef, dst, app, progress)
 
+    widgets = appdef["Widgets"].values()
     for w in widgets:
-        w.write(appdef, folder, app, progress)
+        w.write(appdef, dst, app, progress)
 
-    writeJs(appdef, folder, app, progress)
-    writeCss(appdef, folder)
-    indexFilepath = writeHtml(appdef, folder, app, progress)
+    writeCss(appdef, dst)
+    writeJsx(appdef, dst, app, progress)
+    indexFilepath = writeHtml(appdef, dst, app, progress)
     return indexFilepath
 
-def writeJs(appdef, folder, app, progress):
+def writeJsx(appdef, folder, app, progress):
     layers = appdef["Layers"]
-    popupLayers = "popupLayers = [%s];" % ",".join(["`%s`" % layer.popup for layer in layers])
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
     mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
@@ -62,22 +54,37 @@ def writeJs(appdef, folder, app, progress):
     minZoom = int(appdef["Settings"]["Min zoom level"])
     pointZoom = str(appdef["Settings"]["Zoom level when zooming to point feature"])
     popupEvent = "pointermove" if appdef["Settings"]["Show popups on hover"] else "singleclick"
-    view = "%s, maxZoom: %d, minZoom: %d, projection: '%s'" % (mapextent, maxZoom, minZoom, viewCrs)
-    values = {"@BOUNDS@": mapbounds,
-                "@CONTROLS@": ",\n".join(app.controls),
-                "@POPUPLAYERS@": popupLayers,
-                "@VIEW@": view,
-                "@POINTZOOM@": pointZoom,
-                "@POPUPEVENT@": popupEvent,
-                "@POSTMAP@": "\n".join(app.postmap)}
-    indexJsFilepath = os.path.join(folder, "index.js")
-    template = os.path.join(os.path.dirname(__file__), "templates", "index.js")
-    with open(indexJsFilepath, "w") as f:
-        f.write(replaceInTemplate(template, values))
 
+    app.variables.append("var view = new ol.View({%s, maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
+    app.variables.append("var originalExtent = %s;" % mapbounds)
+
+    logoImg = appdef["Settings"]["Logo"].strip()
+    if logoImg:
+        logo = '<img class="pull-left" style="margin:5px;height:calc(100%%-10px);" src="logo.png"></img>'
+        ext = os.path.splitext(logoImg)[1]
+        shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
+    else:
+        logo = ""
+
+    values = {"@LOGO@": logo,
+                "@CONTROLS@": ",\n".join(app.controls),
+                #"@POPUPEVENT@": popupEvent,
+                "@PANELS@": "\n".join(app.panels),
+                "@TOOLBAR@": "\n".join(app.tools),
+                "@VARIABLES@": "\n".join(app.variables)}
+    jsxFilepath = os.path.join(folder, "app.jsx")
+    template = os.path.join(os.path.dirname(__file__), "themes",
+                            appdef["Settings"]["Theme"]["Name"], "app.jsx")
+    with open(jsxFilepath, "w") as f:
+        f.write(replaceInTemplate(template, values))
+    processJsx(jsxFilepath, progress)
+
+
+def processJsx(folder, progress):
+    pass
 
 def writeCss(appdef, folder):
-    cssFilepath = os.path.join(folder, "webapp.css")
+    cssFilepath = os.path.join(folder, "app.css")
     with open(cssFilepath, "w") as f:
         f.write(appdef["Settings"]["Theme"]["Css"])
 
@@ -112,22 +119,12 @@ def writeHtml(appdef, folder, app, progress):
             app.scripts.append('<script src="./resources/proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
-    logoImg = appdef["Settings"]["Logo"].strip()
-    if logoImg:
-        logo = '<img class="pull-left" style="margin:5px;height:calc(100%%-10px);" src="logo.png"></img>'
-        ext = os.path.splitext(logoImg)[1]
-        shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-    else:
-        logo = ""
-    values = {"@TITLE@": appdef["Settings"]["Title"],
-              "@LOGO@": logo,
-                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
-                "@SCRIPTSBOTTOM@": "\n".join(OrderedDict((item,None) for item in app.scriptsBottom).keys()),
-                "@MAPPANELS@": "\n".join(app.mappanels),
-                "@PANELS@": "\n".join(app.panels),
-                "@TOOLBAR@": "\n".join(app.tools)}
 
-    template = os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".html")
+    values = {"@TITLE@": appdef["Settings"]["Title"],
+                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys())
+            }
+
+    template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
     html = replaceInTemplate(template, values)
 
     indexFilepath = os.path.join(folder, "index.html")
@@ -142,7 +139,7 @@ def writeHtml(appdef, folder, app, progress):
     return indexFilepath
 
 
-def writeLayersAndGroups(appdef, folder, progress):
+def writeLayersAndGroups(appdef, folder, app, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
@@ -154,7 +151,7 @@ def writeLayersAndGroups(appdef, folder, progress):
             baseJs.append(baseLayers[b])
         elif b in baseOverlays:
             baseJs.append(baseOverlays[b])
-    baseLayer = "baseLayers = [%s];" % ",".join(baseJs)
+    baseLayer = "var baseLayers = [%s];" % ",".join(baseJs)
 
 
     baseLayer += "var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});"
@@ -210,16 +207,11 @@ def writeLayersAndGroups(appdef, folder, progress):
         else:
             layersList += "Array.prototype.splice.apply(layersList, [0, 0].concat(baseLayers));"
 
-    path = os.path.join(folder, "layers")
-    if not QDir(path).exists():
-        QDir().mkpath(path)
-    filename = os.path.join(path, "layers.js")
-    with codecs.open(filename, "w","utf-8") as f:
-        f.write(baseLayer + "\n")
-        f.write(layerVars + "\n")
-        f.write(groupVars + "\n")
-        f.write(visibility + "\n")
-        f.write(layersList + "\n")
+    app.variables.append(baseLayer)
+    app.variables.append(layerVars)
+    app.variables.append(groupVars)
+    app.variables.append(visibility)
+    app.variables.append(layersList)
 
 
 def bounds(useCanvas, layers, crsid):

@@ -33,7 +33,7 @@ def loadThemes():
                  if os.path.isdir(os.path.join(basePath,o))]
     for template in templates:
         themeName = os.path.basename(template)
-        path = os.path.join(template, themeName + ".css")
+        path = os.path.join(template, "app.css")
         with open(path) as f:
             allCss[themeName] = "".join(f.readlines())
     return allCss

@@ -6,10 +6,9 @@ from webappbuilder.utils import METHOD_WMS
 class AttributesTable(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.tools.append('<li><a onclick="showAttributesTable()" href="#"><i class="glyphicon glyphicon-list-alt"></i>Attributes table</a></li>')
-        app.panels.append('<div class="attributes-table"><a href="#" id="attributes-table-closer" class="attributes-table-closer">Close</a></div>')
-        self.addScript("attributestable.js", folder, app)
-        self.addCss("attributestable.css", folder, app)
+        app.panels.append('<UI.Tab eventKey={2} title="Attributes table"><div id="attributes-table-tab"><FeatureTable layer={selectedLayer} map={map} /></div></UI.Tab>')
+
+
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))
 
@@ -23,7 +22,6 @@ class AttributesTable(WebAppWidget):
             layer = applayer.layer
             if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
                 nonVectorLayers += 1
-
 
         if nonVectorLayers == len(layers):
             problems.append("Attributes table control has been added, but there are no suitable "

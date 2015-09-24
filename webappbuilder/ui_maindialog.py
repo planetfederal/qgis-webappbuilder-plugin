@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_maindialog.ui'
 #
-# Created: Mon Sep 07 12:13:38 2015
+# Created: Thu Sep 24 09:17:32 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -181,7 +181,7 @@ class Ui_MainDialog(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 698, 491))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 717, 491))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayoutWidgets = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayoutWidgets.setObjectName(_fromUtf8("gridLayoutWidgets"))
@@ -336,12 +336,6 @@ class Ui_MainDialog(object):
         self.buttonCreateApp.setIcon(icon)
         self.buttonCreateApp.setObjectName(_fromUtf8("buttonCreateApp"))
         self.horizontalLayout_2.addWidget(self.buttonCreateApp)
-        self.buttonPreview = QtGui.QPushButton(self.widget)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/qgis2ol/icons/preview.gif")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.buttonPreview.setIcon(icon3)
-        self.buttonPreview.setObjectName(_fromUtf8("buttonPreview"))
-        self.horizontalLayout_2.addWidget(self.buttonPreview)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
         self.verticalLayout_2.addWidget(self.widget)
 
@@ -399,6 +393,5 @@ class Ui_MainDialog(object):
         self.tabPanel.setTabText(self.tabPanel.indexOf(self.settingsTab), _translate("MainDialog", "Settings", None))
         self.progressLabel.setText(_translate("MainDialog", "progress", None))
         self.buttonCreateApp.setText(_translate("MainDialog", "Create App", None))
-        self.buttonPreview.setText(_translate("MainDialog", "Preview", None))
 
 import resources_rc

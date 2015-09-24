@@ -31,34 +31,7 @@ def createApp(appdef, deployData, folder, progress):
 		if usesGeoServer:
 			publishGeoserver(appdef, progress)
 	writeWebApp(appdef, folder, deployData, progress)
-	progress.setText("Post-processing Web App files")
-	progress.setProgress(0)
-	files = [os.path.join(folder, "layers/layers.js"), os.path.join(folder, "index.js")]
-	for root, dirs, fs in os.walk(os.path.join(folder, "styles")):
-		for f in fs:
-			if f.endswith("js"):
-				files.append(os.path.join(root, f))
-	if appdef["Settings"]["Minify JavaScript"]:
-		toDiscard = ["ol.js", "ol3cesium.js"]
-		for root, dirs, fs in os.walk(os.path.join(folder, "resources")):
-			for f in fs:
-				if f.endswith("js") and not f.endswith("min.js") and f not in toDiscard:
-					files.append(os.path.join(root, f))
 
-	for i, path in enumerate(files):
-		if appdef["Settings"]["Minify JavaScript"]:
-			with open(path) as f:
-				code = f.read()
-			with open(path, "w") as f:
-				f.write(jsmin(code, quote_chars="'\"`"))
-		else:
-			try:
-				beauty = jsbeautifier.beautify_file(path)
-				with open(path, "w") as f:
-					f.write(beauty)
-			except:
-				pass #jsbeautifier gives some random errors sometimes due to imports
-		progress.setProgress(int((i+1)*100.0/len(files)))
 	projFile = QgsProject.instance().fileName()
 	if projFile:
 		appdefFile =  projFile + ".appdef"

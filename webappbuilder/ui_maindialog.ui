@@ -336,7 +336,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>698</width>
+            <width>717</width>
             <height>491</height>
            </rect>
           </property>
@@ -700,17 +700,6 @@
           <property name="icon">
            <iconset resource="resources.qrc">
             <normaloff>:/plugins/qgis2ol/icons/ol.png</normaloff>:/plugins/qgis2ol/icons/ol.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="buttonPreview">
-          <property name="text">
-           <string>Preview</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resources.qrc">
-            <normaloff>:/plugins/qgis2ol/icons/preview.gif</normaloff>:/plugins/qgis2ol/icons/preview.gif</iconset>
           </property>
          </widget>
         </item>

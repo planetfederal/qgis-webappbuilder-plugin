@@ -13,19 +13,16 @@ class Legend(WebAppWidget):
     _parameters = {"showExpandedOnStartup": False, "expandOnHover": True}
 
     def write(self, appdef, folder, app, progress):
-        self.addCss("legend.css", folder, app)
-        app.scripts.append('<script src="./legend/legend.js"></script>')
-        self.addScript("legend.js", folder, app)
-        self.writeLegendFiles(appdef, folder)
-        app.controls.append("new ol.control.Legend(%s)" % json.dumps(self._parameters))
+        self.writeLegendFiles(appdef, app, folder)
+        app.controls.append("<div id='legend'><QGISLegend legendBasePath='./resources/legend/' legendData={legendData} /></div>")
 
     def description(self):
         return "Legend"
 
-    def writeLegendFiles(self, appdef, folder):
+    def writeLegendFiles(self, appdef, app, folder):
         layers = appdef["Layers"]
         legend = {}
-        legendFolder = os.path.join(folder, "legend")
+        legendFolder = os.path.join(folder, "resources", "legend")
         if not QDir(legendFolder).exists():
             QDir().mkpath(legendFolder)
         for ilayer, applayer in enumerate(layers):
@@ -35,8 +32,7 @@ class Legend(WebAppWidget):
                 if symbols:
                     legend[layer.id()] = symbols
 
-        with open(os.path.join(legendFolder, "legend.js"), "w") as f:
-            f.write("var legendData = %s;" % json.dumps(legend))
+        app.variables.append("var legendData = %s;" % json.dumps(legend))
 
     def getLegendSymbols(self, layer, ilayer, legendFolder):
         size = 20

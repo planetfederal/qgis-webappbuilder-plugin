@@ -109,7 +109,10 @@ def layerToJavascript(applayer, settings, deploy, title):
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
-                    source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
+                    source: new ol.source.Vector({
+                        format: new ol.format.GeoJSON(),
+                        url: './data/lyr_%(n)s.json'
+                    }),
                 });
                 var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -128,7 +131,10 @@ def layerToJavascript(applayer, settings, deploy, title):
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
-                    source: new ol.source.Vector({features: new ol.format.GeoJSON().readFeatures(geojson_%(n)s)}),
+                    source: new ol.source.Vector({
+                        format: new ol.format.GeoJSON(),
+                        url: './data/lyr_%(n)s.json'
+                    }),
                     %(min)s %(max)s
                     style: style_%(n)s,
                     title: %(name)s,
@@ -236,8 +242,8 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 "layerClass": layerClass, "sourceClass": sourceClass,
                                 "tiled": tiled}
 
-def exportStyles(layers, folder, settings, addTimeInfo, progress):
-    stylesFolder = os.path.join(folder, "styles")
+def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
+    stylesFolder = os.path.join(folder, "data", "styles")
     QDir().mkpath(stylesFolder)
     progress.setText("Writing layer styles")
     progress.setProgress(0)
@@ -365,7 +371,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
                         %(value)s
                         %(style)s;
                         %(selectionStyle)s;
-                        allStyles = [];
+                        var allStyles = [];
                         %(labels)s
                         if (selected && selected.indexOf(feature) != -1){
                             allStyles.push.apply(allStyles, selectionStyle);
@@ -381,35 +387,32 @@ def exportStyles(layers, folder, settings, addTimeInfo, progress):
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
 
-        path = os.path.join(stylesFolder, safeName(layer.name()) + ".js")
-
-        with codecs.open(path, "w","utf-8") as f:
-            if cannotWriteStyle:
-                f.write('''var default_fill = new ol.style.Fill({
-                   color: 'rgba(255,255,255,0.4)'
-                 });
-                 var default_stroke = new ol.style.Stroke({
-                   color: '#3399CC',
-                   width: 1.25
-                 });
-                 var style_%s = [
-                   new ol.style.Style({
-                     image: new ol.style.Circle({
-                       fill: default_fill,
-                       stroke: default_stroke,
-                       radius: 5
-                     }),
-                     fill: default_fill,
-                     stroke: default_stroke
-                   })
-                 ];''' % safeName(layer.name()))
-            else:
-                f.write('''%(defs)s
-                        var textStyleCache_%(name)s={}
-                        var clusterStyleCache_%(name)s={}
-                        var selectedClusterStyleCache_%(name)s={}
-                        var style_%(name)s = %(style)s;''' %
-                    {"defs":defs, "name":safeName(layer.name()), "style":style})
+        if cannotWriteStyle:
+            app.variables.append('''var default_fill = new ol.style.Fill({
+               color: 'rgba(255,255,255,0.4)'
+             });
+             var default_stroke = new ol.style.Stroke({
+               color: '#3399CC',
+               width: 1.25
+             });
+             var style_%s = [
+               new ol.style.Style({
+                 image: new ol.style.Circle({
+                   fill: default_fill,
+                   stroke: default_stroke,
+                   radius: 5
+                 }),
+                 fill: default_fill,
+                 stroke: default_stroke
+               })
+             ];''' % safeName(layer.name()))
+        else:
+            app.variables.append('''%(defs)s
+                    var textStyleCache_%(name)s={}
+                    var clusterStyleCache_%(name)s={}
+                    var selectedClusterStyleCache_%(name)s={}
+                    var style_%(name)s = %(style)s;''' %
+                {"defs":defs, "name":safeName(layer.name()), "style":style})
         progress.setProgress(int(ilayer*100.0/len(layers)))
 
 def getLabeling(layer):
@@ -659,7 +662,7 @@ def getIcon(path, size, rotation):
                   anchor: [0.5, 0.5],
                   src: "%(path)s",
                   rotation: %(rad)f
-            })''' % {"s": size, "path": "styles/" + os.path.basename(path),
+            })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path),
                      "rad": math.radians(rotation)}
 
 def getStrokeStyle(color, dashed, width):

@@ -9,35 +9,8 @@ class ChartTool(WebAppWidget):
     _parameters = {"charts": {}}
 
     def write(self, appdef, folder, app, progress):
-        li = "\n".join(["<li><a onclick=\"openChart('%s')\" href=\"#\">%s</a></li>" % (c,c)
-                        for c in self._parameters["charts"]])
-        app.tools.append('''<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-stats"></i> Charts <span class="caret"><span></a>
-                            <ul class="dropdown-menu">
-                              %s
-                            </ul>
-                          </li>''' % li)
-        self.addScript("d3.min.js", folder, app)
-        self.addScript("c3.min.js", folder, app)
-        self.addScript("charts.js", folder, app)
-        self.addCss("c3.min.css", folder, app)
-        self.addCss("charts.css", folder, app)
-        app.scripts.append('<script src="./charts.js"></script>')
-        app.panels.append('''<div class="chart-panel" id="chart-panel">
-                        <span class="chart-panel-info" id="chart-panel-info"></span>
-                        <a href="#" id="chart-panel-closer" class="chart-panel-closer">Close</a>
-                        <div id="chart"></div></div>''')
-        chartsFilepath = os.path.join(folder, "charts.js")
-        with open(chartsFilepath, "w") as f:
-            f.write("var AGGREGATION_MIN = 0;")
-            f.write("var AGGREGATION_MAX = 1;")
-            f.write("var AGGREGATION_SUM = 2;")
-            f.write("var AGGREGATION_AVG = 3;")
-            f.write("var DISPLAY_MODE_FEATURE = 0;")
-            f.write("var DISPLAY_MODE_CATEGORY = 1;")
-            f.write("var DISPLAY_MODE_COUNT = 2;")
-            f.write("var charts = " + json.dumps(self._parameters["charts"]))
+        app.panels.append("<UI.Tab eventKey={4} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>")
+        app.variables.append("var charts = " + json.dumps(self._parameters["charts"]))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "chart-tool.png"))

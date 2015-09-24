@@ -12,34 +12,17 @@ import uuid
 class Print(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        self.writePrintFiles(appdef, folder, progress)
-        li = "\n".join(['''<li><img style=" border:1px solid #333333;" src="print/%(safename)s_thumbnail.png"/>
-                            <a onclick="printMap('%(name)s')" href="#">%(name)s</a></li>
-                            <li class="nav-divider"></li>'''
-                        % {"name": c.composerWindow().windowTitle(),
-                           "safename": safeName(c.composerWindow().windowTitle())}
-                                for c in iface.activeComposers()])
-        app.tools.append('''<li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="glyphicon glyphicon-print"></i> Print
-            <span class="caret"><span></a>
-            <ul class="dropdown-menu" style="text-align:center;">
-              %s
-            </ul>
-          </li>''' % li)
-        app.scriptsBottom.append('<script src="print/layouts.js"></script>')
-        self.addScript("bootbox.min.js", folder, app)
-        self.addScript("jspdf.min.js", folder, app)
-        self.addScript("print.js", folder, app)
+        self.writePrintFiles(appdef, folder, app, progress)
+        app.tools.append("<ul className='pull-right' id='toolbar-print'><QGISPrint thumbnailPath='./resources/print/' map={map} layouts={printLayouts} /></ul>")
 
 
     def description(self):
         return "Print"
 
-    def writePrintFiles(self, appdef, folder, progress):
+    def writePrintFiles(self, appdef, folder, app, progress):
         progress.setText("Writing print layout files")
         progress.setProgress(0)
-        printFolder = os.path.join(folder, "print")
+        printFolder = os.path.join(folder, "resources", "print")
         if not QDir(printFolder).exists():
             QDir().mkpath(printFolder)
         dpis = [72, 150, 300]
@@ -109,5 +92,4 @@ class Print(WebAppWidget):
             layoutDefs[name] = layoutDef
             progress.setProgress(int((i+1)*100.0/len(composers)))
 
-        with open(os.path.join(printFolder, "layouts.js"), "w") as f:
-            f.write("var printLayouts = %s;" % json.dumps(layoutDefs))
+        app.variables.append("var printLayouts = %s;" % json.dumps(layoutDefs))

@@ -38,7 +38,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateWidgets()
         self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonConfigureTheme.clicked.connect(self.configureTheme)
-        self.buttonPreview.clicked.connect(self.updatePreview)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
@@ -263,7 +262,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             themes.insert(0, "basic")
         for i, theme in enumerate(themes):
             button = QToolButton()
-            icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, theme + ".png"))
+            icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, "icon.png"))
             button.setIcon(icon)
             button.setText(theme)
             button.setIconSize(QSize(80, 80))
@@ -380,29 +379,6 @@ class MainDialog(QDialog, Ui_MainDialog):
             self.progressLabel.setVisible(False)
             QApplication.restoreOverrideCursor()
 
-    def updatePreview(self):
-        appdef = self.createAppDefinition(True)
-        problems = checkAppCanBeCreated(appdef)
-        if problems:
-            dlg = AppDefProblemsDialog(problems)
-            dlg.exec_()
-            if not dlg.ok:
-                return
-        try:
-            path = self._run(lambda: writeWebApp(appdef, utils.tempFolder(), True, self.progress))
-            path = "file:///" + path.replace("\\","/")
-            webbrowser.open_new(path)
-            projFile = QgsProject.instance().fileName()
-            if projFile:
-                appdefFile =  projFile + ".appdef"
-                saveAppdef(appdef, appdefFile)
-
-        except WrongValueException:
-            pass
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nSee QGIS log for more details.")
 
 
     def createApp(self):

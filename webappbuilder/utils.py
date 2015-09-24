@@ -88,7 +88,7 @@ def tempFolderInTempFolder():
 def exportLayers(layers, folder, progress, precision, crsid):
     progress.setText("Writing local layer files")
     destCrs = QgsCoordinateReferenceSystem(crsid)
-    layersFolder = os.path.join(folder, "layers")
+    layersFolder = os.path.join(folder, "data")
     QDir().mkpath(layersFolder)
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % precision)
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
@@ -97,12 +97,11 @@ def exportLayers(layers, folder, progress, precision, crsid):
         if appLayer.method == METHOD_FILE:
             layer = appLayer.layer
             if layer.type() == layer.VectorLayer:
-                path = os.path.join(layersFolder, "lyr_%s.js" % safeName(layer.name()))
+                path = os.path.join(layersFolder, "lyr_%s.json" % safeName(layer.name()))
                 QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
                 with open(path) as f:
                     lines = f.readlines()
                 with open(path, "w") as f:
-                    f.write("var %s = " % ("geojson_" + safeName(layer.name())))
                     for line in lines:
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")

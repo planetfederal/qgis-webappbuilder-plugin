@@ -1,0 +1,38 @@
+.modal-title {
+  text-transform: none !important;
+}
+.toolbar ul {
+  margin-right: 12px;
+  margin-top: 12px;
+}
+.toolbar {
+  height: 60px;
+}
+#geolocation-control {
+  top: 130px;
+  left: 1.3em;
+}
+#home-button {
+  top: 70px;
+  left: 1.3em;
+}
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: small;
+}
+.full-height {
+  height: 100%;
+}
+#map {
+  width: 100%;
+  height: 100%;
+}
+#content {
+  width: 100%;
+  height:  calc(100% - 60px);
+  position: fixed;
+  bottom: 0px;
+}
