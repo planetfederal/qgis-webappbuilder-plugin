@@ -197,9 +197,15 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.popupItem.setDisabled(disable)
                 self.popupLabel.setDisabled(disable)
                 self.allowSelectionItem.setDisabled(disable)
-            self.singleTileItem.setDisabled(not disable)
+            try:
+                self.singleTileItem.setDisabled(not disable)
+            except:
+                pass
         except:
-            self.singleTileItem.setDisabled(False)
+            try:
+                self.singleTileItem.setDisabled(False)
+            except:
+                pass
 
 
 
@@ -245,7 +251,10 @@ class TreeLayerItem(QTreeWidgetItem):
 
     @property
     def singleTile(self):
-        return self.singleTileItem.checkState(0) == Qt.Checked
+        try:
+            return self.singleTileItem.checkState(0) == Qt.Checked
+        except:
+            return False
 
     @property
     def method(self):
