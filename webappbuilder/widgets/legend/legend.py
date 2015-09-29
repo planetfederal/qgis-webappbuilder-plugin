@@ -54,7 +54,7 @@ class Legend(WebAppWidget):
                     img.save(symbolPath)
                     appendSymbol(cat.label(), os.path.basename(symbolPath))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
-                for isymbol, ran in renderer.ranges():
+                for isymbol, ran in enumerate(renderer.ranges()):
                     img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
