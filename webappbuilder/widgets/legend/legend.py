@@ -71,5 +71,5 @@ class Legend(WebAppWidget):
             with open(symbolPath, 'wb') as f:
                 shutil.copyfileobj(response.raw, f)
             del response
-            symbols[""] = os.path.basename(symbolPath)
+            appendSymbol("", os.path.basename(symbolPath))
         return symbols
