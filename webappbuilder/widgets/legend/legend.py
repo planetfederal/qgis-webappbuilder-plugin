@@ -62,7 +62,7 @@ class Legend(WebAppWidget):
         elif layer.providerType() == "wms":
             source = layer.source()
             layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+            url = re.search(r"url=(.*?)\?", source).groups(0)[0]
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
             fullUrl = ("%s?LAYER=%s&STYLES=%s&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=%i&HEIGHT=%i"
                        % (url, layerName, styles, size, size))
