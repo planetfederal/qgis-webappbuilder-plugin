@@ -201,8 +201,9 @@ def writeLayersAndGroups(appdef, folder, app, progress):
 
     visibility = "\n".join(["lyr_%s.setVisible(%s);" % (safeName(layer.layer.name()),
                                                 str(layer.visible).lower()) for layer in layers])
-
-    visibility += "for (var i=1;i<baseLayers.length;i++){baseLayers[i].setVisible(false)}"
+    if baseJs:
+        visibility += "for (var i=0;i<baseLayers.length;i++){baseLayers[i].setVisible(false);}"
+        visibility += "baseLayers[1].setVisible(true);"
 
     layersList = []
     usedGroups = []
