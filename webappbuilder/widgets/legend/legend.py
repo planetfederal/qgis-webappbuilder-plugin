@@ -10,7 +10,7 @@ import shutil
 
 class Legend(WebAppWidget):
 
-    _parameters = {"showExpandedOnStartup": False, "expandOnHover": True}
+    _parameters = {"showExpandedOnStartup": False, "expandOnHover": True, "size": 20}
 
     def write(self, appdef, folder, app, progress):
         self.writeLegendFiles(appdef, app, folder)
@@ -35,7 +35,7 @@ class Legend(WebAppWidget):
         app.variables.append("var legendData = %s;" % json.dumps(legend))
 
     def getLegendSymbols(self, layer, ilayer, legendFolder):
-        size = 20
+        size = self._parameters["size"]
         qsize = QSize(size, size)
         symbols = []
         def appendSymbol(title, href):
