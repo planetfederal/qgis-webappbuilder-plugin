@@ -47,7 +47,8 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     id: "%(id)s",
                     filters: [],
                     timeInfo: %(timeInfo)s,
-                    isSelectable: %(selectable)s
+                    isSelectable: %(selectable)s,
+                    popup: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
                  "min": min,"max": max, "dist": str(clusterDistance),
@@ -62,7 +63,8 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             id: "%(id)s",
                             filters: [],
                             timeInfo: %(timeInfo)s,
-                            isSelectable: %(selectable)s
+                            isSelectable: %(selectable)s,
+                            popup: "%(popup)s"
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max, "selectable": str(isSelectable).lower(),
@@ -94,6 +96,7 @@ def layerToJavascript(applayer, settings, deploy, title):
     layerClass = "ol.layer.Image" if applayer.singleTile else "ol.layer.Tile"
     sourceClass = "ol.source.ImageWMS" if applayer.singleTile else "ol.source.TileWMS"
     tiled = "" if applayer.singleTile else ', "TILED": "true"'
+    popup = applayer.popup.replace('\n', ' ').replace('\r', '').replace('"',"'")
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
@@ -104,7 +107,7 @@ def layerToJavascript(applayer, settings, deploy, title):
             return _getWfsLayer(url, title, layerName, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layer.geometryType(), layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, timeInfo, layer.id())
+                                applayer.allowSelection, timeInfo, layer.id(), popup)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -122,12 +125,13 @@ def layerToJavascript(applayer, settings, deploy, title):
                     id: "%(id)s",
                     filters: [],
                     timeInfo: %(timeInfo)s,
-                    isSelectable: %(selectable)s
+                    isSelectable: %(selectable)s,
+                    popup: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": timeInfo, "id": layer.id()})
+                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup})
             else:
                 return ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -141,19 +145,20 @@ def layerToJavascript(applayer, settings, deploy, title):
                     id: "%(id)s",
                     filters: [],
                     timeInfo: %(timeInfo)s,
-                    isSelectable: %(selectable)s
+                    isSelectable: %(selectable)s,
+                    popup: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution,
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": timeInfo, "id": layer.id()})
+                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup})
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
                 return _getWfsLayer(url, title, layerName, typeName, minResolution,
                             maxResolution, applayer.clusterDistance, layer.geometryType(),
                             layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            timeInfo, layer.id())
+                            timeInfo, layer.id(), popup)
         else:
             source = layer.source()
             layers = layer.name()
@@ -191,13 +196,15 @@ def layerToJavascript(applayer, settings, deploy, title):
                           params: {"LAYERS": "%(layers)s" %(tiled)s, "STYLES": "%(styles)s"},
                         })),
                         title: %(name)s,
-                        id: "%(id)s"
+                        id: "%(id)s",
+                        popup: "%(popup)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
                                 "styles": styles, "timeInfo": timeInfo,
                                 "id": layer.id(), "layerClass": layerClass,
-                                "sourceClass": sourceClass, "tiled": tiled}
+                                "sourceClass": sourceClass, "tiled": tiled,
+                                "popup": popup}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
