@@ -5,7 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from geoserver.catalog import Catalog
+from geoserver.catalog import Catalog, FailedRequestError
 from utils import *
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
@@ -127,23 +127,24 @@ def importPostgis(appdef, progress):
 			tableExists = tablename in [t[1] for t in tables]
 			if tableExists:
 				connector.deleteTable([schema, tablename])
-				importLayerIntoPostgis(layer.layer, host, port, username, password,
-								dbname, schema, tablename)
+			importLayerIntoPostgis(layer.layer, host, port, username, password,
+							dbname, schema, tablename, appdef["Settings"]["App view CRS"])
 		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
-def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename):
+
+def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename, crsid):
 	pk = "id"
 	geom = "geom"
 	providerName = "postgres"
+	destCrs = QgsCoordinateReferenceSystem(crsid)
 
 	uri = QgsDataSourceURI()
-	uri.setConnection(host, str(port), dbname, username, self.geodb.password)
+	uri.setConnection(host, str(port), dbname, username, password)
 	uri.setDataSource(schema, tablename, geom, "", pk)
 
-	ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, layer.crs(), False, False, options)
+	ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, destCrs, False, False)
 	if ret != 0:
 		raise Exception("Could not import layer '%s': %s" % (layer.name(), errMsg))
-
 
 
 def publishGeoserver(appdef, progress):
@@ -183,7 +184,10 @@ def publishGeoserver(appdef, progress):
 		catalog.delete(store)
 	except Exception:
 		pass
-	store = None
+	try:
+		store = catalog.get_store(dsName, workspace)
+	except FailedRequestError:
+		atore = None
 	for i, applayer in enumerate(appdef["Layers"]):
 		layer = applayer.layer
 		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:

@@ -189,6 +189,19 @@ class MainDialog(QDialog, Ui_MainDialog):
                                    layer["showInControls"], layer["singleTile"])
                 else:
                     item.setCheckState(0, Qt.Unchecked)
+
+                deploy = appdef["Deploy"]
+
+                self.postgisHostBox.setText(deploy["PostGIS host"])
+                self.postgisPortBox.setText(deploy["PostGIS port"])
+                self.postgisDatabaseBox.setText(deploy["PostGIS database"])
+                self.postgisSchemaBox.setText(deploy["PostGIS schema"])
+                self.postgisUsernameBox.setText(deploy["PostGIS username"])
+                self.postgisPasswordBox.setText(deploy["PostGIS password"])
+                self.geoserverUrlBox.setText(deploy["GeoServer url"])
+                self.geoserverUsernameBox.setText(deploy["GeoServer username"])
+                self.geoserverPasswordBox.setText(deploy["GeoServer password"])
+                self.geoserverWorkspaceBox.setText(deploy["GeoServer workspace"])
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             QMessageBox.warning(iface.mainWindow(), "Error loading app definition",
