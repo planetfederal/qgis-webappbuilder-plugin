@@ -9,7 +9,7 @@ import math
 
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                  geometryType, layerCrs, viewCrs, layerOpacity, isSelectable,
-                 timeInfo, layerId):
+                 timeInfo, layerId, popup):
     wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
@@ -53,7 +53,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
                  "min": min,"max": max, "dist": str(clusterDistance),
                  "selectable": str(isSelectable).lower(), "timeInfo": timeInfo,
-                 "id": layerId})
+                 "id": layerId, "popup": popup})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
                             opacity: %(opacity)s,
@@ -68,7 +68,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max, "selectable": str(isSelectable).lower(),
-                         "timeInfo": timeInfo, "id": layerId})
+                         "timeInfo": timeInfo, "id": layerId, "popup": popup})
     return wfsSource + vectorLayer
 
 
