@@ -5,7 +5,7 @@ from PyQt4.QtGui import QIcon
 class Attribution(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.controls.append("new ol.control.Attribution()")
+        app.ol3controls.append("new ol.control.Attribution()")
         self.addCss("attribution.css", folder, app)
 
     def icon(self):

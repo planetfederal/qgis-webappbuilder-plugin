@@ -1,12 +1,20 @@
 from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
-from webappbuilder.utils import METHOD_WMS
+from webappbuilder.utils import METHOD_WMS, safeName, METHOD_WMS_POSTGIS
 
 class AttributesTable(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.panels.append('<UI.Tab eventKey={2} title="Attributes table"><div id="attributes-table-tab"><FeatureTable layer={selectedLayer} map={map} /></div></UI.Tab>')
+        layerVar = ""
+        layers = appdef["Layers"]
+        for applayer in layers:
+            layer = applayer.layer
+            if layer.type() == layer.VectorLayer and applayer.method not in [METHOD_WMS, METHOD_WMS_POSTGIS]:
+                layerVar = "lyr_" + safeName(layer.name())
+                break
+        app.panels.append('<UI.Tab eventKey={2} title="Attributes table"><div id="attributes-table-tab"><FeatureTable layer={%s} map={map} /></div></UI.Tab>'
+                          % layerVar)
 
 
     def icon(self):
@@ -20,7 +28,7 @@ class AttributesTable(WebAppWidget):
         nonVectorLayers = 0
         for applayer in layers:
             layer = applayer.layer
-            if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
+            if layer.type() != layer.VectorLayer or applayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
                 nonVectorLayers += 1
 
         if nonVectorLayers == len(layers):

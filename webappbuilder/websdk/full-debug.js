@@ -3993,6 +3993,7 @@ var QGISLegend = (function (_React$Component) {
     _classCallCheck(this, QGISLegend);
 
     _get(Object.getPrototypeOf(QGISLegend.prototype), 'constructor', this).call(this, props);
+    _storesLayerStoreJs2['default'].bindMap(this.props.map);
     this.state = {
       visible: false
     };
@@ -4080,6 +4081,10 @@ var QGISLegend = (function (_React$Component) {
 
 QGISLegend.propTypes = {
   /**
+   * The map from which to extract the layers.
+   */
+  map: _react2['default'].PropTypes.instanceOf(ol.Map).isRequired,
+  /**
    * The base path (relative url) to use for finding the artefacts.
    */
   legendBasePath: _react2['default'].PropTypes.string,
@@ -4147,6 +4152,10 @@ var _jspdfBrowserify = require('jspdf-browserify');
 
 var _jspdfBrowserify2 = _interopRequireDefault(_jspdfBrowserify);
 
+var _puiReactAlerts = require('pui-react-alerts');
+
+var _puiReactAlerts2 = _interopRequireDefault(_puiReactAlerts);
+
 require('./QGISPrint.css');
 
 var _reactIntl = require('react-intl');
@@ -4175,6 +4184,10 @@ var messages = (0, _reactIntl.defineMessages)({
   printmenutext: {
     'id': 'qgisprint.printmenutext',
     'defaultMessage': 'Print'
+  },
+  error: {
+    'id': 'qgisprint.error',
+    'defaultMessage': 'Error while generating PDF, details: {details}'
   }
 });
 
@@ -4194,7 +4207,8 @@ var QGISPrint = (function (_React$Component) {
     _get(Object.getPrototypeOf(QGISPrint.prototype), 'constructor', this).call(this, props);
     this.state = {
       layout: null,
-      loading: false
+      loading: false,
+      error: false
     };
   }
 
@@ -4250,12 +4264,20 @@ var QGISPrint = (function (_React$Component) {
   }, {
     key: '_paintMapInPdf',
     value: function _paintMapInPdf() {
-      var data = this._canvas.toDataURL('image/jpeg');
-      var pdf = this._pdf;
-      var mapElement = this._mapElement;
+      var data, error;
+      try {
+        data = this._canvas.toDataURL('image/jpeg');
+      } catch (e) {
+        error = true;
+        this.setState({ loading: false, error: true, msg: e });
+      }
       var map = this.props.map;
-      pdf.rect(mapElement.x, mapElement.y, mapElement.width, mapElement.height);
-      pdf.addImage(data, 'JPEG', mapElement.x, mapElement.y, mapElement.width, mapElement.height);
+      if (error !== true) {
+        var pdf = this._pdf;
+        var mapElement = this._mapElement;
+        pdf.rect(mapElement.x, mapElement.y, mapElement.width, mapElement.height);
+        pdf.addImage(data, 'JPEG', mapElement.x, mapElement.y, mapElement.width, mapElement.height);
+      }
       map.setSize(this._origSize);
       map.getView().fit(this._origExtent, this._origSize);
       map.renderSync();
@@ -4409,7 +4431,14 @@ var QGISPrint = (function (_React$Component) {
             resolution
           );
         });
-        var loading;
+        var loading, error;
+        if (this.state.error) {
+          error = _react2['default'].createElement(
+            _puiReactAlerts2['default'].ErrorAlert,
+            { dismissable: false, withIcon: true },
+            formatMessage(messages.error, { details: this.state.msg })
+          );
+        }
         if (this.state.loading === true) {
           loading = _react2['default'].createElement(
             'div',
@@ -4440,7 +4469,8 @@ var QGISPrint = (function (_React$Component) {
               { ref: 'resolution', id: 'resolution-dropdown', className: 'form-control' },
               selectOptions
             ),
-            loading
+            loading,
+            error
           ),
           _react2['default'].createElement(
             _puiReactModals2['default'].ModalFooter,
@@ -4500,7 +4530,7 @@ QGISPrint.defaultProps = {
 exports['default'] = (0, _reactIntl.injectIntl)(QGISPrint);
 module.exports = exports['default'];
 
-},{"./QGISPrint.css":32,"jspdf-browserify":111,"openlayers":116,"pui-react-buttons":149,"pui-react-dropdowns":167,"pui-react-iconography":348,"pui-react-modals":405,"react":759,"react-intl":548}],34:[function(require,module,exports){
+},{"./QGISPrint.css":32,"jspdf-browserify":111,"openlayers":116,"pui-react-alerts":117,"pui-react-buttons":149,"pui-react-dropdowns":167,"pui-react-iconography":348,"pui-react-modals":405,"react":759,"react-intl":548}],34:[function(require,module,exports){
 var css = ".query-builder .input-has-error {\n  background-color: #fdd;\n}\n"; (require("browserify-css").createStyle(css, { "href": "js/components/QueryBuilder.css"})); module.exports = css;
 },{"browserify-css":45}],35:[function(require,module,exports){
 'use strict';

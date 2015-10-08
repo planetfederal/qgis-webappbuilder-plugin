@@ -6,7 +6,6 @@ from PyQt4.QtWebKit import *
 from ui_maindialog import Ui_MainDialog
 import utils
 from collections import defaultdict
-from appwriter import writeWebApp
 from qgis.utils import iface
 from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
 import settings
@@ -20,7 +19,6 @@ from settings import outputFolders, webAppWidgets
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
-import inspect
 
 
 class MainDialog(QDialog, Ui_MainDialog):
@@ -396,16 +394,7 @@ class MainDialog(QDialog, Ui_MainDialog):
             if folder:
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
                 outputFolders[projFile] = folder
-                msgBox = QMessageBox()
-                msgBox.setWindowTitle("Web app creator")
-                msgBox.setText("App was correctly created and deployed")
-                msgBox.setInformativeText("Do you want to open it in a web browser?");
-                msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
-                msgBox.setIcon(QMessageBox.Information)
-                msgBox.setDefaultButton(QMessageBox.Yes);
-                ret = msgBox.exec_();
-                if ret == QMessageBox.Yes:
-                    webbrowser.open_new("file://%s/index.html" % folder)
+                QMessageBox().information(self, "Web App Builder", "App has been correctly created")
         except WrongValueException:
             pass
         except:

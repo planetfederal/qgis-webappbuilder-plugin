@@ -14,8 +14,10 @@ from json.encoder import JSONEncoder
 import json
 import requests
 from settings import webAppWidgets
+import viewer
 
 def createApp(appdef, deployData, folder, progress):
+	viewer.shutdown()
 	if deployData:
 		usesGeoServer = False
 		usesPostgis = False

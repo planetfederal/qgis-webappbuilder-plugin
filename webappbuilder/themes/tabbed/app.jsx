@@ -2,7 +2,8 @@
 
 var map = new ol.Map({
   layers: layersList,
-  view: view
+  view: view,
+  controls: [@OL3CONTROLS@]
 });
 
 
@@ -17,7 +18,7 @@ class TabbedApp extends React.Component {
         <nav role='navigation'>
           <div className='toolbar'>
             @LOGO@
-            <a class="navbar-brand" href="#">@TITLE@</a>
+            <a className="navbar-brand" href="#">@TITLE@</a>
             @TOOLBAR@
           </div>
         </nav>

@@ -18,8 +18,7 @@ class MousePosition(WebAppWidget):
         coord = str(self._parameters["coordinateFormat"])
         s = json.dumps(self._parameters)
         s = s.replace('"%s"' % coord, coord)
-        app.controls.append("new ol.control.MousePosition(%s)" % s)
-        self.addCss("mouseposition.css", folder, app)
+        app.ol3controls.append("new ol.control.MousePosition(%s)" % s)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "mouse-position.png"))

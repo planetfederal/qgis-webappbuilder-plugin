@@ -5,8 +5,7 @@ from PyQt4.QtGui import QIcon
 class FullScreen(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.controls.append("new ol.control.FullScreen()")
-        self.addCss("fullscreen.css", folder, app)
+        app.ol3controls.append("new ol.control.FullScreen()")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "full-screen.png"))

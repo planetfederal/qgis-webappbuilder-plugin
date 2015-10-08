@@ -10,13 +10,13 @@ from utils import *
 from settings import *
 from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
-
+import jsbeautifier
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
     progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
-    resourcesFolder = os.path.join(os.path.dirname(__file__), "sdk")
+    resourcesFolder = os.path.join(os.path.dirname(__file__), "websdk")
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(resourcesFolder, dst)
@@ -28,6 +28,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
 
     class App():
         controls = []
+        ol3controls = []
         tools = []
         panels = []
         variables = []
@@ -67,7 +68,9 @@ def writeJsx(appdef, folder, app, progress):
         logo = ""
 
     values = {"@LOGO@": logo,
-                "@CONTROLS@": ",\n".join(app.controls),
+                "@CONTROLS@": "\n".join(app.controls),
+                "@OL3CONTROLS@": ",\n".join(app.ol3controls),
+                "@TITLE@": appdef["Settings"]["Title"],
                 #"@POPUPEVENT@": popupEvent,
                 "@PANELS@": "\n".join(app.panels),
                 "@TOOLBAR@": "\n".join(app.tools),
@@ -75,8 +78,13 @@ def writeJsx(appdef, folder, app, progress):
     jsxFilepath = os.path.join(folder, "app.jsx")
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"]["Name"], "app.jsx")
+    jsx = replaceInTemplate(template, values)
+    try:
+        jsx = jsbeautifier.beautify(jsx)
+    except:
+        pass #jsbeautifier gives some random errors sometimes due to imports
     with open(jsxFilepath, "w") as f:
-        f.write(replaceInTemplate(template, values))
+        f.write(jsx)
     processJsx(jsxFilepath, progress)
 
 
@@ -91,7 +99,6 @@ def writeCss(appdef, folder):
 
 def writeHtml(appdef, folder, app, progress):
     layers = appdef["Layers"]
-    theme = appdef["Settings"]["Theme"]["Name"]
     viewCrs = appdef["Settings"]["App view CRS"]
 
     refresh = []
