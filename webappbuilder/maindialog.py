@@ -393,14 +393,14 @@ class MainDialog(QDialog, Ui_MainDialog):
 
 
     def createApp(self):
-        appdef = self.createAppDefinition()
-        problems = checkAppCanBeCreated(appdef)
-        if problems:
-            dlg = AppDefProblemsDialog(problems)
-            dlg.exec_()
-            if not dlg.ok:
-                return
         try:
+            appdef = self.createAppDefinition()
+            problems = checkAppCanBeCreated(appdef)
+            if problems:
+                dlg = AppDefProblemsDialog(problems)
+                dlg.exec_()
+                if not dlg.ok:
+                    return
             projFile = QgsProject.instance().fileName()
             previousFolder = outputFolders.get(projFile, "")
             folder = QFileDialog.getExistingDirectory(self, "Select folder to store app", previousFolder)
