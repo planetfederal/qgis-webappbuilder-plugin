@@ -71,7 +71,7 @@ def checkAppCanBeCreated(appdef):
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wfs":
-			url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
+			url = re.search(r"url=(.*?)(?:&|$)", layer.source()).groups(0)[0] + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
 			r = requests.get(url)
 			if "text/javascript" not in r.text:
 				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
