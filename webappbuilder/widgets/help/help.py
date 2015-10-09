@@ -9,7 +9,7 @@ class Help(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         self.writeHelpFiles(appdef, folder)
-        app.tools.append('<li><a href="help/help.html"><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>')
+        app.tools.append("<ul className='pull-right' id='toolbar-help'><BUTTON.DefaultButton onClick='' title='Help'><Icon.Icon name='help' /> Help</BUTTON.DefaultButton></ul>")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "help.png"))
