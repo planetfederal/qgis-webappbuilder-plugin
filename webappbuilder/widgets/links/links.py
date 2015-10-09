@@ -10,7 +10,7 @@ class Links(WebAppWidget):
         links = self._parameters["links"]
         items = []
         for name, url in links.iteritems():
-            items.append('<UI.DropdownItem href="%s" "%s"}</UI.DropdownItem>' % (url, name))
+            items.append('<UI.DropdownItem href="%s">%s</UI.DropdownItem>' % (url, name))
 
         app.tools.append('<UI.Dropdown title="Links">\n%s\n</UI.Dropdown>' % "\n".join(items))
 
