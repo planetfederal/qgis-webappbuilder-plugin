@@ -83,7 +83,7 @@ def writeJsx(appdef, folder, app, progress):
                 "@VARIABLES@": variables}
     jsxFilepath = os.path.join(folder, "app.jsx")
     template = os.path.join(os.path.dirname(__file__), "themes",
-                            appdef["Settings"]["Theme"]["Name"], "app.jsx")
+                            appdef["Settings"]["Theme"], "app.jsx")
     jsx = replaceInTemplate(template, values)
 
     with open(jsxFilepath, "w") as f:
@@ -95,10 +95,9 @@ def processJsx(folder, progress):
     pass
 
 def writeCss(appdef, folder):
-    cssFilepath = os.path.join(folder, "app.css")
-    with open(cssFilepath, "w") as f:
-        f.write(appdef["Settings"]["Theme"]["Css"])
-
+    dst = os.path.join(folder, "app.css")
+    src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
+    shutil.copy(src, dst)
 
 def writeHtml(appdef, folder, app, progress):
     layers = appdef["Layers"]

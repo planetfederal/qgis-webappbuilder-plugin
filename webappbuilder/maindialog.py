@@ -3,7 +3,6 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import *
-from ui_maindialog import Ui_MainDialog
 import utils
 from collections import defaultdict
 from qgis.utils import iface
@@ -13,15 +12,17 @@ from types import MethodType
 import webbrowser
 from treesettingsitem import TreeSettingItem
 from utils import *
-from themeeditor import ThemeEditorDialog
 from functools import partial
 from settings import outputFolders, webAppWidgets
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
+from PyQt4 import uic
 
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), 'ui_maindialog.ui'))
 
-class MainDialog(QDialog, Ui_MainDialog):
+class MainDialog(BASE, WIDGET):
 
     items = {}
 
@@ -35,7 +36,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.populateThemes()
         self.populateWidgets()
         self.buttonLogo.clicked.connect(self.selectLogo)
-        self.buttonConfigureTheme.clicked.connect(self.configureTheme)
         self.buttonCreateApp.clicked.connect(self.createApp)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
@@ -119,10 +119,6 @@ class MainDialog(QDialog, Ui_MainDialog):
         if img:
             self.logoBox.setText(img)
 
-    def configureTheme(self):
-        dlg = ThemeEditorDialog()
-        dlg.exec_()
-
     def openAppdef(self):
         appdefFile = QFileDialog.getOpenFileName(self, "Select app definition file", "",
                                           "Appdef files (*.appdef)")
@@ -147,12 +143,11 @@ class MainDialog(QDialog, Ui_MainDialog):
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
                     button.webAppWidget.setParameters(appdef["Widgets"][widgetName]["Parameters"])
-                    button.webAppWidget.setCss(appdef["Widgets"][widgetName]["Css"])
 
             for name in self.settingsItems:
                 if name in appdef["Settings"]:
                     self.settingsItems[name].setValue(appdef["Settings"][name])
-            theme = appdef["Settings"]["Theme"]["Name"]
+            theme = appdef["Settings"]["Theme"]
             for button, themeName in self.themesButtons.iteritems():
                 if themeName == theme:
                     button.click()
@@ -161,7 +156,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 button.setChecked(name in baseLayers)
             for button, name in self.baseOverlays.iteritems():
                 button.setChecked(name in baseLayers)
-            settings.currentCss = appdef["Settings"]["Theme"]["Css"]
             items = []
             for i in xrange(self.layersTree.topLevelItemCount()):
                 item = self.layersTree.topLevelItem(i)
@@ -264,9 +258,8 @@ class MainDialog(QDialog, Ui_MainDialog):
 
     def populateThemes(self):
         self.themesButtons = {}
-        themes = [k for k in settings.themes.keys() if k != "basic"]
-        if "basic" in settings.themes:
-            themes.insert(0, "basic")
+        basePath = os.path.join(os.path.dirname(__file__), "themes")
+        themes = [o for o in os.listdir(basePath) if os.path.isdir(os.path.join(basePath,o))]
         for i, theme in enumerate(themes):
             button = QToolButton()
             icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, "icon.png"))
@@ -283,9 +276,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 for b in self.themesButtons:
                     b.setChecked(False)
                 button.setChecked(True)
-                settings.currentTheme = button.text()
-                settings.currentCss = settings.themes[button.text()]
-
             button.clicked.connect(partial(clicked, button))
             row = i / 2
             col = i % 2
@@ -510,8 +500,7 @@ class MainDialog(QDialog, Ui_MainDialog):
         self.logoBox.setStyleSheet("QLineEdit{background: white}")
         parameters = {"Title": title,
                       "Logo": logo,
-                      "Theme": {"Name": themeName,
-                                "Css": settings.currentCss}
+                      "Theme": themeName
                       }
         try:
             for param, item in self.settingsItems.iteritems():

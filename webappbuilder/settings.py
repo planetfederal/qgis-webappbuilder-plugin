@@ -26,17 +26,6 @@ def loadWidgets():
 
     return _widgets
 
-def loadThemes():
-    allCss = {}
-    basePath = os.path.join(os.path.dirname(__file__), "themes")
-    templates = [os.path.join(basePath,o) for o in os.listdir(basePath)
-                 if os.path.isdir(os.path.join(basePath,o))]
-    for template in templates:
-        themeName = os.path.basename(template)
-        path = os.path.join(template, "app.css")
-        with open(path) as f:
-            allCss[themeName] = "".join(f.readlines())
-    return allCss
 
 def loadBaseLayers():
     path = os.path.join(os.path.dirname(__file__), "baselayers", "baselayers.txt")
@@ -52,28 +41,21 @@ def loadBaseOverlays():
 
 def splitElements(s):
     lines = s.splitlines()
-    css = {}
+    elements = {}
     element = None
     for line in lines:
         if line.strip().startswith("/*"):
             element = line.strip()[2:-2]
-            css[element] = []
+            elements[element] = []
         elif element is not None:
-            css[element].append(line)
-    for element in css:
-        css[element] = "\n".join(css[element])
-    return css
+            elements[element].append(line)
+    for element in elements:
+        elements[element] = "\n".join(elements[element])
+    return elements
 
-def joinElements(els):
-    s = ""
-    for el, css in els.iteritems():
-        s += "\n\n/*%s*/\n" % el
-        s += css
-    return s
 
 baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
-themes = loadThemes()
 webAppWidgets = loadWidgets()
 
 outputFolders = {}
@@ -101,9 +83,6 @@ def initialize():
     global appSettings
     for w in webAppWidgets.values():
         w.resetParameters()
-        w.resetCss()
-    currentTheme = "basic" if "basic" in themes else themes.keys()[0]
-    currentCss =  themes[currentTheme]
     appSettings = copy.deepcopy(defaultAppSettings)
 
 initialize()

@@ -302,7 +302,7 @@ def saveAppdef(appdef, filename):
 								for layer in toSave["Groups"][group]["layers"]]
 	toSave["Widgets"] = {}
 	for wName, w in appdef["Widgets"].iteritems():
-		toSave["Widgets"][wName] = {"Parameters":w.parameters(), "Css": w.css()}
+		toSave["Widgets"][wName] = {"Parameters":w.parameters()}
 	layers = []
 	for layer in toSave["Layers"]:
 		layer.layer = layer.layer.name()
@@ -330,7 +330,6 @@ def processAppdef(appdef):
 	for w, props in appdef["Widgets"].iteritems():
 		obj = webAppWidgets[w]
 		obj.setParameters(props["Parameters"])
-		obj.setCss(props["Css"])
 		newWidgets[w] = obj
 	appdef["Widgets"] = newWidgets
 	newLayers = []
