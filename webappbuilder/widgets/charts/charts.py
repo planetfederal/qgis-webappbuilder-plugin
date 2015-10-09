@@ -2,7 +2,7 @@ from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
 import json
-from webappbuilder.utils import findLayerByName
+from webappbuilder.utils import findLayerByName, findProjectLayerByName
 
 class ChartTool(WebAppWidget):
 
@@ -10,7 +10,12 @@ class ChartTool(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.panels.append("<UI.Tab eventKey={4} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>")
-        app.variables.append("var charts = " + json.dumps(self._parameters["charts"]))
+        charts = []
+        for chartName, chart in self._parameters["charts"].iteritems():
+            charts.append(copy.copy(chart))
+            charts[-1]["title"] = chartName
+            charts[-1]["layer"] = findProjectLayerByName(chart["layer"]).id()
+        app.variables.append("var charts = " + json.dumps(charts))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "chart-tool.png"))
