@@ -234,10 +234,6 @@ class MainDialog(QDialog, Ui_MainDialog):
                 paramsAction.triggered.connect(selfb.webAppWidget.configure)
                 paramsAction.setEnabled(bool(selfb.webAppWidget.parameters()))
                 menu.addAction(paramsAction)
-                cssAction = QAction("Edit CSS...", None)
-                cssAction.triggered.connect(selfb.webAppWidget.editCss)
-                cssAction.setEnabled(bool(selfb.webAppWidget.defaultCss))
-                menu.addAction(cssAction)
                 point = selfb.mapToGlobal(event.pos())
                 menu.exec_(point)
 
