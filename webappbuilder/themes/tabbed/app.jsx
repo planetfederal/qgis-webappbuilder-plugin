@@ -40,11 +40,8 @@ class TabbedApp extends React.Component {
   }
 }
 
-const nlMessages = {
-  'geocoding.placeholder': 'Zoek op plaatsnaam'
-};
 
-React.render(<IntlProvider locale='nl' messages={nlMessages} >{() => (<TabbedApp />)}</IntlProvider>, document.body);
+React.render(<IntlProvider locale='en' >{() => (<TabbedApp />)}</IntlProvider>, document.body);
 
 
 
