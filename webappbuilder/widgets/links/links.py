@@ -8,8 +8,11 @@ class Links(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         links = self._parameters["links"]
+        items = []
         for name, url in links.iteritems():
-            app.tools.append('<li><a href="%s">%s</a></li>' % (url, name))
+            items.append('<UI.DropdownItem href="%s" "%s"}</UI.DropdownItem>' % (url, name))
+
+        app.tools.append('<UI.Dropdown title="Links">\n%s\n</UI.Dropdown>' % "\n".join(items))
 
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
