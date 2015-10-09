@@ -187,7 +187,7 @@ def publishGeoserver(appdef, progress):
 	try:
 		store = catalog.get_store(dsName, workspace)
 	except FailedRequestError:
-		atore = None
+		store = None
 	for i, applayer in enumerate(appdef["Layers"]):
 		layer = applayer.layer
 		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
