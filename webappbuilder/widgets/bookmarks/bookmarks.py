@@ -22,62 +22,15 @@ class Bookmarks(WebAppWidget):
         params = self._parameters
         bookmarks = params["bookmarks"]
         if bookmarks:
-            app.scriptsBottom.append('<script src="./bookmarks.js"></script>')
-            self.addScript("bookmarks.js", folder, app)
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
-                itemBase = '''<div class="item %s">
-                              <div class="header-text hidden-xs">
-                                  <div class="col-md-12 text-center">
-                                      <h2>%s</h2>
-                                      <p>%s</p>
-                                  </div>
-                              </div>
-                            </div>'''
-                bookmarkDivs = itemBase % ("active", params["introTitle"], params["introText"])
-                bookmarkDivs += "\n".join([itemBase % ("", b[0], b[2]) for i,b in enumerate(bookmarks)])
-                if params["showIndicators"]:
-                    li = "\n".join(['<li data-target="#story-carousel" data-slide-to="%i"></li>' % (i+1) for i in xrange(len(bookmarks))])
-                    indicators = '''<ol class="carousel-indicators">
-                                        <li data-target="#story-carousel" data-slide-to="0" class="active"></li>
-                                        %s
-                                    </ol>''' % li
-                else:
-                    indicators = ""
                 slide = "slide" if params["interval"] else ""
                 interval = str(params["interval"] * 1000) if params["interval"] else "false"
-                app.mappanels.append('''<div class="story-panel">
-                      <div class="row">
-                          <div id="story-carousel" class="carousel %s" data-interval="%s" data-ride="carousel">
-                            %s
-                            <div class="carousel-inner">
-                                %s
-                            </div>
-                          </div>
-                          <a class="left carousel-control" href="#story-carousel" data-slide="prev">
-                              <span class="glyphicon glyphicon-chevron-left">&nbsp;</span>
-                          </a>
-                          <a class="right carousel-control" href="#story-carousel" data-slide="next">
-                              <span class="glyphicon glyphicon-chevron-right">&nbsp;</span>
-                          </a>
-                      </div>
-                    </div>
-                    ''' % (slide, interval, indicators, bookmarkDivs))
-                bookmarkEvents = '''\n$("#story-carousel").on('slide.bs.carousel', function(evt) {
-                                          %sToBookmark($(evt.relatedTarget).index()-1)
-                                    })''' % ["go", "pan", "fly"][params["format"]]
-                self.addCss("bookmarks.css", folder, app)
-            else:
-                escapedNames = [b[0].replace("'", "&apos;") for b in bookmarks]
-                li = "\n".join(["<li><a onclick=\"goToBookmarkByName('%s')\" href=\"#\">%s</a></li>" % (b,b) for b in escapedNames])
-                app.tools.append('''<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Bookmarks <span class="caret"><span></a>
-                    <ul class="dropdown-menu">
-                      %s
-                    </ul>
-                  </li>''' % li)
-                bookmarkEvents = ""
+                app.panels.append("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s' map={map} bookmarks={bookmarks} /></div>"
+                                  % (params["introTitle"], params["introText"]))
 
-            bookmarksFilepath = os.path.join(folder, "bookmarks.js")
+            else:
+                pass #TODO
+
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])
                 viewCrs = QgsCoordinateReferenceSystem(appdef["Settings"]["App view CRS"])
@@ -85,10 +38,9 @@ class Bookmarks(WebAppWidget):
                 extent = transform.transform(rect)
                 return [extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum()]
-            with open(bookmarksFilepath, "w") as f:
-                bookmarksDict = [{"name":b[0], "extent":extentInViewCrs(b[1]), "description":b[2]} for b in bookmarks]
-                f.write("var bookmarks = " + json.dumps(bookmarksDict))
-                f.write(bookmarkEvents)
+            bookmarksDict = [{"name":b[0], "extent":extentInViewCrs(b[1]), "description":b[2]} for b in bookmarks]
+            app.variables.append("var bookmarks = " + json.dumps(bookmarksDict))
+
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "bookmarks.png"))

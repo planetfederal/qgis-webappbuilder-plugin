@@ -5085,6 +5085,10 @@ var _puiReactTabs = require('pui-react-tabs');
 
 var _puiReactTabs2 = _interopRequireDefault(_puiReactTabs);
 
+var _puiReactDropdowns = require('pui-react-dropdowns');
+
+var _puiReactDropdowns2 = _interopRequireDefault(_puiReactDropdowns);
+
 var _componentsAddLayerJsx = require('./components/AddLayer.jsx');
 
 var _componentsAddLayerJsx2 = _interopRequireDefault(_componentsAddLayerJsx);
@@ -5169,6 +5173,8 @@ global.IntlProvider = _reactIntl.IntlProvider;
 
 global.UI = _puiReactTabs2['default'];
 
+global.DD = _puiReactDropdowns2['default'];
+
 global.AddLayer = _componentsAddLayerJsx2['default'];
 
 global.Bookmarks = _componentsBookmarksJsx2['default'];
@@ -5208,7 +5214,7 @@ global.QueryBuilder = _componentsQueryBuilderJsx2['default'];
 global.Select = _componentsSelectJsx2['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/AddLayer.jsx":3,"./components/Bookmarks.jsx":5,"./components/Chart.jsx":7,"./components/Edit.jsx":9,"./components/FeatureTable.jsx":11,"./components/Geocoding.jsx":12,"./components/GeocodingResults.jsx":13,"./components/Geolocation.jsx":15,"./components/Globe.jsx":16,"./components/HomeButton.jsx":17,"./components/ImageExport.jsx":18,"./components/InfoPopup.jsx":20,"./components/LayerList.jsx":22,"./components/Measure.jsx":27,"./components/Playback.jsx":29,"./components/QGISLegend.jsx":31,"./components/QGISPrint.jsx":33,"./components/QueryBuilder.jsx":35,"./components/Select.jsx":36,"openlayers":116,"pui-react-tabs":505,"react":759,"react-intl":548}],41:[function(require,module,exports){
+},{"./components/AddLayer.jsx":3,"./components/Bookmarks.jsx":5,"./components/Chart.jsx":7,"./components/Edit.jsx":9,"./components/FeatureTable.jsx":11,"./components/Geocoding.jsx":12,"./components/GeocodingResults.jsx":13,"./components/Geolocation.jsx":15,"./components/Globe.jsx":16,"./components/HomeButton.jsx":17,"./components/ImageExport.jsx":18,"./components/InfoPopup.jsx":20,"./components/LayerList.jsx":22,"./components/Measure.jsx":27,"./components/Playback.jsx":29,"./components/QGISLegend.jsx":31,"./components/QGISPrint.jsx":33,"./components/QueryBuilder.jsx":35,"./components/Select.jsx":36,"openlayers":116,"pui-react-dropdowns":167,"pui-react-tabs":505,"react":759,"react-intl":548}],41:[function(require,module,exports){
 /* global document */
 
 'use strict';

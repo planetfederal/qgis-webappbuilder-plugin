@@ -10,9 +10,9 @@ class Links(WebAppWidget):
         links = self._parameters["links"]
         items = []
         for name, url in links.iteritems():
-            items.append('<UI.DropdownItem href="%s">%s</UI.DropdownItem>' % (url, name))
+            items.append('<DD.DropdownItem href="%s">%s</DD.DropdownItem>' % (url, name))
 
-        app.tools.append('<UI.Dropdown title="Links">\n%s\n</UI.Dropdown>' % "\n".join(items))
+        app.tools.append('<ul className="pull-right" id="toolbar-links"><DD.Dropdown title="Links">\n%s\n</DD.Dropdown></ul>' % "\n".join(items))
 
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
