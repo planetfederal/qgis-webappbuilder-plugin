@@ -26,7 +26,7 @@ class Print(WebAppWidget):
         if not QDir(printFolder).exists():
             QDir().mkpath(printFolder)
         dpis = [72, 150, 300]
-        layoutDefs = {}
+        layoutDefs = []
         def getBasicInfo(item):
             coords = {}
             pos = item.pos()
@@ -49,6 +49,8 @@ class Print(WebAppWidget):
             layoutDef["width"] = composition.paperWidth()
             layoutDef["height"] = composition.paperHeight()
             elements = []
+            layoutDef["thumbnail"] = "%s_thumbnail.png" % layoutSafeName
+            layoutDef["name"] = name
             layoutDef["elements"] = elements
             for item in composition.items():
                 element = None
@@ -89,7 +91,7 @@ class Print(WebAppWidget):
                     element["type"] = item.__class__.__name__[11:].lower()
                     elements.append(element)
 
-            layoutDefs[name] = layoutDef
+            layoutDefs.append(layoutDef)
             progress.setProgress(int((i+1)*100.0/len(composers)))
 
         app.variables.append("var printLayouts = %s;" % json.dumps(layoutDefs))
