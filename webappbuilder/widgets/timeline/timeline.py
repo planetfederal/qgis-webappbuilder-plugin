@@ -9,15 +9,10 @@ class Timeline(WebAppWidget):
     _parameters = {"interval": 500, "numIntervals": 100, "autoPlayFromStartup": False}
 
     def write(self, appdef, folder, app, progress):
-        self.addCss("timeline.css", folder, app)
-        self.addScript("timeline.js", folder, app)
         timelineOptions = self.getTimelineOptions(appdef);
-        app.controls.append('''new ol.control.TimeLine({minDate:%s, maxDate:%s,
-                            interval:%s, numIntervals:%s, autoPlayFromStartup:%s})'''
-                            % (timelineOptions[0], timelineOptions[1],
-                               self._parameters["interval"],
-                               self._parameters["numIntervals"],
-                               str(self._parameters["autoPlayFromStartup"]).lower()))
+        app.panels.append("<div id='timeline'><Playback map={map} minDate={%s} maxDate={%s} /></div>"
+                            % (timelineOptions[0], timelineOptions[1]))
+
 
     '''def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))'''
