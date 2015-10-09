@@ -15,7 +15,7 @@ class ChartTool(WebAppWidget):
             charts.append(copy.copy(chart))
             charts[-1]["title"] = chartName
             charts[-1]["layer"] = findProjectLayerByName(chart["layer"]).id()
-        app.variables.append("var charts = " + json.dumps(charts))
+        app.variables.append("var charts = %s;" % json.dumps(charts))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "chart-tool.png"))
