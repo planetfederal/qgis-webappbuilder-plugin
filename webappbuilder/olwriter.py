@@ -48,7 +48,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
-                    popup: "%(popup)s"
+                    popupInfo: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
                  "min": min,"max": max, "dist": str(clusterDistance),
@@ -64,7 +64,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             filters: [],
                             timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s,
-                            popup: "%(popup)s"
+                            popupInfo: "%(popup)s"
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max, "selectable": str(isSelectable).lower(),
@@ -126,7 +126,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
-                    popup: "%(popup)s"
+                    popupInfo: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
@@ -146,7 +146,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
-                    popup: "%(popup)s"
+                    popupInfo: "%(popup)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution,
@@ -197,7 +197,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                         })),
                         title: %(name)s,
                         id: "%(id)s",
-                        popup: "%(popup)s"
+                        popupInfo: "%(popup)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
