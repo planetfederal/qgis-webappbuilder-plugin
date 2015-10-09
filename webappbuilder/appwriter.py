@@ -67,6 +67,12 @@ def writeJsx(appdef, folder, app, progress):
     else:
         logo = ""
 
+    variables ="\n".join(app.variables)
+    try:
+        variables = jsbeautifier.beautify(variables)
+    except:
+        pass #jsbeautifier gives some random errors sometimes due to imports
+
     values = {"@LOGO@": logo,
                 "@CONTROLS@": "\n".join(app.controls),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
@@ -74,15 +80,12 @@ def writeJsx(appdef, folder, app, progress):
                 #"@POPUPEVENT@": popupEvent,
                 "@PANELS@": "\n".join(app.panels),
                 "@TOOLBAR@": "\n".join(app.tools),
-                "@VARIABLES@": "\n".join(app.variables)}
+                "@VARIABLES@": variables}
     jsxFilepath = os.path.join(folder, "app.jsx")
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"]["Name"], "app.jsx")
     jsx = replaceInTemplate(template, values)
-    try:
-        jsx = jsbeautifier.beautify(jsx)
-    except:
-        pass #jsbeautifier gives some random errors sometimes due to imports
+
     with open(jsxFilepath, "w") as f:
         f.write(jsx)
     processJsx(jsxFilepath, progress)
