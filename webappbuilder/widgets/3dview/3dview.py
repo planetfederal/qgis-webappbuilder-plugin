@@ -1,7 +1,6 @@
 from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
-import shutil
 
 class ThreeDView(WebAppWidget):
 
