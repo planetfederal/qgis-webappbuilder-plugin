@@ -54,7 +54,6 @@ def writeJsx(appdef, folder, app, progress):
     mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
-    pointZoom = str(appdef["Settings"]["Zoom level when zooming to point feature"])
     popupEvent = "pointermove" if appdef["Settings"]["Show popups on hover"] else "singleclick"
 
     app.variables.append("var view = new ol.View({%s, maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
