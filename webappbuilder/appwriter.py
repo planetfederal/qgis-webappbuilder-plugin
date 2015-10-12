@@ -31,6 +31,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         ol3controls = []
         tools = []
         panels = []
+        mappanels = []
         variables = []
         scripts = []
     app = App()
@@ -79,6 +80,7 @@ def writeJsx(appdef, folder, app, progress):
                 "@TITLE@": appdef["Settings"]["Title"],
                 #"@POPUPEVENT@": popupEvent,
                 "@PANELS@": "\n".join(app.panels),
+                "@MAPPANELS@": "\n".join(app.mappanels),
                 "@TOOLBAR@": "\n".join(app.tools),
                 "@VARIABLES@": variables}
     jsxFilepath = os.path.join(folder, "app.jsx")

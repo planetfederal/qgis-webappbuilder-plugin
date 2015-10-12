@@ -6,7 +6,6 @@ from ui_bookmarksdialog import Ui_BookmarksDialog
 
 SHOW_BOOKMARKS_IN_PANEL_GO = 0
 SHOW_BOOKMARKS_IN_PANEL_PAN = 1
-SHOW_BOOKMARKS_IN_PANEL_FLY = 2
 SHOW_BOOKMARKS_IN_MENU = 3
 
 class Bookmarks(WebAppWidget):
@@ -21,12 +20,15 @@ class Bookmarks(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         params = self._parameters
         bookmarks = params["bookmarks"]
+        introText = params["introText"].replace('\n', '<br>').replace('\r', '')
         if bookmarks:
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
-                slide = "slide" if params["interval"] else ""
                 interval = str(params["interval"] * 1000) if params["interval"] else "false"
-                app.panels.append("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s' map={map} bookmarks={bookmarks} /></div>"
-                                  % (params["introTitle"], params["introText"]))
+                app.mappanels.append("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
+                                  + " showIndicators=%s  animatePanZoom=%s animationDuration=%s"
+                                  + " map={map} bookmarks={bookmarks} /></div>"
+                                  % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
+                                     str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
 
             else:
                 pass #TODO

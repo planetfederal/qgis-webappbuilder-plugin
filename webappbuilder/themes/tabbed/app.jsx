@@ -30,8 +30,10 @@ class TabbedApp extends React.Component {
               </UI.SimpleTabs>
             </div>
             <div className='col-md-16 full-height'>
-              <div id='map'></div>
-              <div id='popup' className='ol-popup'><InfoPopup map={map} /></div>
+              <div id='map'>
+                  @MAPPANELS@
+                  <div id='popup' className='ol-popup'><InfoPopup map={map} /></div>
+              </div>
               @CONTROLS@
             </div>
           </div>
