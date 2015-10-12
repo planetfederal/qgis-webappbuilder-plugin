@@ -104,25 +104,14 @@ def writeHtml(appdef, folder, app, progress):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
 
-    refresh = []
     for applayer in layers:
         layer = applayer.layer
-        if applayer.refreshInterval:
-            refresh.append(
-            '''map.once("postcompose", function(){
-                    window.setInterval(function(){
-                        lyr_%s.getSource().updateParams({'dummy': Math.random()});
-                    }, %s);
-                  }); ''' % (safeName(layer.name()), str(applayer.refreshInterval)))
         useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
                 app.scripts.append('<script src="./resources/proj4.js"></script>')
                 app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-
-    if refresh:
-        app.scripts.append("<script>$(document).ready(function(){%s});</script>" % "\n".join(refresh))
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:

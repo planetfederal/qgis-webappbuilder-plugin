@@ -31,7 +31,7 @@ TYPE_MAP = {
 class Layer():
 
     def __init__(self, layer, visible, popup, method, clusterDistance, clusterColor,
-                 allowSelection, refreshInterval, showInOverview, timeInfo, showInControls,
+                 allowSelection, showInOverview, timeInfo, showInControls,
                  singleTile):
         self.layer = layer
         self.visible = visible
@@ -40,7 +40,6 @@ class Layer():
         self.clusterDistance = clusterDistance
         self.clusterColor = clusterColor
         self.allowSelection = allowSelection
-        self.refreshInterval = refreshInterval
         self.showInOverview = showInOverview
         self.timeInfo = timeInfo
         self.showInControls = showInControls

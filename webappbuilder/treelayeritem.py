@@ -174,16 +174,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.addChild(self.singleTileItem)
             self.singleTileItem.setDisabled(layer.providerType().lower() != "wms")
 
-        if layer.providerType().lower() in ["wms"]:
-            self.refreshItem = QTreeWidgetItem(self)
-            self.refreshItem.setCheckState(0, Qt.Unchecked)
-            self.refreshItem.setText(0, "Refresh layer automatically")
-            self.refreshIntervalItem = QTreeWidgetItem(self.refreshItem)
-            self.refreshIntervalItem.setText(0, "Refresh interval (millisecs)")
-            self.refreshIntervalItem.setText(1, "3000")
-            self.refreshIntervalItem.setFlags(self.flags() | Qt.ItemIsEditable)
-            self.refreshItem.addChild(self.refreshIntervalItem)
-            self.addChild(self.refreshItem)
 
     def connTypeChanged(self):
         try:
@@ -278,23 +268,9 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-    @property
-    def refreshInterval(self):
-        try:
-            if self.refreshItem.checkState(0) == Qt.Checked:
-                t = self.refreshIntervalItem.text(1)
-            else:
-                return 0
-        except:
-            return 0
-        try:
-            interval = int(t)
-            return interval
-        except:
-            raise WrongValueException()
 
     def setValues(self, visible, popup, method, clusterDistance, clusterColor,
-                  allowSelection, refreshInterval, showInOverview, timeInfo,
+                  allowSelection, showInOverview, timeInfo,
                   showInControls, singleTile):
         self.timeInfo = timeInfo
 
@@ -312,15 +288,6 @@ class TreeLayerItem(QTreeWidgetItem):
             except AttributeError:
                 pass # raster layers wont have this clusterItem
 
-        if refreshInterval:
-            self.refreshItem.setCheckState(0, Qt.Checked)
-            self.refreshIntervalItem.setText(1, str(refreshInterval))
-        else:
-            try:
-                self.refreshItem.setCheckState(0, Qt.Unchecked)
-                self.refreshIntervalItem.setText(1, "3000")
-            except AttributeError:
-                pass
         try:
             self.allowSelectionItem.setCheckState(0, Qt.Checked if allowSelection else Qt.Unchecked)
         except:
@@ -341,8 +308,7 @@ class TreeLayerItem(QTreeWidgetItem):
     def appLayer(self):
         return Layer(self.layer, self.visible, self.popup, self.method,
                      self.clusterDistance, self.clusterColor,self.allowSelection,
-                     self.refreshInterval, self.showInOverview, self.timeInfo,
-                     self.showInControls, self.singleTile)
+                     self.showInOverview, self.timeInfo,self.showInControls, self.singleTile)
 
 class TreeGroupItem(QTreeWidgetItem):
 

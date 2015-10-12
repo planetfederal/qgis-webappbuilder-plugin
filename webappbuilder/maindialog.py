@@ -178,7 +178,7 @@ class MainDialog(BASE, WIDGET):
                     layer = layers[item.layer.name()]
                     item.setValues(layer["visible"], layer["popup"], layer["method"],
                                    layer["clusterDistance"], layer["clusterColor"],
-                                   layer["allowSelection"], layer["refreshInterval"],
+                                   layer["allowSelection"],
                                    layer["showInOverview"], layer["timeInfo"],
                                    layer["showInControls"], layer["singleTile"])
                 else:
