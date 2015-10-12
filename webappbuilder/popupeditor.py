@@ -44,7 +44,9 @@ class PopupEditorDialog(QtGui.QDialog):
 
     def addAllAttributes(self):
         if self.fields:
-            t = "<br>".join(["<b>%s</b>: [%s]" % (f,f) for f in self.fields])
+            t = '<table class="popup-table"><tr><th>Attribute</th><th>Value</th><tr>'
+            t += "</tr><tr>".join(['<td>%s</td><td style="text-align:right">[%s]</td>' % (f,f) for f in self.fields])
+            t += "</tr></table>"
         else:
             t = "#AllAttributes"
         self.editor.setPlainText(t)
