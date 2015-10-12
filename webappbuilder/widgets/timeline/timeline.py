@@ -10,7 +10,7 @@ class Timeline(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         timelineOptions = self.getTimelineOptions(appdef);
-        app.panels.append("<div id='timeline'><Playback map={map} minDate={%s} maxDate={%s} /></div>"
+        app.mappanels.append("<div id='timeline'><Playback map={map} minDate={%s} maxDate={%s} /></div>"
                             % (timelineOptions[0], timelineOptions[1]))
 
 
