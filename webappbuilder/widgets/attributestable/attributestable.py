@@ -19,7 +19,7 @@ class AttributesTable(WebAppWidget):
                 break
         app.panels.append('<UI.Tab eventKey={2} title="Attributes table"><div id="attributes-table-tab">'
                           + '<FeatureTable layer={%s} pointZoom=%s map={map} /></div></UI.Tab>'
-                          % layerVar, str(self.parameters["Zoom level when zooming to point feature"]))
+                          % (layerVar, str(self.parameters["Zoom level when zooming to point feature"])))
 
 
     def icon(self):
