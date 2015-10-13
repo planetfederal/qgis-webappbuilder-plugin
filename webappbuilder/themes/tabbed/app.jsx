@@ -12,6 +12,19 @@ class TabbedApp extends React.Component {
     map.setTarget(document.getElementById('map'));
     map.getView().fit(originalExtent, map.getSize());
   }
+  _navigationFunc() {
+    LayerActions.activateTool(null, 'navigation');
+  }
+  _toggle(el) {
+    if (el.style.display === 'block') {
+      el.style.display = 'none';
+    } else {
+      el.style.display = 'block';
+    }
+  }
+  _toggleEdit() {
+    this._toggle(document.getElementById('edit-tool-panel'));
+  }
   render() {
     return (
       <article>
