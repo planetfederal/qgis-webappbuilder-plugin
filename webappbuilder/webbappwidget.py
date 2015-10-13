@@ -3,11 +3,11 @@ import os
 from parameditor import ParametersEditorDialog
 import inspect
 import shutil
-from texteditor import TextEditorDialog, CSS
 
 class WebAppWidget(object):
 
     _parameters = {}
+    order = 100
 
     def __init__(self):
         self.defaultParameters = self._parameters.copy()
@@ -92,11 +92,4 @@ class WebAppWidget(object):
         else:
             self.copyToResources(name, folder)
         app.scripts.append('<link href="./resources/%s" rel="stylesheet" type="text/css"/>' % name)
-
-    def addImport(self, name, fromJsx, app):
-        app.imports.append("from %s import '%s'" % (name, fromJsx))
-
-    def addReactRender(self, s, app):
-        app.react.append("React.render(%s)" % s)
-
 

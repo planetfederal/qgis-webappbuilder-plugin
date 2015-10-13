@@ -11,6 +11,7 @@ from settings import *
 from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
+from operator import attrgetter
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
@@ -38,7 +39,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
     writeLayersAndGroups(appdef, dst, app, progress)
 
-    widgets = appdef["Widgets"].values()
+    widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
     for w in widgets:
         w.write(appdef, dst, app, progress)
 

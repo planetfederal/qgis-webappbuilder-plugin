@@ -4,8 +4,13 @@ from PyQt4.QtGui import QIcon
 
 class Geocoding(WebAppWidget):
 
+    order = 1
+
     def write(self, appdef, folder, app, progress):
-        app.panels.append("<UI.Tab eventKey={1} title='Geocoding'><div id='geocoding-tab'><Geocoding /></div><div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} /></div></UI.Tab>")
+        idx = len(app.panels) + 1
+        app.panels.append("<UI.Tab eventKey={%i} title='Geocoding'><div id='geocoding-tab'><Geocoding />" % idx
+                          + "</div><div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} />"
+                          + "</div></UI.Tab>" )
         self.copyToResources("marker.png", folder)
 
     def icon(self):

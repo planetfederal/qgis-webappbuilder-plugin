@@ -9,6 +9,8 @@ class AttributesTable(WebAppWidget):
 
     _parameters = {"Zoom level when zooming to point feature": ("16", zoomLevels)}
 
+    order = 2
+
     def write(self, appdef, folder, app, progress):
         layerVar = ""
         layers = appdef["Layers"]
@@ -17,9 +19,10 @@ class AttributesTable(WebAppWidget):
             if layer.type() == layer.VectorLayer and applayer.method not in [METHOD_WMS, METHOD_WMS_POSTGIS]:
                 layerVar = "lyr_" + safeName(layer.name())
                 break
-        app.panels.append('<UI.Tab eventKey={2} title="Attributes table"><div id="attributes-table-tab">'
-                          + '<FeatureTable layer={%s} pointZoom=%s map={map} /></div></UI.Tab>'
-                          % (layerVar, str(self.parameters["Zoom level when zooming to point feature"])))
+        idx = len(app.panels) + 1
+        app.panels.append(('<UI.Tab eventKey={%i} title="Attributes table"><div id="attributes-table-tab">'
+                          + '<FeatureTable layer={%s} pointZoom={%s} map={map} /></div></UI.Tab>')
+                          % (idx, layerVar, int(self._parameters["Zoom level when zooming to point feature"][0])))
 
 
     def icon(self):

@@ -8,8 +8,11 @@ class ChartTool(WebAppWidget):
 
     _parameters = {"charts": {}}
 
+    order = 3
+
     def write(self, appdef, folder, app, progress):
-        app.panels.append("<UI.Tab eventKey={4} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>")
+        idx = len(app.panels) + 1
+        app.panels.append("<UI.Tab eventKey={%i} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>" % idx)
         charts = []
         for chartName, chart in self._parameters["charts"].iteritems():
             charts.append(copy.copy(chart))
