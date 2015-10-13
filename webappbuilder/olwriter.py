@@ -80,10 +80,10 @@ def layerToJavascript(applayer, settings, deploy, title):
     workspace = safeName(settings["Title"])
     layer = applayer.layer
     try:
-        timeInfo = ('[%s,%s]' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
+        timeInfo = ('{start:%s,end:%s}' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
                             if applayer.timeInfo is not None else "null")
     except:
-        timeInfo = '["%s","%s"]' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
+        timeInfo = '{start:"%s",end:"%s"}' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
     title = '"%s"' % unicode(title) if title is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
