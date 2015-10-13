@@ -19,11 +19,18 @@ class AttributesTable(WebAppWidget):
             if layer.type() == layer.VectorLayer and applayer.method not in [METHOD_WMS, METHOD_WMS_POSTGIS]:
                 layerVar = "lyr_" + safeName(layer.name())
                 break
-        idx = len(app.panels) + 1
-        app.panels.append(('<UI.Tab eventKey={%i} title="Attributes table"><div id="attributes-table-tab">'
-                          + '<FeatureTable layer={%s} pointZoom={%s} map={map} /></div></UI.Tab>')
-                          % (idx, layerVar, int(self._parameters["Zoom level when zooming to point feature"][0])))
-
+        theme = appdef["Settings"]["Theme"]
+        if theme == "tabbed":
+            idx = len(app.tabs) + 1
+            app.tabs.append(('<UI.Tab eventKey={%i} title="Attributes table"><div id="attributes-table-tab">'
+                              + '<FeatureTable layer={%s} pointZoom={%s} map={map} /></div></UI.Tab>')
+                              % (idx, layerVar, int(self._parameters["Zoom level when zooming to point feature"][0])))
+        else:
+            app.tools.append("<ul className='pull-right' id='toolbar-table'><BUTTON.DefaultButton "
+                             "onClick={this._toggleTable.bind(this)} title='Attributes table'>"
+                             "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
+            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable layer={%s} map={map} /></div>"
+                              % layerVar)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))

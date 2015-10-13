@@ -24,14 +24,17 @@ class Bookmarks(WebAppWidget):
         if bookmarks:
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 interval = str(params["interval"] * 1000) if params["interval"] else "false"
-                app.mappanels.append("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
-                                  + " showIndicators=%s  animatePanZoom=%s animationDuration=%s"
-                                  + " map={map} bookmarks={bookmarks} /></div>"
+                app.mappanels.append(("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
+                                  + " showIndicators={%s}  animatePanZoom={%s} menu={false}"
+                                  + " map={map} bookmarks={bookmarks} /></div>")
                                   % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
                                      str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
-
             else:
-                pass #TODO
+                app.tools.append(("<ul className='pull-right' id='toolbar-add-layer'><Bookmarks introTitle='%s' introDescription='%s'"
+                                  + " showIndicators={%s}  animatePanZoom={%s} menu={true}"
+                                  + " map={map} bookmarks={bookmarks} /></ul>")
+                                    % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
+                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
 
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])

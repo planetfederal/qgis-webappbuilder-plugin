@@ -15,7 +15,7 @@ class LayersList(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         def p(name):
             return str(self._parameters[name]).lower()
-        app.controls.append('''<div id='layerlist'><LayerList showOpacity={%s} showDownload={%s} showGroupContent={true} showZoomTo={%s} allowReordering={%s} map={map}/></div>'''
+        app.panels.append('''<div id='layerlist'><LayerList showOpacity={%s} showDownload={%s} showGroupContent={true} showZoomTo={%s} allowReordering={%s} map={map}/></div>'''
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),p("allowReordering")))
 
     def icon(self):

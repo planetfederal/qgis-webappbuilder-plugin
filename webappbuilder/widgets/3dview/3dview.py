@@ -5,7 +5,7 @@ from PyQt4.QtGui import QIcon
 class ThreeDView(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.mappanels.append("<div id='home-button' className='ol-unselectable ol-control'><Globe map={map} /></div>")
+        app.panels.append("<div id='globe-button' className='ol-unselectable ol-control'><Globe map={map} /></div>")
 
 
     def icon(self):

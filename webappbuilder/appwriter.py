@@ -28,7 +28,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
                      appdef["Settings"]["App view CRS"])
 
     class App():
-        controls = []
+        tabs = []
         ol3controls = []
         tools = []
         panels = []
@@ -75,7 +75,7 @@ def writeJsx(appdef, folder, app, progress):
         pass #jsbeautifier gives some random errors sometimes due to imports
 
     values = {"@LOGO@": logo,
-                "@CONTROLS@": "\n".join(app.controls),
+                "@TABS@": "\n".join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@TITLE@": appdef["Settings"]["Title"],
                 "@POPUPEVENT@": str(appdef["Settings"]["Show popups on hover"]).lower(),
@@ -159,7 +159,7 @@ def writeLayersAndGroups(appdef, folder, app, progress):
                         source: new ol.source.XYZ({url:""})
                     }),%s];''' % ",".join(baseJs)
     else:
-        baseLayer = "var baseLayers = []"
+        baseLayer = "var baseLayers = [];"
 
     baseLayer += '''var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
                     'base-group', 'title': 'Base maps', layers: baseLayers});'''
@@ -167,7 +167,7 @@ def writeLayersAndGroups(appdef, folder, app, progress):
     if "overviewmap" in widgets:
         overviewMapBaseLayerName = widgets["overviewmap"].parameters()["Base layer"]
         if overviewMapBaseLayerName == "Use main map base layer":
-            baseLayer += "var overviewMapBaseLayer = baseLayersGroup"
+            baseLayer += "var overviewMapBaseLayer = baseLayersGroup;"
         else:
             baseLayer += "var overviewMapBaseLayer = %s;" % baseLayers[overviewMapBaseLayerName]
 

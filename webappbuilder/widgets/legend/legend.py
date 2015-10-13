@@ -14,7 +14,7 @@ class Legend(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         self.writeLegendFiles(appdef, app, folder)
-        app.controls.append("<div id='legend'><QGISLegend map={map} legendBasePath='./resources/legend/' legendData={legendData} /></div>")
+        app.panels.append("<div id='legend'><QGISLegend map={map} legendBasePath='./resources/legend/' legendData={legendData} /></div>")
 
     def description(self):
         return "Legend"

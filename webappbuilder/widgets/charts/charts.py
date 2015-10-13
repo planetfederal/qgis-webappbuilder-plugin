@@ -11,8 +11,13 @@ class ChartTool(WebAppWidget):
     order = 3
 
     def write(self, appdef, folder, app, progress):
-        idx = len(app.panels) + 1
-        app.panels.append("<UI.Tab eventKey={%i} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>" % idx)
+        theme = appdef["Settings"]["Theme"]
+        if theme == "tabbed":
+            idx = len(app.tabs) + 1
+            app.tabs.append("<UI.Tab eventKey={%i} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>" % idx)
+        else:
+            app.panels.append("<div id='chart-panel' className='chart-panel'><div id='chart'></div></div>")
+            app.tools.append("<ul className='pull-right' id='toolbar-chart'><Chart container='chart-panel' charts={charts} /></ul>")
         charts = []
         for chartName, chart in self._parameters["charts"].iteritems():
             charts.append(copy.copy(chart))

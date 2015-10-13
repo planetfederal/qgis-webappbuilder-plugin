@@ -266,8 +266,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = " + getSymbolAsStyle(symbol, stylesFolder)
-                value = 'var value = ""'
+                style = "var style = %s;" % getSymbolAsStyle(symbol, stylesFolder)
+                value = 'var value = "";'
                 selectionStyle = "var selectionStyle = " + getSymbolAsStyle(symbol,
                                     stylesFolder, '"rgba(255, 204, 0, 1)"')
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
@@ -283,7 +283,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                 stylesFolder, '"rgba(255, 204, 0, 1)"')))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
-                style = '''var style = categories_%s[value]'''  % (safeName(layer.name()))
+                style = '''var style = categories_%s[value];'''  % (safeName(layer.name()))
                 selectionStyle = '''var selectionStyle = categoriesSelected_%s[value]'''  % (safeName(layer.name()))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
@@ -361,7 +361,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                     return style;
                                 }
                             }
-                            feature = feature.get('features')[0]
+                            feature = feature.get('features')[0];
                             ''' % {"name": safeName(layer.name()), "clusterColor": appLayer.clusterColor}
             else:
                 cluster = ""

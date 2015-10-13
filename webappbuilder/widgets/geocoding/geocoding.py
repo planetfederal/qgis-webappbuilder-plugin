@@ -7,10 +7,15 @@ class Geocoding(WebAppWidget):
     order = 1
 
     def write(self, appdef, folder, app, progress):
-        idx = len(app.panels) + 1
-        app.panels.append("<UI.Tab eventKey={%i} title='Geocoding'><div id='geocoding-tab'><Geocoding />" % idx
+        theme = appdef["Settings"]["Theme"]
+        if theme == "tabbed":
+            idx = len(app.tabs) + 1
+            app.tabs.append("<UI.Tab eventKey={%i} title='Geocoding'><div id='geocoding-tab'><Geocoding />" % idx
                           + "</div><div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} />"
                           + "</div></UI.Tab>" )
+        else:
+            app.mappanels.append("<div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} /></div>")
+            app.tools.append(" <div id='geocoding' className='pull-right'><Geocoding /></div>")
         self.copyToResources("marker.png", folder)
 
     def icon(self):

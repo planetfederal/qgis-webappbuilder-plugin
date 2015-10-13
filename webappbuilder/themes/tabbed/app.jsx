@@ -55,7 +55,7 @@ class TabbedApp extends React.Component {
           <div className='row full-height'>
             <div className='col-md-8 full-height' id='tabs-panel'>
               <UI.SimpleTabs defaultActiveKey={1}>
-                @PANELS@
+                @TABS@
               </UI.SimpleTabs>
             </div>
             <div className='col-md-16 full-height'>
@@ -63,7 +63,7 @@ class TabbedApp extends React.Component {
                   @MAPPANELS@
                   <div id='popup' className='ol-popup'><InfoPopup map={map} hover={@POPUPEVENT@}/></div>
               </div>
-              @CONTROLS@
+              @PANELS@
             </div>
           </div>
         </div>
