@@ -5,18 +5,20 @@ from PyQt4.QtGui import QIcon
 class AboutPanel(WebAppWidget):
 
     _parameters = {"content": "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>",
-                    "isClosable": True,
-                    "showNavBarLink": True}
+                    "isClosable": True}
 
     def write(self, appdef, folder, app, progress):
-        self.addCss("about.css", folder, app)
-        closer = ('<a class="closer-icon" id="closer-icon" onclick="toggleAboutPanel(false)">&times;</a>'
-                 if self._parameters["isClosable"] else "")
-        app.mappanels.append('''<div class="about-panel" id="about-panel">
-                        %s
-                        %s</div>''' % (closer, self._parameters["content"]))
-        if self._parameters["showNavBarLink"]:
-            app.tools.append('<li><a onclick="toggleAboutPanel(true)" href="#" id="about-panel-link">About</a></li>')
+        idx = len(app.panels) + 1
+        app.panels.append(("<UI.Tab eventKey={%i} title='About'><div id='about-tab-panel' className='about-tab-panel'>"
+                          + "%s</div></UI.Tab>") % (idx, self._parameters["content"]))
+
+        #=======================================================================
+        # closer = ('<a class="about-closer-icon" id="about-closer-icon" onclick="toggleAboutPanel()">&times;</a>'
+        #          if self._parameters["isClosable"] else "")
+        # app.mappanels.append('''<div class="about-panel" id="about-panel">
+        #                 %s
+        #                 %s</div>''' % (closer, self._parameters["content"]))'''
+        #=======================================================================
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "about-panel.png"))
