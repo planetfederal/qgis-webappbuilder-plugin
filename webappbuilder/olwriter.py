@@ -1,8 +1,6 @@
 from utils import *
 import urlparse
 from qgis.core import *
-import codecs
-import shutil
 import traceback
 from string import digits
 import math
@@ -124,6 +122,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     opacity: %(opacity)s,
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s,
+                    selectionStyle: selectionStyle_%(n)s,
                     title: %(name)s,
                     id: "%(id)s",
                     filters: [],
@@ -371,58 +370,68 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 return null;
             }
             '''
-            timeInfo = getTimeBasedStyleCondition(appLayer) if addTimeInfo else ""
             labels = getLabeling(layer)
             style = '''function(feature, resolution){
-                        var selected = lyr_%(layerName)s.selectedFeatures;
                         %(cluster)s
                         %(filters)s
-                        %(time)s
                         %(value)s
                         %(style)s;
-                        %(selectionStyle)s;
                         var allStyles = [];
                         %(labels)s
-                        if (selected && selected.indexOf(feature) != -1){
-                            allStyles.push.apply(allStyles, selectionStyle);
-                        }
-                        else{
-                            allStyles.push.apply(allStyles, style);
-                        }
+                        allStyles.push.apply(allStyles, style);
                         return allStyles;
                     }''' % {"style": style,  "layerName": safeName(layer.name()),
-                            "value": value, "cluster": cluster, "selectionStyle": selectionStyle,
-                            "time": timeInfo, "filters": filters, "labels":labels}
+                            "value": value, "cluster": cluster,
+                             "filters": filters, "labels":labels}
+            selectionStyle = '''function(feature, resolution){
+                        %(cluster)s
+                        %(filters)s
+                        %(value)s
+                        %(style)s;
+                        var allStyles = [];
+                        %(labels)s
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    }''' % {"style": selectionStyle,  "layerName": safeName(layer.name()),
+                            "value": value, "cluster": cluster,
+                             "filters": filters, "labels":labels}
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
 
         if cannotWriteStyle:
-            app.variables.append('''var default_fill = new ol.style.Fill({
-               color: 'rgba(255,255,255,0.4)'
-             });
-             var default_stroke = new ol.style.Stroke({
-               color: '#3399CC',
-               width: 1.25
-             });
-             var style_%s = [
+            app.variables.append('''
+             var style_%(s)s = [
                new ol.style.Style({
                  image: new ol.style.Circle({
-                   fill: default_fill,
-                   stroke: default_stroke,
+                   fill: defaulFill,
+                   stroke: defaultStroke,
                    radius: 5
                  }),
-                 fill: default_fill,
-                 stroke: default_stroke
+                 fill: defaulFill,
+                 stroke: defaultStroke
                })
-             ];''' % safeName(layer.name()))
+             ];
+              var selectionStyle_%(s)s = [
+               new ol.style.Style({
+                 image: new ol.style.Circle({
+                   fill: defaultSelectionFill,
+                   stroke: defaultSelectionStroke,
+                   radius: 5
+                 }),
+                 fill: defaultSelectionFill,
+                 stroke: defaultSelectionStroke
+               })
+             ];''' % {"s": safeName(layer.name())})
         else:
             app.variables.append('''%(defs)s
                     var textStyleCache_%(name)s={}
                     var clusterStyleCache_%(name)s={}
                     var selectedClusterStyleCache_%(name)s={}
-                    var style_%(name)s = %(style)s;''' %
-                {"defs":defs, "name":safeName(layer.name()), "style":style})
+                    var style_%(name)s = %(style)s;
+                    var selectionStyle_%(name)s = %(selectionStyle)s;''' %
+                {"defs":defs, "name":safeName(layer.name()), "style":style,
+                 "selectionStyle": selectionStyle})
         progress.setProgress(int(ilayer*100.0/len(layers)))
 
 def getLabeling(layer):
@@ -502,36 +511,6 @@ def getLabeling(layer):
                 "textBaseline": textBaseline}
 
     return s
-
-def getTimeBasedStyleCondition(applayer):
-
-    if applayer.timeInfo is None:
-        return ""
-    elif isinstance(applayer.timeInfo[0], basestring):
-        return '''
-                minFeatureTime = Date.parse(feature.get("%s"))
-                if (isNaN(minFeatureTime) ||currentTimelineTime < minFeatureTime){
-                    return null;
-                }
-                maxFeatureTime = Date.parse(feature.get("%s"))
-                if (isNaN(maxFeatureTime) || currentTimelineTime > maxFeatureTime){
-                    return null;
-                }
-
-
-        ''' % (applayer.timeInfo[0], applayer.timeInfo[1])
-    else:
-        return '''
-            try{
-                if (currentTimelineTime < %i){
-                    return null;
-                }
-                if (currentTimelineTime > %i){
-                    return null;
-                }
-            }
-            catch (e){}
-        ''' % (applayer.timeInfo[0], applayer.timeInfo[1])
 
 
 SIZE_FACTOR = 3.8
