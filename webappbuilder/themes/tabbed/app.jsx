@@ -11,6 +11,7 @@ class TabbedApp extends React.Component {
   componentDidMount() {
     map.setTarget(document.getElementById('map'));
     map.getView().fit(originalExtent, map.getSize());
+    @POSTTARGETSET@
   }
   _navigationFunc() {
     LayerActions.activateTool(null, 'navigation');

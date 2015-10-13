@@ -35,6 +35,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         mappanels = []
         variables = []
         scripts = []
+        posttarget = []
     app = App()
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
     writeLayersAndGroups(appdef, dst, app, progress)
@@ -81,7 +82,8 @@ def writeJsx(appdef, folder, app, progress):
                 "@PANELS@": "\n".join(app.panels),
                 "@MAPPANELS@": "\n".join(app.mappanels),
                 "@TOOLBAR@": "\n".join(app.tools),
-                "@VARIABLES@": variables}
+                "@VARIABLES@": variables,
+                "@POSTTARGETSET@": "\n".join(app.posttarget)}
     jsxFilepath = os.path.join(folder, "app.jsx")
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")

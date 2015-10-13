@@ -19,7 +19,7 @@ class OverviewMap(WebAppWidget):
         collapsed = str(self._parameters["Collapsed"]).lower()
         overviewLayers = ",".join(["lyr_%s" % safeName(layer.layer.name())
                         for layer in layers if layer.showInOverview])
-        app.ol3controls.append("new ol.control.OverviewMap({collapsed: %s, layers: [overviewMapBaseLayer, %s]})"
+        app.posttarget.append("map.addControl(new ol.control.OverviewMap({collapsed: %s, layers: [overviewMapBaseLayer, %s]}));"
                         % (collapsed, overviewLayers))
 
     def icon(self):
