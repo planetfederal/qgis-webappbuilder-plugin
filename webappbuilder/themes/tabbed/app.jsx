@@ -32,7 +32,7 @@ class TabbedApp extends React.Component {
             <div className='col-md-16 full-height'>
               <div id='map'>
                   @MAPPANELS@
-                  <div id='popup' className='ol-popup'><InfoPopup map={map} hover=@POPUPEVENT@/></div>
+                  <div id='popup' className='ol-popup'><InfoPopup map={map} hover={@POPUPEVENT@}/></div>
               </div>
               @CONTROLS@
             </div>
