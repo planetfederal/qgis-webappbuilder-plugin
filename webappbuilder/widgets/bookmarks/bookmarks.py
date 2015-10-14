@@ -30,11 +30,12 @@ class Bookmarks(WebAppWidget):
                                   % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
                                      str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
             else:
+                pullRight = "" if len(app.tools) else "pullRight"
                 app.tools.append(("<ul className='pull-right' id='toolbar-add-layer'><Bookmarks introTitle='%s' introDescription='%s'"
                                   + " showIndicators={%s}  animatePanZoom={%s} menu={true}"
-                                  + " map={map} bookmarks={bookmarks} /></ul>")
+                                  + " map={map} bookmarks={bookmarks} %s/></ul>")
                                     % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
+                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(),  pullRight))
 
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])

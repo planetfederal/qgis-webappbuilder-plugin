@@ -16,9 +16,10 @@ class ChartTool(WebAppWidget):
             idx = len(app.tabs) + 1
             app.tabs.append("<UI.Tab eventKey={%i} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>" % idx)
         else:
+            pullRight = "" if len(app.tools) else "pullRight"
             app.panels.append("<div id='chart-panel' className='chart-panel'><a href='#' id='chart-panel-closer' "
                               "className='chart-panel-closer' onClick={this._toggleChartPanel.bind(this)}>&times;</a><div id='chart'></div></div>")
-            app.tools.append("<ul className='pull-right' id='toolbar-chart'><Chart container='chart-panel' charts={charts} /></ul>")
+            app.tools.append("<ul className='pull-right' id='toolbar-chart'><Chart container='chart-panel' charts={charts} %s/></ul>" % pullRight)
         charts = []
         for chartName, chart in self._parameters["charts"].iteritems():
             charts.append(copy.copy(chart))
