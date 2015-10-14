@@ -8,7 +8,7 @@ import math
 def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                  geometryType, layerCrs, viewCrs, layerOpacity, isSelectable,
                  timeInfo, layerId, popup):
-    wfsSource =  ('''geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
+    wfsSource =  ('''var geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
