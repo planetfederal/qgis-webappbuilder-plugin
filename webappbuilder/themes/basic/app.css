@@ -29,6 +29,7 @@
 }
 .toolbar ul {
   margin-top: 12px;
+  padding-left: 10px;
 }
 #geocoding {
   margin-left: 10px;
@@ -44,6 +45,7 @@ html, body {
 }
 .toolbar {
   height: 60px;
+  padding-right: 15px;
 }
 #map {
   width: 100%;

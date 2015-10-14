@@ -3,10 +3,11 @@
 }
 .toolbar ul {
   margin-right: 12px;
-  margin-top: 12px;
+  padding-left: 10px;
 }
 .toolbar {
   height: 60px;
+  padding-right: 15px;
 }
 #geolocation-control {
   top: 130px;
