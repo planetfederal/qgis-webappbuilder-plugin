@@ -52,3 +52,15 @@ html, body {
     padding: 6px;
 }
 
+#edit-tool-panel {
+  display: none;
+  position: absolute;
+  background:rgba(255,255,255, 1);
+  padding: 5px;
+  border-left: 1px solid #bbbbbb;
+  border-bottom: 1px solid #bbbbbb;
+  top: 0px;
+  right: 0px;
+  max-width: 50%;
+  z-index: 1111;
+}
