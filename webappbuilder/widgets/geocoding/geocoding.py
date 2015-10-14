@@ -15,7 +15,7 @@ class Geocoding(WebAppWidget):
                           + "</div></UI.Tab>" )
         else:
             app.mappanels.append("<div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} /></div>")
-            app.tools.append(" <div id='geocoding' className='pull-right'><Geocoding /></div>")
+            app.tools.append(" <ul id='geocoding' className='pull-right'><Geocoding /></ul>")
         self.copyToResources("marker.png", folder)
 
     def icon(self):
