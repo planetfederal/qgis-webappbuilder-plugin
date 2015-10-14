@@ -22,20 +22,20 @@ class Bookmarks(WebAppWidget):
         bookmarks = params["bookmarks"]
         introText = params["introText"].replace('\n', '<br>').replace('\r', '')
         if bookmarks:
+            autoPlay = "autoplay={true} autoplaySpeed={%s}" % str(params["interval"] * 1000) if params["interval"] else ""
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
-                interval = str(params["interval"] * 1000) if params["interval"] else "false"
                 app.mappanels.append(("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
-                                  + " showIndicators={%s}  animatePanZoom={%s} menu={false}"
-                                  + " map={map} bookmarks={bookmarks} /></div>")
+                                  + " dots={%s}  animatePanZoom={%s} menu={false}"
+                                  + " map={map} bookmarks={bookmarks} %s/></div>")
                                   % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                     str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower()))
+                                     str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlay))
             else:
                 pullRight = "" if len(app.tools) else "pullRight"
                 app.tools.append(("<ul className='pull-right' id='toolbar-add-layer'><Bookmarks introTitle='%s' introDescription='%s'"
-                                  + " showIndicators={%s}  animatePanZoom={%s} menu={true}"
-                                  + " map={map} bookmarks={bookmarks} %s/></ul>")
+                                  + " dots={%s}  animatePanZoom={%s} menu={true}"
+                                  + " map={map} bookmarks={bookmarks} %s %s/></ul>")
                                     % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(),  pullRight))
+                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlay, pullRight))
 
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])
