@@ -305,22 +305,18 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cluster = '''var size = feature.get('features').length;
                             if (size != 1){
                                 var features = feature.get('features');
-                                var numSelected = 0;
                                 var numVisible = 0;
                                 for (var i = 0; i < size; i++) {
                                     if (features[i].hide != true) {
                                         numVisible++;
-                                        if (selected && selected.indexOf(features[i]) != -1) {
-                                            numSelected++;
-                                        }
                                     }
                                 }
                                 if (numVisible === 0) {
                                     return null;
                                 }
                                 if (numVisible != 1) {
-                                    var color = numSelected == 0 ? '%(clusterColor)s' : '#FFCC00'
-                                    var style = numSelected == 0 ? clusterStyleCache_%(name)s[numVisible] : selectedClusterStyleCache_%(name)s[numVisible];
+                                    var color = '%(clusterColor)s'
+                                    var style = clusterStyleCache_%(name)s[numVisible]
                                     if (!style) {
                                         style = [new ol.style.Style({
                                             image: new ol.style.Circle({
@@ -343,11 +339,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                                 })
                                             })
                                         })];
-                                        if (numSelected == 0) {
-                                            clusterStyleCache_%(name)s[numVisible] = style;
-                                        } else {
-                                            selectedClusterStyleCache_%(name)s[numVisible] = style;
-                                        }
+                                        clusterStyleCache_%(name)s[numVisible] = style;
                                     }
                                     return style;
                                 }
@@ -418,7 +410,6 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             app.variables.append('''%(defs)s
                     var textStyleCache_%(name)s={}
                     var clusterStyleCache_%(name)s={}
-                    var selectedClusterStyleCache_%(name)s={}
                     var style_%(name)s = %(style)s;
                     var selectionStyle_%(name)s = %(selectionStyle)s;''' %
                 {"defs":defs, "name":safeName(layer.name()), "style":style,
