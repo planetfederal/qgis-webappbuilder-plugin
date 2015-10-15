@@ -11,24 +11,13 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
     wfsSource =  ('''var geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
-                        loader: function(extent, resolution, projection) {
-                            var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
-                                '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
+                        url: function(extent, resolution, projection) {
+                            return '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
+                                '&typename=%(typeName)s&outputFormat=application/json&' +
                                 '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
-                            $.ajax({
-                                url: url,
-                                dataType: 'jsonp'
-                            });
                         },
                         strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
-                    });
-                    var loadFeatures_%(layerName)s = function(response) {
-                        wfsSource_%(layerName)s.addFeatures(
-                                geojsonFormat_%(layerName)s.readFeatures(response,
-                                    {dataProjection: '%(layerCrs)s', featureProjection: '%(viewCrs)s'}));
-                    };
-
-                    ''' %
+                    });''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "viewCrs": viewCrs})
 
