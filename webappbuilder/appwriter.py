@@ -155,8 +155,7 @@ def writeLayersAndGroups(appdef, folder, app, progress):
     if baseJs:
         baseLayer = '''var baseLayers = [new ol.layer.Tile({
                         type: 'base',
-                        title: 'No base layer',
-                        source: new ol.source.XYZ({url:""})
+                        title: 'No base layer'
                     }),%s];''' % ",".join(baseJs)
     else:
         baseLayer = "var baseLayers = [];"
