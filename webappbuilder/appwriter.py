@@ -112,12 +112,12 @@ def writeHtml(appdef, folder, app, progress):
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
-                app.scripts.append('<script src="./resources/proj4.js"></script>')
+                app.scripts.append('<script src="./proj4.js"></script>')
                 app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
-            app.scripts.append('<script src="./resources/proj4.js"></script>')
+            app.scripts.append('<script src="./proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
 
