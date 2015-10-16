@@ -1,5 +1,21 @@
 @IMPORTS@
 
+var defaultFill = new ol.style.Fill({
+   color: 'rgba(255,255,255,0.4)'
+ });
+ var defaultStroke = new ol.style.Stroke({
+   color: '#3399CC',
+   width: 1.25
+ });
+ var defaultSelectionFill = new ol.style.Fill({
+   color: 'rgba(255,255,0,0.4)'
+ });
+ var defaultSelectionStroke = new ol.style.Stroke({
+   color: '#FFFF00',
+   width: 1.25
+ });
+
+
 @VARIABLES@
 
 var map = new ol.Map({
