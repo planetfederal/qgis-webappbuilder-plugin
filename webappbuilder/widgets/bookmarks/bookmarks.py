@@ -75,7 +75,6 @@ class Bookmarks(WebAppWidget):
             problems.append("Bookmarks widget added, but no bookmarks have been defined"
                         "You should configure the bookmarks widget and define at least one bookmark")
 
-widgetInstance = Bookmarks()
 
 from qgis.core import *
 from PyQt4 import QtCore, QtGui
