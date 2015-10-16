@@ -13,7 +13,7 @@ class MousePosition(WebAppWidget):
         projection = self._parameters["projection"]
         epsg = projection.split(":")[-1]
         if epsg not in ["3857", "4326"]:
-            self.addScript("proj4.js", folder, app)
+            app.scripts.append('<script src="./proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
         coord = str(self._parameters["coordinateFormat"])
         s = json.dumps(self._parameters)
