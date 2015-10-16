@@ -3,6 +3,7 @@ import os
 from parameditor import ParametersEditorDialog
 import inspect
 import shutil
+import copy
 
 class WebAppWidget(object):
 
@@ -10,7 +11,7 @@ class WebAppWidget(object):
     order = 100
 
     def __init__(self):
-        self.defaultParameters = self._parameters.copy()
+        self.defaultParameters = copy.deepcopy(self._parameters)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "icons", "puzzle.png"))
@@ -40,7 +41,7 @@ class WebAppWidget(object):
             return {}
 
     def resetParameters(self):
-        self._parameters = self.defaultParameters
+        self._parameters = copy.deepcopy(self.defaultParameters)
 
     def setParameters(self, params):
         for paramName, value in params.iteritems():
