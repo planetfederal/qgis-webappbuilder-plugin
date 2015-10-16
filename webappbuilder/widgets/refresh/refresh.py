@@ -3,17 +3,23 @@ import os
 from PyQt4 import QtCore, QtGui
 import json
 from qgis.core import *
-from webappbuilder.utils import findProjectLayerByName, findLayerByName
+from webappbuilder.utils import findProjectLayerByName, findLayerByName, safeName
 
 class Refresh(WebAppWidget):
 
     _parameters = {"layers":{}}
 
     def write(self, appdef, folder, app, progress):
-        layers = [{"layer": findProjectLayerByName(lyr).id(), "interval": interval}
-                  for lyr,interval in self._parameters["layers"].iteritems()]
-        app.variables.append("var refreshLayers = %s;" % json.dumps(layers))
-        #TODO
+        refresh = []
+        for lyr,interval in self._parameters["layers"].iteritems():
+            refresh.append('''window.setInterval(function(){
+                                lyr_%s.getSource().updateParams({'dummy': Math.random()});
+                            }, %s);''' % (safeName(lyr), interval))
+        if refresh:
+            app.posttarget.append('''map.once("postcompose", function(){
+                                        %s
+                                });''' % "\n".join(refresh))
+
 
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "refresh.png"))
