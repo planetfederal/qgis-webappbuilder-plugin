@@ -1,3 +1,5 @@
+@IMPORTS@
+
 @VARIABLES@
 
 var map = new ol.Map({

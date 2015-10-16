@@ -1,0 +1,2 @@
+def isSdkInstalled():
+    return False

@@ -12,6 +12,7 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
+from sdkutils import isSdkInstalled
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
@@ -21,6 +22,8 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(resourcesFolder, dst)
+    QDir().mkpath(os.path.join(dst, "data"))
+    QDir().mkpath(os.path.join(dst, "resources"))
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, dst, progress,
@@ -36,6 +39,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         variables = []
         scripts = []
         posttarget = []
+        imports = []
     app = App()
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
     writeLayersAndGroups(appdef, dst, app, progress)
@@ -50,6 +54,8 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     return indexFilepath
 
 def writeJsx(appdef, folder, app, progress):
+    if isSdkInstalled():
+        app.imports = []
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
@@ -83,7 +89,8 @@ def writeJsx(appdef, folder, app, progress):
                 "@MAPPANELS@": "\n".join(app.mappanels),
                 "@TOOLBAR@": "\n".join(app.tools),
                 "@VARIABLES@": variables,
-                "@POSTTARGETSET@": "\n".join(app.posttarget)}
+                "@POSTTARGETSET@": "\n".join(app.posttarget),
+                "@IMPORTS@": "\n".join(app.imports)}
     jsxFilepath = os.path.join(folder, "app.jsx")
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")
