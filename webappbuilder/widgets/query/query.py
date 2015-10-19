@@ -7,7 +7,7 @@ class Query(WebAppWidget):
     order = 4
 
     def write(self, appdef, folder, app, progress):
-        app.imports.append("import QueryBuilder from './components/QueryBuilder.jsx';")
+        self.addReactComponent(app, "QueryBuilder")
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1

@@ -20,7 +20,8 @@ class LayersList(WebAppWidget):
                            "allowFiltering={%s} map={map}/></div>")
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering")))
-        app.imports.append("import LayerList from './components/LayerList.jsx';")
+        self.addReactComponent(app, "LayerList")
+
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "layer-list.png"))
 

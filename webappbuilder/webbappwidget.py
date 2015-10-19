@@ -75,22 +75,6 @@ class WebAppWidget(object):
         if os.path.exists(f):
             shutil.copy2(f, resourcesFolder)
 
-    def addScript(self, name, folder, app, toBottom = False):
-        self.copyToResources(name, folder)
-        if toBottom:
-            app.scriptsBottom.append('<script src="./resources/%s"></script>' % name)
-        else:
-            app.scripts.append('<script src="./resources/%s"></script>' % name)
-
-    def addCss(self, name, folder, app):
-        if os.path.basename(inspect.getfile(self.__class__)).split(".")[0] == name.split(".")[0]:
-            resourcesFolder = os.path.join(folder, "resources")
-            if not QDir(resourcesFolder).exists():
-                QDir().mkpath(resourcesFolder)
-            path = os.path.join(resourcesFolder, name)
-            with open(path, "w") as f:
-                f.write(self._css)
-        else:
-            self.copyToResources(name, folder)
-        app.scripts.append('<link href="./resources/%s" rel="stylesheet" type="text/css"/>' % name)
+    def addReactComponent(self, app, component):
+        app.imports.append("import %(s)s from './components/%(s)s.jsx'" % {"s:":component})
 

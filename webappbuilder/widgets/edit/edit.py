@@ -9,7 +9,8 @@ class Edit(WebAppWidget):
                          + "onClick={this._toggleEdit.bind(this)}><ICON.Icon name='pencil' /> "
                          + "Edit</BUTTON.DefaultButton></ul>")
         app.mappanels.append("<div id='edit-tool-panel'><Edit toggleGroup='navigation' map={map} /></div>")
-        app.imports.append("import Edit from './components/Edit.jsx';")
+        self.addReactComponent(app, "Edit")
+
     '''def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))'''
 

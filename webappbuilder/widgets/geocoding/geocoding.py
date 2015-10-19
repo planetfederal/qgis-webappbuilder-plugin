@@ -8,8 +8,8 @@ class Geocoding(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         theme = appdef["Settings"]["Theme"]
-        app.imports.append("import Geocoding from './components/Geocoding.jsx';")
-        app.imports.append("import GeocodingResults from './components/GeocodingResults.jsx';")
+        self.addReactComponent(app, "Geocoding")
+        self.addReactComponent(app, "GeocodingResults")
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append("<UI.Tab eventKey={%i} title='Geocoding'><div id='geocoding-tab'><Geocoding />" % idx
