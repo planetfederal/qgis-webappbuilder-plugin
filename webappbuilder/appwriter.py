@@ -39,7 +39,13 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         variables = []
         scripts = []
         posttarget = []
-        imports = []
+        imports = ["import React from 'react';"
+                    "import ol from 'openlayers';",
+                    "import {IntlProvider} from 'react-intl';",
+                    "import UI from 'pui-react-buttons';",
+                    "import Icon from 'pui-react-iconography';",
+                    "import InfoPopup from './components/InfoPopup.jsx';"
+                   ]
     app = App()
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
     writeLayersAndGroups(appdef, dst, app, progress)
@@ -54,7 +60,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     return indexFilepath
 
 def writeJsx(appdef, folder, app, progress):
-    if isSdkInstalled():
+    if not isSdkInstalled():
         app.imports = []
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]

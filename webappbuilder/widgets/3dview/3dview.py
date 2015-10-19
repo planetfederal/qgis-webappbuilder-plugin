@@ -12,7 +12,7 @@ class ThreeDView(WebAppWidget):
         dst = os.path.join(cesiumFolder)
         shutil.copytree(src, dst)
         app.panels.append("<div id='globe-button' className='ol-unselectable ol-control'><Globe map={map} /></div>")
-
+        app.imports.append("import Globe from './components/Globe.jsx';")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "3d-view.png"))

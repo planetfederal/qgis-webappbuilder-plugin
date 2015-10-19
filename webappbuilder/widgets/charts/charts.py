@@ -11,6 +11,7 @@ class ChartTool(WebAppWidget):
     order = 3
 
     def write(self, appdef, folder, app, progress):
+        app.imports.append("import Chart from './components/Chart.jsx';")
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1

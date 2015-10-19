@@ -12,7 +12,7 @@ class Timeline(WebAppWidget):
         timelineOptions = self.getTimelineOptions(appdef);
         app.mappanels.append("<div id='timeline'><Playback map={map} minDate={%s} maxDate={%s} /></div>"
                             % (timelineOptions[0], timelineOptions[1]))
-
+        app.imports.append("import Playback from './components/Playback.jsx';")
 
     '''def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))'''

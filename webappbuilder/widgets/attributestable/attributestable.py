@@ -19,6 +19,7 @@ class AttributesTable(WebAppWidget):
             if layer.type() == layer.VectorLayer and applayer.method not in [METHOD_WMS, METHOD_WMS_POSTGIS]:
                 layerVar = "lyr_" + safeName(layer.name())
                 break
+        app.imports.append("import FeatureTable from './components/FeatureTable.jsx')")
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1

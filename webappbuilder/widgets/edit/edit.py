@@ -6,9 +6,10 @@ class Edit(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.tools.append("<ul className='pull-right' id='toolbar-edit'><BUTTON.DefaultButton "
-        + "onClick={this._toggleEdit.bind(this)}><ICON.Icon name='pencil' /> Edit</BUTTON.DefaultButton></ul>")
+                         + "onClick={this._toggleEdit.bind(this)}><ICON.Icon name='pencil' /> "
+                         + "Edit</BUTTON.DefaultButton></ul>")
         app.mappanels.append("<div id='edit-tool-panel'><Edit toggleGroup='navigation' map={map} /></div>")
-
+        app.imports.append("import Edit from './components/Edit.jsx';")
     '''def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))'''
 

@@ -22,6 +22,7 @@ class Bookmarks(WebAppWidget):
         bookmarks = params["bookmarks"]
         introText = params["introText"].replace('\n', '<br>').replace('\r', '')
         if bookmarks:
+            app.imports.append("import Bookmarks from './components/Bookmarks.jsx';")
             autoPlay = "autoplay={true} autoplaySpeed={%s}" % str(params["interval"] * 1000) if params["interval"] else ""
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 app.mappanels.append(("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
