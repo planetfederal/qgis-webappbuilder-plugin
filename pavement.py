@@ -102,7 +102,7 @@ def read_requirements():
 def install(options):
     '''install plugin to qgis'''
     plugin_name = options.plugin.name
-    src = path(__file__).dirname() / 'src' / plugin_name
+    src = path(__file__).dirname() / plugin_name
     dst = path('~').expanduser() / '.qgis2' / 'python' / 'plugins' / plugin_name
     src = src.abspath()
     dst = dst.abspath()       
