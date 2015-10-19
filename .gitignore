@@ -1,1 +1,5 @@
 *.pyc
+/webappbuilder/websdk_full/full.js
+ext-libs
+_websdk
+/webappbuilder/websdk
