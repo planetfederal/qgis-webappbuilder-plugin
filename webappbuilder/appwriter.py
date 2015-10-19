@@ -18,10 +18,14 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
     progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
-    resourcesFolder = os.path.join(os.path.dirname(__file__), "websdk")
-    if os.path.exists(dst):
-        shutil.rmtree(dst)
-    shutil.copytree(resourcesFolder, dst)
+    if not isSdkInstalled():
+        sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(sdkFolder, dst)
+    else:
+        pass #TODO
+    QDir().mkpath(dst)
     QDir().mkpath(os.path.join(dst, "data"))
     QDir().mkpath(os.path.join(dst, "resources"))
     layers = appdef["Layers"]
@@ -38,6 +42,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         mappanels = []
         variables = []
         scripts = []
+        scriptsbody = []
         posttarget = []
         imports = ["import React from 'react';"
                     "import ol from 'openlayers';",
@@ -61,7 +66,13 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
 
 def writeJsx(appdef, folder, app, progress):
     if not isSdkInstalled():
+        app.scripts.append('<script src="browser.js"></script>')
+        app.scriptsbody.append('<script src="full.js"></script>')
+        app.scriptsbody.append('<script type="text/babel" src="./app.jsx"></script>')
         app.imports = []
+    else:
+        app.scriptsbody.append('<script src="app.js"></script>')
+
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
@@ -135,7 +146,8 @@ def writeHtml(appdef, folder, app, progress):
 
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
-                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys())
+                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
+                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
             }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
