@@ -76,5 +76,5 @@ class WebAppWidget(object):
             shutil.copy2(f, resourcesFolder)
 
     def addReactComponent(self, app, component):
-        app.imports.append("import %(s)s from './components/%(s)s.jsx'" % {"s:":component})
+        app.imports.append("import %(s)s from './components/%(s)s.jsx'" % {"s": component})
 
