@@ -1,0 +1,8 @@
+PyReact==0.5.2
+jsmin
+gsconfig
+requests
+jsbeautifier
+beautifulsoup
+
+# test requirements
