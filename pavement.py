@@ -18,13 +18,15 @@ options(
         source_dir = path('webappbuilder'),
         package_dir = path('.'),
         excludes = [
-            'metadata.*',
-            'test-output',
-            'ext-src',
-            'test',
-            'coverage*.*',
-            'nose*.*',            
-            '*.pyc'
+            'metadata.*',           
+            '*.pyc',
+            'websdk',
+            "_websdk"
+        ],
+        excludes_enterprise = [
+            'metadata.*',           
+            '*.pyc',
+            "_websdk"
         ]
     ),
 
@@ -71,7 +73,17 @@ def setup(options):
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
+    sdkPath = "./webappbuilder/_websdk"
+    if os.path.exists(sdkPath):
+        cwd = os.getcwd()
+        os.chdir(sdkPath)        
+        sh("git pull")
+        os.chdir(cwd)
+    else:
 
+        sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
+    path(os.path.join(sdkPath, "dist", "js", "full.js")).copy2("./webappbuilder/websdk_full/full.js")
+    #TODO:copy required files for full version to websdk folder
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
@@ -101,13 +113,16 @@ def install(options):
 @task
 def package(options):
     '''create package for plugin'''
-    package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
+    package_file = options.plugin.package_dir / ('%s_enterprise.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
-        make_zip(zip, options)
-    return package_file
+        make_zip(zip, options, True)
+    package_file = options.plugin.package_dir / ('%s_free.zip' % options.plugin.name)
+    with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
+        make_zip(zip, options, False)        
 
 
-def make_zip(zip, options):
+
+def make_zip(zip, options, enterprise):
     metadata_file = options.plugin.source_dir / "metadata.txt"
     cfg = ConfigParser.SafeConfigParser()
     cfg.optionxform = str
@@ -123,7 +138,7 @@ def make_zip(zip, options):
     cfg.write(buf)
     zip.writestr("webappbuilder/metadata.txt", buf.getvalue())
 
-    excludes = set(options.plugin.excludes)
+    excludes = set(options.plugin.excludes_enterprise) if enterprise else set(options.plugin.excludes)
 
     src_dir = options.plugin.source_dir
     exclude = lambda p: any([fnmatch.fnmatch(p, e) for e in excludes])
@@ -143,46 +158,3 @@ def make_zip(zip, options):
             zip.write(path(root) / f, path(relpath) / f)
         filter_excludes(dirs)
 
-
-@task
-@cmdopts([
-    ('user=', 'u', 'upload user'),
-    ('passwd=', 'p', 'upload password'),
-    ('server=', 's', 'alternate server'),
-    ('end_point=', 'e', 'alternate endpoint'),
-    ('port=', 't', 'alternate port'),
-])
-def upload(options):
-    '''upload the package to the server'''
-    package_file = package(options)
-    user, passwd = getattr(options, 'user', None), getattr(options, 'passwd', None)
-    if not user or not passwd:
-        raise BuildFailure('provide user and passwd options to upload task')
-    # create URL for XML-RPC calls
-    s = options.plugin_server
-    server, end_point, port = getattr(options, 'server', None), getattr(options, 'end_point', None), getattr(options, 'port', None)
-    if server == None:
-        server = s.server
-    if end_point == None:
-        end_point = s.end_point
-    if port == None:
-        port = s.port
-    uri = "%s://%s:%s@%s:%s%s" % (s.protocol, options['user'], options['passwd'], server, port, end_point)
-    info('uploading to %s', uri)
-    server = xmlrpclib.ServerProxy(uri, verbose=False)
-    try:
-        pluginId, versionId = server.plugin.upload(xmlrpclib.Binary(package_file.bytes()))
-        info("Plugin ID: %s", pluginId)
-        info("Version ID: %s", versionId)
-        package_file.unlink()
-    except xmlrpclib.Fault, err:
-        error("A fault occurred")
-        error("Fault code: %d", err.faultCode)
-        error("Fault string: %s", err.faultString)
-    except xmlrpclib.ProtocolError, err:
-        error("Protocol error")
-        error("%s : %s", err.errcode, err.errmsg)
-        if err.errcode == 403:
-            error("Invalid name and password?")
-
-    
