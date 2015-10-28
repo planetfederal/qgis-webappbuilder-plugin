@@ -1,3 +1,4 @@
+import sys
 import os
 from qgis.core import *
 from PyQt4.QtCore import *
@@ -18,6 +19,9 @@ import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
+
+# Adding so that our UI files can find resources_rc.py
+sys.path.append(os.path.dirname(__file__))
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'ui_maindialog.ui'))
