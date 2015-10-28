@@ -75,6 +75,10 @@ def setup(options):
     else:
         sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
     path(os.path.join(sdkPath, "dist", "js", "full.js")).copy2("./webappbuilder/websdk_full/full.js")
+    dst = "./webappbuilder/css"
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
+    shutil.copytree(os.path.join(sdkPath,"css") dst)
     os.chdir(sdkPath)        
     sh("npm i")
     os.chdir(cwd)

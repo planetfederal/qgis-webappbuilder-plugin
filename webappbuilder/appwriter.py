@@ -25,7 +25,8 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         shutil.copytree(sdkFolder, dst)
     else:
         pass #TODO
-    QDir().mkpath(dst)
+    cssFolder = os.path.join(os.path.dirname(__file__), "css")
+    shutil.copytree(cssFolder, os.path.join(dst, "css"))
     QDir().mkpath(os.path.join(dst, "data"))
     QDir().mkpath(os.path.join(dst, "resources"))
     layers = appdef["Layers"]
