@@ -8,7 +8,7 @@ from paver.easy import *
 from paver.doctools import html
 import xmlrpclib
 import zipfile
-
+import shutil
 
 options(
     plugin = Bunch(
@@ -62,28 +62,26 @@ def setup(options):
     runtime, test = read_requirements()
     os.environ['PYTHONPATH']=ext_libs.abspath()
     for req in runtime + test:
-        if req.startswith('-e'):
-            # use pip to just process the URL and fetch it in to place
-            sh('pip install --no-install --src=%s %s' % (ext_src, req))
-            # now change the req to be the location installed to
-            # and easy_install will do the rest
-            urlspec, req = req.split('#egg=')
-            req = ext_src / req
         sh('easy_install -a -d %(ext_libs)s %(dep)s' % {
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
     sdkPath = "./webappbuilder/_websdk"
+    cwd = os.getcwd()
     if os.path.exists(sdkPath):
-        cwd = os.getcwd()
         os.chdir(sdkPath)        
         sh("git pull")
         os.chdir(cwd)
     else:
-
         sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
     path(os.path.join(sdkPath, "dist", "js", "full.js")).copy2("./webappbuilder/websdk_full/full.js")
-    #TODO:copy required files for full version to websdk folder
+    os.chdir(sdkPath)        
+    sh("npm i")
+    os.chdir(cwd)
+    dst = "./webappbuilder/websdk"
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
+    shutil.copytree(sdkPath, dst)
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
