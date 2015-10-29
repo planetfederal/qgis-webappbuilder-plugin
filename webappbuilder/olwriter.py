@@ -275,7 +275,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s[value];'''  % (safeName(layer.name()))
-                selectionStyle = '''var selectionStyle = categoriesSelected_%s[value]'''  % (safeName(layer.name()))
+                selectionStyle = '''var style = categoriesSelected_%s[value]'''  % (safeName(layer.name()))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
                 defs += "var %s = [" % varName
@@ -283,17 +283,26 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 for ran in renderer.ranges():
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder)
                     selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), stylesFolder, '"rgba(255, 204, 0, 1)"')
-                    ranges.append('[%f, %f, %s, %s]' % (ran.lowerValue(), ran.upperValue(),
+                    ranges.append('[%f, %f,\n %s, %s]' % (ran.lowerValue(), ran.upperValue(),
                                                          symbolstyle, selectedSymbolStyle))
                 defs += ",\n".join(ranges) + "];"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = %(v)s[0][2];
-                            var selectionStyle = %(v)s[0][3];
                             for (i = 0; i < %(v)s.length; i++){
                                 var range = %(v)s[i];
                                 if (value > range[0] && value<=range[1]){
                                     style = range[2];
-                                    selectionStyle = range[3];
+                                    break;
+                                }
+                            }
+                            ''' % {"v": varName}
+
+                selectionStyle = '''var style = %(v)s[0][3];
+                            for (i = 0; i < %(v)s.length; i++){
+                                var range = %(v)s[i];
+                                if (value > range[0] && value<=range[1]){
+                                    style = range[3];
+                                    break;
                                 }
                             }
                             ''' % {"v": varName}
