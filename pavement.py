@@ -50,6 +50,7 @@ options(
 @task
 @cmdopts([
     ('clean', 'c', 'clean out dependencies first'),
+    ('nonpm', 'n', 'do not run npm i to fetch node modules'),
 ])
 def setup(options):
     '''install dependencies'''
@@ -66,7 +67,7 @@ def setup(options):
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
-    sdkPath = "./webappbuilder/_websdk"
+    sdkPath = "./webappbuilder/websdk"
     cwd = os.getcwd()
     if os.path.exists(sdkPath):
         os.chdir(sdkPath)        
@@ -79,13 +80,12 @@ def setup(options):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(sdkPath,"css"), dst)
-    os.chdir(sdkPath)        
-    sh("npm i")
-    os.chdir(cwd)
-    dst = "./webappbuilder/websdk"
-    if os.path.exists(dst):
-        shutil.rmtree(dst)
-    shutil.copytree(sdkPath, dst)
+    nonpm = getattr(options, 'nonpm', False)
+    if not nonpm:
+        os.chdir(sdkPath)        
+        sh("npm i")
+        os.chdir(cwd)
+
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
