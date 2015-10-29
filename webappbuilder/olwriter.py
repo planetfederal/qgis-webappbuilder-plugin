@@ -288,7 +288,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 defs += ",\n".join(ranges) + "];"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = %(v)s[0][2];
-                            for (i = 0; i < %(v)s.length; i++){
+                            for (var i = 0; i < %(v)s.length; i++){
                                 var range = %(v)s[i];
                                 if (value > range[0] && value<=range[1]){
                                     style = range[2];
@@ -298,7 +298,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             ''' % {"v": varName}
 
                 selectionStyle = '''var style = %(v)s[0][3];
-                            for (i = 0; i < %(v)s.length; i++){
+                            for (var i = 0; i < %(v)s.length; i++){
                                 var range = %(v)s[i];
                                 if (value > range[0] && value<=range[1]){
                                     style = range[3];
