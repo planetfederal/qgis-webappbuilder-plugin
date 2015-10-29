@@ -78,7 +78,7 @@ def setup(options):
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    shutil.copytree(os.path.join(sdkPath,"css") dst)
+    shutil.copytree(os.path.join(sdkPath,"css"), dst)
     os.chdir(sdkPath)        
     sh("npm i")
     os.chdir(cwd)
