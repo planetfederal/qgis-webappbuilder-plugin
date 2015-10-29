@@ -6,7 +6,7 @@ var lyr_raster = new ol.layer.Image({
                                 id: "raster20150909093752545",
                                 timeInfo: null,
                                 source: new ol.source.ImageStatic({
-                                   url: "./layers/raster.jpg",
+                                   url: "./data/raster.jpg",
                                     projection: "EPSG:3857",
                                     alwaysInRange: true,
                                     imageSize: [91, 91],

@@ -212,7 +212,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 id: "%(id)s",
                                 timeInfo: %(timeInfo)s,
                                 source: new ol.source.ImageStatic({
-                                   url: "./layers/%(n)s.jpg",
+                                   url: "./data/%(n)s.jpg",
                                     projection: "%(crs)s",
                                     alwaysInRange: true,
                                     imageSize: [%(col)d, %(row)d],
