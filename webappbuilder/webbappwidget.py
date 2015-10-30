@@ -3,7 +3,6 @@ import os
 from parameditor import ParametersEditorDialog
 import inspect
 import shutil
-import copy
 
 class WebAppWidget(object):
 
@@ -11,6 +10,7 @@ class WebAppWidget(object):
     order = 100
 
     def __init__(self):
+        import copy
         self.defaultParameters = copy.deepcopy(self._parameters)
 
     def icon(self):
@@ -41,6 +41,7 @@ class WebAppWidget(object):
             return {}
 
     def resetParameters(self):
+        import copy
         self._parameters = copy.deepcopy(self.defaultParameters)
 
     def setParameters(self, params):
