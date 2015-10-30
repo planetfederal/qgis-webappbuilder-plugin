@@ -18,20 +18,10 @@ class WebAppBuilderPlugin:
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
-        self.iface.addPluginToMenu("Boundless", self.action)
-        try:
-            from github import addUpdatePluginMenu
-            addUpdatePluginMenu("Boundless", "volaya", "webappbuilder")
-        except:
-            pass
+        self.iface.addPluginToWebMenu("Boundless", self.action)
 
     def unload(self):
-        self.iface.removePluginMenu("Boundless", self.action)
-        try:
-            from github import removeUpdatePluginMenu
-            removeUpdatePluginMenu("Boundless")
-        except:
-            pass
+        self.iface.removePluginWebMenu("Boundless", self.action)
         shutil.rmtree(tempFolder())
 
     def run(self):
