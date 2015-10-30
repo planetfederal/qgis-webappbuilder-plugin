@@ -157,24 +157,29 @@ LAST_PATH = "LastPath"
 
 def askForFiles(parent, msg = None, isSave = False, allowMultiple = False, exts = "*"):
     msg = msg or 'Select file'
-    path = getSetting(LAST_PATH, _callerName())
+    name = _callerName()
+    path = getSetting(LAST_PATH, name)
+    f = None
     if not isinstance(exts, list):
         exts = [exts]
-    extString = ";; ".join([" % files (*.%)" % (e.upper(), e) if e != "*" else "All files (*.*)" for e in ext])
+    extString = ";; ".join([" %s files (*.%s)" % (e.upper(), e) if e != "*" else "All files (*.*)" for e in exts])
     if allowMultiple:
         ret = QFileDialog.getOpenFileNames(parent, msg, path, '*.' + extString)
-        f = ret[0]
+        if ret:
+            f = ret[0]
+        else:
+            f = ret = None
     else:
         if isSave:
-            ret = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString)
+            ret = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString) or None
+            if ret is not None and not ret.endswith(exts[0]):
+                ret += "." + exts[0]
         else:
-            ret = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString)
-        if not ret.endswith(exts[0]):
-            ret += "." + exts[0]
+            ret = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString) or None
         f = ret
 
     if f is not None:
-        setSetting(LAST_PATH, _callerName(), os.path.dirname(f))
+        setSetting(LAST_PATH, name, os.path.dirname(f))
 
     return ret
 
@@ -183,13 +188,14 @@ def askForFolder(parent, msg = None):
     name = _callerName()
     path = getSetting(LAST_PATH, name)
     folder =  QFileDialog.getExistingDirectory(parent, "Select folder to store app", path)
-    if folder is not None:
+    if folder:
         setSetting(LAST_PATH, name, folder)
     return folder
 
 
 def setSetting(namespace, name, value):
-    QSettings().setValue(namespace + "/" + name, value)
+    settings = QSettings()
+    settings.setValue(namespace + "/" + name, value)
 
 def getSetting(namespace, name):
     v = QSettings().value(namespace + "/" + name, None)
