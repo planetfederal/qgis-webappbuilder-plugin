@@ -395,7 +395,7 @@ class MainDialog(BASE, WIDGET):
                 if os.path.exists(os.path.join(folder, "webapp")):
                     ret = QMessageBox.warning(self, "Output folder", " The selected folder already contains a 'webapp' subfolder.\n"
                                         "Do you confirm that you want to overwrite it?",
-                                        QMessageBox.Yes | QMessageBox.No)
+                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                     if ret == QMessageBox.No:
                         return
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
