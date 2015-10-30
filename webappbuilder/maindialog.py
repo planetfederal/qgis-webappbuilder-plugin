@@ -14,7 +14,7 @@ import webbrowser
 from treesettingsitem import TreeSettingItem
 from utils import *
 from functools import partial
-from settings import outputFolders, webAppWidgets
+from settings import webAppWidgets
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
@@ -124,8 +124,7 @@ class MainDialog(BASE, WIDGET):
             self.logoBox.setText(img)
 
     def openAppdef(self):
-        appdefFile = QFileDialog.getOpenFileName(self, "Select app definition file", "",
-                                          "Appdef files (*.appdef)")
+        appdefFile = askForFiles(self, "Select app definition file", False, False, "appdef")
         if appdefFile:
             appdef = loadAppdef(appdefFile)
             if appdef:
@@ -134,8 +133,8 @@ class MainDialog(BASE, WIDGET):
 
 
     def saveAppdef(self):
-        appdefFile = QFileDialog.getSaveFileName(self, "Select app definition file", "",
-                                          "Appdef files (*.appdef)")
+        appdefFile = askForFiles(self, "Select app definition file", True,
+                                          ext = "appdef")
         if appdefFile:
             saveAppdef(self.createAppDefinition(False), appdefFile)
 
@@ -391,12 +390,9 @@ class MainDialog(BASE, WIDGET):
                 dlg.exec_()
                 if not dlg.ok:
                     return
-            projFile = QgsProject.instance().fileName()
-            previousFolder = outputFolders.get(projFile, "")
-            folder = QFileDialog.getExistingDirectory(self, "Select folder to store app", previousFolder)
+            folder = askForFolder(self, "Select folder to store app")
             if folder:
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
-                outputFolders[projFile] = folder
                 QMessageBox().information(self, "Web App Builder", "App has been correctly created")
         except WrongValueException:
             pass

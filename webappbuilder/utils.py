@@ -4,6 +4,8 @@ from PyQt4.QtCore import *
 from qgis.core import *
 import subprocess
 import uuid
+from PyQt4.QtGui import QFileDialog
+import inspect
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -136,3 +138,61 @@ def findProjectLayerByName(name):
         mapLayer = layer.layer()
         if mapLayer.name() == name:
             return mapLayer
+
+def _callerName():
+    stack = inspect.stack()
+    parentframe = stack[2][0]
+    name = []
+    module = inspect.getmodule(parentframe)
+    name.append(module.__name__)
+    if 'self' in parentframe.f_locals:
+        name.append(parentframe.f_locals['self'].__class__.__name__)
+    codename = parentframe.f_code.co_name
+    if codename != '<module>':
+        name.append( codename )
+    del parentframe
+    return  ".".join(name)
+
+LAST_PATH = "LastPath"
+
+def askForFiles(parent, msg = None, isSave = False, allowMultiple = False, exts = "*"):
+    msg = msg or 'Select file'
+    path = getSetting(LAST_PATH, _callerName())
+    if not isinstance(exts, list):
+        exts = [exts]
+    extString = ";; ".join([" % files (*.%)" % (e.upper(), e) if e != "*" else "All files (*.*)" for e in ext])
+    if allowMultiple:
+        ret = QFileDialog.getOpenFileNames(parent, msg, path, '*.' + extString)
+        f = ret[0]
+    else:
+        if isSave:
+            ret = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString)
+        else:
+            ret = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString)
+        if not ret.endswith(exts[0]):
+            ret += "." + exts[0]
+        f = ret
+
+    if f is not None:
+        setSetting(LAST_PATH, _callerName(), os.path.dirname(f))
+
+    return ret
+
+def askForFolder(parent, msg = None):
+    msg = msg or 'Select folder'
+    name = _callerName()
+    path = getSetting(LAST_PATH, name)
+    folder =  QFileDialog.getExistingDirectory(parent, "Select folder to store app", path)
+    if folder is not None:
+        setSetting(LAST_PATH, name, folder)
+    return folder
+
+
+def setSetting(namespace, name, value):
+    QSettings().setValue(namespace + "/" + name, value)
+
+def getSetting(namespace, name):
+    v = QSettings().value(namespace + "/" + name, None)
+    if isinstance(v, QPyNullVariant):
+        v = None
+    return v
