@@ -134,7 +134,7 @@ class MainDialog(BASE, WIDGET):
 
     def saveAppdef(self):
         appdefFile = askForFiles(self, "Select app definition file", True,
-                                          ext = "appdef")
+                                          exts = "appdef")
         if appdefFile:
             saveAppdef(self.createAppDefinition(False), appdefFile)
 
@@ -392,6 +392,12 @@ class MainDialog(BASE, WIDGET):
                     return
             folder = askForFolder(self, "Select folder to store app")
             if folder:
+                if os.path.exists(os.path.join(folder, "webapp")):
+                    ret = QMessageBox.warning(self, "Output folder", " The selected folder already contains a 'webapp' subfolder.\n"
+                                        "Do you confirm that you want to overwrite it?",
+                                        QMessageBox.Yes | QMessageBox.No)
+                    if ret == QMessageBox.No:
+                        return
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
                 QMessageBox().information(self, "Web App Builder", "App has been correctly created")
         except WrongValueException:
