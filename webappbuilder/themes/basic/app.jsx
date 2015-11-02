@@ -41,6 +41,7 @@ class BasicApp extends React.Component {
   }
   _toggleTable() {
     this._toggle(document.getElementById('table-panel'));
+    this.refs.table.refs.wrappedElement.setDimensionsOnState();
   }
   _toggleQuery() {
     this._toggle(document.getElementById('query-panel'));

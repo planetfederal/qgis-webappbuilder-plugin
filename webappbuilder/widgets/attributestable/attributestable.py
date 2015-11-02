@@ -24,14 +24,14 @@ class AttributesTable(WebAppWidget):
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append(('<UI.Tab eventKey={%i} title="Attributes table"><div id="attributes-table-tab">'
-                              + '<FeatureTable layer={%s} pointZoom={%s} resizeTo="tabs-panel" offset={[50, 60]} '
+                              + '<FeatureTable ref="table" layer={%s} pointZoom={%s} resizeTo="tabs-panel" offset={[50, 60]} '
                               + 'map={map} /></div></UI.Tab>')
                               % (idx, layerVar, int(self._parameters["Zoom level when zooming to point feature"][0])))
         else:
             app.tools.append("<ul className='pull-right' id='toolbar-table'><BUTTON.DefaultButton "
                              "onClick={this._toggleTable.bind(this)} title='Attributes table'>"
                              "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
-            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable resizeTo='table-panel' layer={%s} map={map} /></div>"
+            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable ref= 'table' resizeTo='table-panel' layer={%s} map={map} /></div>"
                               % layerVar)
 
     def icon(self):
