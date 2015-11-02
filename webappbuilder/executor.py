@@ -1,6 +1,5 @@
 
 from qgis.core import *
-from versio import config
 from PyQt4 import QtGui, QtCore
 import subprocess
 import os
