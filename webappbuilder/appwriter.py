@@ -13,6 +13,7 @@ from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
 from sdkutils import isSdkInstalled
+from executor import execute
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
@@ -24,7 +25,8 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
             shutil.rmtree(dst)
         shutil.copytree(sdkFolder, dst)
     else:
-        pass #TODO
+        pass
+        #sdkFolder = os.path.join(os.path.dirname(__file__), "websdk")
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
     shutil.copytree(cssFolder, os.path.join(dst, "css"))
     QDir().mkpath(os.path.join(dst, "data"))
@@ -109,18 +111,33 @@ def writeJsx(appdef, folder, app, progress):
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
                 "@IMPORTS@": "\n".join(app.imports)}
-    jsxFilepath = os.path.join(folder, "app.jsx")
+
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")
     jsx = replaceInTemplate(template, values)
 
-    with open(jsxFilepath, "w") as f:
-        f.write(jsx)
-    processJsx(jsxFilepath, progress)
+    if isSdkInstalled():
+        jsxFilepath = os.path.join(os.path.dirname(__file__), "websdk", "app.jsx")
+        with open(jsxFilepath, "w") as f:
+            f.write(jsx)
+        processJsx(folder, progress)
+    else:
+        jsxFilepath = os.path.join(folder, "app.jsx")
+        with open(jsxFilepath, "w") as f:
+            f.write(jsx)
+
+
 
 
 def processJsx(folder, progress):
-    pass
+    tempJsxFilepath = os.path.join(os.path.dirname(__file__), "websdk", "app.jsx")
+    browserifyPath = os.path.join(os.path.dirname(__file__), "websdk", "node_modules", ".bin", "browserify")
+    commands = ('%(browserify)s  %(jsxpath)s/app.jsx -o %(path)s/app.js'
+                 % {"browserify": browserifyPath ,"jsxpath":tempJsxFilepath, "path":folder})
+    progress.oscillate()
+    execute(commands)
+    progress.setProgress(0)
+
 
 def writeCss(appdef, folder):
     dst = os.path.join(folder, "app.css")

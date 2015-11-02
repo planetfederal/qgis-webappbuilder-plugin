@@ -61,8 +61,11 @@ class MainDialog(BASE, WIDGET):
                 self.progressLabel.setText(text)
                 QApplication.processEvents()
             def setProgress(_, i):
+                self.progressBar.setMaximum(100)
                 self.progressBar.setValue(i)
                 QApplication.processEvents()
+            def oscillate(_):
+                self.progressBar.setMaximum(100)
 
         self.progress = Progress()
 
