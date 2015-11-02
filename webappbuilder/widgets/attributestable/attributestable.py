@@ -31,7 +31,7 @@ class AttributesTable(WebAppWidget):
             app.tools.append("<ul className='pull-right' id='toolbar-table'><BUTTON.DefaultButton "
                              "onClick={this._toggleTable.bind(this)} title='Attributes table'>"
                              "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
-            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable ref= 'table' resizeTo='table-panel' layer={%s} map={map} /></div>"
+            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable offset={[20, 20]} ref= 'table' resizeTo='table-panel' layer={%s} map={map} /></div>"
                               % layerVar)
 
     def icon(self):
