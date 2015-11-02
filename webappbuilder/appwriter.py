@@ -19,10 +19,10 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     progress.setText("Copying resources files")
     progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
     if not isSdkInstalled():
         sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
-        if os.path.exists(dst):
-            shutil.rmtree(dst)
         shutil.copytree(sdkFolder, dst)
     else:
         pass
