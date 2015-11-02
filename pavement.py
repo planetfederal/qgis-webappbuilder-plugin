@@ -21,12 +21,10 @@ options(
             'metadata.*',           
             '*.pyc',
             'websdk',
-            "_websdk"
         ],
         excludes_enterprise = [
             'metadata.*',           
             '*.pyc',
-            "_websdk"
         ]
     ),
 
@@ -150,7 +148,6 @@ def make_zip(zip, options, enterprise):
         for i in xrange(len(files) - 1, -1, -1):
             f = files[i]
             if exclude(f):
-                debug('excluding %s' % f)
                 files.remove(f)
         return files
 
