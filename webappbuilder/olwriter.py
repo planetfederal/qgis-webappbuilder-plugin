@@ -134,6 +134,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                     }),
                     %(min)s %(max)s
                     style: style_%(n)s,
+                    selectionStyle: selectionStyle_%(n)s,
                     title: %(name)s,
                     id: "%(id)s",
                     filters: [],
@@ -259,7 +260,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 symbol = renderer.symbol()
                 style = "var style = %s;" % getSymbolAsStyle(symbol, stylesFolder)
                 value = 'var value = "";'
-                selectionStyle = "var selectionStyle = " + getSymbolAsStyle(symbol,
+                selectionStyle = "var style = " + getSymbolAsStyle(symbol,
                                     stylesFolder, '"rgba(255, 204, 0, 1)"')
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = {" % safeName(layer.name())
