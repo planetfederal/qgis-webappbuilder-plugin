@@ -113,15 +113,20 @@ def install(options):
 
 
 @task
+@cmdopts([
+    ('noenterprise', '', 'Do not create enterprise version')
+])
 def package(options):
     '''create package for plugin'''
-    package_file = options.plugin.package_dir / ('%s_enterprise.zip' % options.plugin.name)
-    with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
-        make_zip(zip, options, True)
-        head_path = path('.git/HEAD')
-        head_ref = head_path.open('rU').readline().strip()[5:]
-        ref_file = path(".git/" + head_ref)
-        zip.write(ref_file, "./webappbuilder/sdkversion.txt")
+    noenterprise = getattr(options, 'noenterprise', False)
+    if not noenterprise:
+        package_file = options.plugin.package_dir / ('%s_enterprise.zip' % options.plugin.name)
+        with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
+            make_zip(zip, options, True)
+            head_path = path('.git/HEAD')
+            head_ref = head_path.open('rU').readline().strip()[5:]
+            ref_file = path(".git/" + head_ref)
+            zip.write(ref_file, "./webappbuilder/sdkversion.txt")
     package_file = options.plugin.package_dir / ('%s_free.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
         make_zip(zip, options, False)        
