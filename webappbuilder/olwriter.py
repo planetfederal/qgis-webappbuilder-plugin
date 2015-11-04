@@ -312,7 +312,16 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
             if (appLayer.clusterDistance > 0 and layer.type() == layer.VectorLayer
                                         and layer.geometryType() == QGis.Point):
-                cluster = '''var size = feature.get('features').length;
+                cluster = '''var features = feature.get('features');
+                            var size = 0;
+                            for (var i = 0, ii = features.length; i < ii; ++i) {
+                              if (features[i].hide !== true) {
+                                size++;
+                              }
+                            }
+                            if (size === 0) {
+                              return undefined;
+                            };
                             if (size != 1){
                                 var features = feature.get('features');
                                 var numVisible = 0;
@@ -359,14 +368,9 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             else:
                 cluster = ""
 
-            filters = '''if (feature.hide === true){
-                return null;
-            }
-            '''
             labels = getLabeling(layer)
             style = '''function(feature, resolution){
                         %(cluster)s
-                        %(filters)s
                         %(value)s
                         %(style)s;
                         var allStyles = [];
@@ -375,10 +379,9 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": style,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                             "filters": filters, "labels":labels}
+                            "labels":labels}
             selectionStyle = '''function(feature, resolution){
                         %(cluster)s
-                        %(filters)s
                         %(value)s
                         %(style)s;
                         var allStyles = [];
@@ -387,7 +390,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": selectionStyle,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                             "filters": filters, "labels":labels}
+                             "labels":labels}
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
