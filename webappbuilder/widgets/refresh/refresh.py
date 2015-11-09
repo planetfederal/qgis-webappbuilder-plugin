@@ -11,10 +11,17 @@ class Refresh(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         refresh = []
-        for lyr,interval in self._parameters["layers"].iteritems():
-            refresh.append('''window.setInterval(function(){
+        for lyr, interval in self._parameters["layers"].iteritems():
+            layer = findProjectLayerByName(lyr)
+            if layer.dataProvider().name().lower() == "wms":
+                refresh.append('''window.setInterval(function(){
                                 lyr_%s.getSource().updateParams({'dummy': Math.random()});
-                            }, %s);''' % (safeName(lyr), interval))
+                                }, %s);''' % (safeName(lyr), interval))
+            else:
+                refresh.append('''window.setInterval(function(){
+                                lyr_%s.getSource().clear();
+                                }, %s);''' % (safeName(lyr), interval))
+
         if refresh:
             app.posttarget.append('''map.once("postcompose", function(){
                                         %s
@@ -81,7 +88,8 @@ class RefreshDialog(QtGui.QDialog):
         self.table.setHorizontalHeaderLabels(["Layer", "Refresh interval (ms)"])
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         allLayers = QgsProject.instance().layerTreeRoot().findLayers()
-        wmsLayers = [layer.layer() for layer in allLayers if layer.layer().dataProvider().name() == "wms"]
+        wmsLayers = [layer.layer() for layer in allLayers
+                     if layer.layer().dataProvider().name().lower() in ["wms", "wfs"]]
         self.table.setRowCount(len(wmsLayers))
         for i, layer in enumerate(wmsLayers):
             self.table.setRowHeight(i, 22)
