@@ -47,7 +47,8 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         scripts = []
         scriptsbody = []
         posttarget = []
-        imports = ["import ReactDOM from 'react-dom';"
+        imports = ["import React from 'react';",
+                   "import ReactDOM from 'react-dom';",
                     "import ol from 'openlayers';",
                     "import {IntlProvider} from 'react-intl';",
                     "import UI from 'pui-react-buttons';",
