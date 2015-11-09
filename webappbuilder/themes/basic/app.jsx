@@ -28,7 +28,7 @@ var map = new ol.Map({
 
 class BasicApp extends React.Component {
   componentDidMount() {
-    map.setTarget(document.getElementById('map'));
+    map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     map.getView().fit(originalExtent, map.getSize());
     @POSTTARGETSET@
   }
@@ -81,8 +81,7 @@ class BasicApp extends React.Component {
 }
 
 
-
-React.render(<IntlProvider locale='en' >{() => (<BasicApp />)}</IntlProvider>, document.body);
+ReactDOM.render(<IntlProvider locale='en'><BasicApp /></IntlProvider>, document.getElementById('main'));
 
 
 

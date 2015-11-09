@@ -26,7 +26,7 @@ var map = new ol.Map({
 
 class TabbedApp extends React.Component {
   componentDidMount() {
-    map.setTarget(document.getElementById('map'));
+    map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     map.getView().fit(originalExtent, map.getSize());
     @POSTTARGETSET@
   }
@@ -74,8 +74,5 @@ class TabbedApp extends React.Component {
   }
 }
 
-
-React.render(<IntlProvider locale='en' >{() => (<TabbedApp />)}</IntlProvider>, document.body);
-
-
+ReactDOM.render(<IntlProvider locale='en'><TabbedApp /></IntlProvider>, document.getElementById('main'));
 
