@@ -2,7 +2,6 @@ import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-import resources_rc
 from maindialog import MainDialog
 from appcreator import loadAppdef
 from settings import initialize
