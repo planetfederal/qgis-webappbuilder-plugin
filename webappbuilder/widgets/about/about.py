@@ -16,7 +16,7 @@ class AboutPanel(WebAppWidget):
             app.tabs.append(("<UI.Tab eventKey={%i} title='About'><div id='about-tab-panel' className='about-tab-panel'>"
                               + "%s</div></UI.Tab>") % (idx, self._parameters["content"]))
         else:
-            closer = ('<a className="about-closer-icon" id="about-closer-icon" onClick={this._toggleAboutPanel.bind(this)}">&times;</a>'
+            closer = ('<a className="about-closer-icon" id="about-closer-icon" onClick="{this._toggleAboutPanel.bind(this)}">&times;</a>'
                      if self._parameters["isClosable"] else "")
             app.mappanels.append('''<div className="about-panel" id="about-panel">
                             %s
