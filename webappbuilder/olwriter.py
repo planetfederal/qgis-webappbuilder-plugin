@@ -5,9 +5,13 @@ import traceback
 from string import digits
 import math
 
-def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
-                 geometryType, layerCrs, viewCrs, layerOpacity, isSelectable,
-                 timeInfo, layerId, popup):
+def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
+                 layerCrs, viewCrs, layerOpacity, isSelectable,
+                 timeInfo, popup):
+
+    layerName = safeName(layer.name())
+    layerId = layer.id()
+    geometryType = layer.wkbType()
     wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         url: function(extent, resolution, projection) {
@@ -20,7 +24,26 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "viewCrs": viewCrs})
 
-    if clusterDistance > 0 and geometryType== QGis.Point:
+    GEOM_TYPE_NAME = {
+        QGis.WKBPoint: 'Point',
+        QGis.WKBLineString: 'LineString',
+        QGis.WKBPolygon: 'Polygon',
+        QGis.WKBMultiPoint: 'MultiPoint',
+        QGis.WKBMultiLineString: 'MultiLineString',
+        QGis.WKBMultiPolygon: 'MultiPolygon',
+    }
+
+    wfsInfo = '''{featureNS: '%(ns)s',
+                    typeName: '%(typeName)s',
+                    geometryType: '%(geomType)s',
+                    geometryName: '%(geomName)',
+                    url: '%(url)s'
+                  }''' % {"geomType": GEOM_TYPE_NAME[geometryType],
+                          "url": url, "geomName": "the_geom",
+                          "typeName": typeName, "ns": "" #TODO: fill NS
+                          }
+
+    if clusterDistance > 0 and geometryType== QGis.WKBPoint:
         vectorLayer = ('''var cluster_%(layerName)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: wfsSource_%(layerName)s,
@@ -32,6 +55,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                     selectedStyle: selectionStyle_%(layerName)s,
                     title: %(title)s,
                     id: "%(id)s",
+                    wfsInfo: %(wfsInfo)s,
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
@@ -40,7 +64,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                 {"opacity": layerOpacity, "title": title, "layerName":layerName,
                  "min": min,"max": max, "dist": str(clusterDistance),
                  "selectable": str(isSelectable).lower(), "timeInfo": timeInfo,
-                 "id": layerId, "popup": popup})
+                 "id": layerId, "popup": popup, "wfsInfo": wfsInfo})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
                             opacity: %(opacity)s,
@@ -49,6 +73,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                             selectedStyle: selectionStyle_%(layerName)s,
                             title: %(title)s,
                             id: "%(id)s",
+                            wfsInfo: %(wfsInfo)s,
                             filters: [],
                             timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s,
@@ -56,7 +81,7 @@ def _getWfsLayer(url, title, layerName, typeName, min, max, clusterDistance,
                         });''' %
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max, "selectable": str(isSelectable).lower(),
-                         "timeInfo": timeInfo, "id": layerId, "popup": popup})
+                         "timeInfo": timeInfo, "id": layerId, "popup": popup, "wfsInfo": wfsInfo})
     return wfsSource + vectorLayer
 
 
@@ -95,10 +120,10 @@ def layerToJavascript(applayer, settings, deploy, title):
             url = layer.source().split("?")[0]
             parsed = urlparse.urlparse(layer.source())
             typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
-            return _getWfsLayer(url, title, layerName, typeName,
+            return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layer.geometryType(), layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, timeInfo, layer.id(), popup)
+                                layerCrs, viewCrs, layerOpacity,
+                                applayer.allowSelection, timeInfo, popup)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -148,10 +173,10 @@ def layerToJavascript(applayer, settings, deploy, title):
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])
-                return _getWfsLayer(url, title, layerName, typeName, minResolution,
-                            maxResolution, applayer.clusterDistance, layer.geometryType(),
+                return _getWfsLayer(url, title, layer, typeName, minResolution,
+                            maxResolution, applayer.clusterDistance,
                             layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            timeInfo, layer.id(), popup)
+                            timeInfo, popup)
         else:
             source = layer.source()
             layers = layer.name()
