@@ -93,6 +93,7 @@ class MainDialog(BASE, WIDGET):
                 usesGeoServer = True
                 if layer.method in postGisMethods:
                     usesPostGis = True
+        self.lblDeployWarning.setVisible(not (usesGeoServer and usesPostGis))
         self.geoserverGroupBox.setEnabled(usesGeoServer)
         self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked() and usesPostGis)
 
