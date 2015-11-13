@@ -69,7 +69,7 @@ class BasicApp extends React.Component {
            </div>
         </nav>
         <div id='content'>
-          <div id='map'>
+          <div id='map' ref='map'>
               @MAPPANELS@
               <div id='popup' className='ol-popup'><InfoPopup map={map} hover={@POPUPEVENT@}/></div>
           </div>
