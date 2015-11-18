@@ -89,7 +89,7 @@ def writeJsx(appdef, folder, app, progress):
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
-        logo = '<img class="pull-left" style="margin:5px;height:calc(100%%-10px);" src="logo.png"></img>'
+        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo.png"></img>'
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
     else:
