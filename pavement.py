@@ -108,8 +108,11 @@ def install(options):
     dst = path('~').expanduser() / '.qgis2' / 'python' / 'plugins' / plugin_name
     src = src.abspath()
     dst = dst.abspath()       
-    dst.rmtree()
-    src.copytree(dst)
+    if not hasattr(os, 'symlink'):
+        dst.rmtree()
+        src.copytree(dst)
+    elif not dst.exists():
+        src.symlink(dst)
 
 
 @task
