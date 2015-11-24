@@ -1,8 +1,9 @@
-
+from qgis.utils import iface
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 import subprocess
 import os
+import traceback
 
 
 class ExecutorThread(QtCore.QThread):
@@ -10,7 +11,7 @@ class ExecutorThread(QtCore.QThread):
     finished = QtCore.pyqtSignal()
 
     def __init__(self, command):
-        QtCore.QThread.__init__(self, config.iface.mainWindow())
+        QtCore.QThread.__init__(self, iface.mainWindow())
         self.command = command
         self.returnValue = None
         self.exception = None
