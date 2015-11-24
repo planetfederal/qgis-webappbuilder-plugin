@@ -7,12 +7,37 @@ import math
 
 def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  layerCrs, viewCrs, layerOpacity, isSelectable,
-                 timeInfo, popup):
+                 timeInfo, popup, jsonp):
 
     layerName = safeName(layer.name())
     layerId = layer.id()
     geometryType = layer.wkbType()
-    wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
+    if jsonp:
+        wfsSource =  ('''var geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
+                    var wfsSource_%(layerName)s = new ol.source.Vector({
+                        format: new ol.format.GeoJSON(),
+                        loader: function(extent, resolution, projection) {
+                            var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
+                                '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
+                                '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
+                            $.ajax({
+                                url: url,
+                                dataType: 'jsonp'
+                            });
+                        },
+                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
+                    });
+                    var loadFeatures_%(layerName)s = function(response) {
+                        wfsSource_%(layerName)s.addFeatures(
+                                geojsonFormat_%(layerName)s.readFeatures(response,
+                                    {dataProjection: '%(layerCrs)s', featureProjection: '%(viewCrs)s'}));
+                    };
+
+                    ''' %
+                    {"url": url, "layerName":layerName, "typeName": typeName,
+                     "layerCrs": layerCrs, "viewCrs": viewCrs})
+    else:
+        wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         url: function(extent, resolution, projection) {
                             return '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
@@ -88,6 +113,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
 def layerToJavascript(applayer, settings, deploy, title):
     viewCrs = settings["App view CRS"]
+    jsonp = settings["Use JSONP for WFS connections"]
     scaleVisibility = settings["Use layer scale dependent visibility"]
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
@@ -123,7 +149,7 @@ def layerToJavascript(applayer, settings, deploy, title):
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, timeInfo, popup)
+                                applayer.allowSelection, timeInfo, popup, jsonp)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -176,7 +202,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                 return _getWfsLayer(url, title, layer, typeName, minResolution,
                             maxResolution, applayer.clusterDistance,
                             layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            timeInfo, popup)
+                            timeInfo, popup, jsonp)
         else:
             source = layer.source()
             layers = layer.name()
