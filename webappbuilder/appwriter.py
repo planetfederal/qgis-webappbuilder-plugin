@@ -12,7 +12,6 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
-from sdkutils import isSdkInstalled
 from executor import execute
 
 def writeWebApp(appdef, folder, writeLayersData, progress):
@@ -21,12 +20,9 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    if not isSdkInstalled():
-        sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
-        shutil.copytree(sdkFolder, dst)
-    else:
-        pass
-        #sdkFolder = os.path.join(os.path.dirname(__file__), "websdk")
+    sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
+    shutil.copytree(sdkFolder, dst)
+
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
     shutil.copytree(cssFolder, os.path.join(dst, "css"))
     QDir().mkpath(os.path.join(dst, "data"))
@@ -64,19 +60,20 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         w.write(appdef, dst, app, progress)
 
     writeCss(appdef, dst)
-    writeJsx(appdef, dst, app, progress)
-    indexFilepath = writeHtml(appdef, dst, app, progress)
-    return indexFilepath
 
-def writeJsx(appdef, folder, app, progress):
-    if not isSdkInstalled():
-        app.scripts.append('<script src="browser.js"></script>')
-        app.scriptsbody.append('<script src="full.js"></script>')
-        app.scriptsbody.append('<script type="text/babel" src="./app.jsx"></script>')
-        app.imports = []
-    else:
-        app.scriptsbody.append('<script src="app.js"></script>')
+    writeJsx(appdef, dst, app, progress, True)
+    writeJsx(appdef, dst, app, progress, False)
 
+    writeHtml(appdef, dst, app, progress, "index.html", [], ['<script src="app.js"></script>']) # with SDK
+    writeHtml(appdef, dst, app, progress, "index_prebuilt.html", ['<script src="browser.js"></script>'], # without SDK
+                                        ['<script src="full.js"></script>',
+                                        '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+    writeHtml(appdef, dst, app, progress, "index_prebuilt_debug.html", ['<script src="browser.js"></script>'], # without SDK. Debug
+                                        ['<script src="full-debug.js"></script>',
+                                        '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+
+def writeJsx(appdef, folder, app, progress, usesSDK):
+    imports = app.imports if usesSDK else []
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
@@ -111,23 +108,16 @@ def writeJsx(appdef, folder, app, progress):
                 "@TOOLBAR@": "\n".join(app.tools),
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
-                "@IMPORTS@": "\n".join(app.imports)}
+                "@IMPORTS@": "\n".join(imports)}
 
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")
     jsx = replaceInTemplate(template, values)
 
-    if isSdkInstalled():
-        jsxFilepath = os.path.join(os.path.dirname(__file__), "websdk", "app.jsx")
-        with open(jsxFilepath, "w") as f:
-            f.write(jsx)
-        processJsx(folder, progress)
-    else:
-        jsxFilepath = os.path.join(folder, "app.jsx")
-        with open(jsxFilepath, "w") as f:
-            f.write(jsx)
-
-
+    name = "app.jsx" if usesSDK else "app_prebuilt.jsx"
+    jsxFilepath = os.path.join(folder, name)
+    with open(jsxFilepath, "w") as f:
+        f.write(jsx)
 
 
 def processJsx(folder, progress):
@@ -145,9 +135,12 @@ def writeCss(appdef, folder):
     src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
     shutil.copy(src, dst)
 
-def writeHtml(appdef, folder, app, progress):
+def writeHtml(appdef, folder, app, progress, filename, scripts, scriptsbody):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
+
+    scripts.extend(app.scripts)
+    scriptsbody.extend(app.scriptsbody)
 
     for applayer in layers:
         layer = applayer.layer
@@ -155,24 +148,24 @@ def writeHtml(appdef, folder, app, progress):
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
-                app.scripts.append('<script src="./proj4.js"></script>')
-                app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+                scripts.append('<script src="./proj4.js"></script>')
+                scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
-            app.scripts.append('<script src="./proj4.js"></script>')
-            app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
+            scripts.append('<script src="./proj4.js"></script>')
+            scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
-                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
-                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
+                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in scripts).keys()),
+                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in scriptsbody).keys())
             }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
     html = replaceInTemplate(template, values)
 
-    indexFilepath = os.path.join(folder, "index.html")
+    indexFilepath = os.path.join(folder, filename)
     try:
         from bs4 import BeautifulSoup as bs
         soup=bs(html)
@@ -181,7 +174,7 @@ def writeHtml(appdef, folder, app, progress):
         pretty = html
     with open(indexFilepath, "w") as f:
         f.write(pretty)
-    return indexFilepath
+
 
 
 def writeLayersAndGroups(appdef, folder, app, progress):

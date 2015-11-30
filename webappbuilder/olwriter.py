@@ -71,7 +71,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
     if clusterDistance > 0 and geometryType== QGis.WKBPoint:
         vectorLayer = ('''var cluster_%(layerName)s = new ol.source.Cluster({
                     distance: %(dist)s,
-                    source: wfsSource_%(layerName)s,
+                    source: wfsSource_%(layerName)s
                 });
                 var lyr_%(layerName)s = new ol.layer.Vector({
                     opacity: %(opacity)s,

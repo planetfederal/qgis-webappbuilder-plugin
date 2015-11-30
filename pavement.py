@@ -22,11 +22,6 @@ options(
             '*.pyc',
             'websdk',
             ".git"
-        ],
-        excludes_enterprise = [
-            'metadata.*',           
-            '*.pyc',
-            ".git"
         ]
     ),
 
@@ -50,7 +45,6 @@ options(
 @task
 @cmdopts([
     ('clean', 'c', 'clean out dependencies first'),
-    ('nonpm', 'n', 'do not run npm i to fetch node modules'),
 ])
 def setup(options):
     '''install dependencies'''
@@ -76,16 +70,11 @@ def setup(options):
     else:
         sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
     path(os.path.join(sdkPath, "dist", "js", "full.js")).copy2("./webappbuilder/websdk_full/full.js")
+    path(os.path.join(sdkPath, "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(sdkPath,"dist","css"), dst)
-    nonpm = getattr(options, 'nonpm', False)
-    if not nonpm:
-        os.chdir(sdkPath)        
-        sh("npm i")
-        os.chdir(cwd)
-
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
@@ -116,27 +105,15 @@ def install(options):
 
 
 @task
-@cmdopts([
-    ('noenterprise', '', 'Do not create enterprise version')
-])
 def package(options):
     '''create package for plugin'''
-    noenterprise = getattr(options, 'noenterprise', False)
-    if not noenterprise:
-        package_file = options.plugin.package_dir / ('%s_enterprise.zip' % options.plugin.name)
-        with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
-            make_zip(zip, options, True)
-            head_path = path('.git/HEAD')
-            head_ref = head_path.open('rU').readline().strip()[5:]
-            ref_file = path(".git/" + head_ref)
-            zip.write(ref_file, "./webappbuilder/sdkversion.txt")
-    package_file = options.plugin.package_dir / ('%s_free.zip' % options.plugin.name)
+    package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
         make_zip(zip, options, False)        
 
 
 
-def make_zip(zip, options, enterprise):
+def make_zip(zip, options):
     metadata_file = options.plugin.source_dir / "metadata.txt"
     cfg = ConfigParser.SafeConfigParser()
     cfg.optionxform = str
@@ -152,7 +129,7 @@ def make_zip(zip, options, enterprise):
     cfg.write(buf)
     zip.writestr("webappbuilder/metadata.txt", buf.getvalue())
 
-    excludes = set(options.plugin.excludes_enterprise) if enterprise else set(options.plugin.excludes)
+    excludes = set(options.plugin.excludes)
 
     src_dir = options.plugin.source_dir
     exclude = lambda p: any([fnmatch.fnmatch(p, e) for e in excludes])
