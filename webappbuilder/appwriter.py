@@ -109,6 +109,45 @@ def writeJsx(appdef, folder, app, progress, usesSDK):
     app.variables.append("var view = new ol.View({%s, maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
     app.variables.append("var originalExtent = %s;" % mapbounds)
 
+    permalink = appdef["Settings"]["Add permalink functionality"]
+    if permalink:
+        permalinkCode = '''var shouldUpdate = true;
+        var updatePermalink = function() {
+          if (!shouldUpdate) {
+            // do not update the URL when the view was changed in the 'popstate' handler
+            shouldUpdate = true;
+            return;
+          }
+
+          var center = view.getCenter();
+          var hash = '#map=' +
+              view.getZoom() + '/' +
+              Math.round(center[0] * 100) / 100 + '/' +
+              Math.round(center[1] * 100) / 100 + '/' +
+              view.getRotation();
+          var state = {
+            zoom: view.getZoom(),
+            center: view.getCenter(),
+            rotation: view.getRotation()
+          };
+          window.history.pushState(state, 'map', hash);
+        };
+
+        map.on('moveend', updatePermalink);
+
+        // restore the view state when navigating through the history, see
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
+        window.addEventListener('popstate', function(event) {
+          if (event.state === null) {
+            return;
+          }
+          map.getView().setCenter(event.state.center);
+          map.getView().setZoom(event.state.zoom);
+          map.getView().setRotation(event.state.rotation);
+          shouldUpdate = false;
+        });'''
+        app.posttarget.append(permalinkCode)
+
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
         logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo.png"></img>'

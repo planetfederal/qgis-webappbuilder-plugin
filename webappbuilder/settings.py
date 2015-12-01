@@ -72,7 +72,8 @@ defaultAppSettings = {
                 "Use view CRS for WFS connections": True,
                 "Use JSONP for WFS connections": True,
                 "Group base layers": True,
-                "Minify JavaScript": False}
+                "Minify JavaScript": False,
+                "Add permalink functionality": True}
 
 
 
