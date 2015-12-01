@@ -28,6 +28,26 @@ class TabbedApp extends React.Component {
   componentDidMount() {
     map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     map.getView().fit(originalExtent, map.getSize());
+    view = map.getView();
+
+    if (window.location.hash !== '') {
+      var hash = window.location.hash.replace('#map=', '');
+      var parts = hash.split('/');
+      if (parts.length === 4) {
+        zoom = parseInt(parts[0], 10);
+        center = [
+          parseFloat(parts[1]),
+          parseFloat(parts[2])
+        ];
+        rotation = parseFloat(parts[3]);
+        view.setZoom(zoom);
+        view.setCenter(center);
+        view.setRotation(rotation);
+      }
+      else{
+        view.fit(originalExtent, map.getSize());
+      }
+    }    
     @POSTTARGETSET@
   }
   _navigationFunc() {
