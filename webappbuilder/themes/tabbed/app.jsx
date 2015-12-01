@@ -27,9 +27,8 @@ var map = new ol.Map({
 class TabbedApp extends React.Component {
   componentDidMount() {
     map.setTarget(ReactDOM.findDOMNode(this.refs.map));
-    map.getView().fit(originalExtent, map.getSize());
     view = map.getView();
-
+    view.fit(originalExtent, map.getSize());
     if (window.location.hash !== '') {
       var hash = window.location.hash.replace('#map=', '');
       var parts = hash.split('/');
@@ -43,9 +42,6 @@ class TabbedApp extends React.Component {
         view.setZoom(zoom);
         view.setCenter(center);
         view.setRotation(rotation);
-      }
-      else{
-        view.fit(originalExtent, map.getSize());
       }
     }    
     @POSTTARGETSET@

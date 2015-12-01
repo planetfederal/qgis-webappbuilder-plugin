@@ -30,7 +30,7 @@ class BasicApp extends React.Component {
   componentDidMount() {
     map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     view = map.getView();
-
+    view.fit(originalExtent, map.getSize());
     if (window.location.hash !== '') {
       var hash = window.location.hash.replace('#map=', '');
       var parts = hash.split('/');
@@ -44,9 +44,6 @@ class BasicApp extends React.Component {
         view.setZoom(zoom);
         view.setCenter(center);
         view.setRotation(rotation);
-      }
-      else{
-        view.fit(originalExtent, map.getSize());
       }
     }
     @POSTTARGETSET@
