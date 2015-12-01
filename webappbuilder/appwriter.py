@@ -51,26 +51,51 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
                     "import Icon from 'pui-react-iconography';",
                     "import InfoPopup from './components/InfoPopup.jsx';"
                    ]
-    app = App()
-    exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], app, progress)
-    writeLayersAndGroups(appdef, dst, app, progress)
+        def newInstance(self):
+            _app = App()
+            _app.tabs = list(self.tabs)
+            _app.ol3controls = list(self.ol3controls)
+            _app.tools = list(self.tools)
+            _app.panels = list(self.panels)
+            _app.mappanels = list(self.mappanels)
+            _app.variables = list(self.variables)
+            _app.scripts = list(self.scripts)
+            _app.scriptsbody = list(self.scriptsbody)
+            _app.posttarget = list(self.posttarget)
+            _app.imports = list(self.imports)
+            return _app
+
+    _app = App()
+    exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], _app, progress)
+    writeLayersAndGroups(appdef, dst, _app, progress)
 
     widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
     for w in widgets:
-        w.write(appdef, dst, app, progress)
+        w.write(appdef, dst, _app, progress)
 
     writeCss(appdef, dst)
 
+    app = _app.newInstance()
     writeJsx(appdef, dst, app, progress, True)
+    app = _app.newInstance()
     writeJsx(appdef, dst, app, progress, False)
 
-    writeHtml(appdef, dst, app, progress, "index.html", [], ['<script src="app.js"></script>']) # with SDK
-    writeHtml(appdef, dst, app, progress, "index_prebuilt.html", ['<script src="browser.js"></script>'], # without SDK
-                                        ['<script src="full.js"></script>',
-                                        '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
-    writeHtml(appdef, dst, app, progress, "index_prebuilt_debug.html", ['<script src="browser.js"></script>'], # without SDK. Debug
-                                        ['<script src="full-debug.js"></script>',
-                                        '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+    app = _app.newInstance()
+    app.scriptsbody.extend(['<script src="app.js"></script>'])
+    writeHtml(appdef, dst, app, progress, "index_node.html") # with SDK
+
+    app = _app.newInstance()
+    app.scripts.extend(['<script src="browser.js"></script>'])
+    app.scriptsbody.extend(['<script src="full.js"></script>',
+                            '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+    writeHtml(appdef, dst, app, progress, "index.html") # without SDK
+
+    app = _app.newInstance()
+    app.scripts.extend(['<script src="browser.js"></script>'])
+    app.scriptsbody.extend(['<script src="full-debug.js"></script>',
+                            '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+    writeHtml(appdef, dst, app, progress, "index_debug.html") # without SDK. Debug
+
 
 def writeJsx(appdef, folder, app, progress, usesSDK):
     imports = app.imports if usesSDK else []
@@ -135,12 +160,11 @@ def writeCss(appdef, folder):
     src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
     shutil.copy(src, dst)
 
-def writeHtml(appdef, folder, app, progress, filename, scripts, scriptsbody):
+def writeHtml(appdef, folder, app, progress, filename):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
 
-    scripts.extend(app.scripts)
-    scriptsbody.extend(app.scriptsbody)
+
 
     for applayer in layers:
         layer = applayer.layer
@@ -148,18 +172,18 @@ def writeHtml(appdef, folder, app, progress, filename, scripts, scriptsbody):
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
-                scripts.append('<script src="./proj4.js"></script>')
-                scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
+                app.scripts.append('<script src="./proj4.js"></script>')
+                app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
-            scripts.append('<script src="./proj4.js"></script>')
-            scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
+            app.scripts.append('<script src="./proj4.js"></script>')
+            app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
 
     values = {"@TITLE@": appdef["Settings"]["Title"],
-                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in scripts).keys()),
-                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in scriptsbody).keys())
+                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
+                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
             }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
