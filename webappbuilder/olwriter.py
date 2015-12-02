@@ -13,26 +13,20 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
     layerId = layer.id()
     geometryType = layer.wkbType()
     if jsonp:
-        wfsSource =  ('''var geojsonFormat_%(layerName)s = new ol.format.GeoJSON();
+        wfsSource =  ('''window.wfsCallback_%(layerName)s = function(jsonData) {
+                        wfsSource_%(layerName)s.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
+                    };
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
-                            var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
-                                '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:loadFeatures_%(layerName)s' +
+                            var script = document.createElement('script');
+                            script.src = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
+                                '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:wfsCallback_%(layerName)s' +
                                 '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
-                            $.ajax({
-                                url: url,
-                                dataType: 'jsonp'
-                            });
+                            document.head.appendChild(script);
                         },
                         strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
                     });
-                    var loadFeatures_%(layerName)s = function(response) {
-                        wfsSource_%(layerName)s.addFeatures(
-                                geojsonFormat_%(layerName)s.readFeatures(response,
-                                    {dataProjection: '%(layerCrs)s', featureProjection: '%(viewCrs)s'}));
-                    };
-
                     ''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "viewCrs": viewCrs})
