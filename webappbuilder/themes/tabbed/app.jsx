@@ -33,17 +33,17 @@ class TabbedApp extends React.Component {
       var hash = window.location.hash.replace('#map=', '');
       var parts = hash.split('/');
       if (parts.length === 4) {
-        zoom = parseInt(parts[0], 10);
-        center = [
+        var zoom = parseInt(parts[0], 10);
+        var center = [
           parseFloat(parts[1]),
           parseFloat(parts[2])
         ];
-        rotation = parseFloat(parts[3]);
+        var rotation = parseFloat(parts[3]);
         view.setZoom(zoom);
         view.setCenter(center);
         view.setRotation(rotation);
       }
-    }    
+    }
     @POSTTARGETSET@
   }
   _navigationFunc() {
