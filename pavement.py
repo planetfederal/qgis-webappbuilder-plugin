@@ -109,7 +109,7 @@ def package(options):
     '''create package for plugin'''
     package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, "w", zipfile.ZIP_DEFLATED) as zip:
-        make_zip(zip, options, False)        
+        make_zip(zip, options)        
 
 
 
