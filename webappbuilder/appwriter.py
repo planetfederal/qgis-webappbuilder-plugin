@@ -49,7 +49,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
                     "import {IntlProvider} from 'react-intl';",
                     "import UI from 'pui-react-buttons';",
                     "import Icon from 'pui-react-iconography';",
-                    "import InfoPopup from './components/InfoPopup.jsx';"
+                    "import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';"
                    ]
         def newInstance(self):
             _app = App()
