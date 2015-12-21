@@ -247,11 +247,12 @@ def writeLayersAndGroups(appdef, folder, app, progress):
     groups = appdef["Groups"]
     widgets = appdef["Widgets"]
     baseJs =[]
+    overlaysJs =[]
     for b in base:
         if b in baseLayers:
             baseJs.append(baseLayers[b])
         elif b in baseOverlays:
-            baseJs.append(baseOverlays[b])
+            overlaysJs.append(baseOverlays[b])
     if baseJs:
         baseLayer = '''var baseLayers = [new ol.layer.Tile({
                         type: 'base',
@@ -262,6 +263,13 @@ def writeLayersAndGroups(appdef, folder, app, progress):
 
     baseLayer += '''var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
                     'base-group', 'title': 'Base maps', layers: baseLayers});'''
+
+    if overlaysJs:
+        overlayLayer = '''var overlayLayers = [%s];''' % ",".join(overlaysJs)
+    else:
+        overlayLayer = "var overlayLayers = [];"
+
+    overlayLayer += '''var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});'''
 
     if "overviewmap" in widgets:
         overviewMapBaseLayerName = widgets["overviewmap"].parameters()["Base layer"]
@@ -308,16 +316,25 @@ def writeLayersAndGroups(appdef, folder, app, progress):
         else:
             layersList.append("lyr_" + safeName(layer.name()))
 
-    layersList = "var layersList = [%s];" % ",".join([layer for layer in layersList])
+
+
+    layersList = "var layersList = [%s];" % (",".join([layer for layer in layersList]))
     groupBaseLayers = appdef["Settings"]["Group base layers"]
 
-    if base:
+    if baseJs:
         if groupBaseLayers:
             layersList += "layersList.unshift(baseLayersGroup);"
         else:
             layersList += "Array.prototype.splice.apply(layersList, [0, 0].concat(baseLayers));"
 
+    if overlaysJs:
+        if groupBaseLayers:
+            layersList += "layersList.push(overlaysGroup);"
+        else:
+            layersList += "layersList.push.apply(layersList, overlayLayers);"
+
     app.variables.append(baseLayer)
+    app.variables.append(overlayLayer)
     app.variables.append(layerVars)
     app.variables.append(groupVars)
     app.variables.append(visibility)
