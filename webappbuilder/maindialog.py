@@ -19,6 +19,7 @@ import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
+from appcreateddialog import AppCreatedDialog
 
 # Adding so that our UI files can find resources_rc.py
 sys.path.append(os.path.dirname(__file__))
@@ -403,7 +404,9 @@ class MainDialog(BASE, WIDGET):
                     if ret == QMessageBox.No:
                         return
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
-                QMessageBox().information(self, "Web App Builder", "App has been correctly created")
+                dlg = AppCreatedDialog(folder)
+                dlg.exec_()
+                #QMessageBox().information(self, "Web App Builder", "App has been correctly created")
         except WrongValueException:
             pass
         except:
