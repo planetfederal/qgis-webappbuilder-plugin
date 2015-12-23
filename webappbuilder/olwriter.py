@@ -7,11 +7,17 @@ import math
 
 def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  layerCrs, viewCrs, layerOpacity, isSelectable,
-                 timeInfo, popup, jsonp):
+                 timeInfo, popup, jsonp, useStrategy):
 
     layerName = safeName(layer.name())
     layerId = layer.id()
     geometryType = layer.wkbType()
+    if useStrategy:
+        strategy = "strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19}))"
+        bbox = "&bbox=' + extent.join(',') + ',%s" % viewCrs
+    else:
+        bbox = ""
+        strategy = ""
     if jsonp:
         wfsSource =  ('''window.wfsCallback_%(layerName)s = function(jsonData) {
                         wfsSource_%(layerName)s.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
@@ -22,26 +28,26 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                             var script = document.createElement('script');
                             script.src = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=text/javascript&format_options=callback:wfsCallback_%(layerName)s' +
-                                '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
+                                '&srsname=%(layerCrs)s%(bbox)s';
                             document.head.appendChild(script);
                         },
-                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
+                        %(strategy)s
                     });
                     ''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
-                     "layerCrs": layerCrs, "viewCrs": viewCrs})
+                     "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
     else:
         wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         url: function(extent, resolution, projection) {
                             return '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=application/json&' +
-                                '&srsname=%(layerCrs)s&bbox=' + extent.join(',') + ',%(viewCrs)s';
+                                '&srsname=%(layerCrs)s%(bbox)s';
                         },
-                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
+                        %(strategy)s
                     });''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
-                     "layerCrs": layerCrs, "viewCrs": viewCrs})
+                     "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
 
     GEOM_TYPE_NAME = {
         QGis.WKBPoint: 'Point',
@@ -108,6 +114,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 def layerToJavascript(applayer, settings, deploy, title):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
+    useStrategy = settings["Use tile strategy for WFS connections"]
     scaleVisibility = settings["Use layer scale dependent visibility"]
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
@@ -143,7 +150,7 @@ def layerToJavascript(applayer, settings, deploy, title):
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, timeInfo, popup, jsonp)
+                                applayer.allowSelection, timeInfo, popup, jsonp, useStrategy)
         elif applayer.method == METHOD_FILE:
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 return ('''var cluster_%(n)s = new ol.source.Cluster({
@@ -196,7 +203,7 @@ def layerToJavascript(applayer, settings, deploy, title):
                 return _getWfsLayer(url, title, layer, typeName, minResolution,
                             maxResolution, applayer.clusterDistance,
                             layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            timeInfo, popup, jsonp)
+                            timeInfo, popup, jsonp, useStrategy)
         else:
             source = layer.source()
             layers = layer.name()
