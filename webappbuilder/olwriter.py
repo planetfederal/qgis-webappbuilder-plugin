@@ -451,11 +451,11 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
              var style_%(s)s = [
                new ol.style.Style({
                  image: new ol.style.Circle({
-                   fill: defaulFill,
+                   fill: defaultFill,
                    stroke: defaultStroke,
                    radius: 5
                  }),
-                 fill: defaulFill,
+                 fill: defaultFill,
                  stroke: defaultStroke
                })
              ];
