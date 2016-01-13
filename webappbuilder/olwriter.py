@@ -340,7 +340,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 defs += ",\n".join(ranges) + "];"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = %(v)s[0][2];
-                            for (var i = 0; i < %(v)s.length; i++){
+                            for (var i = 0, ii = %(v)s.length; i < ii; i++){
                                 var range = %(v)s[i];
                                 if (value > range[0] && value<=range[1]){
                                     style = range[2];
@@ -372,7 +372,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             }
                             if (size === 0) {
                               return undefined;
-                            };
+                            }
                             if (size != 1){
                                 var features = feature.get('features');
                                 var numVisible = 0;
@@ -423,7 +423,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             style = '''function(feature, resolution){
                         %(cluster)s
                         %(value)s
-                        %(style)s;
+                        %(style)s
                         var allStyles = [];
                         %(labels)s
                         allStyles.push.apply(allStyles, style);
@@ -434,7 +434,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             selectionStyle = '''function(feature, resolution){
                         %(cluster)s
                         %(value)s
-                        %(style)s;
+                        %(style)s
                         var allStyles = [];
                         %(labels)s
                         allStyles.push.apply(allStyles, style);
