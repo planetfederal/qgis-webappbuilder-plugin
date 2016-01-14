@@ -22,8 +22,7 @@ class AppCreatedDialog(BASE, WIDGET):
         <p>You will find the following files:</p>
 
         <ul>
-        <li><b>index.html:</b> Web application using a babelify transform prebuilt version of SDK components. It should not be used in production. </li>
-        <li><b>index_debug.html:</b>Same as above but with prebuilt SDK files not minified. To be used for debugging</li>
+        <li><b>index_debug.html:</b> Web application using a babelify transform prebuilt version of SDK components. It should not be used in production, but only for debugging purposes.</li>
         <li><b>index_node.html/app.jsx:</b>Files to be used for creating a production-ready web by using Node and the Boundless WebSDK. %s</li>
         ''' % (folder, node)
 

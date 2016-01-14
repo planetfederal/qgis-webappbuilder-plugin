@@ -84,11 +84,13 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     app.scriptsbody.extend(['<script src="app.js"></script>'])
     writeHtml(appdef, dst, app, progress, "index_node.html") # with SDK
 
-    app = _app.newInstance()
-    app.scripts.extend(['<script src="browser.js"></script>'])
-    app.scriptsbody.extend(['<script src="full.js"></script>',
-                            '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
-    writeHtml(appdef, dst, app, progress, "index.html") # without SDK
+    #===========================================================================
+    # app = _app.newInstance()
+    # app.scripts.extend(['<script src="browser.js"></script>'])
+    # app.scriptsbody.extend(['<script src="full.js"></script>',
+    #                         '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
+    # writeHtml(appdef, dst, app, progress, "index.html") # without SDK
+    #===========================================================================
 
     app = _app.newInstance()
     app.scripts.extend(['<script src="browser.js"></script>'])
