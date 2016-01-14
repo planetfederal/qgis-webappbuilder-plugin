@@ -114,7 +114,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 def layerToJavascript(applayer, settings, deploy, title):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
-    useStrategy = settings["Use tile strategy for WFS connections"]
+    useStrategy = not applayer.singleTile
     scaleVisibility = settings["Use layer scale dependent visibility"]
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])

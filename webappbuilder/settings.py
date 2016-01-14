@@ -71,7 +71,6 @@ defaultAppSettings = {
                 "App view CRS": "EPSG:3857",
                 "Use view CRS for WFS connections": True,
                 "Use JSONP for WFS connections": True,
-                "Use tile strategy for WFS connections": True,
                 "Group base layers": True,
                 "Minify JavaScript": False,
                 "Add permalink functionality": True}

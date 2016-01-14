@@ -167,12 +167,11 @@ class TreeLayerItem(QTreeWidgetItem):
             self.timeInfoLabel.connect(self.timeInfoLabel, SIGNAL("linkActivated(QString)"), editTimeInfo)
             self.addChild(self.timeInfoItem)
 
-        if layer.providerType().lower() != "wfs":
-            self.singleTileItem = QTreeWidgetItem(self)
-            self.singleTileItem.setCheckState(0, Qt.Unchecked)
-            self.singleTileItem.setText(0, "Do not consume as tiled layer")
-            self.addChild(self.singleTileItem)
-            self.singleTileItem.setDisabled(layer.providerType().lower() != "wms")
+        self.singleTileItem = QTreeWidgetItem(self)
+        self.singleTileItem.setCheckState(0, Qt.Unchecked)
+        self.singleTileItem.setText(0, "Do not consume as tiled layer")
+        self.addChild(self.singleTileItem)
+        self.singleTileItem.setDisabled(layer.providerType().lower() not in ["wms", "wfs"])
 
 
     def connTypeChanged(self):
@@ -188,7 +187,10 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.popupLabel.setDisabled(disable)
                 self.allowSelectionItem.setDisabled(disable)
             try:
-                self.singleTileItem.setDisabled(not disable)
+                disable = (self. layer.providerType().lower() not in ["wms", "wfs"]
+                            and current not in
+                            [METHOD_WMS, METHOD_WMS_POSTGIS, METHOD_WFS, METHOD_WFS_POSTGIS])
+                self.singleTileItem.setDisabled(disable)
             except:
                 pass
         except:
