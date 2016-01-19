@@ -1,0 +1,16 @@
+from webappbuilder.webbappwidget import WebAppWidget
+from PyQt4.QtGui import QIcon
+
+class LoadingPanel(WebAppWidget):
+
+    _parameters = {}
+
+    def write(self, appdef, folder, app, progress):
+        app.panels.append("<LoadingPanel map={map}/>")
+        self.addReactComponent(app, "LoadingPanel")
+
+    '''def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "loading-panel.png"))'''
+
+    def description(self):
+        return "Loading panel"
