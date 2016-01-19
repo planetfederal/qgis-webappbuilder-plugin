@@ -406,7 +406,6 @@ class MainDialog(BASE, WIDGET):
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
                 dlg = AppCreatedDialog(folder)
                 dlg.exec_()
-                #QMessageBox().information(self, "Web App Builder", "App has been correctly created")
         except WrongValueException:
             pass
         except:
