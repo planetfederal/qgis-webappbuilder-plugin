@@ -10,7 +10,9 @@ class ScaleBar(WebAppWidget):
                   }
 
     def write(self, appdef, folder, app, progress):
-        app.ol3controls.append("new ol.control.ScaleLine(%s)" % json.dumps(self._parameters))
+        params = {"minWidth": self._parameters["minWidth"],
+                  "units": self._parameters["units"][0]}
+        app.ol3controls.append("new ol.control.ScaleLine(%s)" % json.dumps(params))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "scale-bar.png"))
