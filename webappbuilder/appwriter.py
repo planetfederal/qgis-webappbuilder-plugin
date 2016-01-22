@@ -75,6 +75,9 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
 
     writeCss(appdef, dst)
 
+    baseTarget = "_self" if appdef["Settings"]["Open hyperlinks in"] == 0 else "_blank"
+    _app.scripts.append("<base target='%s'>" % baseTarget)
+
     app = _app.newInstance()
     writeJsx(appdef, dst, app, progress, True)
     app = _app.newInstance()
@@ -83,14 +86,6 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     app = _app.newInstance()
     app.scriptsbody.extend(['<script src="app.js"></script>'])
     writeHtml(appdef, dst, app, progress, "index_node.html") # with SDK
-
-    #===========================================================================
-    # app = _app.newInstance()
-    # app.scripts.extend(['<script src="browser.js"></script>'])
-    # app.scriptsbody.extend(['<script src="full.js"></script>',
-    #                         '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
-    # writeHtml(appdef, dst, app, progress, "index.html") # without SDK
-    #===========================================================================
 
     app = _app.newInstance()
     app.scripts.extend(['<script src="browser.js"></script>'])
@@ -104,11 +99,11 @@ def writeJsx(appdef, folder, app, progress, usesSDK):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
-    mapextent = "extent: %s" % mapbounds if appdef["Settings"]["Restrict to extent"] else "center:[0,0],zoom:7"
+    mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
     maxZoom = int(appdef["Settings"]["Max zoom level"])
     minZoom = int(appdef["Settings"]["Min zoom level"])
 
-    app.variables.append("var view = new ol.View({%s, maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
+    app.variables.append("var view = new ol.View({%s maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
     app.variables.append("var originalExtent = %s;" % mapbounds)
 
     permalink = appdef["Settings"]["Add permalink functionality"]

@@ -73,7 +73,8 @@ defaultAppSettings = {
                 "Use JSONP for WFS connections": True,
                 "Group base layers": True,
                 "Minify JavaScript": False,
-                "Add permalink functionality": True}
+                "Add permalink functionality": True,
+                "Open hyperlinks in": ("Same window/tab", ("Same window/tab", "New window/tab"))}
 
 
 
