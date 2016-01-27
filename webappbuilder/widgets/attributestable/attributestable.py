@@ -20,19 +20,21 @@ class AttributesTable(WebAppWidget):
                 layerVar = "lyr_" + safeName(layer.name())
                 break
         self.addReactComponent(app, "FeatureTable")
+        pointZoom = int(self._parameters["Zoom level when zooming to point feature"][0])
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append(('<UI.Tab eventKey={%i} title="Attributes table"><div id="attributes-table-tab">'
-                              + '<FeatureTable ref="table" layer={%s} pointZoom={%s} resizeTo="tabs-panel" offset={[50, 60]} '
+                              + '<FeatureTable ref="table" layer={%s} pointZoom={%d} resizeTo="tabs-panel" offset={[50, 60]} '
                               + 'map={map} /></div></UI.Tab>')
-                              % (idx, layerVar, int(self._parameters["Zoom level when zooming to point feature"][0])))
+                              % (idx, layerVar, pointZoom))
         else:
             app.tools.append("<ul className='pull-right' id='toolbar-table'><BUTTON.DefaultButton "
                              "onClick={this._toggleTable.bind(this)} title='Attributes table'>"
                              "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
-            app.panels.append("<div id='table-panel' className='attributes-table'><FeatureTable offset={[20, 20]} ref= 'table' resizeTo='table-panel' layer={%s} map={map} /></div>"
-                              % layerVar)
+            app.panels.append(("<div id='table-panel' className='attributes-table'><FeatureTable offset={[20, 20]} ref= 'table' resizeTo='table-panel' "
+                              "layer={%s} pointZoom={%d} map={map} /></div>")
+                              % layerVar, pointZoom)
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))

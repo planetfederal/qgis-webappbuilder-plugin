@@ -13,9 +13,13 @@ class Legend(WebAppWidget):
     _parameters = {"showExpandedOnStartup": False, "expandOnHover": True, "size": 20}
 
     def write(self, appdef, folder, app, progress):
+        def p(name):
+            return str(self._parameters[name]).lower()
         self.writeLegendFiles(appdef, app, folder)
         pullRight = "" if len(app.tools) else "pullRight"
-        app.panels.append("<div id='legend'><QGISLegend map={map} legendBasePath='./resources/legend/' legendData={legendData} %s/></div>" % pullRight)
+        app.panels.append(("<div id='legend'><QGISLegend map={map} legendBasePath='./resources/legend/' "
+                          "showExpandedOnStartup {%s} expandOnHover={%s} legendData={legendData} %s/></div>")
+                            % (pullRight, p("showExpandedOnStartup"), p("expandOnHover")))
 
     def description(self):
         return "Legend"
