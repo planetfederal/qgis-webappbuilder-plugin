@@ -34,7 +34,7 @@ class AttributesTable(WebAppWidget):
                              "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
             app.panels.append(("<div id='table-panel' className='attributes-table'><FeatureTable offset={[20, 20]} ref= 'table' resizeTo='table-panel' "
                               "layer={%s} pointZoom={%d} map={map} /></div>")
-                              % layerVar, pointZoom)
+                              % (layerVar, pointZoom))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))
