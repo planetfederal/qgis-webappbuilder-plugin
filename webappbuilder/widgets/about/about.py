@@ -21,6 +21,10 @@ class AboutPanel(WebAppWidget):
             app.mappanels.append('''<div className="about-panel" id="about-panel">
                             %s
                             %s</div>''' % (closer, self._parameters["content"]))
+            if closer:
+                app.tools.append("<ul className='pull-right' id='about-closer-button'>"
+                "<BUTTON.DefaultButton onClick={this._toggleAboutPanel.bind(this)} "
+                "title='About'> About</BUTTON.DefaultButton></ul>")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "about-panel.png"))
