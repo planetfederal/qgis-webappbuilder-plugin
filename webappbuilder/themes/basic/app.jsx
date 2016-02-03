@@ -68,7 +68,8 @@ class BasicApp extends React.Component {
   _toggleAboutPanel() {
     this._toggle(document.getElementById('about-panel'));
   }
-  _toggleChartPanel() {
+  _toggleChartPanel(evt) {
+    evt.preventDefault();
     this._toggle(document.getElementById('chart-panel'));
   }
   _navigationFunc() {

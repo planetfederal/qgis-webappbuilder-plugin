@@ -3,6 +3,8 @@
     position: absolute;
     background:rgba(255,255,255,0.7);
     padding: 15px;
+    padding-top: 25px;
+    padding-right: 25px;
     border-radius: 5px;
     border: 1px solid #000000;
     top: 100px;
