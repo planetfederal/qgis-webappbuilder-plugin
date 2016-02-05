@@ -32,7 +32,7 @@ class ChartTool(WebAppWidget):
                                   )''')
             app.panelsjs.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
                                             React.createElement("a", {href:'#', id:'chart-panel-closer', className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
-                                                                  "&times"
+                                                                  "X"
                                                             ),
                                             React.createElement("div", {id: 'chart'})
                                     )''' )
