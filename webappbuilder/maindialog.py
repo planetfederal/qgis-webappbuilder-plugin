@@ -424,8 +424,8 @@ class MainDialog(BASE, WIDGET):
                     if ret == QMessageBox.No:
                         return
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, False, self.progress))
-                QMessageBox.info(iface.mainWindow(), "Web App Builder",
-                                 "Applications files have been correctly generated.")
+                QMessageBox.information(iface.mainWindow(), "Web App Builder",
+                                 "Application files have been correctly generated.")
         except WrongValueException:
             pass
         except:

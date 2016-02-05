@@ -157,7 +157,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
             else:
                 source = '''{
                             format: new ol.format.GeoJSON(),
-                            url: './data/lyr_%(n)s.json'
+                            url: './data/lyr_%s.json'
                             }''' % layerName
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 js =  ('''var cluster_%(n)s = new ol.source.Cluster({
