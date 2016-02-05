@@ -73,7 +73,7 @@ class BasicApp extends React.Component {
     this._toggle(document.getElementById('chart-panel'));
   }
   _navigationFunc() {
-    LayerActions.activateTool(null, 'navigation');
+    ToolActions.activateTool(null, 'navigation');
   }
   render() {
     return (

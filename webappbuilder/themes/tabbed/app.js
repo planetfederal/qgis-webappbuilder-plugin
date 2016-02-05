@@ -45,7 +45,7 @@ var TabbedApp = React.createClass({
     @POSTTARGETSET@
   },
   _navigationFunc() {
-    LayerActions.activateTool(null, 'navigation');
+    ToolActions.activateTool(null, 'navigation');
   },
   _toggle(el) {
     if (el.style.display === 'block') {
@@ -61,6 +61,7 @@ var TabbedApp = React.createClass({
      return React.createElement("article", null,
        React.createElement("nav", {role: 'navigation'},
          React.createElement("div", {className: 'toolbar'},
+           @LOGO@
            React.createElement("a", {className: 'navbar-brand', href: '#'}, '@TITLE@')
            @TOOLBAR@
          )

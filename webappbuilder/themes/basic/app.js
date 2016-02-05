@@ -40,7 +40,7 @@ var BasicApp = React.createClass({
   },
   _toggleTable() {
     this._toggle(document.getElementById('table-panel'));
-    this.refs.table.refs.wrappedElement.setDimensionsOnState();
+    this.refs.table.getWrappedInstance().setDimensionsOnState();
   },
   _toggleQuery() {
     this._toggle(document.getElementById('query-panel'));
@@ -56,12 +56,13 @@ var BasicApp = React.createClass({
     this._toggle(document.getElementById('chart-panel'));
   },
   _navigationFunc() {
-    LayerActions.activateTool(null, 'navigation');
+    ToolActions.activateTool(null, 'navigation');
   },
   render() {
     return React.createElement("article", null,
       React.createElement("nav", {role: 'navigation'},
         React.createElement("div", {className: 'toolbar'},
+          @LOGO@
           React.createElement("a", {className: 'navbar-brand', href: '#'}, '@TITLE@')
             @TOOLBAR@
         )

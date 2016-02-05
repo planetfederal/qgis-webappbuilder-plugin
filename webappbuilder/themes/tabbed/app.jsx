@@ -47,7 +47,7 @@ class TabbedApp extends React.Component {
     @POSTTARGETSET@
   }
   _navigationFunc() {
-    LayerActions.activateTool(null, 'navigation');
+    ToolActions.activateTool(null, 'navigation');
   }
   _toggle(el) {
     if (el.style.display === 'block') {

@@ -117,9 +117,9 @@ def writeJs(appdef, folder, app, progress):
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
-        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo.png"></img>'
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
+        logo = 'React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"}),' % ext
     else:
         logo = ""
 
@@ -148,7 +148,8 @@ def writeJs(appdef, folder, app, progress):
                             appdef["Settings"]["Theme"], "app.js")
     js = replaceInTemplate(template, values)
     try:
-        js = jsbeautifier.beautify(js)
+        pass
+        #js = jsbeautifier.beautify(js)
     except:
         pass #jsbeautifier gives some random errors sometimes due to imports
 
@@ -209,9 +210,9 @@ def writeJsx(appdef, folder, app, progress):
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
-        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo.png"></img>'
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
+        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo%s"></img>' % ext
     else:
         logo = ""
 
