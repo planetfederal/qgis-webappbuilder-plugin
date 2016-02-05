@@ -19,7 +19,6 @@ import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
-from appcreateddialog import AppCreatedDialog
 
 # Adding so that our UI files can find resources_rc.py
 sys.path.append(os.path.dirname(__file__))
