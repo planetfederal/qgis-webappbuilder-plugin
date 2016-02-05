@@ -8,6 +8,15 @@ class SelectionTools(WebAppWidget):
         pullRight = "" if len(app.tools) else "pullRight"
         app.tools.append("<ul className='pull-right' id='toolbar-select'><Select toggleGroup='navigation' map={map} %s/></ul>" % pullRight)
         app.tools.append("<ul className='pull-right' id='toolbar-navigation'><BUTTON.DefaultButton title='Switch to map navigation (pan and zoom)' onClick={this._navigationFunc}>Navigation</BUTTON.DefaultButton></ul>")
+        app.toolsjs.append('''React.createElement("ul", {id:'toolbar-select', className:'pull-right'},
+                                    React.createElement(Select, {toggleGroup:'navigation', map:map})
+                                  )''')
+        app.toolsjs.append('''React.createElement("ul", {id:'toolbar-navigation', className:'pull-right'},
+                                    React.createElement(BUTTON.DefaultButton, {title:'Switch to map navigation (pan and zoom)', onClick:this._navigationFunc},
+                                        "Navigation"
+                                    )
+                                  )''')
+
         self.addReactComponent(app, "Select")
 
     def icon(self):

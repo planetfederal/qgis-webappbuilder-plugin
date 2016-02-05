@@ -16,7 +16,7 @@ import requests
 from settings import webAppWidgets
 import viewer
 
-def createApp(appdef, deployData, folder, progress):
+def createApp(appdef, deployData, folder, forPreview, progress):
 	viewer.shutdown()
 	if deployData:
 		usesGeoServer = False
@@ -32,7 +32,7 @@ def createApp(appdef, deployData, folder, progress):
 			importPostgis(appdef, progress)
 		if usesGeoServer:
 			publishGeoserver(appdef, progress)
-	writeWebApp(appdef, folder, deployData, progress)
+	writeWebApp(appdef, folder, deployData, forPreview, progress)
 
 	projFile = QgsProject.instance().fileName()
 	if projFile:

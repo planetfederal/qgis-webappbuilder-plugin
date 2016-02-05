@@ -12,9 +12,8 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
-from executor import execute
 
-def writeWebApp(appdef, folder, writeLayersData, progress):
+def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
     progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
@@ -31,14 +30,18 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     if writeLayersData:
         exportLayers(layers, dst, progress,
                      appdef["Settings"]["Precision for GeoJSON export"],
-                     appdef["Settings"]["App view CRS"])
+                     appdef["Settings"]["App view CRS"], forPreview)
 
     class App():
         tabs = []
+        tabsjs = []
         ol3controls = []
         tools = []
         panels = []
         mappanels = []
+        toolsjs = []
+        panelsjs = []
+        mappanelsjs = []
         variables = []
         scripts = []
         scriptsbody = []
@@ -54,10 +57,14 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
         def newInstance(self):
             _app = App()
             _app.tabs = list(self.tabs)
+            _app.tabsjs = list(self.tabsjs)
             _app.ol3controls = list(self.ol3controls)
             _app.tools = list(self.tools)
             _app.panels = list(self.panels)
             _app.mappanels = list(self.mappanels)
+            _app.toolsjs = list(self.toolsjs)
+            _app.panelsjs = list(self.panelsjs)
+            _app.mappanelsjs = list(self.mappanelsjs)
             _app.variables = list(self.variables)
             _app.scripts = list(self.scripts)
             _app.scriptsbody = list(self.scriptsbody)
@@ -67,7 +74,7 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
 
     _app = App()
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], _app, progress)
-    writeLayersAndGroups(appdef, dst, _app, progress)
+    writeLayersAndGroups(appdef, dst, _app, forPreview, progress)
 
     widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
     for w in widgets:
@@ -78,24 +85,78 @@ def writeWebApp(appdef, folder, writeLayersData, progress):
     baseTarget = "_self" if appdef["Settings"]["Open hyperlinks in"] == 0 else "_blank"
     _app.scripts.append("<base target='%s'>" % baseTarget)
 
-    app = _app.newInstance()
-    writeJsx(appdef, dst, app, progress, True)
-    app = _app.newInstance()
-    writeJsx(appdef, dst, app, progress, False)
+    if forPreview:
+        app = _app.newInstance()
+        writeJs(appdef, dst, app, progress)
+        app.scriptsbody.extend(['<script src="full-debug.js"></script>',
+                                '<script src="app_prebuilt.js"></script>'])
+        for layer in appdef["Layers"]:
+            if layer.layer.type() == layer.layer.VectorLayer and layer.method == METHOD_FILE:
+                app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
+        writeHtml(appdef, dst, app, progress, "index_debug.html")
 
-    app = _app.newInstance()
-    app.scriptsbody.extend(['<script src="app.js"></script>'])
-    writeHtml(appdef, dst, app, progress, "index_node.html") # with SDK
+    else:
+        app = _app.newInstance()
+        writeJsx(appdef, dst, app, progress)
 
-    app = _app.newInstance()
-    app.scripts.extend(['<script src="browser.js"></script>'])
-    app.scriptsbody.extend(['<script src="full-debug.js"></script>',
-                            '<script type="text/babel" src="./app_prebuilt.jsx"></script>'])
-    writeHtml(appdef, dst, app, progress, "index_debug.html") # without SDK. Debug
+        app = _app.newInstance()
+        app.scriptsbody.extend(['<script src="app.js"></script>'])
+        writeHtml(appdef, dst, app, progress, "index_node.html") # with SDK
 
+def writeJs(appdef, folder, app, progress):
+    layers = appdef["Layers"]
+    viewCrs = appdef["Settings"]["App view CRS"]
+    mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
+    mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
+    maxZoom = int(appdef["Settings"]["Max zoom level"])
+    minZoom = int(appdef["Settings"]["Min zoom level"])
 
-def writeJsx(appdef, folder, app, progress, usesSDK):
-    imports = app.imports if usesSDK else []
+    app.variables.append("var view = new ol.View({%s maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
+    app.variables.append("var originalExtent = %s;" % mapbounds)
+
+    logoImg = appdef["Settings"]["Logo"].strip()
+    if logoImg:
+        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo.png"></img>'
+        ext = os.path.splitext(logoImg)[1]
+        shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
+    else:
+        logo = ""
+
+    variables ="\n".join(app.variables)
+
+    app.mappanelsjs.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
+                                    React.createElement(InfoPopup, {map: map, hover: %s})
+                                  )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
+
+    def join(array):
+        if array:
+            return ",\n" + ",\n".join(array)
+        else:
+            return ""
+    values = {"@LOGO@": logo,
+                "@TABS@": join(app.tabsjs),
+                "@OL3CONTROLS@": ",\n".join(app.ol3controls),
+                "@TITLE@": appdef["Settings"]["Title"],
+                "@PANELS@": join(app.panelsjs),
+                "@MAPPANELS@": join(app.mappanelsjs),
+                "@TOOLBAR@": join(app.toolsjs),
+                "@VARIABLES@": variables,
+                "@POSTTARGETSET@": "\n".join(app.posttarget)}
+
+    template = os.path.join(os.path.dirname(__file__), "themes",
+                            appdef["Settings"]["Theme"], "app.js")
+    js = replaceInTemplate(template, values)
+    try:
+        js = jsbeautifier.beautify(js)
+    except:
+        pass #jsbeautifier gives some random errors sometimes due to imports
+
+    jsFilepath = os.path.join(folder, "app_prebuilt.js")
+    with open(jsFilepath, "w") as f:
+        f.write(js)
+
+def writeJsx(appdef, folder, app, progress):
+    imports = app.imports
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
@@ -175,20 +236,10 @@ def writeJsx(appdef, folder, app, progress, usesSDK):
                             appdef["Settings"]["Theme"], "app.jsx")
     jsx = replaceInTemplate(template, values)
 
-    name = "app.jsx" if usesSDK else "app_prebuilt.jsx"
+    name = "app.jsx"
     jsxFilepath = os.path.join(folder, name)
     with open(jsxFilepath, "w") as f:
         f.write(jsx)
-
-
-def processJsx(folder, progress):
-    tempJsxFilepath = os.path.join(os.path.dirname(__file__), "websdk", "app.jsx")
-    browserifyPath = os.path.join(os.path.dirname(__file__), "websdk", "node_modules", ".bin", "browserify")
-    commands = ('%(browserify)s  %(jsxpath)s/app.jsx -o %(path)s/app.js'
-                 % {"browserify": browserifyPath ,"jsxpath":tempJsxFilepath, "path":folder})
-    progress.oscillate()
-    execute(commands)
-    progress.setProgress(0)
 
 
 def writeCss(appdef, folder):
@@ -199,8 +250,6 @@ def writeCss(appdef, folder):
 def writeHtml(appdef, folder, app, progress, filename):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
-
-
 
     for applayer in layers:
         layer = applayer.layer
@@ -237,7 +286,7 @@ def writeHtml(appdef, folder, app, progress, filename):
 
 
 
-def writeLayersAndGroups(appdef, folder, app, progress):
+def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
     deploy = appdef["Deploy"]
@@ -279,7 +328,7 @@ def writeLayersAndGroups(appdef, folder, app, progress):
     progress.setText("Writing layer definitions")
     for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
-        layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle))
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle, forPreview))
         progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""

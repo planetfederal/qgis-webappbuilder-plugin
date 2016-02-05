@@ -15,12 +15,22 @@ class AboutPanel(WebAppWidget):
             idx = len(app.tabs) + 1
             app.tabs.append(("<UI.Tab eventKey={%i} title='About'><div id='about-tab-panel' className='about-tab-panel'>"
                               + "%s</div></UI.Tab>") % (idx, self._parameters["content"]))
+            app.tabsjs.append('''React.createElement(UI.Tab, {eventKey:%i, title:'About'},
+                                    React.createElement("div", {id:'about-tab-panel', className='about-tab-panel'},
+                                        '%s'
+                                    )
+                                )''' % (idx, self._parameters["content"]))
         else:
             closer = ('<a className="about-closer-icon" id="about-closer-icon" onClick={this._toggleAboutPanel.bind(this)}>&times;</a>'
                      if self._parameters["isClosable"] else "")
             app.mappanels.append('''<div className="about-panel" id="about-panel">
                             %s
                             %s</div>''' % (closer, self._parameters["content"]))
+            app.mappanelsjs.append('''React.createElement("div", {id: 'about-panel', className:'about-panel'},
+                                        '%s'
+                                    )''' %  self._parameters["content"])
+
+
             if closer:
                 app.tools.append("<ul className='pull-right' id='about-closer-button'>"
                 "<BUTTON.DefaultButton onClick={this._toggleAboutPanel.bind(this)} "

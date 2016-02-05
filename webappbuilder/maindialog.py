@@ -42,6 +42,7 @@ class MainDialog(BASE, WIDGET):
         self.populateWidgets()
         self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonCreateApp.clicked.connect(self.createApp)
+        self.buttonPreview.clicked.connect(self.preview)
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
         self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
@@ -385,6 +386,25 @@ class MainDialog(BASE, WIDGET):
             QApplication.restoreOverrideCursor()
 
 
+    def preview(self):
+        appdef = self.createAppDefinition(True)
+        problems = checkAppCanBeCreated(appdef)
+        if problems:
+            dlg = AppDefProblemsDialog(problems)
+            dlg.exec_()
+            if not dlg.ok:
+                return
+        try:
+            folder = utils.tempFolderInTempFolder()
+            self._run(lambda: createApp(appdef, True, folder, True, self.progress))
+            path = "file:///" + folder.replace("\\","/") + "/webapp/index_debug.html"
+            webbrowser.open_new(path)
+        except WrongValueException:
+            pass
+        except:
+            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
+                                 "Could not create web app.\nSee QGIS log for more details.")
 
     def createApp(self):
         try:
@@ -403,9 +423,9 @@ class MainDialog(BASE, WIDGET):
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                     if ret == QMessageBox.No:
                         return
-                self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, self.progress))
-                dlg = AppCreatedDialog(folder)
-                dlg.exec_()
+                self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, False, self.progress))
+                QMessageBox.info(iface.mainWindow(), "Web App Builder",
+                                 "Applications files have been correctly generated.")
         except WrongValueException:
             pass
         except:

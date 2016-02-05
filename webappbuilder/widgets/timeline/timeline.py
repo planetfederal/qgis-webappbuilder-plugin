@@ -12,6 +12,9 @@ class Timeline(WebAppWidget):
         timelineOptions = self.getTimelineOptions(appdef);
         app.mappanels.append("<div id='timeline'><Playback map={map} minDate={%s} maxDate={%s} /></div>"
                             % (timelineOptions[0], timelineOptions[1]))
+        app.mappanelsjs.append('''React.createElement("div", {id: 'bookmarks-panel'},
+                                    React.createElement(Playback, {map: map, minDate:%s, maxDate:%s})
+                                  )''' % (timelineOptions[0], timelineOptions[1]))
         self.addReactComponent(app, "Playback")
 
     '''def icon(self):

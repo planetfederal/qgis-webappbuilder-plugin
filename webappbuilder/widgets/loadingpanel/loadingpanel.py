@@ -7,6 +7,7 @@ class LoadingPanel(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.panels.append("<LoadingPanel map={map}/>")
+        app.panelsjs.append('''React.createElement(LoadingPanel, {map:map})''')
         self.addReactComponent(app, "LoadingPanel")
 
     '''def icon(self):

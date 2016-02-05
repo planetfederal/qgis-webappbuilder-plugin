@@ -111,7 +111,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
 
 
-def layerToJavascript(applayer, settings, deploy, title):
+def layerToJavascript(applayer, settings, deploy, title, forPreview):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
     useStrategy = not applayer.singleTile
@@ -152,13 +152,17 @@ def layerToJavascript(applayer, settings, deploy, title):
                                 layerCrs, viewCrs, layerOpacity,
                                 applayer.allowSelection, timeInfo, popup, jsonp, useStrategy)
         elif applayer.method == METHOD_FILE:
+            if forPreview:
+                source = ""
+            else:
+                source = '''{
+                            format: new ol.format.GeoJSON(),
+                            url: './data/lyr_%(n)s.json'
+                            }''' % layerName
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
-                return ('''var cluster_%(n)s = new ol.source.Cluster({
+                js =  ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
-                    source: new ol.source.Vector({
-                        format: new ol.format.GeoJSON(),
-                        url: './data/lyr_%(n)s.json'
-                    }),
+                    source: new ol.source.Vector(%(source)s),
                 });
                 var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -175,14 +179,12 @@ def layerToJavascript(applayer, settings, deploy, title):
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup})
+                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
+                 "source": source})
             else:
-                return ('''var lyr_%(n)s = new ol.layer.Vector({
+                js= ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
-                    source: new ol.source.Vector({
-                        format: new ol.format.GeoJSON(),
-                        url: './data/lyr_%(n)s.json'
-                    }),
+                    source: new ol.source.Vector(%(source)s),
                     %(min)s %(max)s
                     style: style_%(n)s,
                     selectedStyle: selectionStyle_%(n)s,
@@ -196,7 +198,14 @@ def layerToJavascript(applayer, settings, deploy, title):
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution,
                  "selectable": str(applayer.allowSelection).lower(),
-                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup})
+                 "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
+                 "source": source})
+
+            if forPreview:
+                js += '''\n%(n)s_geojson_callback = function(geojson) {
+                              lyr_%(n)s.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
+                        };''' % {"n": layerName}
+            return js
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
                 typeName = ":".join([safeName(settings["Title"]), layerName])

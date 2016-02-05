@@ -21,6 +21,13 @@ class LayersList(WebAppWidget):
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
                                p("expandOnHover")))
+        app.panelsjs.append('''React.createElement("div",{id: "layerlist"},
+                                    React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
+                                        showGroupContent:true, showZoomTo:%s, allowReordering:%s,
+                                        allowFiltering:%s, tipLabel:'%s', expandOnHover:%s, map:map}))'''
+                            % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
+                               p("allowReordering"), p("allowFiltering"), p("tipLabel"),
+                               p("expandOnHover")))
         self.addReactComponent(app, "LayerList")
 
     def icon(self):

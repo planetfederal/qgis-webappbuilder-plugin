@@ -16,11 +16,26 @@ class ChartTool(WebAppWidget):
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append("<UI.Tab eventKey={%i} title='Charts'><div id='charts-tab'><Chart combo={true} charts={charts}/></div></UI.Tab>" % idx)
+            app.tabsjs.append('''React.createElement(UI.Tab,{eventKey:%i, title:"Charts"},
+                                    React.createElement("div", {id:"charts-tab"},
+                                        React.createElement(Chart, {combo:true, charts:charts})
+                                    )
+                                )''' % idx)
         else:
             pullRight = "" if len(app.tools) else "pullRight"
             app.panels.append("<div id='chart-panel' className='chart-panel'><a href='#' id='chart-panel-closer' "
                               "className='chart-panel-closer' onClick={this._toggleChartPanel.bind(this)}>&times;</a><div id='chart'></div></div>")
             app.tools.append("<ul className='pull-right' id='toolbar-chart'><Chart container='chart-panel' charts={charts} %s/></ul>" % pullRight)
+
+            app.toolsjs.append('''React.createElement("ul", {id: 'toolbar-chart', className: 'pull-right'},
+                                    React.createElement(Chart, {container:'chart-panel', charts:charts})
+                                  )''')
+            app.panelsjs.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
+                                            React.createElement("a", {href:'#', id:'chart-panel-closer', className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
+                                                                  "&times"
+                                                            ),
+                                            React.createElement("div", {id: 'chart'})
+                                    )''' )
         charts = []
         for chartName, chart in self._parameters["charts"].iteritems():
             charts.append(copy.copy(chart))

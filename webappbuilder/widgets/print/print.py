@@ -14,7 +14,9 @@ class Print(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.writePrintFiles(appdef, folder, app, progress)
         app.tools.append("<ul className='pull-right' id='toolbar-print'><QGISPrint thumbnailPath='./resources/print/' map={map} layouts={printLayouts} /></ul>")
-
+        app.toolsjs.append('''React.createElement("ul", {id: 'toolbar-print', className: 'pull-right'},
+                                React.createElement(QGISPrint, {thumbnailPath:'./resources/print/', map:map, layouts:printLayouts})
+                              )''')
 
     def description(self):
         return "Print"

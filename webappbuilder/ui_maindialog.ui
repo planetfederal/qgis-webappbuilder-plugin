@@ -244,8 +244,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>717</width>
-            <height>235</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -275,8 +275,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>717</width>
-            <height>234</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -322,8 +322,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>717</width>
-            <height>496</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayoutWidgets"/>
@@ -689,6 +689,13 @@ They will become enabled once the deploy method is modified and the correspondin
          <widget class="QPushButton" name="buttonHelp">
           <property name="text">
            <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonPreview">
+          <property name="text">
+           <string>Preview</string>
           </property>
          </widget>
         </item>

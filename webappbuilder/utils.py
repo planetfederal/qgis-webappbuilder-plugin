@@ -86,7 +86,7 @@ def tempFolderInTempFolder():
         QDir().mkpath(folder)
     return folder
 
-def exportLayers(layers, folder, progress, precision, crsid):
+def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     progress.setText("Writing local layer files")
     destCrs = QgsCoordinateReferenceSystem(crsid)
     layersFolder = os.path.join(folder, "data")
@@ -94,15 +94,18 @@ def exportLayers(layers, folder, progress, precision, crsid):
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % precision)
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
                          for i,it in enumerate(txt.split('"')))
+    ext = "js" if forPreview else "json"
     for i, appLayer in enumerate(layers):
         if appLayer.method == METHOD_FILE:
             layer = appLayer.layer
             if layer.type() == layer.VectorLayer:
-                path = os.path.join(layersFolder, "lyr_%s.json" % safeName(layer.name()))
+                path = os.path.join(layersFolder, "lyr_%s.%s" % (safeName(layer.name()), ext))
                 QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
                 with open(path) as f:
                     lines = f.readlines()
                 with open(path, "w") as f:
+                    if forPreview:
+                        f.write("%s_geojson_callback(" % safeName(layer.name()))
                     for line in lines:
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")
@@ -114,6 +117,8 @@ def exportLayers(layers, folder, progress, precision, crsid):
                             line = line.replace("[[", "[")
                             line = line.replace("]]", "]")
                         f.write(line)
+                    if forPreview:
+                        f.write(");")
             elif layer.type() == layer.RasterLayer:
                 destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg").replace("\\", "/")
                 img = layer.previewAsImage(QSize(layer.width(),layer.height()))

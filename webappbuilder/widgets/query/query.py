@@ -16,6 +16,15 @@ class Query(WebAppWidget):
         else:
             app.mappanels.append("<div id='query-panel' className='query-panel'><QueryBuilder map={map} /></div>")
             app.tools.append("<ul className='pull-right' id='toolbar-query'><BUTTON.DefaultButton onClick={this._toggleQuery.bind(this)}><ICON.Icon name='filter' /> Query</BUTTON.DefaultButton></ul>")
+            app.toolsjs.append('''React.createElement("ul", {id: 'toolbar-query', className: 'pull-right'},
+                                    React.createElement(BUTTON.DefaultButton, {onClick: this._toggleQuery.bind(this), title: 'Query'},
+                                      React.createElement(ICON.Icon, {name: 'filter'}),
+                                      'Query'
+                                    )
+                                  )''')
+            app.mappanelsjs.append('''React.createElement("div", {id: 'query-panel', className:'query-panel'},
+                                          React.createElement(QueryBuilder, {map: map})
+                                        )''')
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "query.png"))

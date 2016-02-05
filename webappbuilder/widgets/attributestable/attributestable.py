@@ -28,13 +28,27 @@ class AttributesTable(WebAppWidget):
                               + '<FeatureTable ref="table" layer={%s} pointZoom={%d} resizeTo="tabs-panel" offset={[50, 60]} '
                               + 'map={map} /></div></UI.Tab>')
                               % (idx, layerVar, pointZoom))
+            app.tabsjs.append('''React.createElement(UI.Tab,{eventKey:%i, title:"Attributes table"},
+                                    React.createElement(FeatureTable, {ref:"table", layer:%s, pointZoom:%d,
+                                    resizeTo:"tabs-panel", offset:[50, 60], map: map})
+                                )''' % (idx, layerVar, pointZoom))
         else:
             app.tools.append("<ul className='pull-right' id='toolbar-table'><BUTTON.DefaultButton "
                              "onClick={this._toggleTable.bind(this)} title='Attributes table'>"
                              "<ICON.Icon name='list-alt' /> Table</BUTTON.DefaultButton></ul>")
+            app.toolsjs.append('''React.createElement("ul", {id: 'toolbar-table', className: 'pull-right'},
+                                    React.createElement(BUTTON.DefaultButton, {onClick: this._toggleTable.bind(this), title: 'Attributes table'},
+                                      React.createElement(ICON.Icon, {name: 'list-alt'}),
+                                      'Table'
+                                    )
+                                  )''')
             app.panels.append(("<div id='table-panel' className='attributes-table'><FeatureTable offset={[20, 20]} ref= 'table' resizeTo='table-panel' "
                               "layer={%s} pointZoom={%d} map={map} /></div>")
                               % (layerVar, pointZoom))
+            app.panelsjs.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
+                                          React.createElement(FeatureTable, {offset: [20, 20], ref: 'table', resizeTo: 'table-panel', layer: %s, pointZoom:%d, map: map})
+                                    )''' % (layerVar, pointZoom))
+
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))
