@@ -12,6 +12,7 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
+from qgis.utils import plugins_metadata_parser
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
@@ -265,8 +266,8 @@ def writeHtml(appdef, folder, app, progress, filename):
             app.scripts.append('<script src="./proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
-
-    values = {"@TITLE@": appdef["Settings"]["Title"],
+    values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
+              "@TITLE@": appdef["Settings"]["Title"],
                 "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
                 "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
             }
