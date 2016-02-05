@@ -11,24 +11,25 @@ class AboutPanel(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         theme = appdef["Settings"]["Theme"]
+        content = self._parameters["content"].replace('\n', '<br>').replace('\r', '')
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append(("<UI.Tab eventKey={%i} title='About'><div id='about-tab-panel' className='about-tab-panel'>"
-                              + "%s</div></UI.Tab>") % (idx, self._parameters["content"]))
+                              + "%s</div></UI.Tab>") % (idx, content))
             app.tabsjs.append('''React.createElement(UI.Tab, {eventKey:%i, title:'About'},
                                     React.createElement("div", {id:'about-tab-panel', className='about-tab-panel'},
-                                        '%s'
+                                        React.createElement("div", {dangerouslySetInnerHTML:{{__html: '%s'}}})
                                     )
-                                )''' % (idx, self._parameters["content"]))
+                                )''' % (idx, content))
         else:
             closer = ('<a className="about-closer-icon" id="about-closer-icon" onClick={this._toggleAboutPanel.bind(this)}>&times;</a>'
                      if self._parameters["isClosable"] else "")
             app.mappanels.append('''<div className="about-panel" id="about-panel">
                             %s
-                            %s</div>''' % (closer, self._parameters["content"]))
+                            %s</div>''' % (closer, content))
             app.mappanelsjs.append('''React.createElement("div", {id: 'about-panel', className:'about-panel'},
-                                        '%s'
-                                    )''' %  self._parameters["content"])
+                                        React.createElement("div", {dangerouslySetInnerHTML:{__html: '%s'}})
+                                    )''' %  content)
 
 
             if closer:
