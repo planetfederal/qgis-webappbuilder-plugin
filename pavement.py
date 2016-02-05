@@ -123,6 +123,12 @@ def make_zip(zip, options):
     ref_file = path(".git/" + head_ref)
     ref = ref_file.open('rU').readline().strip()
     cfg.set("general", "version", "%s-%s-%s" % (base_version, datetime.now().strftime("%Y%m%d"), ref))
+
+    head_path = path('webappbuilder/websdk/.git/HEAD')
+    head_ref = head_path.open('rU').readline().strip()[5:]
+    ref_file = path("webappbuilder/websdk/.git/" + head_ref)
+    ref = ref_file.open('rU').readline().strip()
+    cfg.set("general", "websdkversion", ref)
     
     buf = StringIO()
     cfg.write(buf)
