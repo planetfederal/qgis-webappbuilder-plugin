@@ -227,13 +227,14 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                           params: {"LAYERS": "%(layers)s" %(tiled)s},
                         })),
                         title: %(name)s,
-                        id: "%(id)s"
+                        id: "%(id)s",
+                        projection: "%(crs)s"
                       });''' % {"opacity": layerOpacity, "layers": layerName,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
                                 "timeInfo": timeInfo, "id": layer.id(),
                                 "layerClass": layerClass, "sourceClass": sourceClass,
-                                "tiled": tiled}
+                                "tiled": tiled, "crs": layer.crs().authid()}
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
@@ -251,14 +252,15 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                         })),
                         title: %(name)s,
                         id: "%(id)s",
-                        popupInfo: "%(popup)s"
+                        popupInfo: "%(popup)s",
+                        projection: "%(crs)s"
                       });''' % {"opacity": layerOpacity, "layers": layers,
                                 "url": url, "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
                                 "styles": styles, "timeInfo": timeInfo,
                                 "id": layer.id(), "layerClass": layerClass,
                                 "sourceClass": sourceClass, "tiled": tiled,
-                                "popup": popup}
+                                "popup": popup, "crs": layer.crs().authid()}
         elif applayer.method == METHOD_FILE:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()

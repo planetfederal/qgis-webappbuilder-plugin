@@ -41,7 +41,7 @@ def createApp(appdef, deployData, folder, forPreview, progress):
 
 
 def checkAppCanBeCreated(appdef):
-	viewCrs = appdef["Settings"]["App view CRS"]
+	##viewCrs = appdef["Settings"]["App view CRS"]
 	problems = []
 	layers = appdef["Layers"]
 
@@ -52,10 +52,6 @@ def checkAppCanBeCreated(appdef):
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
-			if layer.crs().authid() != viewCrs:
-				problems.append("Layer %s uses CRS %s. Reprojection is not supported for WMS services. "
-						"This layer will probably not appear correctly in the web app"
-						% (layer.name(), layer.crs().authid()))
 			if applayer.popup != "":
 				source = layer.source()
 				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
@@ -63,11 +59,6 @@ def checkAppCanBeCreated(appdef):
 				if "access-control-allow-origin" not in r:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
-	if appdef["Base layers"] and viewCrs != "EPSG:3857":
-		problems.append("Base layers can only be used if view CRS is EPSG:3857. "
-					"They will not appear correctly if the web app uses a different CRS."
-					"Your web app uses %s" % viewCrs)
-
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wfs":
