@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      body {
+        font-family: 'Yanone Kaffeesatz';
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2{
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 0em;
+        font-size:1.5em;
+      }
+      .right-column li { padding-bottom: 1.5em; }
+            
+      .right-column img{
+          display: block;
+          margin: auto; 
+          padding-top: 1em;         
+      }
+    </style>
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle, inverse
+
+# QGIS Web App Builder
+## Víctor Olaya
+<img src="./images/logo.png"/>
+
+---
+
+.left-column[
+  ## Main ideas
+]
+.right-column[
+- Create rich OL3-based web apps without having to write code
+- Easily update/modify created apps
+- Leverage OL3
+]
+
+---
+
+.left-column[
+  ## Elements of a web app
+]
+.right-column[
+- Map (OL3)
+- Layers 
+- Theme (appearance)
+- Controls and tools (widgets)
+- Data storage and deployment (for layers and app itself)
+]
+---
+
+.left-column[
+  ## Map
+]
+.right-column[
+- Map behaviour is defined in QGIS and translated to an OL3 Map object
+- Extent, zoom levels, scale-dependent visibility...
+
+]
+---
+
+.left-column[
+  ## Layers
+]
+.right-column[
+- Base layers (from publicly available services)
+- QGIS layers
+- Styling defined using QGIS symbology and automatically exported
+- Automated format conversion and reprojection (If QGIS can use it, the web app can use it as well)
+- Several options depending on layer type
+  - Clustering, time info, allow feature selection (for vector layers)...
+]
+---
+
+.left-column[
+  ## Layers
+]
+.right-column[
+<img src="./images/baselayers.png" width="100%"/>
+]
+---
+
+.left-column[
+  ## Layers
+]
+.right-column[
+<img src="./images/layers.png" width="100%"/>
+]
+---
+
+
+.left-column[
+  ## Theme
+]
+.right-column[
+- Predefined themes 
+- Fully configurable
+
+<img src="./images/themes.png" width="100%"/>
+]
+---
+
+.left-column[
+  ##Controls and tools
+]
+.right-column[
+- OL3 default controls (zoom buttons, scale line, overview map...)
+- Custom controls (Layers list, legend, home extent...)
+- Custom tools that interact with the map (layer filters, attributes table, charts, queries...)
+- Other elements (info panels, links...)
+]
+---
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+Layers list
+<img src="./images/layerslist.png" width="70%"/>
+]
+
+---
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+Attributes table
+<img src="./images/attributestable.png" width="100%"/>
+
+Query
+<img src="./images/query.png" width="100%"/>
+]
+
+---
+
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+Measure tools
+<img src="./images/measuretools.png" width="40%"/>
+
+Selection tools
+<img src="./images/selectiontools.png" width="40%"/>
+]
+
+---
+
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+
+*Bookmarks as narrative map*
+<img src="./images/bookmarks.png" width="100%"/>
+
+]
+
+---
+
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+Timeline
+<img src="./images/timeline.png" width="100%"/>
+
+Legend
+<img src="./images/legend.png" width="100%"/>
+]
+
+---
+
+.left-column[
+  ##Controls and tools
+  ### Some custom tools and controls
+]
+.right-column[
+Printing
+<img src="./images/print.png" width="100%"/>
+]
+
+
+---
+
+.left-column[
+  ##Controls and tools
+  ### Analysis
+]
+.right-column[
+- Analysis algorithms from Turf.js
+- Custom algorithms 
+- Desktop-GIS approach
+]
+
+
+---
+.left-column[
+  ## Data storage and deployment
+]
+.right-column[
+- Create and use GeoJSON files
+- Import into PostGIS and connect through GeoServer
+- Upload to GeoServer and connect using W[X]S service
+
+
+- Create app and store locally
+- Create app and deploy to cloud service
+]
+
+---
+
+.left-column[
+  ## Data storage and deployment
+]
+.right-column[
+<img src="./images/deploy.png" width="100%"/>
+]
+
+---
+
+class: center, middle, inverse
+
+# Demo
+
+---
+
+.left-column[
+  ##Future development  
+]
+.right-column[
+- Deployment to cloud
+- Integration with WebSDK and Node.js
+- Integration with other QGIS elements (time manager plugin...)
+]
+
+---
+
+class: center, middle, inverse
+
+# Thanks!
+## Víctor Olaya
+## volaya@boundlessgeo.com
+  
+    </textarea>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
