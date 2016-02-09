@@ -21,6 +21,10 @@ class Print(WebAppWidget):
     def description(self):
         return "Print"
 
+    def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "print.png"))
+
+
     def writePrintFiles(self, appdef, folder, app, progress):
         progress.setText("Writing print layout files")
         progress.setProgress(0)

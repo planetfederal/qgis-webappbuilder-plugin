@@ -17,8 +17,8 @@ class Timeline(WebAppWidget):
                                   )''' % (timelineOptions[0], timelineOptions[1]))
         self.addReactComponent(app, "Playback")
 
-    '''def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))'''
+    def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))
 
     def description(self):
         return "Timeline"

@@ -20,8 +20,8 @@ class Edit(WebAppWidget):
                                     )''')
         self.addReactComponent(app, "Edit")
 
-    '''def icon(self):
-        return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))'''
+    def icon(self):
+        return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))
 
     def description(self):
         return "Edit"
