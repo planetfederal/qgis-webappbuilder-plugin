@@ -58,14 +58,17 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
         QGis.WKBMultiPolygon: 'MultiPolygon',
     }
 
+    wfst = str(bool(layer.capabilitiesString())).lower()
     wfsInfo = '''{featureNS: '%(ns)s',
                     typeName: '%(typeName)s',
                     geometryType: '%(geomType)s',
                     geometryName: '%(geomName)s',
                     url: '%(url)s'
-                  }''' % {"geomType": GEOM_TYPE_NAME[geometryType],
+                  },
+                  isWFST:%(wfst)s,''' % {"geomType": GEOM_TYPE_NAME[geometryType],
                           "url": url, "geomName": "the_geom",
-                          "typeName": typeName, "ns": "" #TODO: fill NS
+                          "typeName": typeName, "ns": "",
+                          "wfst": wfst #TODO: fill NS
                           }
 
     if clusterDistance > 0 and geometryType== QGis.WKBPoint:
@@ -80,7 +83,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     selectedStyle: selectionStyle_%(layerName)s,
                     title: %(title)s,
                     id: "%(id)s",
-                    wfsInfo: %(wfsInfo)s,
+                    wfsInfo: %(wfsInfo)s
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
@@ -98,7 +101,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                             selectedStyle: selectionStyle_%(layerName)s,
                             title: %(title)s,
                             id: "%(id)s",
-                            wfsInfo: %(wfsInfo)s,
+                            wfsInfo: %(wfsInfo)s
                             filters: [],
                             timeInfo: %(timeInfo)s,
                             isSelectable: %(selectable)s,
