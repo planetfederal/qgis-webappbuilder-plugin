@@ -1,7 +1,7 @@
 Web app builder
 =====================
 
-A QGIS plugin to easily create web apps based on OpenLayers the Boundless WebSDK.
+A QGIS plugin to easily create web apps based on OpenLayers and the Boundless WebSDK.
 
 Installation
 ============
@@ -19,9 +19,7 @@ Install into QGIS by running
 Documentation
 ==============
 
-Documentation for the Web App Builder is kept along with the OpenGeo Suite documentation
-
-https://github.com/boundlessgeo/suite/tree/master/docs/usermanual/source/qgis/webappbuilder
+Usage is documented `here <http://boundlessgeo.github.io/qgis-app-builder>`_
 
 Deploying
 =========
