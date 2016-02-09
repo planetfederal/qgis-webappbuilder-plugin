@@ -38,6 +38,10 @@ Add layer
 
 Adds a menu entry that can be used by the web app user to add a layer to the map. Only vector layers can be added. Supported formats for layers are GeoJSON, GPX and KML.
 
+.. figure:: img/upload.png
+
+   About panel configuration  
+
 There are no configurable properties for this control.
 
 
@@ -144,7 +148,9 @@ Export as image
 
 Adds an option to export the current map view to an image file.
 
-.. todo:: ADD FIGURE
+.. figure:: img/export.png
+
+   Export as image menu
 
 There are no configurable properties for this control.
 
@@ -154,7 +160,9 @@ Full screen
 
 A button to toggle the full screen mode.
 
-.. todo:: ADD FIGURE
+.. figure:: img/fullscreen.png
+
+   Full screen button
 
 There are no configurable properties for this control.
 
@@ -299,6 +307,10 @@ Measure
 Adds area and length measure tools to the app.
 
 .. figure:: img/measuretools.png
+
+   Measure Tools menu
+
+.. figure:: img/measuretools2.png
 
    Measure Tools
 
