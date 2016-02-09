@@ -42,6 +42,9 @@ var BasicApp = React.createClass({
     this._toggle(document.getElementById('table-panel'));
     this.refs.table.getWrappedInstance().setDimensionsOnState();
   },
+  _toggleWFST() {
+    this._toggle(document.getElementById('wfst'));
+  },
   _toggleQuery() {
     this._toggle(document.getElementById('query-panel'));
   },

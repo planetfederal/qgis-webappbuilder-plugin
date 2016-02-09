@@ -59,6 +59,9 @@ class TabbedApp extends React.Component {
   _toggleEdit() {
     this._toggle(document.getElementById('edit-tool-panel'));
   }
+  _toggleWFST() {
+    this._toggle(document.getElementById('wfst'));
+  }
   render() {
     return (
       <article>

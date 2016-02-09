@@ -57,6 +57,9 @@ var TabbedApp = React.createClass({
   _toggleEdit() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
+  _toggleWFST() {
+    this._toggle(document.getElementById('wfst'));
+  },
   render() {
      return React.createElement("article", null,
        React.createElement("nav", {role: 'navigation'},
