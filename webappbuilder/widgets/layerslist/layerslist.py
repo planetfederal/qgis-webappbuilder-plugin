@@ -10,24 +10,27 @@ class LayersList(WebAppWidget):
                     "showDownload": False,
                     "allowReordering": False,
                     "allowFiltering": True,
-                    "expandOnHover": True}
+                    "expandOnHover": True,
+                    "downloadFormat": ("GeoJSON", ("GeoJSON", "KML", "GPX"))}
 
     def write(self, appdef, folder, app, progress):
         def p(name):
             return str(self._parameters[name]).lower()
         app.panels.append(("<div id='layerlist'><LayerList showOpacity={%s} showDownload={%s} "
                            "showGroupContent={true} showZoomTo={%s} allowReordering={%s} "
-                           "allowFiltering={%s} tipLabel={%s} expandOnHover={%s} map={map}/></div>")
+                           "allowFiltering={%s} tipLabel={%s} expandOnHover={%s} "
+                           "downloadFormat={%s} map={map}/></div>")
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
-                               p("expandOnHover")))
+                               p("expandOnHover"), self._parameters["downloadFormat"]))
         app.panelsjs.append('''React.createElement("div",{id: "layerlist"},
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
                                         showGroupContent:true, showZoomTo:%s, allowReordering:%s,
-                                        allowFiltering:%s, tipLabel:'%s', expandOnHover:%s, map:map}))'''
+                                        allowFiltering:%s, tipLabel:'%s', expandOnHover:%s,
+                                        downloadFormat:%s, map:map}))'''
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
-                               p("expandOnHover")))
+                               p("expandOnHover"), self._parameters["downloadFormat"]))
         self.addReactComponent(app, "LayerList")
 
     def icon(self):
