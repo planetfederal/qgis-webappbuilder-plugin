@@ -72,7 +72,8 @@ def checkAppCanBeCreated(appdef):
 		renderer = applayer.layer.rendererV2()
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
 									QgsGraduatedSymbolRendererV2)):
-			problems.append("Symbology used by layer %s includes unsupported elements. "
+			problems.append("Symbology used by layer %s includes unsupported elements."
+							"Only single symbol, categorized and graduated renderers are supported."
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
 
