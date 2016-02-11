@@ -79,23 +79,16 @@ class BasicApp extends React.Component {
     ToolActions.activateTool(null, 'navigation');
   }
   render() {
-    return (
-      <article>
-        <nav role='navigation'>
-          <div className='toolbar'>
-            @LOGO@
-            <a className="navbar-brand" href="#">@TITLE@</a>
-            @TOOLBAR@
-           </div>
-        </nav>
-        <div id='content'>
-          <div id='map' ref='map'>
-              @MAPPANELS@
-              <div id='popup' className='ol-popup'><InfoPopup map={map} hover={@POPUPEVENT@}/></div>
-          </div>
-          @PANELS@
-        </div>
-      </article>
+    var options = [@TOOLBAR@];
+    return React.createElement("article", null,
+      React.createElement(Toolbar, {options: options}
+      ),
+      React.createElement("div", {id: 'content'},
+        React.createElement("div", {id: 'map', ref: 'map'}
+          @MAPPANELS@
+        )
+        @PANELS@
+      )
     );
   }
 }

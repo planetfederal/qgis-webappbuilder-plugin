@@ -12,10 +12,7 @@ class Geocoding(WebAppWidget):
         self.addReactComponent(app, "GeocodingResults")
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append("<UI.Tab eventKey={%i} title='Geocoding'><div id='geocoding-tab'><Geocoding />" % idx
-                          + "</div><div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} />"
-                          + "</div></UI.Tab>" )
-            app.tabsjs.append('''React.createElement(UI.Tab,{eventKey:%i, title:"Geocoding"},
+            app.tabs.append('''React.createElement(UI.Tab,{eventKey:%i, title:"Geocoding"},
                                     React.createElement("div", {id:"geocoding-tab"},
                                         React.createElement(Geocoding, {})
                                     ),
@@ -24,14 +21,12 @@ class Geocoding(WebAppWidget):
                                     )
                                 )''' % idx)
         else:
-            app.mappanels.append("<div id='geocoding-results' className='geocoding-results'><GeocodingResults map={map} /></div>")
-            app.mappanelsjs.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results'},
+            app.mappanels.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results'},
                                     React.createElement(GeocodingResults, {map:map})
                                   )''')
-            app.tools.append(" <ul id='geocoding' className='pull-right'><Geocoding /></ul>")
-            app.toolsjs.append('''React.createElement("ul", {id:'geocoding', className:'pull-right'},
-                                    React.createElement(Geocoding, {})
-                                  )''')
+            app.tools.append('''{jsx: React.createElement("div", {id:'geocoding', className:'pull-right'},
+                                        React.createElement(Geocoding, {})),
+                                exclude: true}''')
         self.copyToResources("marker.png", folder)
 
 

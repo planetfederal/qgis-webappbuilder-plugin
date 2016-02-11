@@ -61,13 +61,9 @@ var TabbedApp = React.createClass({
     this._toggle(document.getElementById('wfst'));
   },
   render() {
-     return React.createElement("article", null,
-       React.createElement("nav", {role: 'navigation'},
-         React.createElement("div", {className: 'toolbar'},
-           @LOGO@
-           React.createElement("a", {className: 'navbar-brand', href: '#'}, '@TITLE@')
-           @TOOLBAR@
-         )
+    var options = [@TOOLBAR@];
+    return React.createElement("article", null,
+       React.createElement(TOOLBAR, {options: options}
        ),
        React.createElement("div", {id: 'content'},
          React.createElement("div", {className: 'row full-height'},

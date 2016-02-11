@@ -35,14 +35,10 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
 
     class App():
         tabs = []
-        tabsjs = []
         ol3controls = []
         tools = []
         panels = []
         mappanels = []
-        toolsjs = []
-        panelsjs = []
-        mappanelsjs = []
         variables = []
         scripts = []
         scriptsbody = []
@@ -53,19 +49,16 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
                     "import {IntlProvider} from 'react-intl';",
                     "import UI from 'pui-react-buttons';",
                     "import Icon from 'pui-react-iconography';",
-                    "import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';"
+                    "import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';",
+                    "import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';"
                    ]
         def newInstance(self):
             _app = App()
             _app.tabs = list(self.tabs)
-            _app.tabsjs = list(self.tabsjs)
             _app.ol3controls = list(self.ol3controls)
             _app.tools = list(self.tools)
             _app.panels = list(self.panels)
             _app.mappanels = list(self.mappanels)
-            _app.toolsjs = list(self.toolsjs)
-            _app.panelsjs = list(self.panelsjs)
-            _app.mappanelsjs = list(self.mappanelsjs)
             _app.variables = list(self.variables)
             _app.scripts = list(self.scripts)
             _app.scriptsbody = list(self.scriptsbody)
@@ -119,13 +112,12 @@ def writeJs(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        logo = 'React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"}),' % ext
-    else:
-        logo = ""
+        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s")}' % ext)
+    app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
 
     variables ="\n".join(app.variables)
 
-    app.mappanelsjs.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
+    app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {map: map, hover: %s})
                                   )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
 
@@ -134,13 +126,11 @@ def writeJs(appdef, folder, app, progress):
             return ",\n" + ",\n".join(array)
         else:
             return ""
-    values = {"@LOGO@": logo,
-                "@TABS@": join(app.tabsjs),
+    values = {"@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
-                "@TITLE@": appdef["Settings"]["Title"],
-                "@PANELS@": join(app.panelsjs),
-                "@MAPPANELS@": join(app.mappanelsjs),
-                "@TOOLBAR@": join(app.toolsjs),
+                "@PANELS@": join(app.panels),
+                "@MAPPANELS@": join(app.mappanels),
+                "@TOOLBAR@": ",\n".join(app.tools),
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget)}
 
@@ -158,7 +148,6 @@ def writeJs(appdef, folder, app, progress):
         f.write(js)
 
 def writeJsx(appdef, folder, app, progress):
-    imports = app.imports
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
@@ -212,9 +201,12 @@ def writeJsx(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        logo = '<img className="pull-left" style={{margin:"5px",height:"50px"}} src="logo%s"></img>' % ext
-    else:
-        logo = ""
+        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s")}' % ext)
+    app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
+
+    app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
+                                    React.createElement(InfoPopup, {map: map, hover: %s})
+                                  )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
 
     variables ="\n".join(app.variables)
     try:
@@ -222,17 +214,19 @@ def writeJsx(appdef, folder, app, progress):
     except:
         pass #jsbeautifier gives some random errors sometimes due to imports
 
-    values = {"@LOGO@": logo,
-                "@TABS@": "\n".join(app.tabs),
+    def join(array):
+        if array:
+            return ",\n" + ",\n".join(array)
+        else:
+            return ""
+    values = {"@IMPORTS@": "\n".join(app.imports),
+              "@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
-                "@TITLE@": appdef["Settings"]["Title"],
-                "@POPUPEVENT@": str(appdef["Settings"]["Show popups on hover"]).lower(),
-                "@PANELS@": "\n".join(app.panels),
-                "@MAPPANELS@": "\n".join(app.mappanels),
-                "@TOOLBAR@": "\n".join(app.tools),
+                "@PANELS@": join(app.panels),
+                "@MAPPANELS@": join(app.mappanels),
+                "@TOOLBAR@": ",\n".join(app.tools),
                 "@VARIABLES@": variables,
-                "@POSTTARGETSET@": "\n".join(app.posttarget),
-                "@IMPORTS@": "\n".join(imports)}
+                "@POSTTARGETSET@": "\n".join(app.posttarget)}
 
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")

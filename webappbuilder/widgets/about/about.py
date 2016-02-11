@@ -4,8 +4,7 @@ from PyQt4.QtGui import QIcon
 
 class AboutPanel(WebAppWidget):
 
-    _parameters = {"content": "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>",
-                    "isClosable": True}
+    _parameters = {"content": "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"}
 
     order = 0
 
@@ -14,28 +13,17 @@ class AboutPanel(WebAppWidget):
         content = self._parameters["content"].replace('\n', '<br>').replace('\r', '')
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append(("<UI.Tab eventKey={%i} title='About'><div id='about-tab-panel' className='about-tab-panel'>"
-                              + "%s</div></UI.Tab>") % (idx, content))
-            app.tabsjs.append('''React.createElement(UI.Tab, {eventKey:%i, title:'About'},
+            app.tabs.append('''React.createElement(UI.Tab, {eventKey:%i, title:'About'},
                                     React.createElement("div", {id:'about-tab-panel', className='about-tab-panel'},
                                         React.createElement("div", {dangerouslySetInnerHTML:{{__html: '%s'}}})
                                     )
                                 )''' % (idx, content))
         else:
-            closer = ('<a className="about-closer-icon" id="about-closer-icon" onClick={this._toggleAboutPanel.bind(this)}>&times;</a>'
-                     if self._parameters["isClosable"] else "")
-            app.mappanels.append('''<div className="about-panel" id="about-panel">
-                            %s
-                            %s</div>''' % (closer, content))
-            app.mappanelsjs.append('''React.createElement("div", {id: 'about-panel', className:'about-panel'},
+            app.mappanels.append('''React.createElement("div", {id: 'about-panel', className:'about-panel'},
                                         React.createElement("div", {dangerouslySetInnerHTML:{__html: '%s'}})
                                     )''' %  content)
 
 
-            if closer:
-                app.tools.append("<ul className='pull-right' id='about-closer-button'>"
-                "<BUTTON.DefaultButton onClick={this._toggleAboutPanel.bind(this)} "
-                "title='About'> About</BUTTON.DefaultButton></ul>")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "about-panel.png"))

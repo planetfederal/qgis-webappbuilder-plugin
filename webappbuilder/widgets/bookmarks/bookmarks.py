@@ -23,33 +23,19 @@ class Bookmarks(WebAppWidget):
         introText = params["introText"].replace('\n', '<br>').replace('\r', '')
         if bookmarks:
             self.addReactComponent(app, "Bookmarks")
-            autoPlay = "autoplay={true} autoplaySpeed={%s}" % str(params["interval"] * 1000) if params["interval"] else ""
             autoPlayjs = ", autoplay:true, autoplaySpeed:%s" % str(params["interval"] * 1000) if params["interval"] else ""
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
-                app.mappanels.append(("<div id='bookmarks-panel'><Bookmarks introTitle='%s' introDescription='%s'"
-                                  + " dots={%s}  animatePanZoom={%s} menu={false}"
-                                  + " map={map} bookmarks={bookmarks} %s/></div>")
-                                  % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                     str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlay))
-                app.mappanelsjs.append('''React.createElement("div", {id: 'bookmarks-panel'},
+                app.mappanels.append('''React.createElement("div", {id: 'bookmarks-panel'},
                                         React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
                                             animatePanZoom:%s, menu: false, map: map, bookmarks: bookmarks %s})
                                       )''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
                                              str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
 
             else:
-                pullRight = "" if len(app.tools) else "pullRight"
-                app.tools.append(("<ul className='pull-right' id='toolbar-bookmarks'><Bookmarks introTitle='%s' introDescription='%s'"
-                                  + " dots={%s}  animatePanZoom={%s} menu={true}"
-                                  + " map={map} bookmarks={bookmarks} %s %s/></ul>")
-                                    % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                        str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlay, pullRight))
-                app.toolsjs.append('''React.createElement("ul",{id: "toolbar-bookmarks", className: "pull-right"},
-                                        React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
-                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks %s})
-                                      )''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
+                app.tools.append('''{jsx: React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
+                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks %s})}
+                                      ''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
                                              str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
-
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])
                 viewCrs = QgsCoordinateReferenceSystem(appdef["Settings"]["App view CRS"])

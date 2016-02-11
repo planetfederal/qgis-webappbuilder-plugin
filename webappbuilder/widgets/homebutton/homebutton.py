@@ -5,8 +5,7 @@ from PyQt4.QtGui import QIcon
 class HomeButton(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.panels.append("<div id='home-button' className='ol-unselectable ol-control'><HomeButton map={map} /></div>")
-        app.panelsjs.append('''React.createElement("div", {id:'home-button', className:'ol-unselectable ol-control'},
+        app.panels.append('''React.createElement("div", {id:'home-button', className:'ol-unselectable ol-control'},
                                     React.createElement(HomeButton, {map:map})
                                   )''')
 

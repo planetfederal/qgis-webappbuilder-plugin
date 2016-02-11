@@ -11,8 +11,7 @@ class ThreeDView(WebAppWidget):
         src = os.path.join(os.path.dirname(__file__), "Cesium")
         dst = os.path.join(cesiumFolder)
         shutil.copytree(src, dst)
-        app.panels.append("<div id='globe-button' className='ol-unselectable ol-control'><Globe map={map} /></div>")
-        app.panelsjs.append('''React.createElement("div",{id: "globe-button", className: "ol-unselectable ol-control"},
+        app.panels.append('''React.createElement("div",{id: "globe-button", className: "ol-unselectable ol-control"},
                                     React.createElement(Globe, {map:map})
                                 )''')
         self.addReactComponent(app, "Globe")

@@ -62,13 +62,9 @@ var BasicApp = React.createClass({
     ToolActions.activateTool(null, 'navigation');
   },
   render() {
+    var options = [@TOOLBAR@];
     return React.createElement("article", null,
-      React.createElement("nav", {role: 'navigation'},
-        React.createElement("div", {className: 'toolbar'},
-          @LOGO@
-          React.createElement("a", {className: 'navbar-brand', href: '#'}, '@TITLE@')
-            @TOOLBAR@
-        )
+      React.createElement(Toolbar, {options: options}
       ),
       React.createElement("div", {id: 'content'},
         React.createElement("div", {id: 'map', ref: 'map'}

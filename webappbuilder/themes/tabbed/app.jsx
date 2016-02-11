@@ -63,32 +63,27 @@ class TabbedApp extends React.Component {
     this._toggle(document.getElementById('wfst'));
   }
   render() {
-    return (
-      <article>
-        <nav role='navigation'>
-          <div className='toolbar'>
-            @LOGO@
-            <a className="navbar-brand" href="#">@TITLE@</a>
-            @TOOLBAR@
-          </div>
-        </nav>
-        <div id='content'>
-          <div className='row full-height'>
-            <div className='col-md-8 full-height' id='tabs-panel'>
-              <UI.SimpleTabs defaultActiveKey={1}>
+    var options = [@TOOLBAR@];
+    return React.createElement("article", null,
+       React.createElement(TOOLBAR, {options: options}
+       ),
+       React.createElement("div", {id: 'content'},
+         React.createElement("div", {className: 'row full-height'},
+           React.createElement("div", {className: 'col-md-8 full-height', id: 'tabs-panel'},
+             React.createElement(UI.SimpleTabs, {defaultActiveKey: 1}
                 @TABS@
-              </UI.SimpleTabs>
-            </div>
-            <div className='col-md-16 full-height'>
-              <div id='map' ref='map'>
+              )
+            ),
+           React.createElement("div", {className: 'col-md-16 full-height'},
+              React.createElement("div", {id: 'content'},
+                React.createElement("div", {id: 'map', ref: 'map'}
                   @MAPPANELS@
-                  <div id='popup' className='ol-popup'><InfoPopup map={map} hover={@POPUPEVENT@}/></div>
-              </div>
-              @PANELS@
-            </div>
-          </div>
-        </div>
-      </article>
+                )
+                @PANELS@
+              )
+           )
+        )
+      )
     );
   }
 }
