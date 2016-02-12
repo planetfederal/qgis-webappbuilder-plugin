@@ -37,6 +37,7 @@ var map = new ol.Map({
 
 class BasicApp extends React.Component {
   componentDidMount() {
+    super.componentDidMount();
     @POSTTARGETSET@
   }
   _toggle(el) {
