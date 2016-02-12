@@ -7,6 +7,7 @@ from appcreator import loadAppdef
 from settings import initialize
 import shutil
 from utils import tempFolder
+import webbrowser
 
 class WebAppBuilderPlugin:
 
@@ -17,10 +18,15 @@ class WebAppBuilderPlugin:
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
-        self.iface.addPluginToWebMenu("Boundless", self.action)
+        self.iface.addPluginToWebMenu("Web App Builder", self.action)
+        helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
+        self.helpAction = QAction(helpIcon, "Web App Builder Help", self.iface.mainWindow())
+        self.helpAction.triggered.connect(lambda: webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder/"))
+        self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
     def unload(self):
-        self.iface.removePluginWebMenu("Boundless", self.action)
+        self.iface.removePluginWebMenu("Web App Builder", self.action)
+        self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
         shutil.rmtree(tempFolder())
 
     def run(self):
