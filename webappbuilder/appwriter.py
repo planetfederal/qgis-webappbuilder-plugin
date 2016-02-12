@@ -43,15 +43,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         scripts = []
         scriptsbody = []
         posttarget = []
-        imports = ["import React from 'react';",
-                   "import ReactDOM from 'react-dom';",
-                    "import ol from 'openlayers';",
-                    "import {IntlProvider} from 'react-intl';",
-                    "import UI from 'pui-react-buttons';",
-                    "import Icon from 'pui-react-iconography';",
-                    "import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';",
-                    "import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';"
-                   ]
+        imports = []
         def newInstance(self):
             _app = App()
             _app.tabs = list(self.tabs)
@@ -158,44 +150,7 @@ def writeJsx(appdef, folder, app, progress):
     app.variables.append("var view = new ol.View({%s maxZoom: %d, minZoom: %d, projection: '%s'});" % (mapextent, maxZoom, minZoom, viewCrs))
     app.variables.append("var originalExtent = %s;" % mapbounds)
 
-    permalink = appdef["Settings"]["Add permalink functionality"]
-    if permalink:
-        permalinkCode = '''var shouldUpdate = true;
-        var updatePermalink = function() {
-          if (!shouldUpdate) {
-            // do not update the URL when the view was changed in the 'popstate' handler
-            shouldUpdate = true;
-            return;
-          }
-
-          var center = view.getCenter();
-          var hash = '#map=' +
-              view.getZoom() + '/' +
-              Math.round(center[0] * 100) / 100 + '/' +
-              Math.round(center[1] * 100) / 100 + '/' +
-              view.getRotation();
-          var state = {
-            zoom: view.getZoom(),
-            center: view.getCenter(),
-            rotation: view.getRotation()
-          };
-          window.history.pushState(state, 'map', hash);
-        };
-
-        map.on('moveend', updatePermalink);
-
-        // restore the view state when navigating through the history, see
-        // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
-        window.addEventListener('popstate', function(event) {
-          if (event.state === null) {
-            return;
-          }
-          map.getView().setCenter(event.state.center);
-          map.getView().setZoom(event.state.zoom);
-          map.getView().setRotation(event.state.rotation);
-          shouldUpdate = false;
-        });'''
-        app.posttarget.append(permalinkCode)
+    permalink = str(appdef["Settings"]["Add permalink functionality"]).lower()
 
     logoImg = appdef["Settings"]["Logo"].strip()
     if logoImg:
@@ -226,7 +181,8 @@ def writeJsx(appdef, folder, app, progress):
                 "@MAPPANELS@": join(app.mappanels),
                 "@TOOLBAR@": ",\n".join(app.tools),
                 "@VARIABLES@": variables,
-                "@POSTTARGETSET@": "\n".join(app.posttarget)}
+                "@POSTTARGETSET@": "\n".join(app.posttarget),
+                "@PERMALINK@": permalink}
 
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")

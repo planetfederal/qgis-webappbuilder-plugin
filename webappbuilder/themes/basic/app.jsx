@@ -1,3 +1,12 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ol from 'openlayers';
+import {IntlProvider} from 'react-intl';
+import UI from 'pui-react-buttons';
+import Icon from 'pui-react-iconography';
+import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';
+import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';
+import App from './node_modules/boundless-sdk/js/components/App.js';
 @IMPORTS@
 
 var defaultFill = new ol.style.Fill({
@@ -28,24 +37,6 @@ var map = new ol.Map({
 
 class BasicApp extends React.Component {
   componentDidMount() {
-    map.setTarget(ReactDOM.findDOMNode(this.refs.map));
-    view = map.getView();
-    view.fit(originalExtent, map.getSize());
-    if (window.location.hash !== '') {
-      var hash = window.location.hash.replace('#map=', '');
-      var parts = hash.split('/');
-      if (parts.length === 4) {
-        var zoom = parseInt(parts[0], 10);
-        var center = [
-          parseFloat(parts[1]),
-          parseFloat(parts[2])
-        ];
-        var rotation = parseFloat(parts[3]);
-        view.setZoom(zoom);
-        view.setCenter(center);
-        view.setRotation(rotation);
-      }
-    }
     @POSTTARGETSET@
   }
   _toggle(el) {
@@ -94,7 +85,7 @@ class BasicApp extends React.Component {
 }
 
 
-ReactDOM.render(<IntlProvider locale='en'><BasicApp /></IntlProvider>, document.getElementById('main'));
+ReactDOM.render(<IntlProvider locale='en'><BasicApp map={map} extent={originalExtent} useHistory={@PERMALINK@}/></IntlProvider>, document.getElementById('main'));
 
 
 
