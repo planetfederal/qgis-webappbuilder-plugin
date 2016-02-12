@@ -9,18 +9,11 @@ class Links(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         links = self._parameters["links"]
         items = []
-        itemsjs = []
         for name, url in links.iteritems():
-            items.append('<DD.DropdownItem href="%s">%s</DD.DropdownItem>' % (url, name))
-            itemsjs.append('React.createElement(DD.DropdownItem, {href:"%s"}, "%s")' % (url, name))
-        pullRight = "" if len(app.tools) else "pullRight"
-        app.tools.append('<ul className="pull-right" id="toolbar-links"><DD.Dropdown title="Links" %s>\n%s\n</DD.Dropdown></ul>'
-                          % (pullRight, "\n".join(items)))
-        app.toolsjs.append('''React.createElement("ul", {id:'geolocation-control', className:'pull-right'},
-                                    React.createElement(DD.Dropdown, {title:"Links"},
+            items.append('React.createElement(DD.DropdownItem, {href:"%s"}, "%s")' % (url, name))
+        app.tools.append('''{jsx: React.createElement(DD.Dropdown, {title:"Links"},
                                         %s
-                                    )
-                                  )''' % ",\n".join(itemsjs))
+                                    )}''' % ",\n".join(items))
 
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
