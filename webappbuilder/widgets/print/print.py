@@ -13,7 +13,7 @@ class Print(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         self.writePrintFiles(appdef, folder, app, progress)
-        app.tools.append("{jsx: React.createElement(QGISPrint, {map:map, layouts:printLayouts})}")
+        app.tools.append("{jsx: React.createElement(QGISPrint, {map:map, layouts:printLayouts, thumbnailPath: './resources/print/',})}")
 
     def description(self):
         return "Print"
