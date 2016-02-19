@@ -89,7 +89,7 @@ class RefreshDialog(QtGui.QDialog):
         self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         allLayers = QgsProject.instance().layerTreeRoot().findLayers()
         wmsLayers = [layer.layer() for layer in allLayers
-                     if layer.layer().dataProvider().name().lower() in ["wms", "wfs"]]
+                     if layer.layer().type() !=  QgsMapLayer.PluginLayer and layer.layer().dataProvider().name().lower() in ["wms", "wfs"]]
         self.table.setRowCount(len(wmsLayers))
         for i, layer in enumerate(wmsLayers):
             self.table.setRowHeight(i, 22)
