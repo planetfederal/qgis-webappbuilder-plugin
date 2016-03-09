@@ -114,6 +114,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="expandLayersButton">
+           <property name="toolTip">
+            <string>Expand All</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -121,6 +124,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="collapseLayersButton">
+           <property name="toolTip">
+            <string>Collapse All</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -279,7 +285,7 @@
             <x>0</x>
             <y>0</y>
             <width>699</width>
-            <height>502</height>
+            <height>499</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">

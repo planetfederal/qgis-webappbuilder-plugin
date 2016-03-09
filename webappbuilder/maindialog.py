@@ -50,6 +50,8 @@ class MainDialog(BASE, WIDGET):
         self.buttonOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
+        self.expandLayersButton.setIcon(QgsApplication.getThemeIcon('/mActionExpandTree.svg'))
+        self.collapseLayersButton.setIcon(QgsApplication.getThemeIcon('/mActionCollapseTree.svg'))
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
         self.buttonHelp.clicked.connect(self.showHelp)
