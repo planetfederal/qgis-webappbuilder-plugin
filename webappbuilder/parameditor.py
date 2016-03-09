@@ -12,7 +12,7 @@ class ParametersEditorDialog(QtGui.QDialog):
         self.resize(600, 350)
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
                                                 QtCore.Qt.WindowMinMaxButtonsHint)
-        self.setWindowTitle('Edit widget parameters')
+        self.setWindowTitle('Edit control parameters')
 
         layout = QtGui.QVBoxLayout()
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
