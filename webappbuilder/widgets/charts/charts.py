@@ -94,7 +94,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.operationCombo.setVisible(visible)
         self.operationLabel.setVisible(visible)
         visible = self.displayModeCombo.currentIndex() != 2
-        isMac = sys.platform == 'darwin'
+        isMac = sys.platform in ['darwin', 'linux2']
         self.valueFieldsCombo.setVisible(visible and not isMac)
         self.valueFieldsList.setVisible(visible and isMac)
         self.valueFieldsLabel.setVisible(visible)
@@ -116,7 +116,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         except:
             pass
         try:
-            offset = 0 if sys.platform == "darwin" else 1
+            offset = 0 if sys.platform in ['darwin', 'linux2'] else 1
             valueFields = self._charts[name]["valueFields"]
             for i in xrange(offset, self.model.rowCount()):
                 item = self.model.item(i)
@@ -170,7 +170,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         if valueFieldsVisible:
             self.model = QtGui.QStandardItemModel(len(fields), 1)
             item = QtGui.QStandardItem("Select fields")
-            if  sys.platform == 'darwin':
+            if sys.platform in ['darwin', 'linux2']:
                 self.valueFieldsCombo.setVisible(False)
                 self.valueFieldsCombo.setVisible(True)
                 toUse = self.valueFieldsList
