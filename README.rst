@@ -1,5 +1,5 @@
-Web app builder
-=====================
+Web App Builder
+===============
 
 A QGIS plugin to easily create web apps based on OpenLayers and the Boundless WebSDK.
 
@@ -9,7 +9,7 @@ Installation
 To install, clone this repository, open a console in the repo folder and type
 
     paver setup
-    
+
 This will get all the dependencies needed by the plugin, including those of WebSDK.
 
 Install into QGIS by running
@@ -28,5 +28,5 @@ Running
 
 	paver package
 
-will create a zip file containing Web App Builder
+will create a .zip file containing Web App Builder.
 
