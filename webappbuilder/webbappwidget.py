@@ -77,6 +77,6 @@ class WebAppWidget(object):
             shutil.copy2(f, resourcesFolder)
 
     def addReactComponent(self, app, component):
-        app.imports.append("import %(comp)s from './node_modules/boundless-sdk/js/components/%(comp)s.jsx'"
+        app.imports.append("import %(comp)s from './node_modules/boundless-sdk/js/components/%(comp)s.jsx';"
                            % {"comp": component})
 
