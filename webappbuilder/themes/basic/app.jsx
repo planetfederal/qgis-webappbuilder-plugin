@@ -35,7 +35,7 @@ var map = new ol.Map({
 
 
 
-class BasicApp extends React.Component {
+class BasicApp extends App {
   componentDidMount() {
     super.componentDidMount();
     @POSTTARGETSET@
