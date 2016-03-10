@@ -49,7 +49,7 @@ class BasicApp extends App {
   }
   _toggleTable() {
     this._toggle(document.getElementById('table-panel'));
-    this.refs.table.refs.wrappedElement.setDimensionsOnState();
+    this.refs.table.getWrappedInstance().setDimensionsOnState();
   }
   _toggleWFST() {
     this._toggle(document.getElementById('wfst'));
