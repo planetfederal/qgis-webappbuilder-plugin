@@ -4,6 +4,7 @@ import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
 import UI from 'pui-react-buttons';
 import Icon from 'pui-react-iconography';
+import enMessages from './node_modules/boundless-sdk/locale/en.js';
 import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';
 import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';
 import App from './node_modules/boundless-sdk/js/components/App.js';
@@ -80,5 +81,5 @@ class TabbedApp extends App {
   }
 }
 
-ReactDOM.render(<IntlProvider locale='en'><TabbedApp map={map} extent={originalExtent} useHistory={@PERMALINK@} /></IntlProvider>, document.getElementById('main'));
+ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><TabbedApp map={map} extent={originalExtent} useHistory={@PERMALINK@} /></IntlProvider>, document.getElementById('main'));
 
