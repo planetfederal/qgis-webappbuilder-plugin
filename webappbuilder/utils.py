@@ -192,9 +192,9 @@ def askForFolder(parent, msg = None):
     msg = msg or 'Select folder'
     name = _callerName()
     path = getSetting(LAST_PATH, name)
-    folder =  QFileDialog.getExistingDirectory(parent, "Select folder to store app", path)
+    folder =  QFileDialog.getExistingDirectory(parent, "Select folder to store app", path, QFileDialog.ShowDirsOnly)
     if folder:
-        setSetting(LAST_PATH, name, folder)
+        setSetting(LAST_PATH, name, os.path.dirname(folder))
     return folder
 
 
