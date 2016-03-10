@@ -5,6 +5,7 @@ import os
 class AddLayer(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
+        self.addReactComponent(app, "AddLayer")
         app.tools.append("{jsx: React.createElement(AddLayer, {map:map})}")
 
     def icon(self):
