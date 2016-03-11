@@ -14,6 +14,13 @@ class WebAppBuilderPlugin:
     def __init__(self, iface):
         self.iface = iface
 
+        try:
+            from tests import testerplugin
+            from qgistester.tests import addTestModule
+            addTestModule(testerplugin, 'WebAppBuilder')
+        except:
+            pass
+
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
