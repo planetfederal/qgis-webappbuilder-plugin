@@ -78,7 +78,7 @@ class MainDialog(BASE, WIDGET):
         self.tabPanel.setCurrentIndex(0)
 
     def showHelp(self):
-        webbrowser.open_new("http://qgis.boundlessgeo.com/static/webappbuilder/usage.rst")
+        webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder")
 
     def tabChanged(self, index):
         if index == 4:
