@@ -17,9 +17,13 @@ Once launched, the main dialog looks like this:
 
    Main dialog
 
-**To create a web app, define its characteristics using the tabs in the dialog and then press the Create App button.**
+To create a web app, define its characteristics using the tabs in the dialog and then press the Preview or Create App button.
 
-Below is a description of each tab and its contents.
+**The :guilabel:`Preview` button will create the web app in a temporary folder and open your default internet browser to load it. This preview web app is based on a precompiled version of Web SDK and is not ready for production, but only for preview and debug purposes.**
+
+The ``Create App`` button will create the files needed for building a web app using WebSDK. Those files will be saved in the folder specified by the user, and they are not the web app itself. They have to be built using Node and WebSDK. Usage of WebSDK is not explained here. Please refer to the WebSDK documentation
+
+Below is a description of each tab in the Web App Builder dialog and its contents.
 
 Description
 -----------
