@@ -27,10 +27,13 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         if f not in exclude:
             shutil.copy(os.path.join(sdkFolder, f), dst)
 
-    cssFolder = os.path.join(os.path.dirname(__file__), "css")
-    shutil.copytree(cssFolder, os.path.join(dst, "css"))
     QDir().mkpath(os.path.join(dst, "data"))
     QDir().mkpath(os.path.join(dst, "resources"))
+    QDir().mkpath(os.path.join(dst, "resources", "js"))
+    shutil.copy(os.path.join(os.path.dirname(__file__), "js", "proj4.js"),
+                os.path.join(dst, "resources", "js", "proj4.js"))
+    cssFolder = os.path.join(os.path.dirname(__file__), "css")
+    shutil.copytree(cssFolder, os.path.join(dst, "resources","css"))
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, dst, progress,
@@ -213,12 +216,12 @@ def writeHtml(appdef, folder, app, progress, filename):
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
-                app.scripts.append('<script src="./proj4.js"></script>')
+                app.scripts.append('<script src="./resources/js/proj4.js"></script>')
                 app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
-            app.scripts.append('<script src="./proj4.js"></script>')
+            app.scripts.append('<script src="./resources/js/proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
