@@ -68,7 +68,7 @@ def setup(options):
         sh("git pull")
         os.chdir(cwd)
     else:
-        sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
+        sh("git clone git@github.com:boundlessgeo/sdk.git %s" % sdkPath)
     path(os.path.join(sdkPath, "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
