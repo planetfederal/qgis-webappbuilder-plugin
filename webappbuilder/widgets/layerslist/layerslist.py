@@ -23,7 +23,7 @@ class LayersList(WebAppWidget):
                                         downloadFormat:%s, map:map}))'''
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
-                               p("expandOnHover"), self._parameters["downloadFormat"]))
+                               p("expandOnHover"), self._parameters["downloadFormat"][0]))
         self.addReactComponent(app, "LayerList")
 
     def icon(self):
