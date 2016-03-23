@@ -22,10 +22,8 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         shutil.rmtree(dst)
     QDir().mkpath(dst)
     sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
-    exclude = ["full-debug.js"] if not forPreview else []
-    for f in os.listdir(sdkFolder):
-        if f not in exclude:
-            shutil.copy(os.path.join(sdkFolder, f), dst)
+    if forPreview:
+        shutil.copy(os.path.join(sdkFolder, "full-debug.js"), dst)
 
     QDir().mkpath(os.path.join(dst, "data"))
     QDir().mkpath(os.path.join(dst, "resources"))
@@ -33,7 +31,9 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     shutil.copy(os.path.join(os.path.dirname(__file__), "js", "proj4.js"),
                 os.path.join(dst, "resources", "js", "proj4.js"))
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
-    shutil.copytree(cssFolder, os.path.join(dst, "resources","css"))
+    cssDstFolder = os.path.join(dst, "resources","css")
+    shutil.copytree(cssFolder, cssDstFolder)
+    shutil.copy(os.path.join(sdkFolder, "ol.css"), cssDstFolder)
     layers = appdef["Layers"]
     if writeLayersData:
         exportLayers(layers, dst, progress,
@@ -93,7 +93,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         writeJsx(appdef, dst, app, progress)
 
         app = _app.newInstance()
-        app.scriptsbody.extend(['<script src="app.js"></script>'])
+        app.scriptsbody.extend(['<script src="/loader.js"></script><script src="/build/app-debug.js"></script>'])
         writeHtml(appdef, dst, app, progress, "index.html") # with SDK
 
 def writeJs(appdef, folder, app, progress):
