@@ -6,7 +6,7 @@ class SelectionTools(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.tools.append('''{
-                              jsx: (<Select toggleGroup='navigation' map={map}/>)
+                              jsx: React.createElement(Select, {toggleGroup: 'navigation', map:map})
                             }, {
                               text: 'Navigation',
                               icon: 'hand-paper-o',
