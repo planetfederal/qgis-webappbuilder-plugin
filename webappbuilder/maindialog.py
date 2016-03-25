@@ -425,8 +425,12 @@ class MainDialog(BASE, WIDGET):
                     if ret == QMessageBox.No:
                         return
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, False, self.progress))
-                QMessageBox.information(iface.mainWindow(), "Web App Builder",
-                                 "Application files have been correctly generated.")
+                box = QMessageBox()
+                box.setWindowTitle("Web App Builder");
+                box.setTextFormat(Qt.RichText)
+                box.setText("Application files have been correctly generated.<br>"
+                            "Use the  <a href='http://boundlessgeo.com/products/opengeo-suite/'> Boundless WebSDK </a> for building the final webapp from them.")
+                box.exec_()
         except WrongValueException:
             pass
         except:
