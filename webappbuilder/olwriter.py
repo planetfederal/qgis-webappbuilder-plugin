@@ -205,9 +205,10 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                  "source": source})
 
             if forPreview:
+                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
-                              lyr_%(n)s.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
-                        };''' % {"n": layerName}
+                              lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
+                        };''' % {"n": layerName, "cs": clusterSource}
             return js
         elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
                 url = deploy["GeoServer url"] + "/wfs"
