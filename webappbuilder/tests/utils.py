@@ -28,7 +28,7 @@ class SilentProgress():
 def createAppFromTestAppdef(appdefName):
     appdef = testAppdef(appdefName)
     folder = tempFolderInTempFolder()
-    writeWebApp(appdef, folder, True, SilentProgress())
+    writeWebApp(appdef, folder, True, True, SilentProgress())
     return folder
 
 def compareWithExpectedOutputFile(file1, file2):

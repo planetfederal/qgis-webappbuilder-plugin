@@ -9,17 +9,18 @@ import shutil
 from utils import tempFolder
 import webbrowser
 
+
 class WebAppBuilderPlugin:
 
     def __init__(self, iface):
         self.iface = iface
-
         try:
             from tests import testerplugin
             from qgistester.tests import addTestModule
-            addTestModule(testerplugin, 'WebAppBuilder')
+            addTestModule(testerplugin, "Web App Builder")
         except:
             pass
+
 
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")

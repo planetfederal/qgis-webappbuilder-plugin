@@ -16,18 +16,20 @@
     "Layers": [
         {
             "allowSelection": true, 
+            "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
             "layer": "points", 
             "method": 0, 
-            "popup": "<b>n</b>: [n]", 
-            "refreshInterval": 0, 
+            "popup": "", 
             "showInControls": true, 
             "showInOverview": true, 
+            "singleTile": false, 
             "timeInfo": null, 
             "visible": true
         }
     ], 
     "Settings": {
+        "Add permalink functionality": true, 
         "App view CRS": "EPSG:3857", 
         "Extent": "Fit to layers extent", 
         "Group base layers": true, 
@@ -35,17 +37,15 @@
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
         "Precision for GeoJSON export": "2", 
         "Restrict to extent": true, 
-        "Show popups on hover": true, 
-        "Theme": {
-            "Css": "/*General*/\r\n.toggle {\r\n  width: 100px;\r\n}\r\n\r\n.navbar-nav {\r\n  margin: 0;\r\n  padding: 0px 0px;\r\n}\r\n\r\nhtml, body {\r\n    height: 100%;\r\n    padding: 0;\r\n    margin: 0;\r\n    font-family: sans-serif;\r\n    font-size: small;\r\n}\r\n\r\n.closer-icon {\r\n  font-size: 30px;\r\n  font-weight: bold;\r\n  line-height: 18px;\r\n  color: #000000;\r\n  text-shadow: 0 1px 0 #ffffff;\r\n  opacity: 0.2;\r\n  filter: alpha(opacity=20);\r\n  text-decoration: none;\r\n  position: absolute;\r\n  top: 8px;\r\n  right: 8px;\r\n}\r\n.closer-icon:hover {\r\n  color: #000000;\r\n  text-decoration: none;\r\n  opacity: 0.4;\r\n  filter: alpha(opacity=40);\r\n  cursor: pointer;\r\n}\r\n\r\n\r\n/*Map*/\r\n#map {\r\n    width: 100%;\r\n    height: 100%;\r\n}\r\n\r\n#content {\r\n    width: 100%;\r\n    height:  calc(100% - 60px);\r\n    position:fixed;\r\n    bottom: 0px;\r\n}\r\n\r\n/*Toolbar*/\r\n#toolbar {\r\n  height:60px;\r\n}\r\n\r\n\r\n\r\n/*OpenLayers controls*/\r\n.ol-unsupported {\r\n  display: none;\r\n}\r\n\r\n.ol-viewport .ol-unselectable {\r\n  -webkit-touch-callout: none;\r\n  -webkit-user-select: none;\r\n  -khtml-user-select: none;\r\n  -moz-user-select: none;\r\n  -ms-user-select: none;\r\n  user-select: none;\r\n  -webkit-tap-highlight-color: transparent;\r\n}\r\n\r\n.ol-control {\r\n  position: absolute;\r\n  background-color: #eee;\r\n  background-color: rgba(255,255,255,.4);\r\n  border-radius: 4px;\r\n  padding: 2px;\r\n}\r\n\r\n.ol-control:hover {\r\n  background-color: rgba(255,255,255,.6);\r\n}\r\n\r\n@media print {\r\n  .ol-control {\r\n    display: none;\r\n  }\r\n}\r\n\r\n.ol-control button {\r\n  display: block;\r\n  margin: 1px;\r\n  padding: 0;\r\n  color: #fff;\r\n  font-size: 1.14em;\r\n  font-weight: 700;\r\n  text-decoration: none;\r\n  text-align: center;\r\n  height: 1.375em;\r\n  width: 1.375em;\r\n  line-height: .4em;\r\n  background-color: #7b98bc;\r\n  background-color: rgba(0,60,136,.5);\r\n  border: none;\r\n  border-radius: 2px;\r\n}\r\n\r\n.ol-control button::-moz-focus-inner {\r\n  border: none;\r\n  padding: 0;\r\n}\r\n\r\n.ol-touch .ol-control button {\r\n  font-size: 1.5em;\r\n}\r\n\r\n.ol-control button:focus,.ol-control button:hover {\r\n  text-decoration: none;\r\n  background-color: #4c6079;\r\n  background-color: rgba(0,60,136,.7);\r\n}\r\n\r\n.ol-compass {\r\n  display: block;\r\n  font-weight: 400;\r\n  font-size: 1.2em;\r\n}\r\n\r\n/*Popup*/\r\n.ol-popup {\r\n    display: none;\r\n    position: absolute;\r\n    background-color: white;\r\n    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);\r\n    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));\r\n    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));\r\n    padding: 15px;\r\n    padding-top:35px;\r\n    border-radius: 10px;\r\n    border: 1px solid #cccccc;\r\n    bottom: 12px;\r\n    left: -50px;\r\n    height: auto;\r\n    width: auto;\r\n    min-width: 250px;\r\n    max-height: 350px;\r\n    max-width: 500px;\r\n    overflow: auto;\r\n}\r\n\r\n.ol-popup-closer {\r\n    text-decoration: none;\r\n    position: absolute;\r\n    top: 2px;\r\n    right: 8px;\r\n    }\r\n\r\n.ol-popup-closer:after {\r\n    content: \"&#10006;\";\r\n}\r\n\r\n\r\n\r\n\r\n\r\n", 
-            "Name": "basic"
-        }, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
         "Title": "My Web App", 
+        "Use JSONP for WFS connections": true, 
         "Use layer scale dependent visibility": true, 
-        "Use view CRS for WFS connections": true, 
-        "Zoom level when zooming to point feature": "16"
+        "Use view CRS for WFS connections": true
     }, 
     "Widgets": {}
 }

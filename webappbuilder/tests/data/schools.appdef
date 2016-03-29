@@ -1,0 +1,88 @@
+{
+    "Base layers": [], 
+    "Deploy": {
+        "GeoServer password": "geoserver", 
+        "GeoServer url": "http://localhost:8080/geoserver", 
+        "GeoServer username": "admin", 
+        "GeoServer workspace": "mywebapp", 
+        "PostGIS database": "database", 
+        "PostGIS host": "localhost", 
+        "PostGIS password": "postgres", 
+        "PostGIS port": "5432", 
+        "PostGIS schema": "mywebapp", 
+        "PostGIS username": "postgres"
+    }, 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 40.0, 
+            "layer": "schools", 
+            "method": 0, 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>PUBLIC</td><td style=\"text-align:right\">[PUBLIC]</td></tr><tr><td>POSTCODE</td><td style=\"text-align:right\">[POSTCODE]</td></tr><tr><td>PLACENAME</td><td style=\"text-align:right\">[PLACENAME]</td></tr></table>", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
+        "Title": "My Web App", 
+        "Use JSONP for WFS connections": true, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "attributestable": {
+            "Parameters": {
+                "Zoom level when zooming to point feature": "16"
+            }
+        }, 
+        "charttool": {
+            "Parameters": {
+                "charts": {
+                    "count by type": {
+                        "categoryField": "PUBLIC", 
+                        "displayMode": 2, 
+                        "layer": "schools", 
+                        "operation": 0, 
+                        "valueFields": []
+                    }
+                }
+            }
+        }, 
+        "geocoding": {
+            "Parameters": {}
+        }, 
+        "layerslist": {
+            "Parameters": {
+                "allowFiltering": true, 
+                "allowReordering": false, 
+                "downloadFormat": "GeoJSON", 
+                "expandOnHover": true, 
+                "showDownload": false, 
+                "showOpacity": false, 
+                "showZoomTo": false, 
+                "tipLabel": "Layers"
+            }
+        }, 
+        "selectiontools": {
+            "Parameters": {}
+        }
+    }
+}
