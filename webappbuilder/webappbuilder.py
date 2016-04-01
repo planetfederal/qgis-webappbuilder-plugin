@@ -15,7 +15,7 @@ class WebAppBuilderPlugin:
     def __init__(self, iface):
         self.iface = iface
         try:
-            from tests import testerplugin
+            from webappbuilder.tests import testerplugin
             from qgistester.tests import addTestModule
             addTestModule(testerplugin, "Web App Builder")
         except:
