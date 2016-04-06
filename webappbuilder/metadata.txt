@@ -13,7 +13,7 @@ name=Web App Builder
 qgisMinimumVersion=2.0
 description=Creates OL3-based web apps
 about=Easily create web apps based on OpenLayers and the Boundless WebSDK
-version=0.5
+version=0.5.1
 author=Victor Olaya
 email=volaya@boundlessgeo.com
 
