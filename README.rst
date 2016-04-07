@@ -6,7 +6,7 @@ A QGIS plugin to easily create web apps based on OpenLayers and the Boundless We
 Installation
 ============
 
-To install, download the latest release from the `releases page <https://github.com/boundlessgeo/qgis-app-builder/releases>`_ and unzip it in the QGIS plugins folder at ``[your_user_folder]/.qgis2/python/plugins``
+To install, download the latest release from the `releases page <https://github.com/boundlessgeo/qgis-webappbuilder-plugin/releases>`_ and unzip it in the QGIS plugins folder at ``[your_user_folder]/.qgis2/python/plugins``
 
 
 Installing from sources
@@ -25,5 +25,5 @@ Install into QGIS by running
 Documentation
 ==============
 
-Usage is documented `here <http://boundlessgeo.github.io/qgis-app-builder>`_
+Usage is documented `here <http://boundlessgeo.github.io/qgis-webappbuilder-plugin>`_
 
