@@ -1,33 +1,38 @@
-baseLayers = [];var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});
-geojsonFormat_wfs = new ol.format.GeoJSON();
+var baseLayers = [];var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
+                    'base-group', 'title': 'Base maps', layers: baseLayers});
+var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
+window.wfsCallback_wfs = function(jsonData) {
+                        wfsSource_wfs.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
+                    };
                     var wfsSource_wfs = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
-                            var url = 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature' +
-                                '&typename=osm:placenames_large&outputFormat=text/javascript&format_options=callback:loadFeatures_wfs' +
+                            var script = document.createElement('script');
+                            script.src = 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature' +
+                                '&typename=osm:placenames_large&outputFormat=text/javascript&format_options=callback:wfsCallback_wfs' +
                                 '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
-                            $.ajax({
-                                url: url,
-                                dataType: 'jsonp'
-                            });
+                            document.head.appendChild(script);
                         },
-                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19})),
+                        strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19}))
                     });
-                    var loadFeatures_wfs = function(response) {
-                        wfsSource_wfs.addFeatures(
-                                geojsonFormat_wfs.readFeatures(response,
-                                    {dataProjection: 'EPSG:3857', featureProjection: 'EPSG:3857'}));
-                    };
-
                     var lyr_wfs = new ol.layer.Vector({
                             opacity: 1.0,
                             source: wfsSource_wfs,  
                             style: style_wfs,
+                            selectedStyle: selectionStyle_wfs,
                             title: "wfs",
                             id: "Countries_and_States20150909091003951",
+                            wfsInfo: {featureNS: '',
+                    typeName: 'osm:placenames_large',
+                    geometryType: 'Point',
+                    geometryName: 'the_geom',
+                    url: 'http://demo.boundlessgeo.com/geoserver/wfs'
+                  },
+                  isWFST:false,
                             filters: [],
                             timeInfo: null,
-                            isSelectable: true
+                            isSelectable: true,
+                            popupInfo: ""
                         });
 
 lyr_wfs.setVisible(true);

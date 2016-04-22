@@ -12,48 +12,48 @@ class LayersTest(unittest.TestCase):
 
     def testLocalPointsLayer(self):
         folder = createAppFromTestAppdef("localpoints")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localpoints.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpoints.js"))
 
     def testLocalLinesLayer(self):
         folder = createAppFromTestAppdef("locallines")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_locallines.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_locallines.js"))
 
     def testLocalPolygonsLayer(self):
         folder = createAppFromTestAppdef("localpolygons")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localpolygons.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpolygons.js"))
 
     def testLocalRasterLayer(self):
         folder = createAppFromTestAppdef("localraster")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_localraster.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localraster.js"))
 
     def testWMSLayer(self):
         folder = createAppFromTestAppdef("layerwms")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_wms.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wms.js"))
 
     def testWFSLayer(self):
         folder = createAppFromTestAppdef("layerwfs")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_wfs.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
 
     def testLayerGroup(self):
         folder = createAppFromTestAppdef("layergroup")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_layergroup.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_layergroup.js"))
 
     def testMultipleBaseLayers(self):
         folder = createAppFromTestAppdef("multiplebaselayers")
-        layersFile = os.path.join(folder, "layers", "layers.js")
-        self.assertTrue(compareWithExpectedOutputFile(layersFile, "layers_multiplebaselayers.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_multiplebaselayers.js"))
 
     def testPopups(self):
         folder = createAppFromTestAppdef("popupsonhover")
-        outputFile = os.path.join(folder, "index.js")
-        self.assertFalse(checkTextInFile(outputFile, "popupLayers=[`<b>n</b>: [n]`];"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(checkTextInFile(appFile, 'popupInfo: "<b>n</b>: [n]"'))
 
 def suite():
     suite = unittest.TestSuite()

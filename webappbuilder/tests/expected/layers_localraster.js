@@ -1,4 +1,6 @@
-baseLayers = [];var baseLayersGroup = new ol.layer.Group({'type': 'base', 'title': 'Base maps', layers: baseLayers});
+var baseLayers = [];var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
+                    'base-group', 'title': 'Base maps', layers: baseLayers});
+var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
 var lyr_raster = new ol.layer.Image({
                                 opacity: 1.0,
                                  
