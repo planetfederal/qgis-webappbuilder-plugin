@@ -103,27 +103,23 @@ var categories_polygons = {"2": [ new ol.style.Style({
                         fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})
                         })
                         ]};
-                        var textStyleCache_polygons={}
-                        var clusterStyleCache_polygons={}
-                        var selectedClusterStyleCache_polygons={}
-                        var style_polygons = function(feature, resolution){
-                        var selected = lyr_polygons.selectedFeatures;
-                        
-                        if (feature.hide === true){
-                return null;
-            }
-            
+                    var textStyleCache_polygons={}
+                    var clusterStyleCache_polygons={}
+                    var style_polygons = function(feature, resolution){
                         
                         var value = feature.get("n");
                         var style = categories_polygons[value];
-                        var selectionStyle = categoriesSelected_polygons[value];
-                        allStyles = [];
+                        var allStyles = [];
                         
-                        if (selected && selected.indexOf(feature) != -1){
-                            allStyles.push.apply(allStyles, selectionStyle);
-                        }
-                        else{
-                            allStyles.push.apply(allStyles, style);
-                        }
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    };
+                    var selectionStyle_polygons = function(feature, resolution){
+                        
+                        var value = feature.get("n");
+                        var style = categoriesSelected_polygons[value]
+                        var allStyles = [];
+                        
+                        allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };

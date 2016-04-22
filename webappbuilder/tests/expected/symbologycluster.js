@@ -5,7 +5,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/plane00010.svg",
+                  src: "./data/styles/plane00010.svg",
                   rotation: 0.000000
             })
                         })
@@ -17,7 +17,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/amenity=airport00010.svg",
+                  src: "./data/styles/amenity=airport00010.svg",
                   rotation: 0.000000
             })
                         })
@@ -29,7 +29,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/landuse_coniferous0229010.svg",
+                  src: "./data/styles/landuse_coniferous0229010.svg",
                   rotation: 0.000000
             })
                         })
@@ -95,7 +95,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/plane25520401.svg",
+                  src: "./data/styles/plane25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -107,7 +107,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/amenity=airport25520401.svg",
+                  src: "./data/styles/amenity=airport25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -119,7 +119,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/landuse_coniferous25520401.svg",
+                  src: "./data/styles/landuse_coniferous25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -179,34 +179,37 @@ var categories_points = {"2": [ new ol.style.Style({
                             image: new ol.style.Circle({radius: 3.8, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})})
                         })
                         ]};
-                        var textStyleCache_points={}
-                        var clusterStyleCache_points={}
-                        var selectedClusterStyleCache_points={}
-                        var style_points = function(feature, resolution){
-                        var selected = lyr_points.selectedFeatures;
-                        var size = feature.get('features').length;
+                    var textStyleCache_points={}
+                    var clusterStyleCache_points={}
+                    var style_points = function(feature, resolution){
+                        var features = feature.get('features');
+                            var size = 0;
+                            for (var i = 0, ii = features.length; i < ii; ++i) {
+                              if (features[i].hide !== true) {
+                                size++;
+                              }
+                            }
+                            if (size === 0) {
+                              return undefined;
+                            }
                             if (size != 1){
                                 var features = feature.get('features');
-                                var numSelected = 0;
                                 var numVisible = 0;
                                 for (var i = 0; i < size; i++) {
                                     if (features[i].hide != true) {
                                         numVisible++;
-                                        if (selected && selected.indexOf(features[i]) != -1) {
-                                            numSelected++;
-                                        }
                                     }
                                 }
                                 if (numVisible === 0) {
                                     return null;
                                 }
                                 if (numVisible != 1) {
-                                    var color = numSelected == 0 ? '#3399CC' : '#FFCC00'
-                                    var style = numSelected == 0 ? clusterStyleCache_points[numVisible] : selectedClusterStyleCache_points[numVisible];
+                                    var color = '#3399CC'
+                                    var style = clusterStyleCache_points[numVisible]
                                     if (!style) {
                                         style = [new ol.style.Style({
                                             image: new ol.style.Circle({
-                                                radius: 10,
+                                                radius: 14,
                                                 stroke: new ol.style.Stroke({
                                                     color: '#fff'
                                                 }),
@@ -218,35 +221,24 @@ var categories_points = {"2": [ new ol.style.Style({
                                                 text: numVisible.toString(),
                                                 fill: new ol.style.Fill({
                                                     color: '#fff'
+                                                }),
+                                                stroke: new ol.style.Stroke({
+                                                  color: 'rgba(0, 0, 0, 0.6)',
+                                                  width: 3
                                                 })
                                             })
                                         })];
-                                        if (numSelected == 0) {
-                                            clusterStyleCache_points[numVisible] = style;
-                                        } else {
-                                            selectedClusterStyleCache_points[numVisible] = style;
-                                        }
+                                        clusterStyleCache_points[numVisible] = style;
                                     }
                                     return style;
                                 }
                             }
-                            feature = feature.get('features')[0]
+                            feature = feature.get('features')[0];
                             
-                        if (feature.hide === true){
-                return null;
-            }
-            
-                        
                         var value = feature.get("n");
                         var style = categories_points[value];
-                        var selectionStyle = categoriesSelected_points[value];
-                        allStyles = [];
+                        var allStyles = [];
                         
-                        if (selected && selected.indexOf(feature) != -1){
-                            allStyles.push.apply(allStyles, selectionStyle);
-                        }
-                        else{
-                            allStyles.push.apply(allStyles, style);
-                        }
+                        allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };

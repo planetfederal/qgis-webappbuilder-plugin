@@ -37,7 +37,7 @@ def compareWithExpectedOutputFile(file1, file2):
     filename2 = os.path.join(os.path.dirname(__file__), "expected", file2)
     with open(filename2) as f:
         content2 = f.read()
-    return content == content2
+    return content2 in content
 
 def checkTextInFile(filename, text):
     with open(filename) as f:

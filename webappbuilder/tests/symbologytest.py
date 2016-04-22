@@ -12,28 +12,28 @@ class SymbologyTest(unittest.TestCase):
 
     def testPointsSymbology(self):
         folder = createAppFromTestAppdef("symbologypoints")
-        styleFile = os.path.join(folder,"styles", "points.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologypoints.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
         folder = createAppFromTestAppdef("symbologycluster")
-        styleFile = os.path.join(folder,"styles", "points.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologycluster.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         folder = createAppFromTestAppdef("symbologylines")
-        styleFile = os.path.join(folder,"styles", "lines.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologylines.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologylines.js"))
 
     def testPolygonsSymbology(self):
         folder = createAppFromTestAppdef("symbologypolygons")
-        styleFile = os.path.join(folder,"styles", "polygons.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologypolygons.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypolygons.js"))
 
     def testSimpleLabelsSymbology(self):
         folder = createAppFromTestAppdef("symbologysimplelabels")
-        styleFile = os.path.join(folder,"styles", "simplelabels.js")
-        self.assertTrue(compareWithExpectedOutputFile(styleFile, "symbologysimplelabels.js"))
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologysimplelabels.js"))
 
 def suite():
     suite = unittest.TestSuite()
@@ -42,4 +42,3 @@ def suite():
 
 def run_tests():
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
-

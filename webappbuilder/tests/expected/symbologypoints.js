@@ -5,7 +5,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/plane00010.svg",
+                  src: "./data/styles/plane00010.svg",
                   rotation: 0.000000
             })
                         })
@@ -17,7 +17,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/amenity=airport00010.svg",
+                  src: "./data/styles/amenity=airport00010.svg",
                   rotation: 0.000000
             })
                         })
@@ -29,7 +29,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/landuse_coniferous0229010.svg",
+                  src: "./data/styles/landuse_coniferous0229010.svg",
                   rotation: 0.000000
             })
                         })
@@ -95,7 +95,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/plane25520401.svg",
+                  src: "./data/styles/plane25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -107,7 +107,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/amenity=airport25520401.svg",
+                  src: "./data/styles/amenity=airport25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -119,7 +119,7 @@ var categories_points = {"2": [ new ol.style.Style({
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
-                  src: "styles/landuse_coniferous25520401.svg",
+                  src: "./data/styles/landuse_coniferous25520401.svg",
                   rotation: 0.000000
             })
                         })
@@ -179,27 +179,23 @@ var categories_points = {"2": [ new ol.style.Style({
                             image: new ol.style.Circle({radius: 3.8, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})})
                         })
                         ]};
-                        var textStyleCache_points={}
-                        var clusterStyleCache_points={}
-                        var selectedClusterStyleCache_points={}
-                        var style_points = function(feature, resolution){
-                        var selected = lyr_points.selectedFeatures;
-                        
-                        if (feature.hide === true){
-                return null;
-            }
-            
+                    var textStyleCache_points={}
+                    var clusterStyleCache_points={}
+                    var style_points = function(feature, resolution){
                         
                         var value = feature.get("n");
                         var style = categories_points[value];
-                        var selectionStyle = categoriesSelected_points[value];
-                        allStyles = [];
+                        var allStyles = [];
                         
-                        if (selected && selected.indexOf(feature) != -1){
-                            allStyles.push.apply(allStyles, selectionStyle);
-                        }
-                        else{
-                            allStyles.push.apply(allStyles, style);
-                        }
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    };
+                    var selectionStyle_points = function(feature, resolution){
+                        
+                        var value = feature.get("n");
+                        var style = categoriesSelected_points[value]
+                        var allStyles = [];
+                        
+                        allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };

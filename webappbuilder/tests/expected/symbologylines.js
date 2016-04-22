@@ -65,27 +65,23 @@ var categories_lines = {"2": [ new ol.style.Style({
                             
                         })
                         ]};
-                        var textStyleCache_lines={}
-                        var clusterStyleCache_lines={}
-                        var selectedClusterStyleCache_lines={}
-                        var style_lines = function(feature, resolution){
-                        var selected = lyr_lines.selectedFeatures;
-                        
-                        if (feature.hide === true){
-                return null;
-            }
-            
+                    var textStyleCache_lines={}
+                    var clusterStyleCache_lines={}
+                    var style_lines = function(feature, resolution){
                         
                         var value = feature.get("n");
                         var style = categories_lines[value];
-                        var selectionStyle = categoriesSelected_lines[value];
-                        allStyles = [];
+                        var allStyles = [];
                         
-                        if (selected && selected.indexOf(feature) != -1){
-                            allStyles.push.apply(allStyles, selectionStyle);
-                        }
-                        else{
-                            allStyles.push.apply(allStyles, style);
-                        }
+                        allStyles.push.apply(allStyles, style);
+                        return allStyles;
+                    };
+                    var selectionStyle_lines = function(feature, resolution){
+                        
+                        var value = feature.get("n");
+                        var style = categoriesSelected_lines[value]
+                        var allStyles = [];
+                        
+                        allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
