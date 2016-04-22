@@ -1,13 +1,16 @@
 import os
+import shutil
+import webbrowser
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import *
-from maindialog import MainDialog
-from appcreator import loadAppdef
-from settings import initialize
-import shutil
-from utils import tempFolder
-import webbrowser
+
+from webappbuilder.maindialog import MainDialog
+from webappbuilder.appcreator import loadAppdef
+from webappbuilder.settings import initialize
+from webappbuilder.utils import tempFolder
 
 
 class WebAppBuilderPlugin:
@@ -20,7 +23,6 @@ class WebAppBuilderPlugin:
             addTestModule(testerplugin, "Web App Builder")
         except:
             pass
-
 
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")

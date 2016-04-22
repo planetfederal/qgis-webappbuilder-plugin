@@ -1,4 +1,3 @@
-import sys
 import os
 import site
 
@@ -6,5 +5,5 @@ site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
 
 def classFactory(iface):
 
-    from webappbuilder import WebAppBuilderPlugin
+    from webappbuilder.webappbuilder_plugin import WebAppBuilderPlugin
     return WebAppBuilderPlugin(iface)

@@ -1,16 +1,15 @@
+import webbrowser
+
 import settingstest
 import widgetstest
 import appdefvaliditytest
 import symbologytest
 import layerstest
 from webappbuilder.tests.utils import loadTestProject, createAppFromTestAppdef
-import webbrowser
-
-# Tests for the QGIS Tester plugin. To know more see
-# https://github.com/boundlessgeo/qgis-tester-plugin
-
 
 webAppFolder = None
+
+
 def functionalTests():
     try:
         from qgistester.test import Test
