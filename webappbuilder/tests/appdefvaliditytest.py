@@ -12,8 +12,8 @@ class AppdefValidityTest(unittest.TestCase):
 
     def testBaseLayerNot3857(self):
         problems = checkAppCanBeCreated(testAppdef("baselayernot3857"))
-        self.assertEqual(1, len(problems))
-        self.assertTrue("Base layers can only be used if view CRS is EPSG:3857." in problems[0])
+        self.assertEqual(0, len(problems))
+        #self.assertTrue("Base layers can only be used if view CRS is EPSG:3857." in problems[0])
 
     def testUnsupportedSymbology(self):
         problems = checkAppCanBeCreated(testAppdef("unsupportedsymbology"))
