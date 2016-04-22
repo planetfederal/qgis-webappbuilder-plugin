@@ -42,6 +42,7 @@ widgetFiles = {"threedview":['resources/3dview.css', 'resources/cesium-control.j
 class WidgetsTest(unittest.TestCase):
 
     def testWidgetsCorrectlyLoaded(self):
+        """Check that all widgets loaded"""
         for w in widgetFiles:
             self.assertTrue(w in webAppWidgets), 'Widget {} not loaded'.format(w)
 

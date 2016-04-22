@@ -11,26 +11,31 @@ class SymbologyTest(unittest.TestCase):
         utils.loadTestProject("symbology")
 
     def testPointsSymbology(self):
+        """Check that point symbology exported correctly"""
         folder = createAppFromTestAppdef("symbologypoints")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
+        """Check that point clustering works correctly"""
         folder = createAppFromTestAppdef("symbologycluster")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
+        """Check that line symbology exported correctly"""
         folder = createAppFromTestAppdef("symbologylines")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologylines.js"))
 
     def testPolygonsSymbology(self):
+        """Check that polygon symbology exported correctly"""
         folder = createAppFromTestAppdef("symbologypolygons")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypolygons.js"))
 
     def testSimpleLabelsSymbology(self):
+        """Check that labels exported correctly"""
         folder = createAppFromTestAppdef("symbologysimplelabels")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologysimplelabels.js"))
