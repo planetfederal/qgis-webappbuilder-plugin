@@ -10,8 +10,8 @@ The Web App Builder plugin for QGIS allows for the creation of web applications 
 .. toctree::
    :maxdepth: 1
 
-   wabandwebsdk/index
-   usage/index
-   controls/index
+   wabandwebsdk
+   usage
+   controls
    tutorials/index
 
