@@ -5,7 +5,8 @@ import widgetstest
 import appdefvaliditytest
 import symbologytest
 import layerstest
-from webappbuilder.tests.utils import loadTestProject, createAppFromTestAppdef
+from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
+                                        loadTestProject, openWAB, closeWAB)
 
 webAppFolder = None
 
@@ -29,6 +30,31 @@ def functionalTests():
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
     tests = [_test("bakeries"), _test("schools"), _test("fires")]
+
+    unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
+    unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())
+    unconfiguredBookmarksTest.addStep("Open WAB", lambda: openWAB())
+    unconfiguredBookmarksTest.addStep("Try to create an app with the bookmarks widget, without configuring it to add bookmarks.\n"
+                         "Verify it shows a warning.")
+    unconfiguredBookmarksTest.setCleanup(closeWAB())
+    tests.append(unconfiguredBookmarksTest)
+
+
+    unsupportedSymbologyTest = Test("Verify warning for unsupported symbology")
+    unsupportedSymbologyTest.addStep("Load project", lambda: loadTestProject())
+    unsupportedSymbologyTest.addStep("Open WAB", lambda: openWAB())
+    unsupportedSymbologyTest.addStep("Click on 'Preview'. Verify a warning about unsupported symbology is shown.\n"
+                         "Verify it shows a warning.")
+    tests.append(unsupportedSymbologyTest)
+    unsupportedSymbologyTest.setCleanup(closeWAB())
+
+    wrongLogoTest = Test("Verify warning for wrong logo file")
+    wrongLogoTest.addStep("Load project", lambda: loadTestProject())
+    wrongLogoTest.addStep("Open WAB", lambda: openWAB())
+    wrongLogoTest.addStep("Enter 'wrong' in the logo textbox and click on 'Preview'."
+                                     "The logo texbox should get a yellow background.")
+    wrongLogoTest.setCleanup(closeWAB())
+    tests.append(wrongLogoTest)
 
     return tests
 
