@@ -388,7 +388,10 @@ class MainDialog(BASE, WIDGET):
 
 
     def preview(self):
-        appdef = self.createAppDefinition(True)
+        try:
+            appdef = self.createAppDefinition(True)
+        except WrongValueException:
+            return
         problems = checkAppCanBeCreated(appdef)
         if problems:
             dlg = AppDefProblemsDialog(problems)
