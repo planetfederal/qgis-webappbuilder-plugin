@@ -78,7 +78,7 @@ class MainDialog(BASE, WIDGET):
         self.tabPanel.setCurrentIndex(0)
 
     def showHelp(self):
-        webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder")
+        webbrowser.open_new("http://boundlessgeo.github.io/qgis-webappbuilder-plugin/")
 
     def tabChanged(self, index):
         if index == 4:
@@ -544,7 +544,6 @@ class MainDialog(BASE, WIDGET):
                 parameters[param] = item.value()
         except WrongValueException, e:
             self.tabPanel.setCurrentIndex(5)
-            raise e
 
         return parameters
 
