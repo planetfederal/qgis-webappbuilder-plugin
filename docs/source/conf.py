@@ -166,6 +166,11 @@ html_theme_path = ['../themes']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'WebAppBuilderQGISplugindoc'
 
+# Substitutions
+rst_epilog = """
+.. |BLQGIS| replace:: *Bouldless Desktop*
+.. |current_plugin| replace:: *Web App Builder plugin for QGIS*
+"""
 
 # -- Options for LaTeX output --------------------------------------------------
 
