@@ -6,6 +6,9 @@ from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
 from webappbuilder.appwriter import writeWebApp
 from webappbuilder.utils import tempFolderInTempFolder
+from webappbuilder.maindialog import MainDialog
+from webappbuilder.settings import initialize
+from PyQt4.QtGui import QDialog
 
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
@@ -18,6 +21,16 @@ def testAppdef(name):
     appdef = loadAppdef(filename)
     processAppdef(appdef)
     return appdef
+
+def openWAB():
+    initialize()
+    dlg = MainDialog(None)
+    dlg.open()
+
+def closeWAB():
+    for dialog in iface.mainWindow().children():
+        if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
+            dialog.close()
 
 class SilentProgress():
     def setText(_, text):
