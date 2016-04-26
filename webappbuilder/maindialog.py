@@ -524,7 +524,6 @@ class MainDialog(BASE, WIDGET):
             title = self._getValue(self.titleBox, True)
         except WrongValueException, e:
             self.tabPanel.setCurrentIndex(0)
-            raise e
         for b in self.themesButtons:
             if b.isChecked():
                 themeName = b.text()
