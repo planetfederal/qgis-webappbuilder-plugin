@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>WABMainDialog</class>
+ <widget class="QDialog" name="WABMainDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -82,8 +82,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>714</width>
-            <height>364</height>
+            <width>712</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -177,8 +177,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>203</height>
+               <width>98</width>
+               <height>36</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
@@ -210,8 +210,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>203</height>
+               <width>98</width>
+               <height>36</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
@@ -250,8 +250,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>450</height>
+               <width>98</width>
+               <height>36</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -284,8 +284,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>699</width>
-            <height>499</height>
+            <width>327</width>
+            <height>472</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -295,7 +295,7 @@
               <string notr="true">color: rgb(170, 0, 0);</string>
              </property>
              <property name="text">
-              <string>Panels are disabled because the selected deploy method in the QGIS Layers tab do not use PostGIS and/or GeoServer. 
+              <string>Panels are disabled because the selected deploy method in the QGIS Layers tab do not use PostGIS and/or GeoServer.
 They will become enabled once the deploy method is modified and the corresponding setting in this tab are needed</string>
              </property>
              <property name="wordWrap">
