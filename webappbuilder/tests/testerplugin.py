@@ -6,7 +6,7 @@ import appdefvaliditytest
 import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
-                                        loadTestProject, openWAB, closeWAB)
+                                        loadTestProject, openWAB, closeWAB, testAppdef)
 
 webAppFolder = None
 
@@ -36,25 +36,33 @@ def functionalTests():
     unconfiguredBookmarksTest.addStep("Open WAB", lambda: openWAB())
     unconfiguredBookmarksTest.addStep("Try to create an app with the bookmarks widget, without configuring it to add bookmarks.\n"
                          "Verify it shows a warning.")
-    unconfiguredBookmarksTest.setCleanup(closeWAB())
+    unconfiguredBookmarksTest.setCleanup(closeWAB)
     tests.append(unconfiguredBookmarksTest)
 
 
     unsupportedSymbologyTest = Test("Verify warning for unsupported symbology")
     unsupportedSymbologyTest.addStep("Load project", lambda: loadTestProject())
-    unsupportedSymbologyTest.addStep("Open WAB", lambda: openWAB())
+    unsupportedSymbologyTest.addStep("Open WAB", openWAB)
     unsupportedSymbologyTest.addStep("Click on 'Preview'. Verify a warning about unsupported symbology is shown.\n"
                          "Verify it shows a warning.")
     tests.append(unsupportedSymbologyTest)
-    unsupportedSymbologyTest.setCleanup(closeWAB())
+    unsupportedSymbologyTest.setCleanup(closeWAB)
 
     wrongLogoTest = Test("Verify warning for wrong logo file")
     wrongLogoTest.addStep("Load project", lambda: loadTestProject())
-    wrongLogoTest.addStep("Open WAB", lambda: openWAB())
+    wrongLogoTest.addStep("Open WAB", openWAB)
     wrongLogoTest.addStep("Enter 'wrong' in the logo textbox and click on 'Preview'."
                                      "The logo texbox should get a yellow background.")
-    wrongLogoTest.setCleanup(closeWAB())
+    wrongLogoTest.setCleanup(closeWAB)
     tests.append(wrongLogoTest)
+
+    previewWithAllWidgetsTest = Test("Verify preview of an app with all tests")
+    previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
+    appdef = testAppdef("allwidgets", False)
+    previewWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
+    previewWithAllWidgetsTest.addStep("Click on 'Preview' and verify app is correctly shown and it works.")
+    previewWithAllWidgetsTest.setCleanup(closeWAB)
+    tests.append(previewWithAllWidgetsTest)
 
     return tests
 

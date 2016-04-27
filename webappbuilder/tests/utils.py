@@ -16,15 +16,16 @@ def loadTestProject(name = "base"):
     if os.path.normpath(currentProjectFile) != os.path.normpath(projectFile):
         iface.addProject(projectFile)
 
-def testAppdef(name):
+def testAppdef(name, process = True):
     filename = os.path.join(os.path.dirname(__file__), "data", name + ".appdef")
     appdef = loadAppdef(filename)
-    processAppdef(appdef)
+    if process:
+        processAppdef(appdef)
     return appdef
 
-def openWAB():
+def openWAB(appdef = None):
     initialize()
-    dlg = MainDialog(None)
+    dlg = MainDialog(appdef)
     dlg.open()
 
 def closeWAB():
