@@ -26,6 +26,9 @@ sys.path.append(os.path.dirname(__file__))
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'ui_maindialog.ui'))
 
+def icon(f):
+    return QIcon(os.path.join(os.path.dirname(__file__), "icons", f))
+
 class MainDialog(BASE, WIDGET):
 
     items = {}
@@ -41,7 +44,9 @@ class MainDialog(BASE, WIDGET):
         self.populateWidgets()
         self.buttonLogo.clicked.connect(self.selectLogo)
         self.buttonCreateApp.clicked.connect(self.createApp)
+        self.buttonCreateApp.setIcon(icon("export.png"))
         self.buttonPreview.clicked.connect(self.preview)
+        self.buttonPreview.setIcon(icon("preview.gif"))
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
         self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
