@@ -209,6 +209,7 @@ Adds a button to return to the initial map extent.
 
 There are no configurable properties for this control.
 
+.. _qgis.webappbuilder.controls.layerlist:
 
 Layers list
 -----------
@@ -356,6 +357,8 @@ An arrow that indicates the north direction.
    North arrow
 
 There are no configurable properties for this control.
+
+.. _qgis.webappbuilder.controls.overview:
 
 Overview map
 ------------
