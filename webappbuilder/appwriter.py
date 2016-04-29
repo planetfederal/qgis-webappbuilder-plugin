@@ -111,7 +111,7 @@ def writeJs(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s")}' % ext)
+        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext)
     app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
 
     variables ="\n".join(app.variables)
@@ -163,7 +163,7 @@ def writeJsx(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s")}' % ext)
+        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext)
     app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
