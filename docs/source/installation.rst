@@ -4,7 +4,7 @@
 Installation
 ============
 
-The easiest way to install |current_plugin| is to use the **Boundless Connect Plugin**, a QGIS plugin that will provide you direct access to Boundless plugins and other content.
+The easiest way to install |current_plugin| in QGIS is to use the **Boundless Connect Plugin**, a QGIS plugin that will provide you direct access to Boundless plugins and other content.
 
 .. note:: 
    
