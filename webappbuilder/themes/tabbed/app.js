@@ -1,3 +1,5 @@
+injectTapEventPlugin();
+
 var defaultFill = new ol.style.Fill({
    color: 'rgba(255,255,255,0.4)'
  });
@@ -61,9 +63,10 @@ var TabbedApp = React.createClass({
     this._toggle(document.getElementById('wfst'));
   },
   render() {
-    var options = [@TOOLBAR@];
+    var toolbarElements = [@TOOLBAR@];
+    var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(TOOLBAR, {options: options}
+       React.createElement(AppBar, toolbarOptions, toolbarElements
        ),
        React.createElement("div", {id: 'content'},
          React.createElement("div", {className: 'row full-height'},

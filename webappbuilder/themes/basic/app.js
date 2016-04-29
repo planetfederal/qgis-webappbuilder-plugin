@@ -1,3 +1,5 @@
+injectTapEventPlugin();
+
 var defaultFill = new ol.style.Fill({
    color: 'rgba(255,255,255,0.4)'
  });
@@ -62,10 +64,11 @@ var BasicApp = React.createClass({
     ToolActions.activateTool(null, 'navigation');
   },
   render() {
-    var options = [@TOOLBAR@];
+    var toolbarElements = [@TOOLBAR@];
+    var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-      React.createElement(Toolbar, {options: options}
-      ),
+       React.createElement(AppBar, toolbarOptions, toolbarElements
+       ),
       React.createElement("div", {id: 'content'},
         React.createElement("div", {id: 'map', ref: 'map'}
           @MAPPANELS@

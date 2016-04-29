@@ -5,13 +5,8 @@ from PyQt4.QtGui import QIcon
 class SelectionTools(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.tools.append('''{
-                              jsx: React.createElement(Select, {toggleGroup: 'navigation', map:map})
-                            }, {
-                              text: 'Navigation',
-                              icon: 'hand-paper-o',
-                              onClick: this._navigationFunc.bind(this)
-                            }''')
+        app.tools.append('''React.createElement(Select, {toggleGroup: 'navigation', map:map})''')
+        app.tools.append('''React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label:'Navigation', onTouchTap:this._navigationFunc.bind(this)})''')
 
         self.addReactComponent(app, "Select")
 

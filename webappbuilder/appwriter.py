@@ -108,11 +108,13 @@ def writeJs(appdef, folder, app, progress):
     app.variables.append("var originalExtent = %s;" % mapbounds)
 
     logoImg = appdef["Settings"]["Logo"].strip()
+    logoOption = ""
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext)
-    app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
+        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext
+
+    toolbarOptions = '{title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     variables ="\n".join(app.variables)
 
@@ -130,6 +132,7 @@ def writeJs(appdef, folder, app, progress):
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
                 "@TOOLBAR@": ",\n".join(app.tools),
+                "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget)}
 
@@ -160,11 +163,13 @@ def writeJsx(appdef, folder, app, progress):
     permalink = str(appdef["Settings"]["Add permalink functionality"]).lower()
 
     logoImg = appdef["Settings"]["Logo"].strip()
+    logoOption = ""
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        app.tools.append('{exclude: true, jsx: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext)
-    app.tools.append('{exclude: true, jsx: React.createElement("a", {className:"navbar-brand", href:"#"}, "%s")}' % appdef["Settings"]["Title"])
+        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext
+
+    toolbarOptions = '{title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {map: map, hover: %s})
@@ -187,6 +192,7 @@ def writeJsx(appdef, folder, app, progress):
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
                 "@TOOLBAR@": ",\n".join(app.tools),
+                "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
                 "@PERMALINK@": permalink}
