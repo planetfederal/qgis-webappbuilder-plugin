@@ -169,7 +169,7 @@ htmlhelp_basename = 'WebAppBuilderQGISplugindoc'
 # Substitutions
 rst_epilog = """
 .. |BLQGIS| replace:: *Bouldless Desktop*
-.. |current_plugin| replace:: *Web App Builder plugin for QGIS*
+.. |current_plugin| replace:: *Web App Builder plugin*
 """
 
 # -- Options for LaTeX output --------------------------------------------------
