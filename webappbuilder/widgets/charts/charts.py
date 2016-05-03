@@ -21,7 +21,7 @@ class ChartTool(WebAppWidget):
                                     )
                                 )''' % idx)
         else:
-            app.tools.append('''{jsx: React.createElement(Chart, {container:'chart-panel', charts:charts})}''')
+            app.tools.append('''React.createElement(Chart, {container:'chart-panel', charts:charts})''')
             app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
                                             React.createElement("a", {href:'#', id:'chart-panel-closer', className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
                                                                   "X"

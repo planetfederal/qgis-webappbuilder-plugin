@@ -24,9 +24,8 @@ class Geocoding(WebAppWidget):
             app.mappanels.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results'},
                                     React.createElement(GeocodingResults, {map:map})
                                   )''')
-            app.tools.append('''{jsx: React.createElement("div", {id:'geocoding', className:'pull-right'},
-                                        React.createElement(Geocoding, {})),
-                                exclude: true}''')
+            app.tools.append('''React.createElement("div", {id:'geocoding', className:'pull-right'},
+                                        React.createElement(Geocoding, {}))''')
         self.copyToResources("marker.png", folder)
 
 
