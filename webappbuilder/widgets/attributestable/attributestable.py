@@ -29,7 +29,7 @@ class AttributesTable(WebAppWidget):
                                     resizeTo:"tabs-panel", offset:[50, 60], map: map})
                                 )''' % (idx, layerVar, pointZoom))
         else:
-            app.tools.append("{text: 'Table', icon: 'list-alt', onClick: this._toggleTable.bind(this)}")
+            app.tools.append("React.createElement(RaisedButton, {label: 'Table', onTouchTap: this._toggleTable})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
                                           React.createElement(FeatureTable, {offset: [20, 20], ref: 'table', resizeTo: 'table-panel', layer: %s, pointZoom:%d, map: map})
                                     )''' % (layerVar, pointZoom))

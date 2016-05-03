@@ -79,10 +79,11 @@ class BasicApp extends App {
     ToolActions.activateTool(null, 'navigation');
   }
   render() {
-    var options = [@TOOLBAR@];
+    var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-      React.createElement(Toolbar, {options: options}
-      ),
+       React.createElement(AppBar, toolbarOptions,
+       @TOOLBAR@
+       ),
       React.createElement("div", {id: 'content'},
         React.createElement("div", {id: 'map', ref: 'map'}
           @MAPPANELS@

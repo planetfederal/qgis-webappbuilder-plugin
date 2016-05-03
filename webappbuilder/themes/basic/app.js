@@ -67,7 +67,8 @@ var BasicApp = React.createClass({
     var toolbarElements = [@TOOLBAR@];
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions, toolbarElements
+       React.createElement(AppBar, toolbarOptions,
+       @TOOLBAR@
        ),
       React.createElement("div", {id: 'content'},
         React.createElement("div", {id: 'map', ref: 'map'}

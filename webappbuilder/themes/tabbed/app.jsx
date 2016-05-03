@@ -63,9 +63,10 @@ class TabbedApp extends App {
     this._toggle(document.getElementById('wfst'));
   }
   render() {
-    var options = [@TOOLBAR@];
+    var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(TOOLBAR, {options: options}
+       React.createElement(AppBar, toolbarOptions,
+       @TOOLBAR@
        ),
        React.createElement("div", {id: 'content'},
          React.createElement("div", {className: 'row full-height'},
