@@ -32,8 +32,8 @@ class Bookmarks(WebAppWidget):
                                              str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
 
             else:
-                app.tools.append('''{jsx: React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
-                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks %s})}
+                app.tools.append('''React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
+                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks %s})
                                       ''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
                                              str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
             def extentInViewCrs(b):

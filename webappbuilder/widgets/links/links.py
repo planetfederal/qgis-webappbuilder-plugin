@@ -11,9 +11,9 @@ class Links(WebAppWidget):
         items = []
         for name, url in links.iteritems():
             items.append('React.createElement(DD.DropdownItem, {href:"%s"}, "%s")' % (url, name))
-        app.tools.append('''{jsx: React.createElement(DD.Dropdown, {title:"Links"},
+        app.tools.append('''React.createElement(DD.Dropdown, {title:"Links"},
                                         %s
-                                    )}''' % ",\n".join(items))
+                                    )''' % ",\n".join(items))
 
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))

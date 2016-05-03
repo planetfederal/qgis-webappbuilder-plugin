@@ -9,6 +9,13 @@ import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx'
 import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';
 import App from './node_modules/boundless-sdk/js/components/App.js';
 @IMPORTS@
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+// Needed for onTouchTap
+// Can go away when react 1.0 release
+// Check this repo:
+// https://github.com/zilverline/react-tap-event-plugin
+injectTapEventPlugin();
 
 var defaultFill = new ol.style.Fill({
    color: 'rgba(255,255,255,0.4)'
