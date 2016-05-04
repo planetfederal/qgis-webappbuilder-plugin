@@ -25,7 +25,7 @@ Install into QGIS by running
 Documentation
 ==============
 
-Usage is documented `here <http://boundlessgeo.github.io/qgis-webappbuilder-plugin>`_
+Usage is documented `here <http://boundlessgeo.github.io/qgis-plugins-documentation/webappbuilder/>`_
 
 
 Cloning this repository
