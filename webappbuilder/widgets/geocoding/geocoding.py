@@ -12,7 +12,7 @@ class Geocoding(WebAppWidget):
         self.addReactComponent(app, "GeocodingResults")
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append('''React.createElement(UI.Tab,{eventKey:%i, title:"Geocoding"},
+            app.tabs.append('''React.createElement(Tab,{value:%i, label:"Geocoding"},
                                     React.createElement("div", {id:"geocoding-tab"},
                                         React.createElement(Geocoding, {})
                                     ),

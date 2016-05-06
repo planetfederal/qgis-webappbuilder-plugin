@@ -13,7 +13,7 @@ class AboutPanel(WebAppWidget):
         content = self._parameters["content"].replace('\n', '<br>').replace('\r', '')
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append('''React.createElement(UI.Tab, {eventKey:%i, title:'About'},
+            app.tabs.append('''React.createElement(Tab, {value:%i, label:'About'},
                                     React.createElement("div", {id:'about-tab-panel', className='about-tab-panel'},
                                         React.createElement("div", {dangerouslySetInnerHTML:{{__html: '%s'}}})
                                     )

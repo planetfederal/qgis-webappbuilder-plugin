@@ -24,12 +24,9 @@ var map = new ol.Map({
 });
 
 var TabbedApp = React.createClass({
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 1
-    };
-  }
+  getInitialState() {
+    return {value: 1};
+  },
   componentDidMount() {
     map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     view = map.getView();
@@ -73,7 +70,7 @@ var TabbedApp = React.createClass({
         value: value,
       });
     }
-  }
+  },
   render() {
     var toolbarElements = [@TOOLBAR@];
     var toolbarOptions = @TOOLBAROPTIONS@;
@@ -82,7 +79,7 @@ var TabbedApp = React.createClass({
         @TOOLBAR@
       ),
       React.createElement("div", {className: 'row container'},
-        React.createElement("div", {className: 'col tabs"', id: 'tabs-panel'},
+        React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
           React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
             @TABS@
           )
