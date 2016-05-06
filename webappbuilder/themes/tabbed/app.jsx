@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
-import UI from 'pui-react-buttons';
-import Icon from 'pui-react-iconography';
-import enMessages from './node_modules/boundless-sdk/locale/en.js';
-import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';
-import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';
-import App from './node_modules/boundless-sdk/js/components/App.js';
+import RaisedButton from 'material-ui/lib/raised-button';
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
+import enMessages from 'boundless-sdk/locale/en.js';
+import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
+import Toolbar from 'boundless-sdk/js/components/Toolbar.jsx';
+import App from 'boundless-sdk/js/components/App.js';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -42,6 +43,12 @@ var map = new ol.Map({
 
 
 class TabbedApp extends App {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 1
+    };
+  }
   componentDidMount() {
     super.componentDidMount();
     @POSTTARGETSET@
@@ -62,27 +69,30 @@ class TabbedApp extends App {
   _toggleWFST() {
     this._toggle(document.getElementById('wfst'));
   }
+  handleChange(value) {
+    if (value === parseInt(value, 10)) {
+      this.setState({
+        value: value,
+      });
+    }
+  }
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
-    return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions,
-       @TOOLBAR@
-       ),
-       React.createElement("div", {id: 'content'},
-         React.createElement("div", {className: 'row full-height'},
-           React.createElement("div", {className: 'col-md-8 full-height', id: 'tabs-panel'},
-             React.createElement(UI.SimpleTabs, {defaultActiveKey: 1}
-                @TABS@
-              )
-            ),
-           React.createElement("div", {className: 'col-md-16 full-height'},
-              React.createElement("div", {id: 'content'},
-                React.createElement("div", {id: 'map', ref: 'map'}
-                  @MAPPANELS@
-                )
-                @PANELS@
-              )
-           )
+    return React.createElement("div", {id: 'content'},
+      React.createElement(AppBar, toolbarOptions,
+        @TOOLBAR@
+      ),
+      React.createElement("div", {className: 'row container'},
+        React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
+          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
+            @TABS@
+          )
+        ),
+        React.createElement("div", {className: 'col maps'},
+          React.createElement("div", {id: 'map', ref: 'map'}
+            @MAPPANELS@
+          )
+          @PANELS@
         )
       )
     );
@@ -90,4 +100,3 @@ class TabbedApp extends App {
 }
 
 ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><TabbedApp map={map} extent={originalExtent} useHistory={@PERMALINK@} /></IntlProvider>, document.getElementById('main'));
-

@@ -1,17 +1,35 @@
-#main {
-  width: 100%;
+/* Dead Simple Grid (c) 2015 Vladimir Agafonkin */
+.row .row { margin:  0 -1.5em; }
+.col      { padding: 0  0em; }
+
+.row:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+@media only screen { .col {
+    float: left;
+    width: 100%;
+    box-sizing: border-box;
+}}
+/* end Dead Simple Grid */
+.container {
   height: 100%;
 }
-.modal-title {
-  text-transform: none !important;
+#content {
+  width: 100%;
+  height:  100%;
+  position: fixed;
+  bottom: 0px;
 }
-.toolbar ul {
-  margin-top: 12px;
-  padding-left: 10px;
+.maps {
+  height: 100%;
+  width: 60%;
 }
-.toolbar {
-  height: 60px;
-  padding-right: 15px;
+.tabs {
+  height: 100%;
+  width: 40%;
 }
 #geolocation-control {
   top: 130px;
@@ -28,35 +46,9 @@ html, body {
   font-family: sans-serif;
   font-size: small;
 }
-.full-height {
-  height: 100%;
-}
 #map {
-  width: 100%;
   height: 100%;
 }
-#content {
-  width: 100%;
-  height:  calc(100% - 60px);
-  position: fixed;
-  bottom: 0px;
-}
-
-.popup-table{
-  width:100%;
-}
-.popup-table tbody tr:nth-child(odd) {
-   background-color: #ccc;
-}
-
-.popup-table th {
-    text-align: center;
-}
-
-.popup-table th, td {
-    padding: 6px;
-}
-
 #edit-tool-panel {
   display: none;
   position: absolute;
@@ -69,7 +61,6 @@ html, body {
   max-width: 50%;
   z-index: 1111;
 }
-
 #wfst {
  display: none;
  position: absolute;
