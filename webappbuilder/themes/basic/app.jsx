@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
-import UI from 'pui-react-buttons';
-import Icon from 'pui-react-iconography';
-import enMessages from './node_modules/boundless-sdk/locale/en.js';
-import InfoPopup from './node_modules/boundless-sdk/js/components/InfoPopup.jsx';
-import Toolbar from './node_modules/boundless-sdk/js/components/Toolbar.jsx';
-import App from './node_modules/boundless-sdk/js/components/App.js';
+import RaisedButton from 'material-ui/lib/raised-button';
+import enMessages from 'boundless-sdk/locale/en.js';
+import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
+import Toolbar from 'boundless-sdk/js/components/Toolbar.jsx';
+import App from 'boundless-sdk/js/components/App.js';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 

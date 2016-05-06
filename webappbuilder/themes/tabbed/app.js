@@ -1,19 +1,19 @@
 injectTapEventPlugin();
 
 var defaultFill = new ol.style.Fill({
-   color: 'rgba(255,255,255,0.4)'
- });
- var defaultStroke = new ol.style.Stroke({
-   color: '#3399CC',
-   width: 1.25
- });
- var defaultSelectionFill = new ol.style.Fill({
-   color: 'rgba(255,255,0,0.4)'
- });
- var defaultSelectionStroke = new ol.style.Stroke({
-   color: '#FFFF00',
-   width: 1.25
- });
+  color: 'rgba(255,255,255,0.4)'
+});
+var defaultStroke = new ol.style.Stroke({
+  color: '#3399CC',
+  width: 1.25
+});
+var defaultSelectionFill = new ol.style.Fill({
+  color: 'rgba(255,255,0,0.4)'
+});
+var defaultSelectionStroke = new ol.style.Stroke({
+  color: '#FFFF00',
+  width: 1.25
+});
 
 @VARIABLES@
 
@@ -23,8 +23,10 @@ var map = new ol.Map({
   controls: [@OL3CONTROLS@]
 });
 
-
 var TabbedApp = React.createClass({
+  getInitialState() {
+    return {value: 1};
+  },
   componentDidMount() {
     map.setTarget(ReactDOM.findDOMNode(this.refs.map));
     view = map.getView();
@@ -62,35 +64,35 @@ var TabbedApp = React.createClass({
   _toggleWFST() {
     this._toggle(document.getElementById('wfst'));
   },
+  handleChange(value) {
+    if (value === parseInt(value, 10)) {
+      this.setState({
+        value: value,
+      });
+    }
+  },
   render() {
     var toolbarElements = [@TOOLBAR@];
     var toolbarOptions = @TOOLBAROPTIONS@;
-    return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions,
-       @TOOLBAR@
-       ),
-       React.createElement("div", {id: 'content'},
-         React.createElement("div", {className: 'row full-height'},
-           React.createElement("div", {className: 'col-md-8 full-height', id: 'tabs-panel'},
-             React.createElement(UI.SimpleTabs, {defaultActiveKey: 1}
-                @TABS@
-              )
-            ),
-           React.createElement("div", {className: 'col-md-16 full-height'},
-              React.createElement("div", {id: 'content'},
-                React.createElement("div", {id: 'map', ref: 'map'}
-                  @MAPPANELS@
-                )
-                @PANELS@
-              )
-           )
+    return React.createElement("div", {id: 'content'},
+      React.createElement(AppBar, toolbarOptions,
+        @TOOLBAR@
+      ),
+      React.createElement("div", {className: 'row container'},
+        React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
+          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
+            @TABS@
+          )
+        ),
+        React.createElement("div", {className: 'col maps'},
+          React.createElement("div", {id: 'map', ref: 'map'}
+            @MAPPANELS@
+          )
+          @PANELS@
         )
       )
     );
   }
 });
 
-
 ReactDOM.render(React.createElement(IntlProvider, {locale: 'en'}, React.createElement(TabbedApp)), document.getElementById('main'));
-
-

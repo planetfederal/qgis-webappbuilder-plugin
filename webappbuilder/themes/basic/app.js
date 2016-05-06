@@ -1,20 +1,19 @@
 injectTapEventPlugin();
 
 var defaultFill = new ol.style.Fill({
-   color: 'rgba(255,255,255,0.4)'
- });
- var defaultStroke = new ol.style.Stroke({
-   color: '#3399CC',
-   width: 1.25
- });
- var defaultSelectionFill = new ol.style.Fill({
-   color: 'rgba(255,255,0,0.4)'
- });
- var defaultSelectionStroke = new ol.style.Stroke({
-   color: '#FFFF00',
-   width: 1.25
- });
-
+  color: 'rgba(255,255,255,0.4)'
+});
+var defaultStroke = new ol.style.Stroke({
+  color: '#3399CC',
+  width: 1.25
+});
+var defaultSelectionFill = new ol.style.Fill({
+  color: 'rgba(255,255,0,0.4)'
+});
+var defaultSelectionStroke = new ol.style.Stroke({
+  color: '#FFFF00',
+  width: 1.25
+});
 
 @VARIABLES@
 
@@ -23,8 +22,6 @@ var map = new ol.Map({
   view: view,
   controls: [@OL3CONTROLS@]
 });
-
-
 
 var BasicApp = React.createClass({
   componentDidMount() {
@@ -66,20 +63,16 @@ var BasicApp = React.createClass({
   render() {
     var toolbarElements = [@TOOLBAR@];
     var toolbarOptions = @TOOLBAROPTIONS@;
-    return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions,
+    return React.createElement("div", {id: 'content'},
+      React.createElement(AppBar, toolbarOptions,
        @TOOLBAR@
-       ),
-      React.createElement("div", {id: 'content'},
-        React.createElement("div", {id: 'map', ref: 'map'}
-          @MAPPANELS@
-        )
-        @PANELS@
+      ),
+      React.createElement("div", {id: 'map', ref: 'map'}
+        @MAPPANELS@
       )
+      @PANELS@
     );
   }
 });
 
 ReactDOM.render(React.createElement(IntlProvider, {locale: 'en'}, React.createElement(BasicApp)), document.getElementById('main'));
-
-
