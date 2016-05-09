@@ -167,7 +167,7 @@ def writeJsx(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})}' % ext
+        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
 
     toolbarOptions = '{title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 

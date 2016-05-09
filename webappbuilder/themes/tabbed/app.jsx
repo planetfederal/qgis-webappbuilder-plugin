@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
+import AppBar from 'material-ui/lib/app-bar';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
-import Toolbar from 'boundless-sdk/js/components/Toolbar.jsx';
 import App from 'boundless-sdk/js/components/App.js';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -84,7 +84,7 @@ class TabbedApp extends App {
       ),
       React.createElement("div", {className: 'row container'},
         React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
-          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
+          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange.bind(this)}
             @TABS@
           )
         ),
