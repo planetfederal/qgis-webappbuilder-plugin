@@ -5,7 +5,6 @@ import {IntlProvider} from 'react-intl';
 import RaisedButton from 'material-ui/lib/raised-button';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
-import Toolbar from 'boundless-sdk/js/components/Toolbar.jsx';
 import App from 'boundless-sdk/js/components/App.js';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
