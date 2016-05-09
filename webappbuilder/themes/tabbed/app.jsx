@@ -84,7 +84,7 @@ class TabbedApp extends App {
       ),
       React.createElement("div", {className: 'row container'},
         React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
-          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
+          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange.bind(this)}
             @TABS@
           )
         ),
