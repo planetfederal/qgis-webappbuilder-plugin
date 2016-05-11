@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 import sys
 import unittest
 
@@ -26,4 +31,3 @@ def suite():
 
 def run_tests():
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
-

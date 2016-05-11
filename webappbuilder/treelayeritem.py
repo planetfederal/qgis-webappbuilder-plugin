@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os
@@ -337,5 +342,3 @@ class TreeGroupItem(QTreeWidgetItem):
 
     def setShowContent(self, showContent):
         return self.showContentItem.setCheckState(0, Qt.Checked if showContent else Qt.Unchecked)
-
-

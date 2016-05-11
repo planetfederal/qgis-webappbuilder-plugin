@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 from PyQt4.Qsci import QsciScintilla, QsciLexerCSS, QsciLexerHTML,\
     QsciLexerJavaScript
 from PyQt4 import QtGui, QtCore
@@ -79,5 +84,3 @@ class TextEditorWidget(QsciScintilla):
         self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
 
         self.setText(text)
-
-

@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 from utils import *
 import urlparse
 from qgis.core import *
@@ -722,4 +727,3 @@ def getStrokeStyle(color, dashed, width):
 
 def getFillStyle(color):
     return "new ol.style.Fill({color: %s})" % color
-

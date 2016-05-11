@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 from PyQt4.Qt import QIcon, QDir
 import os
 from parameditor import ParametersEditorDialog
@@ -79,4 +84,3 @@ class WebAppWidget(object):
     def addReactComponent(self, app, component):
         app.imports.append("import %(comp)s from './node_modules/boundless-sdk/js/components/%(comp)s.jsx';"
                            % {"comp": component})
-

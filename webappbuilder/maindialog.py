@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# (c) 2016 Boundless, http://boundlessgeo.com
+# This code is licensed under the GPL 2.0 license.
+#
 import sys
 import os
 from qgis.core import *
@@ -574,6 +579,3 @@ class MainDialog(BASE, WIDGET):
                                          "layers": groupLayers[::-1]}
 
         return layers[::-1], groups
-
-
-
