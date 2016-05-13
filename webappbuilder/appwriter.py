@@ -132,11 +132,12 @@ def writeJs(appdef, folder, app, progress):
             return ",\n" + ",\n".join(array)
         else:
             return ""
+
     values = {"@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
-                "@TOOLBAR@": ",\n".join(app.tools),
+                "@TOOLBAR@": ',' + ",\n".join(app.tools) if app.tools else '',
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget)}
