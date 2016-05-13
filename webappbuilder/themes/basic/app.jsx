@@ -80,7 +80,7 @@ class BasicApp extends App {
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions,
+       React.createElement(AppBar, toolbarOptions
        @TOOLBAR@
        ),
       React.createElement("div", {id: 'content'},

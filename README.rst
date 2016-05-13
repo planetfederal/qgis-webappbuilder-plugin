@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/boundlessgeo/qgis-webappbuilder-plugin.svg?branch=master
+    :target: https://travis-ci.org/boundlessgeo/qgis-webappbuilder-plugin
+
 Web App Builder
 ===============
 
