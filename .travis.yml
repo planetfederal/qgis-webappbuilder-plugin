@@ -10,8 +10,8 @@ install:
     - pip install nose2
     - echo "deb http://qgis.org/debian $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list
     - echo "deb-src http://qgis.org/debian $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list
-    - gpg --keyserver keyserver.ubuntu.com --recv 997D3880
-    - gpg --export --armor 997D3880 | sudo apt-key add -
+    - gpg --keyserver keyserver.ubuntu.com --recv 3FF5FFCAD71472C4
+    - gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -
     - sudo apt-get update
     - sudo apt-get install python-qt4 -qq
     - sudo apt-get install qgis --force-yes -qq
