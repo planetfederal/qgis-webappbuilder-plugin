@@ -152,9 +152,9 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
     if layer.type() == layer.VectorLayer:
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
         if layer.providerType().lower() == "wfs":
-            url = layer.source().split("?")[0]
-            parsed = urlparse.urlparse(layer.source())
-            typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
+            datasourceUri = QgsDataSourceURI(layer.source())
+            url = datasourceUri.param("url")
+            typeName = datasourceUri.param("typename")
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity,
@@ -247,10 +247,10 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
-            source = layer.source()
-            layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-            styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
+            datasourceUri = QgsDataSourceURI(layer.source())
+            url = datasourceUri.param("url")
+            styles = datasourceUri.param("styles")
+            layers = datasourceUri.param("layers")
             return '''var lyr_%(n)s = new %(layerClass)s({
                         opacity: %(opacity)s,
                         timeInfo: %(timeInfo)s,

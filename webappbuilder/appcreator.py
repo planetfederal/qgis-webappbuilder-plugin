@@ -47,6 +47,7 @@ def createApp(appdef, deployData, folder, forPreview, progress):
 
 def checkAppCanBeCreated(appdef):
 	##viewCrs = appdef["Settings"]["App view CRS"]
+	jsonp = appdef["Settings"]["Use JSONP for WFS connections"]
 	problems = []
 	layers = appdef["Layers"]
 
@@ -58,16 +59,17 @@ def checkAppCanBeCreated(appdef):
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
 			if applayer.popup != "":
-				source = layer.source()
-				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
+				datasourceUri = QgsDataSourceURI(layer.source())
+				url = datasourceUri.param("url") + "?REQUEST=GetCapabilities"
 				r = requests.get(url, headers={"origin": "null"})
 				if "access-control-allow-origin" not in r:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
 	for applayer in layers:
 		layer = applayer.layer
-		if layer.providerType().lower() == "wfs":
-			url = layer.source().split("?")[0] + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
+		if layer.providerType().lower() == "wfs" and jsonp:
+			datasourceUri = QgsDataSourceURI(layer.source())
+			url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
 			r = requests.get(url)
 			if "text/javascript" not in r.text:
 				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
