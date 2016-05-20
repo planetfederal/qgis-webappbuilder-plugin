@@ -160,6 +160,8 @@ class NewLinkDialog(QtGui.QDialog):
         urlLabel.setMinimumWidth(120)
         urlLabel.setMaximumWidth(120)
         self.urlBox = QtGui.QLineEdit()
+        if self.url is not None:
+            self.urlBox.setText(self.url)
         horizontalLayout.addWidget(urlLabel)
         horizontalLayout.addWidget(self.urlBox)
         layout.addLayout(horizontalLayout)
