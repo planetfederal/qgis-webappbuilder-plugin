@@ -9,7 +9,7 @@ from PyQt4.QtCore import *
 from qgis.core import *
 import subprocess
 import uuid
-from PyQt4.QtGui import QFileDialog
+from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 
 METHOD_FILE= 0
@@ -212,3 +212,10 @@ def getSetting(namespace, name):
     if isinstance(v, QPyNullVariant):
         v = None
     return v
+
+def run(f):
+    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+    try:
+        return f()
+    finally:
+        QApplication.restoreOverrideCursor()

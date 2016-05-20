@@ -61,7 +61,7 @@ def checkAppCanBeCreated(appdef):
 			if applayer.popup != "":
 				source = layer.source()
 				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
-				r = requests.get(url, headers={"origin": "null"})
+				r = run(lambda: requests.get(url, headers={"origin": "null"}))
 				if "access-control-allow-origin" not in r:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
@@ -70,7 +70,7 @@ def checkAppCanBeCreated(appdef):
 		if layer.providerType().lower() == "wfs" and jsonp:
 			datasourceUri = QgsDataSourceURI(layer.source())
 			url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
-			r = requests.get(url)
+			r = run(lambda: requests.get(url))
 			if "text/javascript" not in r.text:
 				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
 							% layer.name())
