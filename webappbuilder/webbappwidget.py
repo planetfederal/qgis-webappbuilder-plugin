@@ -8,6 +8,7 @@ import os
 from parameditor import ParametersEditorDialog
 import inspect
 import shutil
+import codecs
 
 class WebAppWidget(object):
 
@@ -61,7 +62,7 @@ class WebAppWidget(object):
     def widgetHelp(self):
         path = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), "description.html")
         if os.path.exists(path):
-            with open(path) as f:
+            with codecs.open(path, encoding="utf-8") as f:
                 text = f.read()
             return text
 

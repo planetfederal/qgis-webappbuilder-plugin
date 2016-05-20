@@ -11,6 +11,7 @@ import subprocess
 import uuid
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
+import codecs
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -63,7 +64,7 @@ class Layer():
 
 def replaceInTemplate(template, values):
     path = os.path.join(os.path.dirname(__file__), "templates", template)
-    with open(path) as f:
+    with codecs.open(path, encoding="utf-8") as f:
         lines = f.readlines()
     s = "".join(lines)
     for name,value in values.iteritems():
@@ -106,9 +107,9 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
             if layer.type() == layer.VectorLayer:
                 path = os.path.join(layersFolder, "lyr_%s.%s" % (safeName(layer.name()), ext))
                 QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
-                with open(path) as f:
+                with codecs.open(path, encoding="utf-8") as f:
                     lines = f.readlines()
-                with open(path, "w") as f:
+                with codecs.open(path, "w", encoding="utf-8") as f:
                     if forPreview:
                         f.write("%s_geojson_callback(" % safeName(layer.name()))
                     for line in lines:

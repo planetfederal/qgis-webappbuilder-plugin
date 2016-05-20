@@ -9,6 +9,7 @@ from qgis.core import *
 import importlib
 import glob
 import inspect
+import codecs
 
 
 def loadWidgets():
@@ -34,13 +35,13 @@ def loadWidgets():
 
 def loadBaseLayers():
     path = os.path.join(os.path.dirname(__file__), "baselayers", "baselayers.txt")
-    with open(path) as f:
+    with codecs.open(path, encoding="utf-8") as f:
         text = "".join(f.readlines())
     return splitElements(text)
 
 def loadBaseOverlays():
     path = os.path.join(os.path.dirname(__file__), "baselayers", "baseoverlays.txt")
-    with open(path) as f:
+    with codecs.open(path, encoding="utf-8") as f:
         text = "".join(f.readlines())
     return splitElements(text)
 

@@ -5,6 +5,7 @@
 #
 import os
 import re
+import codecs
 from appwriter import writeWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -307,12 +308,12 @@ def saveAppdef(appdef, filename):
 		layer.layer = layer.layer.name()
 		layers.append(layer)
 	toSave["Layers"] = layers
-	with open(filename, "w") as f:
+	with codecs.open(filename, "w", encoding="utf-8") as f:
 		f.write(json.dumps(toSave, sort_keys=True, indent=4, cls=DefaultEncoder))
 
 def loadAppdef(filename):
 	try:
-		with open(filename) as f:
+		with codecs.open(filename, encoding="utf-8") as f:
 			data = json.load(f)
 		return data
 	except Exception, e:

@@ -10,6 +10,7 @@ This is a quick and dirty solution until both programs support the same specific
 
 import re
 import os
+import codecs
 from PyQt4.QtXml import *
 from qgis.core import *
 
@@ -105,7 +106,7 @@ def getReadyToUploadSvgIcons(symbol):
         sl = symbol.symbolLayer(i)
         if isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             props = sl.properties()
-            with open(sl.path()) as f:
+            with codecs.open(sl.path(), encoding="utf-8") as f:
                 svg = "".join(f.readlines())
             svg = re.sub(r'param\(outline\).*?\"', props["outline_color"] + '"', svg)
             svg = re.sub(r'param\(fill\).*?\"', props["color"] + '"', svg)
@@ -116,7 +117,7 @@ def getReadyToUploadSvgIcons(symbol):
             icons.append ([sl.path(), "%s_%s%s" % (filename, propsHash, ext), svg])
         elif isinstance(sl, QgsSVGFillSymbolLayer):
             props = sl.properties()
-            with open(sl.svgFilePath()) as f:
+            with codecs.open(sl.svgFilePath(), encoding="utf-8") as f:
                 svg = "".join(f.readlines())
             svg = re.sub(r'param\(outline\).*?\"', props["outline_color"] + '"', svg)
             svg = re.sub(r'param\(fill\).*?\"', props["color"] + '"', svg)
@@ -246,7 +247,7 @@ def getStyleAsSld(layer):
                 sldfile = os.path.join(sldpath, "grayscale.sld")
             else:
                 sldfile = os.path.join(sldpath, "rgb.sld")
-            with open(sldfile, 'r') as f:
+            with codecs.open(sldfile, 'r', encoding="utf-8") as f:
                 sld = f.read()
             return sld
     else:

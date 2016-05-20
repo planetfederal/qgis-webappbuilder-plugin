@@ -4,6 +4,7 @@ from PyQt4.QtGui import QIcon
 from PyQt4.Qt import QDir
 from webappbuilder.utils import safeName, replaceInTemplate
 import shutil
+import codecs
 
 class Help(WebAppWidget):
 
@@ -39,5 +40,5 @@ class Help(WebAppWidget):
         templatePath = os.path.join(os.path.dirname(__file__), "base.html")
         html = replaceInTemplate(templatePath, values)
 
-        with open(os.path.join(helpFolder, "help.html"), "w") as f:
+        with codecs.open(os.path.join(helpFolder, "help.html"), "w", encoding="utf-8") as f:
             f.write(html)

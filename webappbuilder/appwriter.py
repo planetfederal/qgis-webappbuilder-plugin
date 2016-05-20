@@ -152,7 +152,7 @@ def writeJs(appdef, folder, app, progress):
         pass #jsbeautifier gives some random errors sometimes due to imports
 
     jsFilepath = os.path.join(folder, "app_prebuilt.js")
-    with open(jsFilepath, "w") as f:
+    with codecs.open(jsFilepath, "w", encoding="utf-8") as f:
         f.write(js)
 
 def writeJsx(appdef, folder, app, progress):
@@ -209,7 +209,7 @@ def writeJsx(appdef, folder, app, progress):
 
     name = "app.jsx"
     jsxFilepath = os.path.join(folder, name)
-    with open(jsxFilepath, "w") as f:
+    with codecs.open(jsxFilepath, "w", encoding="utf-8") as f:
         f.write(jsx)
 
 
@@ -253,7 +253,7 @@ def writeHtml(appdef, folder, app, progress, filename):
         pretty=soup.prettify(formatter='html')
     except:
         pretty = html
-    with open(indexFilepath, "w") as f:
+    with codecs.open(indexFilepath, "w", encoding="utf-8") as f:
         f.write(pretty)
 
 

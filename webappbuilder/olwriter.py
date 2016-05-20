@@ -9,6 +9,7 @@ from qgis.core import *
 import traceback
 from string import digits
 import math
+import codecs
 
 def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  layerCrs, viewCrs, layerOpacity, isSelectable,
@@ -606,14 +607,14 @@ def getSymbolAsStyle(symbol, stylesFolder, color = None):
                 svgColor = getRGBAColor(props["color"], alpha)
             else:
                 svgColor = color
-            with open(sl.path()) as f:
+            with codecs.open(sl.path(), encoding="utf-8") as f:
                 svg = "".join(f.readlines())
             svg = re.sub(r'\"param\(outline\).*?\"', svgColor, svg)
             svg = re.sub(r'\"param\(fill\).*?\"', svgColor, svg)
             filename, ext = os.path.splitext(os.path.basename(sl.path()))
             filename = filename + ''.join(c for c in svgColor if c in digits) + ext
             path = os.path.join(stylesFolder, filename)
-            with open(path, "w") as f:
+            with codecs.open(path, "w", "utf-8") as f:
                 f.write(svg)
             style = "image: %s" % getIcon(path, sl.size(), sl.angle())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
