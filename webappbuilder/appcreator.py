@@ -59,8 +59,8 @@ def checkAppCanBeCreated(appdef):
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
 			if applayer.popup != "":
-				datasourceUri = QgsDataSourceURI(layer.source())
-				url = datasourceUri.param("url") + "?REQUEST=GetCapabilities"
+				source = layer.source()
+				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
 				r = requests.get(url, headers={"origin": "null"})
 				if "access-control-allow-origin" not in r:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."

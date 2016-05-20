@@ -247,10 +247,10 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
     elif layer.type() == layer.RasterLayer:
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
-            datasourceUri = QgsDataSourceURI(layer.source())
-            url = datasourceUri.param("url")
-            styles = datasourceUri.param("styles")
-            layers = datasourceUri.param("layers")
+            source = layer.source()
+            layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+            styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
             return '''var lyr_%(n)s = new %(layerClass)s({
                         opacity: %(opacity)s,
                         timeInfo: %(timeInfo)s,
