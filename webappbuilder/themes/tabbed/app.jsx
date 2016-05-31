@@ -8,7 +8,7 @@ import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
-import App from 'boundless-sdk/js/components/App.js';
+import MapPanel from 'boundless-sdk/js/components/MapPanel.jsx';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -42,7 +42,7 @@ var map = new ol.Map({
 });
 
 
-class TabbedApp extends App {
+class TabbedApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,7 +50,6 @@ class TabbedApp extends App {
     };
   }
   componentDidMount() {
-    super.componentDidMount();
     @POSTTARGETSET@
   }
   _navigationFunc() {
@@ -89,7 +88,7 @@ class TabbedApp extends App {
           )
         ),
         React.createElement("div", {className: 'col maps'},
-          React.createElement("div", {id: 'map', ref: 'map'}
+          React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: @PERMALINK@}
             @MAPPANELS@
           )
           @PANELS@
@@ -99,4 +98,4 @@ class TabbedApp extends App {
   }
 }
 
-ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><TabbedApp map={map} extent={originalExtent} useHistory={@PERMALINK@} /></IntlProvider>, document.getElementById('main'));
+ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><TabbedApp /></IntlProvider>, document.getElementById('main'));
