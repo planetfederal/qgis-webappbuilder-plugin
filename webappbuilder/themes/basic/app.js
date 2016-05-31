@@ -63,7 +63,7 @@ var BasicApp = React.createClass({
       React.createElement(AppBar, toolbarOptions
        @TOOLBAR@
       ),
-      React.createElement(MapPanel, {extent: originalExtent, id: 'map', map: map}
+      React.createElement(MapPanel, {useHistory: @PERMALINK@, extent: originalExtent, id: 'map', map: map}
         @MAPPANELS@
       )
       @PANELS@

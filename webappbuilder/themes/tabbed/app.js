@@ -66,7 +66,7 @@ var TabbedApp = React.createClass({
           )
         ),
         React.createElement("div", {className: 'col maps'},
-          React.createElement(MapPanel, {id: 'map', extent: originalExtent, map: map}
+          React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
             @MAPPANELS@
           )
           @PANELS@
