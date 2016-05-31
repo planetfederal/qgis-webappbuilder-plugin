@@ -28,24 +28,6 @@ var TabbedApp = React.createClass({
     return {value: 1};
   },
   componentDidMount() {
-    map.setTarget(ReactDOM.findDOMNode(this.refs.map));
-    view = map.getView();
-    view.fit(originalExtent, map.getSize());
-    if (window.location.hash !== '') {
-      var hash = window.location.hash.replace('#map=', '');
-      var parts = hash.split('/');
-      if (parts.length === 4) {
-        var zoom = parseInt(parts[0], 10);
-        var center = [
-          parseFloat(parts[1]),
-          parseFloat(parts[2])
-        ];
-        var rotation = parseFloat(parts[3]);
-        view.setZoom(zoom);
-        view.setCenter(center);
-        view.setRotation(rotation);
-      }
-    }
     @POSTTARGETSET@
   },
   _navigationFunc() {
@@ -84,7 +66,7 @@ var TabbedApp = React.createClass({
           )
         ),
         React.createElement("div", {className: 'col maps'},
-          React.createElement("div", {id: 'map', ref: 'map'}
+          React.createElement(MapPanel, {id: 'map', extent: originalExtent, map: map}
             @MAPPANELS@
           )
           @PANELS@

@@ -6,7 +6,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import RaisedButton from 'material-ui/lib/raised-button';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
-import App from 'boundless-sdk/js/components/App.js';
+import MapPanel from 'boundless-sdk/js/components/MapPanel.jsx';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -42,9 +42,8 @@ var map = new ol.Map({
 
 
 
-class BasicApp extends App {
+class BasicApp extends React.Component {
   componentDidMount() {
-    super.componentDidMount();
     @POSTTARGETSET@
   }
   _toggle(el) {
@@ -84,7 +83,7 @@ class BasicApp extends App {
        @TOOLBAR@
        ),
       React.createElement("div", {id: 'content'},
-        React.createElement("div", {id: 'map', ref: 'map'}
+        React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: @PERMALINK@}
           @MAPPANELS@
         )
         @PANELS@
@@ -93,8 +92,4 @@ class BasicApp extends App {
   }
 }
 
-
-ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><BasicApp map={map} extent={originalExtent} useHistory={@PERMALINK@}/></IntlProvider>, document.getElementById('main'));
-
-
-
+ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><BasicApp /></IntlProvider>, document.getElementById('main'));

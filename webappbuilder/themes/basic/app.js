@@ -25,9 +25,6 @@ var map = new ol.Map({
 
 var BasicApp = React.createClass({
   componentDidMount() {
-    map.setTarget(ReactDOM.findDOMNode(this.refs.map));
-    view = map.getView();
-    view.fit(originalExtent, map.getSize());
     @POSTTARGETSET@
   },
   _toggle(el) {
@@ -66,7 +63,7 @@ var BasicApp = React.createClass({
       React.createElement(AppBar, toolbarOptions
        @TOOLBAR@
       ),
-      React.createElement("div", {id: 'map', ref: 'map'}
+      React.createElement(MapPanel, {extent: originalExtent, id: 'map', map: map}
         @MAPPANELS@
       )
       @PANELS@
