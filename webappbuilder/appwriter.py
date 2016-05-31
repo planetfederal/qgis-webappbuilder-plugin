@@ -127,6 +127,8 @@ def writeJs(appdef, folder, app, progress):
                                     React.createElement(InfoPopup, {map: map, hover: %s})
                                   )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
 
+    permalink = str(appdef["Settings"]["Add permalink functionality"]).lower()
+
     def join(array):
         if array:
             return ",\n" + ",\n".join(array)
@@ -140,7 +142,8 @@ def writeJs(appdef, folder, app, progress):
                 "@TOOLBAR@": ',' + ",\n".join(app.tools) if app.tools else '',
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
-                "@POSTTARGETSET@": "\n".join(app.posttarget)}
+                "@POSTTARGETSET@": "\n".join(app.posttarget),
+                "@PERMALINK@": permalink}
 
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.js")
