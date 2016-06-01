@@ -10,8 +10,8 @@ class Links(WebAppWidget):
         links = self._parameters["links"]
         items = []
         for name, url in links.iteritems():
-            items.append('React.createElement(DD.DropdownItem, {href:"%s"}, "%s")' % (url, name))
-        app.tools.append('''React.createElement(DD.Dropdown, {title:"Links"},
+            items.append('React.createElement(MenuItem, {primaryText: "%s", href:"%s"})' % (name, url))
+        app.tools.append('''React.createElement(IconMenu, {style: {margin: '10px 12px'}, iconButtonElement: React.createElement(RaisedButton, {label: "Links"})},
                                         %s
                                     )''' % ",\n".join(items))
 
