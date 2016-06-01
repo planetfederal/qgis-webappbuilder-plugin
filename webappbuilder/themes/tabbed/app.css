@@ -72,3 +72,9 @@ html, body {
  max-width: 50%;
  z-index: 1111;
 }
+.layer-tree-panel {
+  margin-right: 0px !important;
+  max-height: 100% !important;
+  padding-right: 0px !important;
+  height: 100%
+}
