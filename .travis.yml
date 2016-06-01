@@ -20,6 +20,7 @@ install:
     # Disable host checking
     - docker exec -it qgis-testing-environment sh -c "printf 'Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null' > /root/.ssh/config"
     - docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
+    - docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
 
     - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh webappbuilder"
 
