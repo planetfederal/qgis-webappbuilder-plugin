@@ -10,7 +10,7 @@ from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.settings import webAppWidgets
 from webappbuilder.tests.utils import *
 
-widgets = ["threedview", "aboutpanel", "addlayer", "attributestable", "attribution",
+widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
            "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",
