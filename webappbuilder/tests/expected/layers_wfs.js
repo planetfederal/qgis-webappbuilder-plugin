@@ -8,7 +8,7 @@ window.wfsCallback_wfs = function(jsonData) {
                         format: new ol.format.GeoJSON(),
                         loader: function(extent, resolution, projection) {
                             var script = document.createElement('script');
-                            script.src = 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature' +
+                            script.src = 'http://demo.boundlessgeo.com/geoserver/wfs?VERSION=1.0.0?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=osm:placenames_large&outputFormat=text/javascript&format_options=callback:wfsCallback_wfs' +
                                 '&srsname=EPSG:3857&bbox=' + extent.join(',') + ',EPSG:3857';
                             document.head.appendChild(script);
@@ -21,14 +21,14 @@ window.wfsCallback_wfs = function(jsonData) {
                             style: style_wfs,
                             selectedStyle: selectionStyle_wfs,
                             title: "wfs",
-                            id: "Countries_and_States20150909091003951",
+                            id: "osm_placenames_large20160602142332803",
                             wfsInfo: {featureNS: '',
                     typeName: 'osm:placenames_large',
                     geometryType: 'Point',
                     geometryName: 'the_geom',
-                    url: 'http://demo.boundlessgeo.com/geoserver/wfs'
+                    url: 'http://demo.boundlessgeo.com/geoserver/wfs?VERSION=1.0.0'
                   },
-                  isWFST:false,
+                  isWFST:true,
                             filters: [],
                             timeInfo: null,
                             isSelectable: true,
