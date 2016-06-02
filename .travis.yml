@@ -1,27 +1,37 @@
 sudo: required
-dist: trusty
-language: python
-python:
-  - "2.7"
-virtualenv:
-      system_site_packages: true
+addons:
+  hosts:
+  - boundless-test
+services:
+- docker
+before_install:
+    - openssl aes-256-cbc -K $encrypted_e23aaac2ce6b_key -iv $encrypted_e23aaac2ce6b_iv -in travis_setup/id_rsa.enc -out travis_setup/id_rsa -d
+    - docker pull elpaso/qgis-testing-environment:2.14.2-kartoza
+    - docker tag elpaso/qgis-testing-environment:2.14.2-kartoza qgis-testing-environment
 install:
-    #- pip install pep8
-    - pip install nose2
-    - echo "deb http://qgis.org/debian $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list
-    - echo "deb-src http://qgis.org/debian $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list
-    - gpg --keyserver keyserver.ubuntu.com --recv 3FF5FFCAD71472C4
-    - gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -
-    - sudo apt-get update
-    - sudo apt-get install python-qt4 -qq
-    - sudo apt-get install qgis --force-yes -qq
-    - sudo apt-get install python-qgis -qq
-before_script:
-    # I need a (fake) display on Travis so I need to start a X server.
-    - export DISPLAY=:99.0
-    - export PYTHONPATH=$PYTHONPATH:/usr/share/qgis/python/
-    - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1400x900x24 -ac +extension GLX +render
+    - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
+    - sleep 10
+
+    # Probably not needed here
+    - docker exec -it qgis-testing-environment sh -c "echo '172.17.42.1   boundless-test' >> /etc/hosts"
+
+    # Setup the ssh key for sdk clone
+    - docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.ssh"
+    # Disable host checking
+    - docker exec -it qgis-testing-environment sh -c "printf 'Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null' > /root/.ssh/config"
+    - docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
+    - docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
+
+    - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh webappbuilder"
+
+    # Build the plugin
+    - docker exec -it qgis-testing-environment sh -c "pip install paver"
+    - docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
+    - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/webappbuilder /root/.qgis2/python/plugins/webappbuilder"
+
 script:
-    # - python your_test_goes_here.py
-    #- pep8 *.py
-    - /bin/true
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.layerstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.symbologytest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.widgetstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.settingstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.appdefvaliditytest.run_tests"

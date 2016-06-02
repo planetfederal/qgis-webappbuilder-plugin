@@ -6,3 +6,6 @@ _websdk
 /webappbuilder/websdk
 css
 webappbuilder.zip
+
+/travis_setup/id_rsa
+/travis_setup/id_rsa.copy
