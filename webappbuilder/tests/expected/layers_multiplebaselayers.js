@@ -1,7 +1,4 @@
 var baseLayers = [new ol.layer.Tile({
-                        type: 'base',
-                        title: 'No base layer'
-                    }),new ol.layer.Tile({
     type: 'base',
     title: 'CartoDB light',
     source: new ol.source.XYZ({
@@ -22,5 +19,7 @@ var overlayLayers = [new ol.layer.Tile({
 ];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
 
 
-for (var i=0;i<baseLayers.length;i++){baseLayers[i].setVisible(false);}baseLayers[1].setVisible(true);
+
+for (var i=0;i<baseLayers.length;i++){baseLayers[i].setVisible(false);}
+baseLayers[0].setVisible(true);
 var layersList = [];layersList.unshift(baseLayersGroup);layersList.push(overlaysGroup);
