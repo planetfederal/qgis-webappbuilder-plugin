@@ -46,7 +46,7 @@ var categories_points = {"2": [ new ol.style.Style({
                         })
                         ],
 "7": [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius: 7.6, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"}), angle: 0.7853975})
+                            image: new ol.style.Circle({radius: 7.6, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"})})
                         })
                         ],
 "8": [ new ol.style.Style({
@@ -136,7 +136,7 @@ var categories_points = {"2": [ new ol.style.Style({
                         })
                         ],
 "7": [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius: 7.6, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0.7853975})
+                            image: new ol.style.Circle({radius: 7.6, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})})
                         })
                         ],
 "8": [ new ol.style.Style({
