@@ -40,10 +40,12 @@ class WebAppBuilderPlugin:
         self.helpAction.setObjectName("webAppBuilderHelp")
         self.helpAction.triggered.connect(lambda: webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder/"))
 
+        self.iface.addWebToolBarIcon(self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
     def unload(self):
+        self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
         shutil.rmtree(tempFolder())
