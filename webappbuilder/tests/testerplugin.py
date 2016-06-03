@@ -44,7 +44,6 @@ def functionalTests():
     unconfiguredBookmarksTest.setCleanup(closeWAB)
     tests.append(unconfiguredBookmarksTest)
 
-
     unsupportedSymbologyTest = Test("Verify warning for unsupported symbology")
     unsupportedSymbologyTest.addStep("Load project", lambda: loadTestProject())
     unsupportedSymbologyTest.addStep("Open WAB", openWAB)
