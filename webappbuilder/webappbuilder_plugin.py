@@ -32,11 +32,15 @@ class WebAppBuilderPlugin:
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
+        self.action.setObjectName("startWebAppBuilder")
         self.action.triggered.connect(self.run)
-        self.iface.addPluginToWebMenu("Web App Builder", self.action)
+
         helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
         self.helpAction = QAction(helpIcon, "Web App Builder Help", self.iface.mainWindow())
+        self.helpAction.setObjectName("webAppBuilderHelp")
         self.helpAction.triggered.connect(lambda: webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder/"))
+
+        self.iface.addPluginToWebMenu("Web App Builder", self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
     def unload(self):
