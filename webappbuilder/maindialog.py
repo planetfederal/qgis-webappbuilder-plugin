@@ -39,32 +39,53 @@ class MainDialog(BASE, WIDGET):
     items = {}
 
     def __init__(self, appdef):
-        QDialog.__init__(self)
+        super(MainDialog, self).__init__()
         self.setupUi(self)
+
         self.widgetButtons = {}
         self.populateLayers()
         self.populateBaseLayers()
         self.populateConfigParams()
         self.populateThemes()
         self.populateWidgets()
+
         self.buttonLogo.clicked.connect(self.selectLogo)
-        self.buttonCreateApp.clicked.connect(self.createApp)
-        self.buttonCreateApp.setIcon(icon("export.png"))
-        self.buttonPreview.clicked.connect(self.preview)
+
+        self.buttonOpen = QPushButton(self.tr("Open"))
+        self.buttonOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+
+        self.buttonSave = QPushButton(self.tr("Save"))
+        self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+
+        self.buttonPreview = QPushButton("Preview")
         self.buttonPreview.setIcon(icon("preview.gif"))
+
+        self.buttonCreateApp = QPushButton(self.tr("CreateApp"))
+        self.buttonCreateApp.setIcon(icon("export.png"))
+
+        self.buttonHelp = self.buttonBox.button(QDialogButtonBox.Help)
+        self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
+
+        self.buttonClose = self.buttonBox.button(QDialogButtonBox.Close)
+        self.buttonClose.setIcon(QgsApplication.getThemeIcon('/mActionFileExit.png'))
+
+        self.buttonBox.addButton(self.buttonOpen, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.buttonSave, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.buttonPreview, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.buttonCreateApp, QDialogButtonBox.ActionRole)
+
+        self.buttonOpen.clicked.connect(self.openAppdef)
+        self.buttonSave.clicked.connect(self.saveAppdef)
+        self.buttonCreateApp.clicked.connect(self.createApp)
+        self.buttonBox.helpRequested.connect(self.showHelp)
+
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
         self.tabPanel.currentChanged.connect(self.tabChanged)
         self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
         self.collapseLayersButton.clicked.connect(self.collapseLayers)
         self.filterLayersBox.textChanged.connect(self.filterLayers)
-        self.buttonOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
-        self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
         self.expandLayersButton.setIcon(QgsApplication.getThemeIcon('/mActionExpandTree.svg'))
         self.collapseLayersButton.setIcon(QgsApplication.getThemeIcon('/mActionCollapseTree.svg'))
-        self.buttonOpen.clicked.connect(self.openAppdef)
-        self.buttonSave.clicked.connect(self.saveAppdef)
-        self.buttonHelp.clicked.connect(self.showHelp)
 
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)

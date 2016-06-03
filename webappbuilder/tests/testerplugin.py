@@ -60,7 +60,7 @@ def functionalTests():
     wrongLogoTest.setCleanup(closeWAB)
     tests.append(wrongLogoTest)
 
-    previewWithAllWidgetsTest = Test("Verify preview of an app with all tests")
+    previewWithAllWidgetsTest = Test("Verify preview of an app with all widgets")
     previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
     appdef = testAppdef("allwidgets", False)
     previewWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
