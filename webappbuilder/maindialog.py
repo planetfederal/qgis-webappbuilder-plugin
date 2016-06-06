@@ -77,6 +77,7 @@ class MainDialog(BASE, WIDGET):
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
         self.buttonCreateApp.clicked.connect(self.createApp)
+        self.buttonPreview.clicked.connect(self.preview)
         self.buttonBox.helpRequested.connect(self.showHelp)
 
         self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
