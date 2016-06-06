@@ -59,14 +59,14 @@ html, body {
   position: fixed;
   bottom: 0px;
 }
-.geocoding-results {
+.geocoding-results-panel {
   display: none;
   position: absolute;
   background: rgba(255,255,255, 1);
   padding: 15px;
   border-left: 1px solid #bbbbbb;
   border-bottom: 1px solid #bbbbbb;
-  top: 0px;
+  top: 71px;
   right: 0px;
   max-width: 50%;
   z-index: 1111;

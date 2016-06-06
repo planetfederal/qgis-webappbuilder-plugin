@@ -21,7 +21,7 @@ class Geocoding(WebAppWidget):
                                     )
                                 )''' % idx)
         else:
-            app.mappanels.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results'},
+            app.mappanels.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results-panel'},
                                     React.createElement(GeocodingResults, {map:map})
                                   )''')
             app.tools.append('''React.createElement("div", {id:'geocoding', className:'pull-right'},
