@@ -31,10 +31,7 @@
   position: absolute;
   top: 81px;
   left: 100px;
-  padding-top: 7px;
-  padding-left: 12px;
   height: 50px;
-  width: 600px;
   z-index: 1001;
 }
 #geocoding {

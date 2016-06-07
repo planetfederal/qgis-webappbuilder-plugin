@@ -78,3 +78,12 @@ html, body {
   padding-right: 0px !important;
   height: 100%
 }
+#timeline {
+  background-color: rgba(255,255,255,.4);
+  border-radius: 4px;
+  position: absolute;
+  top: 81px;
+  right: 20px;
+  height: 50px;
+  z-index: 1001;
+}
