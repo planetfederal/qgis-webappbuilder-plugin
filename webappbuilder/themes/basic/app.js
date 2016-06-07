@@ -54,9 +54,6 @@ var BasicApp = React.createClass({
     evt.preventDefault();
     this._toggle(document.getElementById('chart-panel'));
   },
-  _navigationFunc() {
-    ToolActions.activateTool(null, 'navigation');
-  },
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("div", {id: 'content'},

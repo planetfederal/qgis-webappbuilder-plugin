@@ -30,9 +30,6 @@ var TabbedApp = React.createClass({
   componentDidMount() {
     @POSTTARGETSET@
   },
-  _navigationFunc() {
-    ToolActions.activateTool(null, 'navigation');
-  },
   _toggle(el) {
     if (el.style.display === 'block') {
       el.style.display = 'none';

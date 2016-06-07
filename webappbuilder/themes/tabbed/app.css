@@ -24,20 +24,33 @@
   bottom: 0px;
 }
 .maps {
-  height: 100%;
+  height: calc(100% - 71px);
   width: 60%;
+  position: absolute;
+  top: 71px;
+  left: 40%;
 }
 .tabs {
-  height: 100%;
+  height: calc(100% - 71px);
   width: 40%;
+  position: absolute;
+  top: 71px;
+  left: 0px;
 }
 #geolocation-control {
+  position: absolute;
   top: 130px;
-  left: 1.3em;
+  margin-left: 20px;
 }
 #home-button {
-  top: 70px;
-  left: 1.3em;
+  position: absolute;
+  top: 184px;
+  margin-left: 20px;
+}
+#zoom-buttons {
+  margin-left: 20px;
+  position: absolute;
+  top: 20px;
 }
 html, body {
   height: 100%;
@@ -72,9 +85,12 @@ html, body {
  max-width: 50%;
  z-index: 1111;
 }
-.layer-tree-panel {
-  margin-right: 0px !important;
-  max-height: 100% !important;
-  padding-right: 0px !important;
-  height: 100%
+#timeline {
+  background-color: rgba(255,255,255,.4);
+  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  margin-left: 100px;
+  height: 50px;
+  z-index: 1001;
 }

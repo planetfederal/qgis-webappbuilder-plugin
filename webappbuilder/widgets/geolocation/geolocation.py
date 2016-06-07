@@ -5,7 +5,7 @@ from PyQt4.QtGui import QIcon
 class Geolocation(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.panels.append('''React.createElement("div", {id:'geolocation-control', className:'ol-unselectable ol-control'},
+        app.panels.append('''React.createElement("div", {id:'geolocation-control'},
                                     React.createElement(Geolocation, {map:map})
                                   )''')
     def icon(self):
