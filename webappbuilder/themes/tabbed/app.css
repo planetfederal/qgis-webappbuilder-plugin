@@ -44,8 +44,13 @@
 }
 #home-button {
   position: absolute;
-  top: 70px;
+  top: 184px;
   margin-left: 20px;
+}
+#zoom-buttons {
+  margin-left: 20px;
+  position: absolute;
+  top: 20px;
 }
 html, body {
   height: 100%;

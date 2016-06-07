@@ -13,6 +13,11 @@
   left: 2.5em;
   z-index: 1111;
 }
+#zoom-buttons {
+  margin-left: 20px;
+  position: absolute;
+  top: 20px;
+}
 #edit-tool-panel {
   display: none;
   position: absolute;

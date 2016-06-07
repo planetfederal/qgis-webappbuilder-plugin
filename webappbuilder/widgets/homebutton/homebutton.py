@@ -8,6 +8,7 @@ class HomeButton(WebAppWidget):
         app.panels.append('''React.createElement("div", {id:'home-button'},
                                     React.createElement(HomeButton, {map:map})
                                   )''')
+        self.addReactComponent(app, "HomeButton")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "home.png"))
