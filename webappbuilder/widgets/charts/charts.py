@@ -13,27 +13,29 @@ class ChartTool(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.addReactComponent(app, "Chart")
         theme = appdef["Settings"]["Theme"]
-        if theme == "tabbed":
-            idx = len(app.tabs) + 1
-            app.tabs.append('''React.createElement(Tab,{value:%i, label:"Charts"},
-                                    React.createElement("div", {id:"charts-tab"},
-                                        React.createElement(Chart, {combo:true, charts:charts})
-                                    )
-                                )''' % idx)
-        else:
-            app.tools.append('''React.createElement(Chart, {container:'chart-panel', charts:charts})''')
-            app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
-                                            React.createElement("a", {href:'#', id:'chart-panel-closer', className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
-                                                                  "X"
-                                                            ),
-                                            React.createElement("div", {id: 'chart'})
-                                    )''' )
-        charts = []
-        for chartName, chart in self._parameters["charts"].iteritems():
-            charts.append(copy.copy(chart))
-            charts[-1]["title"] = chartName
-            charts[-1]["layer"] = findProjectLayerByName(chart["layer"]).id()
-        app.variables.append("var charts = %s;" % json.dumps(charts))
+        charts = self._parameters["charts"]
+        if charts:
+            if theme == "tabbed":
+                idx = len(app.tabs) + 1
+                app.tabs.append('''React.createElement(Tab,{value:%i, label:"Charts"},
+                                        React.createElement("div", {id:"charts-tab"},
+                                            React.createElement(Chart, {combo:true, charts:charts})
+                                        )
+                                    )''' % idx)
+            else:
+                app.tools.append('''React.createElement(Chart, {container:'chart-panel', charts:charts})''')
+                app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
+                                                React.createElement("a", {href:'#', id:'chart-panel-closer', className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
+                                                                      "X"
+                                                                ),
+                                                React.createElement("div", {id: 'chart'})
+                                        )''' )
+            charts = []
+            for chartName, chart in self._parameters["charts"].iteritems():
+                charts.append(copy.copy(chart))
+                charts[-1]["title"] = chartName
+                charts[-1]["layer"] = findProjectLayerByName(chart["layer"]).id()
+            app.variables.append("var charts = %s;" % json.dumps(charts))
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "chart-tool.png"))
