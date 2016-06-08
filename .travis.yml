@@ -1,9 +1,11 @@
 sudo: required
 addons:
   hosts:
-  - boundless-test
+    - boundless-test
 services:
-- docker
+    - docker
+env:
+    - PLUGIN_NAME=webappbuilder
 before_install:
     - openssl aes-256-cbc -K $encrypted_e23aaac2ce6b_key -iv $encrypted_e23aaac2ce6b_iv -in travis_setup/id_rsa.enc -out travis_setup/id_rsa -d
     - docker pull elpaso/qgis-testing-environment:latest
@@ -22,16 +24,16 @@ install:
     - docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
     - docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
 
-    - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh webappbuilder"
+    - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
 
     # Build the plugin
     - docker exec -it qgis-testing-environment sh -c "pip install paver"
     - docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
-    - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/webappbuilder /root/.qgis2/python/plugins/webappbuilder"
+    - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/${PLUGIN_NAME} /root/.qgis2/python/plugins/${PLUGIN_NAME}"
 
 script:
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.layerstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.symbologytest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.widgetstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.settingstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.appdefvaliditytest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.layerstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.symbologytest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.widgetstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.settingstest.run_tests"
+    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.appdefvaliditytest.run_tests"
