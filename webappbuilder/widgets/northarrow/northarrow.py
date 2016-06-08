@@ -4,8 +4,17 @@ from PyQt4.QtGui import QIcon
 
 class NorthArrow(WebAppWidget):
 
+    _parameters = {"autoHide": False}
+
     def write(self, appdef, folder, app, progress):
-        app.ol3controls.append("new ol.control.Rotate({autoHide: false})")
+        def p(name):
+            return str(self._parameters[name]).lower()
+        app.panels.append('''React.createElement("div", {id:'rotate-button'},
+                                    React.createElement(Rotate, {
+                                    autoHide:%s,
+                                    map: map})
+                                  )''' % (p("autoHide")))
+        self.addReactComponent(app, "Rotate")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "north-arrow.png"))
