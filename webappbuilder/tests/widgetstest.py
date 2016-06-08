@@ -19,10 +19,20 @@ widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
 
 class WidgetsTest(unittest.TestCase):
 
+    def setUp(self):
+        loadTestProject("bakeries")
+
     def testWidgetsCorrectlyLoaded(self):
         """Check that all widgets loaded"""
         for w in widgets:
             self.assertTrue(w in webAppWidgets), 'Widget {} not loaded'.format(w)
+
+    def testChartWidgetNotAdeed(self):
+        """Check that chart widget is not generated if it is not configured"""
+        folder = createAppFromTestAppdef("chartwidget")
+        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "nochartwidget.js"))
+
 
 def suite():
     suite = unittest.TestSuite()
