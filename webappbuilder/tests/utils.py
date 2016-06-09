@@ -59,7 +59,7 @@ def ignoreLayerID(text):
     id: "osm_placenames_large20160602142332803"
     becomes:
     id: "osm_placenames_large0000"
-￼
+?
     """
     return re.sub(r'(id: "[^\d]+)(\d+)"', r'\g<1>0000', text)
 
@@ -69,6 +69,8 @@ def compareWithExpectedOutputFile(file1, file2):
     filename2 = os.path.join(os.path.dirname(__file__), "expected", file2)
     with codecs.open(filename2, encoding="utf-8") as f:
         content2 = f.read()
+    content = "".join(content.split())
+    content2 = "".join(content2.split())
     return ignoreLayerID(content2) in ignoreLayerID(content)
 
 def checkTextInFile(filename, text):
