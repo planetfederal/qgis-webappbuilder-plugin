@@ -104,15 +104,12 @@ var BasicApp = React.createClass({
     evt.preventDefault();
     this._toggle(document.getElementById('chart-panel'));
   },
-  _navigationFunc() {
-    ToolActions.activateTool(null, 'navigation');
-  },
   render() {
-    var toolbarOptions = {title:"My Web App"};
+    var toolbarOptions = {style: {height: 71}, title:"My Web App"};
     return React.createElement("div", {id: 'content'},
       React.createElement(AppBar, toolbarOptions
        ,React.createElement(Select, {toggleGroup: 'navigation', map:map}),
-React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label:'Navigation', onTouchTap:this._navigationFunc.bind(this)})
+React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})
       ),
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}
         ,
