@@ -45,7 +45,6 @@ class LayersTest(unittest.TestCase):
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wms.js"))
 
-    @unittest.expectedFailure
     def testWFSLayer(self):
         """Check that WFS layers processed correctly"""
         folder = createAppFromTestAppdef("layerwfs")
