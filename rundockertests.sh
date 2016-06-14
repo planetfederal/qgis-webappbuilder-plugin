@@ -1,5 +1,10 @@
 #!/bin/bash
 # Run the tests locally using the qgis testing environment docker
+# Note: to run the tests you need to download websdk from a github
+#       private repo, you need an authorised id_rsa to do that and
+#       the id_rsa key must be copied to the travis_setup folder
+#       before launching this script.
+
 
 PLUGIN_NAME="webappbuilder"
 
