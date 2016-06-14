@@ -251,7 +251,7 @@ class MainDialog(BASE, WIDGET):
                                      border-style: solid;
                                      border-width: 3px;
                                      border-radius: 10px;
-                                     font: bold 11px;
+                                     font: bold 8.25pt;
                                      padding: 15px;
                                      max-width: 220px;
                                      color: white;
