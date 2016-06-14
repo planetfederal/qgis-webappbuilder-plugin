@@ -31,7 +31,7 @@ class WidgetsTest(unittest.TestCase):
         """Check that chart widget is not generated if it is not configured"""
         folder = createAppFromTestAppdef("chartwidget")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "nochartwidget.js"))
+        self.assertTrue(compareWithExpectedOutputFile(appFile, "nochartwidget.js", True))
 
 
 def suite():

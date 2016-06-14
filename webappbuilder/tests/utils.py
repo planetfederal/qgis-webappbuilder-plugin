@@ -63,7 +63,7 @@ def ignoreLayerID(text):
     """
     return re.sub(r'(id: "[^\d]+)(\d+)"', r'\g<1>0000', text)
 
-def compareWithExpectedOutputFile(file1, file2):
+def compareWithExpectedOutputFile(file1, file2, ignoreExtent=False):
     with codecs.open(file1, encoding="utf-8") as f:
         content = f.read()
     filename2 = os.path.join(os.path.dirname(__file__), "expected", file2)
@@ -71,9 +71,16 @@ def compareWithExpectedOutputFile(file1, file2):
         content2 = f.read()
     content = "".join(content.split())
     content2 = "".join(content2.split())
+    if ignoreExtent:
+        content = removeExtent(content)
+        content2 = removeExtent(content2)
     return ignoreLayerID(content2) in ignoreLayerID(content)
 
 def checkTextInFile(filename, text):
     with codecs.open(filename, encoding="utf-8") as f:
         content = f.read()
     return text in content
+
+
+def removeExtent(text):
+    return re.sub('varoriginalExtent=(\\[.*?\\]);', '', text)
