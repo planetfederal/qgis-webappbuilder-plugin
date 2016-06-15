@@ -7,6 +7,9 @@ import unittest
 import sys
 import utils
 import os
+
+from qgis.core import QGis
+
 from utils import *
 
 
@@ -19,13 +22,19 @@ class SymbologyTest(unittest.TestCase):
         """Check that point symbology exported correctly"""
         folder = createAppFromTestAppdef("symbologypoints")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
+        if QGis.QGIS_VERSION_INT < 21500:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints-2.14.js"))
+        else:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
         """Check that point clustering works correctly"""
         folder = createAppFromTestAppdef("symbologycluster")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
+        if QGis.QGIS_VERSION_INT < 21500:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster-2.14.js"))
+        else:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         """Check that line symbology exported correctly"""
