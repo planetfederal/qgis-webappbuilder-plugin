@@ -7,13 +7,19 @@ import unittest
 import sys
 import utils
 import os
+
+from qgis.core import QGis
+
 from utils import *
 
 
 class LayersTest(unittest.TestCase):
 
     def setUp(self):
-        utils.loadTestProject("layers")
+        if QGis.QGIS_VERSION_INT < 21500:
+            utils.loadTestProject("layers-2.14")
+        else:
+            utils.loadTestProject("layers")
 
     def testLocalPointsLayer(self):
         """Check that point layers processed correctly"""
@@ -49,7 +55,10 @@ class LayersTest(unittest.TestCase):
         """Check that WFS layers processed correctly"""
         folder = createAppFromTestAppdef("layerwfs")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
+        if QGis.QGIS_VERSION_INT < 21500:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs_2.14.js"))
+        else:
+            self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
 
     def testLayerGroup(self):
         """Check that groups of layers processed correctly"""
