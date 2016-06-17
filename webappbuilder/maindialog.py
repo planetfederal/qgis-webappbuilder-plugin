@@ -304,16 +304,29 @@ class MainDialog(BASE, WIDGET):
         themes = [o for o in os.listdir(basePath) if os.path.isdir(os.path.join(basePath,o))]
         for i, theme in enumerate(themes):
             button = QToolButton()
-            icon = QIcon(os.path.join(os.path.dirname(__file__), "themes", theme, "icon.png"))
-            button.setIcon(icon)
-            button.setText(theme)
-            button.setIconSize(QSize(80, 80))
+            button.setText('')
             button.setCheckable(True)
             button.setChecked(i == 0)
             button.setFixedWidth(250)
             button.setFixedHeight(150)
-            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             button.setStyleSheet(self.buttonStyle)
+            button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+
+            label = QLabel()
+            label.setMouseTracking(False)
+            label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.NoTextInteraction)
+            iconFile = os.path.join(os.path.dirname(__file__), "themes", theme, "icon.png")
+            label.setText('<center><img src="{}" width="80" height="80"></center><center style="color:white"><b>{}</b></center>'.format(iconFile, theme))
+
+            layout = QHBoxLayout()
+            layout.addWidget(label)
+            layout.setSpacing(0)
+            layout.setMargin(0)
+            layout.setContentsMargins(5, 5, 5, 5)
+
+            button.setLayout(layout)
+
             def clicked(button):
                 for b in self.themesButtons:
                     b.setChecked(False)
