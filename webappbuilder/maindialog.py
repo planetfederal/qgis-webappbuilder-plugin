@@ -603,7 +603,7 @@ class MainDialog(BASE, WIDGET):
             self.tabPanel.setCurrentIndex(0)
         for b in self.themesButtons:
             if b.isChecked():
-                themeName = b.text()
+                themeName = self.themesButtons[b]
                 break
         logo = self.logoBox.text().strip()
         if logo and not os.path.exists(logo):
