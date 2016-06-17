@@ -224,10 +224,10 @@ def writeCss(appdef, folder):
 def writeHtml(appdef, folder, app, progress, filename):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
+    useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
 
     for applayer in layers:
         layer = applayer.layer
-        useViewCrs = appdef["Settings"]["Use view CRS for WFS connections"]
         if layer.providerType().lower() == "wfs":
             epsg = layer.crs().authid().split(":")[-1]
             if not useViewCrs and epsg not in ["3857", "4326"]:
@@ -242,9 +242,9 @@ def writeHtml(appdef, folder, app, progress, filename):
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
               "@SDKVERSION@": plugins_metadata_parser["webappbuilder"].get("general","websdkversion"),
               "@TITLE@": appdef["Settings"]["Title"],
-                "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
-                "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
-            }
+              "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
+              "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
+             }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
     html = replaceInTemplate(template, values)
@@ -258,8 +258,6 @@ def writeHtml(appdef, folder, app, progress, filename):
         pretty = html
     with codecs.open(indexFilepath, "w", encoding="utf-8") as f:
         f.write(pretty)
-
-
 
 def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     base = appdef["Base layers"]
