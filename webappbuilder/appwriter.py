@@ -35,6 +35,8 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     QDir().mkpath(os.path.join(dst, "resources", "js"))
     shutil.copy(os.path.join(os.path.dirname(__file__), "js", "proj4.js"),
                 os.path.join(dst, "resources", "js", "proj4.js"))
+    shutil.copy(os.path.join(os.path.dirname(__file__), "js", "mgrs.js"),
+                os.path.join(dst, "resources", "js", "mgrs.js"))
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
     cssDstFolder = os.path.join(dst, "resources","css")
     shutil.copytree(cssFolder, cssDstFolder)

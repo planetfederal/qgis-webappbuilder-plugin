@@ -6,7 +6,7 @@ import json
 class MousePosition(WebAppWidget):
 
     _parameters = {"projection": "EPSG:4326",
-                   "coordinateFormat": "ol.coordinate.createStringXY(4)",
+                   "coordinateFormat": ("Lat/Lon", ("Lat/Lon", "MGRS")),
                    "undefinedHTML": "&nbsp;"}
 
     def write(self, appdef, folder, app, progress):
@@ -15,9 +15,19 @@ class MousePosition(WebAppWidget):
         if epsg not in ["3857", "4326"]:
             app.scripts.append('<script src="./resources/js/proj4.js"></script>')
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-        coord = str(self._parameters["coordinateFormat"])
-        s = json.dumps(self._parameters)
-        s = s.replace('"%s"' % coord, coord)
+        coord = self._parameters["coordinateFormat"][0]
+        params = self._parameters.copy()
+        del params["coordinateFormat"]
+        if coord == 'MGRS':
+            app.scripts.append('<script src="./resources/js/mgrs.js"></script>')
+            fmt  = "function(coordinate) {return mgrs.forward(coordinate);}"
+        else:
+            fmt = "ol.coordinate.createStringXY(4)"
+        s = json.dumps(params)
+        print s
+        s = s[:-1] + ', "coordinateFormat": {}'.format(fmt) + s[-1]
+        print s
+        s = s.replace('"%s"' % fmt, fmt)
         app.ol3controls.append("new ol.control.MousePosition(%s)" % s)
 
     def icon(self):
