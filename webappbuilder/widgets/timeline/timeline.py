@@ -18,6 +18,9 @@ class Timeline(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "timeline.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "timeline.png")
+
     def description(self):
         return "Timeline"
 

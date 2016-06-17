@@ -28,5 +28,8 @@ class AboutPanel(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "about-panel.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "about-panel.png")
+
     def description(self):
         return "About"

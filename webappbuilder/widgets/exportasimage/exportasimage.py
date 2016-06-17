@@ -10,5 +10,8 @@ class ExportAsImage(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "export-as-image.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "export-as-image.png")
+
     def description(self):
         return "Export image"

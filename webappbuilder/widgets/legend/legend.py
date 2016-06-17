@@ -26,6 +26,8 @@ class Legend(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "legend.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "legend.png")
 
     def writeLegendFiles(self, appdef, app, folder):
         layers = appdef["Layers"]

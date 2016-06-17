@@ -10,5 +10,8 @@ class FullScreen(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "full-screen.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "full-screen.png")
+
     def description(self):
         return "Full screen"

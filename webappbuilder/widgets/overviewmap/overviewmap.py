@@ -25,5 +25,8 @@ class OverviewMap(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "overview-map.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "overview-map.png")
+
     def description(self):
         return "Overview map"

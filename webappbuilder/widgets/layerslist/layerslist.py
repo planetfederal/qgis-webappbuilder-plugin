@@ -29,5 +29,8 @@ class LayersList(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "layer-list.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "layer-list.png")
+
     def description(self):
         return "Layers list"

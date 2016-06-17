@@ -13,5 +13,8 @@ class HomeButton(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "home.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "home.png")
+
     def description(self):
         return "Home"

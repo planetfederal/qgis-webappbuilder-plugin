@@ -10,5 +10,8 @@ class Attribution(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribution.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "attribution.png")
+
     def description(self):
         return "Attribution"

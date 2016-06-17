@@ -38,6 +38,9 @@ class AttributesTable(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "attribute-table.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "attribute-table.png")
+
     def description(self):
         return "Attributes table"
 

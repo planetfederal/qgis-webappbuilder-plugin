@@ -23,5 +23,8 @@ class MousePosition(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "mouse-position.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "mouse-position.png")
+
     def description(self):
         return "Mouse position"

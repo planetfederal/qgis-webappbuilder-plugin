@@ -14,5 +14,8 @@ class SelectionTools(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "selection-tool.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "selection-tool.png")
+
     def description(self):
         return "Selection"

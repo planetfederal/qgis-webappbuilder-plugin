@@ -14,5 +14,8 @@ class Wfst(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "edit.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "edit.png")
+
     def description(self):
         return "WFS-T"

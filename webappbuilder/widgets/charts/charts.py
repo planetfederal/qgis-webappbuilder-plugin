@@ -40,6 +40,9 @@ class ChartTool(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "chart-tool.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "chart-tool.png")
+
     def description(self):
         return "Charts"
 

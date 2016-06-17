@@ -11,5 +11,8 @@ class AddLayer(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "add-layer.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "add-layer.png")
+
     def description(self):
         return "Add layer"

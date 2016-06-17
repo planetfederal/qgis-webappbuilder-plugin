@@ -275,21 +275,40 @@ class MainDialog(BASE, WIDGET):
 
         for i, (_, w) in enumerate(sorted(webAppWidgets.items())):
             button = QToolButton(self.scrollAreaWidgetContents)
-            sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
-            button.setSizePolicy(sizePolicy)
-            button.setMaximumSize(QSize(110, 110))
-            button.setFixedWidth(110)
-            button.setFixedHeight(110)
-            button.setStyleSheet(self.buttonStyle)
-            button.setIcon(w.icon())
-            button.setText(w.description().replace(" ", "\n"))
-            button.setIconSize(QSize(32, 32))
+            button.setText('')
             button.setCheckable(True)
-            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            #~ sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            #~ sizePolicy.setHorizontalStretch(0)
+            #~ sizePolicy.setVerticalStretch(0)
+            #~ sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
+            #~ button.setSizePolicy(sizePolicy)
+            #~ button.setMaximumSize(QSize(110, 110))
+            #~ button.setFixedWidth(110)
+            #~ button.setFixedHeight(110)
+            button.setStyleSheet(self.buttonStyle)
+            button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+
+            #~ button.setIcon(w.icon())
+            #~ button.setText(w.description().replace(" ", "\n"))
+            #~ button.setIconSize(QSize(32, 32))
+            #~ button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
+            label = QLabel()
+            label.setMouseTracking(False)
+            label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.NoTextInteraction)
+            label.setText('<center><img src="{}"></center><center style="color:white"><b>{}</b></center>'.format(w.iconFile(), w.description().replace(" ", "\n")))
+
+            layout = QHBoxLayout()
+            layout.addWidget(label)
+            layout.setSpacing(0)
+            layout.setMargin(0)
+            layout.setContentsMargins(5, 5, 5, 5)
+
+            button.setLayout(layout)
+
             button.webAppWidget = w
+
             row = i / 5
             col = i % 5
             self.gridLayoutWidgets.addWidget(button, row, col, 1, 1)

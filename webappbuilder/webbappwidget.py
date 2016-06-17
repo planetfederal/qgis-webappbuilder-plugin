@@ -22,6 +22,9 @@ class WebAppWidget(object):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "icons", "puzzle.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "icons", "puzzle.png")
+
     def name(self):
         return self.__class__.__name__.lower()
 

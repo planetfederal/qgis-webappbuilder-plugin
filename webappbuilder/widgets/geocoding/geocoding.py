@@ -32,5 +32,8 @@ class Geocoding(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "geocoding.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "geocoding.png")
+
     def description(self):
         return "Geocoding"

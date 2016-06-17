@@ -18,6 +18,9 @@ class Links(WebAppWidget):
     def icon(self):
         return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "links.png")
+
     def description(self):
         return "Links"
 

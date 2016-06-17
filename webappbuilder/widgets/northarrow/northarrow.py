@@ -19,5 +19,8 @@ class NorthArrow(WebAppWidget):
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "north-arrow.png"))
 
+    def iconFile(self):
+        return os.path.join(os.path.dirname(__file__), "north-arrow.png")
+
     def description(self):
         return "North"
