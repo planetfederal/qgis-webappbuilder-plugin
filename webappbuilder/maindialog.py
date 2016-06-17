@@ -343,14 +343,26 @@ class MainDialog(BASE, WIDGET):
         for i, layer in enumerate(layers):
             button = QToolButton()
             filename = os.path.join(os.path.dirname(__file__), "baselayers", layer.lower().replace(" ", "") + ".png")
-            icon = QIcon(filename)
-            button.setIcon(icon)
-            button.setText(layer)
-            button.setIconSize(QSize(160, 80))
+            button.setText('')
             button.setCheckable(True)
             button.setChecked(False)
-            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             button.setStyleSheet(self.buttonStyle)
+            button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+
+            label = QLabel()
+            label.setMouseTracking(False)
+            label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.NoTextInteraction)
+            label.setText('<center><img src="{}" width="160" height="80"></center><center style="color:white"><b>{}</b></center>'.format(filename, layer))
+
+            layout = QHBoxLayout()
+            layout.addWidget(label)
+            layout.setSpacing(0)
+            layout.setMargin(0)
+            layout.setContentsMargins(5, 5, 5, 5)
+
+            button.setLayout(layout)
+
             row = i / 3
             col = i % 3
             self.gridLayoutBaseLayers.addWidget(button, row, col, 1, 1)
@@ -360,19 +372,30 @@ class MainDialog(BASE, WIDGET):
         for i, layer in enumerate(layers):
             button = QToolButton()
             filename = os.path.join(os.path.dirname(__file__), "baselayers", layer.lower().replace(" ", "") + ".png")
-            icon = QIcon(filename)
-            button.setIcon(icon)
-            button.setText(layer)
-            button.setIconSize(QSize(160, 80))
+            button.setText('')
             button.setCheckable(True)
             button.setChecked(False)
-            button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
             button.setStyleSheet(self.buttonStyle)
+            button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+
+            label = QLabel()
+            label.setMouseTracking(False)
+            label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.NoTextInteraction)
+            label.setText('<center><img src="{}" width="160" height="80"></center><center style="color:white"><b>{}</b></center>'.format(filename, layer))
+
+            layout = QHBoxLayout()
+            layout.addWidget(label)
+            layout.setSpacing(0)
+            layout.setMargin(0)
+            layout.setContentsMargins(5, 5, 5, 5)
+
+            button.setLayout(layout)
+
             row = i / 3
             col = i % 3
             self.gridLayoutBaseOverlays.addWidget(button, row, col, 1, 1)
             self.baseOverlays[button] = layer
-
 
     def populateLayers(self):
         skipType = [2]
