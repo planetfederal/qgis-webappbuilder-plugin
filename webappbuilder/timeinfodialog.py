@@ -4,15 +4,17 @@
 # This code is licensed under the GPL 2.0 license.
 #
 from qgis.core import *
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 
-from ui_timeinfodialog import Ui_TimeInfoDialog
 from PyQt4.QtCore import QDateTime
+import os
 
 
-class TimeInfoDialog(QtGui.QDialog, Ui_TimeInfoDialog):
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), 'ui_timeinfodialog.ui'))
+
+class TimeInfoDialog(BASE, WIDGET):
     def __init__(self, timeInfo, layer):
-        print timeInfo
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.buttonBox.accepted.connect(self.okPressed)
