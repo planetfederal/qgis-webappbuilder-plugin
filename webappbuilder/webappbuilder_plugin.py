@@ -50,6 +50,13 @@ class WebAppBuilderPlugin:
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
         shutil.rmtree(tempFolder())
 
+        try:
+            from webappbuilder.tests import testerplugin
+            from qgistester.tests import removeTestModule
+            removeTestModule(testerplugin, "Web App Builder")
+        except:
+            pass
+
     def run(self):
         appdef = None
         projFile = QgsProject.instance().fileName()
