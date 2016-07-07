@@ -2,11 +2,11 @@
   width: 100%;
   height: 100%;
 }
-.layerlistbutton {
-  top: 50px;
-}
 .layer-switcher {
-  top: 6em !important;
+  top: 150px !important;
+}
+.legend {
+  top: 250px !important;
 }
 #globe-button {
   top: .5em;
@@ -29,8 +29,8 @@
   top: 91px;
 }
 #rotate-button {
-  top: 91px;
-  right: 17px;
+  top: 90px;
+  right: 20px;
   position: absolute;
 }
 #edit-tool-panel {
