@@ -121,7 +121,7 @@ def writeJs(appdef, folder, app, progress):
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
         logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
 
-    toolbarOptions = '{style: {height: 71}, title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
+    toolbarOptions = '{style: {height: 71}, showMenuIconButton: false, title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     variables ="\n".join(app.variables)
 
