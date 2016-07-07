@@ -10,15 +10,15 @@ import shutil
 
 class Legend(WebAppWidget):
 
-    _parameters = {"showExpandedOnStartup": False, "expandOnHover": True, "size": 20}
+    _parameters = {"showExpandedOnStartup": False, "size": 20}
 
     def write(self, appdef, folder, app, progress):
         def p(name):
             return str(self._parameters[name]).lower()
         self.writeLegendFiles(appdef, app, folder)
         app.panels.append('''React.createElement("div",{id: "legend"},
-                                React.createElement(QGISLegend, {map:map, legendBasePath:'./resources/legend/',showExpandedOnStartup:%s, expandOnHover:%s, legendData:legendData})
-                            )''' % (p("showExpandedOnStartup"), p("expandOnHover")))
+                                React.createElement(QGISLegend, {map:map, legendBasePath:'./resources/legend/',showExpandedOnStartup:%s, legendData:legendData})
+                            )''' % (p("showExpandedOnStartup")))
 
     def description(self):
         return "Legend"

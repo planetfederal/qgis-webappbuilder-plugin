@@ -10,7 +10,6 @@ class LayersList(WebAppWidget):
                     "showDownload": False,
                     "allowReordering": False,
                     "allowFiltering": True,
-                    "expandOnHover": True,
                     "downloadFormat": ("GeoJSON", ("GeoJSON", "KML", "GPX"))}
 
     def write(self, appdef, folder, app, progress):
@@ -19,11 +18,11 @@ class LayersList(WebAppWidget):
         app.panels.append('''React.createElement("div",{id: "layerlist"},
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
                                         showGroupContent:true, showZoomTo:%s, allowReordering:%s,
-                                        allowFiltering:%s, tipLabel:'%s', expandOnHover:%s,
+                                        allowFiltering:%s, tipLabel:'%s',
                                         downloadFormat:'%s', map:map}))'''
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
-                               p("expandOnHover"), self._parameters["downloadFormat"][0]))
+                               self._parameters["downloadFormat"][0]))
         self.addReactComponent(app, "LayerList")
 
     def icon(self):
