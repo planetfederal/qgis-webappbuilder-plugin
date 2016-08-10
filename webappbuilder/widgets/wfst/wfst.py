@@ -5,7 +5,7 @@ from PyQt4.QtGui import QIcon
 class Wfst(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.tools.append("React.createElement(RaisedButton, {label: 'WFS-T', onTouchTap: this._toggleWFST})")
+        app.tools.append("React.createElement(RaisedButton, {label: 'WFS-T', onTouchTap: this._toggleWFST.bind(this)})")
         app.panels.append(''' React.createElement("div", {id: 'wfst', ref: 'wfstPanel'},
                                       React.createElement(WFST, {map: map})
                                     )''')

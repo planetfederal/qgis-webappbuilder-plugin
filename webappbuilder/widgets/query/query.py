@@ -14,7 +14,7 @@ class Query(WebAppWidget):
             app.tabs.append("<Tab value={%i} label='Query'><div id='query-panel' className='query-panel'>" % idx
                               + "<QueryBuilder map={map} /></div></Tab>")
         else:
-            app.tools.append("React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label: 'Query', onTouchTap: this._toggleQuery})")
+            app.tools.append("React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label: 'Query', onTouchTap: this._toggleQuery.bind(this)})")
             app.mappanels.append('''React.createElement("div", {id: 'query-panel', className:'query-panel'},
                                           React.createElement(QueryBuilder, {map: map})
                                         )''')
