@@ -53,7 +53,7 @@ var TabbedApp = React.createClass({
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("div", {id: 'content'},
-      React.createElement(AppBar, toolbarOptions
+      React.createElement(AppBar, toolbarOptions,
         @TOOLBAR@
       ),
       React.createElement("div", {className: 'row container'},
