@@ -105,7 +105,7 @@ var BasicApp = React.createClass({
     this._toggle(document.getElementById('chart-panel'));
   },
   render() {
-    var toolbarOptions = {style: {height: 71}, title:"My Web App"};
+    var toolbarOptions = {style: {height: 71}, showMenuIconButton: false, title:"My Web App"};
     return React.createElement("div", {id: 'content'},
       React.createElement(AppBar, toolbarOptions
        ,React.createElement(Select, {toggleGroup: 'navigation', map:map}),
