@@ -287,6 +287,8 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                         nodata.append(nd if not math.isnan(nd) else 0)
                     else:
                         nodata.append(0)
+                if len(nodata) < 3:
+                    nodata.extend([0] * (3 - len(nodata)))
                 return '''var src_%(n)s = new ol.source.ImageStatic({
                                 url: "./data/%(n)s.jpg",
                                 projection: "%(crs)s",
