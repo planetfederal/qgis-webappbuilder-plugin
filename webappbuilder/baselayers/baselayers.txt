@@ -4,7 +4,7 @@ new ol.layer.Tile({
     title: 'CartoDB light',
     source: new ol.source.XYZ({
         url: 'http://s.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
+        attributions: [new ol.Attribution({ html: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         })]
     }),
     projection: 'EPSG:3857'
@@ -16,7 +16,7 @@ new ol.layer.Tile({
     title: 'CartoDB light without labels',
     source: new ol.source.XYZ({
         url: 'http://s.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
+        attributions: [new ol.Attribution({ html: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         })]
     }),
     projection: 'EPSG:3857'
@@ -28,7 +28,7 @@ new ol.layer.Tile({
     title: 'CartoDB dark',
     source: new ol.source.XYZ({
         url: 'http://s.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
+        attributions: [new ol.Attribution({ html: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         })]
     }),
     projection: 'EPSG:3857'
@@ -40,7 +40,7 @@ new ol.layer.Tile({
     title: 'CartoDB dark without labels',
     source: new ol.source.XYZ({
         url: 'http://s.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({ html: ['&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>']
+        attributions: [new ol.Attribution({ html: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         })]
     }),
     projection: 'EPSG:3857'
@@ -52,7 +52,7 @@ new ol.layer.Tile({
     title: 'Open topo map',
     source: new ol.source.XYZ({
         url: 'http://s.tile.opentopomap.org/{z}/{x}/{y}.png',
-        attributions: [new ol.Attribution({ html: ['Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)']
+        attributions: [new ol.Attribution({ html: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         })]
     }),
     projection: 'EPSG:3857'
@@ -111,7 +111,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI world topo map',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer">ArcGIS</a>']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer">ArcGIS</a>'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -122,7 +122,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI world street map',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer">ArcGIS</a>']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer">ArcGIS</a>'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -133,7 +133,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI DeLorme world map',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Copyright: &copy;2012 DeLorme']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; Esri &mdash; Copyright: &copy;2012 DeLorme'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -144,7 +144,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI world imagery',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -155,7 +155,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI world terrain',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -167,7 +167,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI world shaded relief',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; Source: Esri']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; Esri &mdash; Source: Esri'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
@@ -178,7 +178,7 @@ new ol.layer.Tile({
     type: 'base',
     title: 'ESRI NatGeo world map',
     source: new ol.source.XYZ({
-        attributions: [new ol.Attribution({ html:['Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC']})],
+        attributions: [new ol.Attribution({ html: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC'})],
         url: 'http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}'
     }),
     projection: 'EPSG:3857'
