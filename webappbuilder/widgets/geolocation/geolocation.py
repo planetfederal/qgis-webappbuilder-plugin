@@ -8,6 +8,7 @@ class Geolocation(WebAppWidget):
         app.panels.append('''React.createElement("div", {id:'geolocation-control'},
                                     React.createElement(Geolocation, {map:map})
                                   )''')
+        self.addReactComponent(app, "Geolocation")
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "geolocation.png"))
 

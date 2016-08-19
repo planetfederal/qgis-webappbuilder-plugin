@@ -19,6 +19,7 @@ class Legend(WebAppWidget):
         app.panels.append('''React.createElement("div",{id: "legend"},
                                 React.createElement(QGISLegend, {map:map, legendBasePath:'./resources/legend/',showExpandedOnStartup:%s, legendData:legendData})
                             )''' % (p("showExpandedOnStartup")))
+        self.addReactComponent(app, "QGISLegend")
 
     def description(self):
         return "Legend"
