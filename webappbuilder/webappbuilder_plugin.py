@@ -38,7 +38,7 @@ class WebAppBuilderPlugin:
         helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
         self.helpAction = QAction(helpIcon, "Web App Builder Help", self.iface.mainWindow())
         self.helpAction.setObjectName("webAppBuilderHelp")
-        self.helpAction.triggered.connect(lambda: webbrowser.open_new("http://boundlessgeo.github.io/qgis-app-builder/"))
+        self.helpAction.triggered.connect(lambda: webbrowser.open_new("http://boundlessgeo.github.io/qgis-plugins-documentation/webappbuilder/"))
 
         self.iface.addWebToolBarIcon(self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
