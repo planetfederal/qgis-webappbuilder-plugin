@@ -76,8 +76,7 @@ class BasicApp extends React.Component {
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions,
-       @TOOLBAR@
+       React.createElement(AppBar, toolbarOptions @TOOLBAR@
        ),
       React.createElement("div", {id: 'content'},
         React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: @PERMALINK@}
