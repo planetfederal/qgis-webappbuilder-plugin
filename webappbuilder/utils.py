@@ -126,7 +126,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                     if forPreview:
                         f.write(");")
             elif layer.type() == layer.RasterLayer:
-                destFile = os.path.join(layersFolder, safeName(layer.name()) + ".jpg").replace("\\", "/")
+                destFile = os.path.join(layersFolder, safeName(layer.name()) + ".png").replace("\\", "/")
                 img = layer.previewAsImage(QSize(layer.width(),layer.height()))
                 img.save(destFile)
         progress.setProgress(int(i*100.0/len(layers)))

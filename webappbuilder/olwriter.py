@@ -278,24 +278,41 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                 extent = transform.transform(provider.extent())
                 sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                         extent.xMaximum(), extent.yMaximum())
-                return '''var lyr_%(n)s = new ol.layer.Image({
+
+                nodata = [0, 0, 0]
+                return '''var src_%(n)s = new ol.source.ImageStatic({
+                                url: "./data/%(n)s.png",
+                                projection: "%(crs)s",
+                                alwaysInRange: true,
+                                imageSize: [%(col)d, %(row)d],
+                                imageExtent: %(extent)s
+                          });
+
+                          var raster_%(n)s = new ol.source.Raster({
+                                sources: [src_%(n)s],
+                                operation: function(pixels, data) {
+                                    var pixel = pixels[0];
+                                    if (pixel[0] === %(ndR)d && pixel[1] === %(ndG)d && pixel[2] === %(ndB)d) {
+                                        pixel[3] = 0;
+                                    }
+                                    return pixel;
+                                  }
+                          });
+
+                          var lyr_%(n)s = new ol.layer.Image({
                                 opacity: %(opacity)s,
                                 %(min)s %(max)s
                                 title: %(name)s,
                                 id: "%(id)s",
                                 timeInfo: %(timeInfo)s,
-                                source: new ol.source.ImageStatic({
-                                   url: "./data/%(n)s.jpg",
-                                    projection: "%(crs)s",
-                                    alwaysInRange: true,
-                                    imageSize: [%(col)d, %(row)d],
-                                    imageExtent: %(extent)s
-                                })
+                                source: raster_%(n)s
                             });''' % {"opacity": layerOpacity, "n": layerName,
                                       "extent": sExtent, "col": provider.xSize(),
                                       "min": minResolution, "max": maxResolution,
                                       "name": title, "row": provider.ySize(),
-                                      "crs": viewCrs, "timeInfo": timeInfo,"id": layer.id()}
+                                      "crs": viewCrs, "timeInfo": timeInfo,
+                                      "id": layer.id(), "ndR": nodata[0],
+                                      "ndG": nodata[1], "ndB": nodata[2]}
         else:
             url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
             return '''var lyr_%(n)s = %(layerClass)s({

@@ -68,6 +68,14 @@ def functionalTests():
     previewWithAllWidgetsTest.setCleanup(closeWAB)
     tests.append(previewWithAllWidgetsTest)
 
+    nodataTest = Test("Verify that NODATA values are transparent")
+    nodataTest.addStep("Load project", lambda: loadTestProject("nodata"))
+    nodataTest.addStep("Creating web app", lambda: _createWebApp("nodata"))
+    nodataTest.addStep("Verify web app in browser. NODATA values should be transparent",
+                       prestep=lambda: webbrowser.open_new(
+                             "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
+    tests.append(nodataTest)
+
     return tests
 
 def unitTests():
