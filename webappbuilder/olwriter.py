@@ -291,7 +291,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                     #~ nodata.extend([0] * (3 - len(nodata)))
                 nodata = [0, 0, 0]
                 return '''var src_%(n)s = new ol.source.ImageStatic({
-                                url: "./data/%(n)s.jpg",
+                                url: "./data/%(n)s.png",
                                 projection: "%(crs)s",
                                 alwaysInRange: true,
                                 imageSize: [%(col)d, %(row)d],
