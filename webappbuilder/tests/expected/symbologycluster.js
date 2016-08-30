@@ -185,12 +185,15 @@ var categories_points = {"2": [ new ol.style.Style({
                         var features = feature.get('features');
                             var size = 0;
                             for (var i = 0, ii = features.length; i < ii; ++i) {
+                              if (features[i].selected) {
+                                return null;
+                              }
                               if (features[i].hide !== true) {
                                 size++;
                               }
                             }
                             if (size === 0) {
-                              return undefined;
+                              return null;
                             }
                             if (size != 1){
                                 var features = feature.get('features');
@@ -243,59 +246,6 @@ var categories_points = {"2": [ new ol.style.Style({
                         return allStyles;
                     };
                     var selectionStyle_points = function(feature, resolution){
-                        var features = feature.get('features');
-                            var size = 0;
-                            for (var i = 0, ii = features.length; i < ii; ++i) {
-                              if (features[i].hide !== true) {
-                                size++;
-                              }
-                            }
-                            if (size === 0) {
-                              return undefined;
-                            }
-                            if (size != 1){
-                                var features = feature.get('features');
-                                var numVisible = 0;
-                                for (var i = 0; i < size; i++) {
-                                    if (features[i].hide != true) {
-                                        numVisible++;
-                                    }
-                                }
-                                if (numVisible === 0) {
-                                    return null;
-                                }
-                                if (numVisible != 1) {
-                                    var color = '#3399CC'
-                                    var style = clusterStyleCache_points[numVisible]
-                                    if (!style) {
-                                        style = [new ol.style.Style({
-                                            image: new ol.style.Circle({
-                                                radius: 14,
-                                                stroke: new ol.style.Stroke({
-                                                    color: '#fff'
-                                                }),
-                                                fill: new ol.style.Fill({
-                                                    color: color
-                                                })
-                                            }),
-                                            text: new ol.style.Text({
-                                                text: numVisible.toString(),
-                                                fill: new ol.style.Fill({
-                                                    color: '#fff'
-                                                }),
-                                                stroke: new ol.style.Stroke({
-                                                  color: 'rgba(0, 0, 0, 0.6)',
-                                                  width: 3
-                                                })
-                                            })
-                                        })];
-                                        clusterStyleCache_points[numVisible] = style;
-                                    }
-                                    return style;
-                                }
-                            }
-                            feature = feature.get('features')[0];
-                            
                         var value = feature.get("n");
                         var style = categoriesSelected_points[value]
                         var allStyles = [];
