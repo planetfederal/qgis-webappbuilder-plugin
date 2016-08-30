@@ -5,7 +5,7 @@ from PyQt4.QtGui import QIcon
 class Edit(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
-        app.tools.append("React.createElement(RaisedButton, {label: 'Edit', onTouchTap: this._toggleEdit.bind(this)})")
+        app.tools.append("React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label: 'Edit', onTouchTap: this._toggleEdit.bind(this)})")
         app.mappanels.append(''' React.createElement("div", {id: 'edit-tool-panel'},
                                       React.createElement(Edit, {map: map, toggleGroup:'navigation'})
                                     )''')
