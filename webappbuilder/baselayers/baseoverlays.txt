@@ -1,12 +1,3 @@
-/*MapQuest labels*/
-new ol.layer.Tile({
-	type: 'base-overlay',
-	title: 'MapQuest labels',
-	source: new ol.source.MapQuest({layer: 'hyb'}),
-    projection: 'EPSG:3857'
-
-})
-
 /*Stamen toner hybrid*/
 new ol.layer.Tile({
 	type: 'base-overlay',

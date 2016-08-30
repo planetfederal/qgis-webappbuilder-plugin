@@ -67,6 +67,15 @@ new ol.layer.Tile({
     projection: 'EPSG:3857'
 })
 
+
+/*Stamen terrain*/
+new ol.layer.Tile({
+    type: 'base',
+    title: 'Stamen watercolor',
+    source: new ol.source.Stamen({layer: 'watercolor'}),
+    projection: 'EPSG:3857'
+})
+
 /*Stamen toner*/
 new ol.layer.Tile({
     type: 'base',
@@ -89,21 +98,6 @@ new ol.layer.Tile({
     title: 'OSM Mapnik',
     source: new ol.source.OSM(),
     projection: 'EPSG:3857'
-})
-
-/*MapQuest roads*/
-new ol.layer.Tile({
-    type: 'base',
-    title: 'MapQuest roads',
-    source: new ol.source.MapQuest({layer: 'osm'}),
-    projection: 'EPSG:3857'
-})
-
-/*MapQuest aerial*/
-new ol.layer.Tile({
-    type: 'base',
-    title: 'MapQuest aerial',
-    source: new ol.source.MapQuest({layer: 'sat'})
 })
 
 /*ESRI world topo map*/
