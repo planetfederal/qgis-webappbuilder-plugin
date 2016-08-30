@@ -21,6 +21,7 @@ import json
 import requests
 from settings import webAppWidgets
 import viewer
+import xml.etree.ElementTree as ET
 
 def createApp(appdef, deployData, folder, forPreview, progress):
 	viewer.shutdown()
@@ -97,8 +98,23 @@ def checkAppCanBeCreated(appdef):
 	if hasTimeInfo and "timeline" not in appdef["Widgets"]:
 		problems.append("There are layers with time information, but timeline widget is not used.")
 
-	if not hasTimeInfo and "timeline" in appdef["Widgets"]:
-		problems.append("Timeline widget is used but there are no layers with time information")
+	if "timeline" in appdef["Widgets"]:
+		for applayer in layers:
+			layer = applayer.layer
+			if layer.providerType().lower() != "wms":
+				url = re.search(r"url=(.*?)(?:&|$)", layer.source()).groups(0)[0]
+				layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+				r = requests.get(url + "?service=WMS&request=GetCapabilities")
+				root = ET.fromstring(r.text)
+				for layerElement in root.iter('Layer'):
+					name = layerElement.find("Name").text
+					if name == layernames:
+						time = layerElement.find('Extent')
+						if time is not None:
+							applayer.timeInfo = time
+
+		if not hasTimeInfo:
+			problems.append("Timeline widget is used but there are no layers with time information")
 
 	return problems
 
