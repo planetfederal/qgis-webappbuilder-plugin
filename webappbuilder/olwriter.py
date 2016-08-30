@@ -387,12 +387,15 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cluster = '''var features = feature.get('features');
                             var size = 0;
                             for (var i = 0, ii = features.length; i < ii; ++i) {
+                              if (features[i].selected) {
+                                return null;
+                              }
                               if (features[i].hide !== true) {
                                 size++;
                               }
                             }
                             if (size === 0) {
-                              return undefined;
+                              return null;
                             }
                             if (size != 1){
                                 var features = feature.get('features');
@@ -453,7 +456,6 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             "value": value, "cluster": cluster,
                             "labels":labels}
             selectionStyle = '''function(feature, resolution){
-                        %(cluster)s
                         %(value)s
                         %(style)s
                         var allStyles = [];
