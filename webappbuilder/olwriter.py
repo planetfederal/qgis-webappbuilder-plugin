@@ -279,16 +279,6 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                 sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                         extent.xMaximum(), extent.yMaximum())
 
-                #~ nodata = []
-                #~ bands = layer.renderer().usesBands()
-                #~ for b in bands:
-                    #~ if provider.srcHasNoDataValue(b):
-                        #~ nd = provider.srcNoDataValue(b)
-                        #~ nodata.append(nd if not math.isnan(nd) else 0)
-                    #~ else:
-                        #~ nodata.append(0)
-                #~ if len(nodata) < 3:
-                    #~ nodata.extend([0] * (3 - len(nodata)))
                 nodata = [0, 0, 0]
                 return '''var src_%(n)s = new ol.source.ImageStatic({
                                 url: "./data/%(n)s.png",
