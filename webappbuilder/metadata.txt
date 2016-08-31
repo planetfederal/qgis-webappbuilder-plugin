@@ -1,40 +1,23 @@
-# This file contains metadata for your plugin. Beginning
-# with version 1.8 this is the preferred way to supply information about a
-# plugin. The current method of embedding metadata in __init__.py will
-# be supported until version 2.0
-
-# This file should be included when you package your plugin.
-
-# Mandatory items:
-
-
 [general]
 name=Web App Builder
-qgisMinimumVersion=2.0
 description=Creates OL3-based web apps
 about=Easily create web apps based on OpenLayers and the Boundless WebSDK
+category=Web
 version=0.5.1
+qgisMinimumVersion=2.0
+
 author=Victor Olaya
 email=volaya@boundlessgeo.com
 
-# end of mandatory metadata
+icon=icons/opengeo.png
 
-# Optional items:
-
-# Uncomment the following line and add your changelog entries:
-changelog=
-
-# tags are comma separated with spaces allowed
 tags=plugins,boundless
 
-homepage=http://boundlessgeo.com
-tracker=https://github.com/boundlessgeo/qgis-app-builder/issues
-repository=https://github.com/boundlessgeo/qgis-app-builder
-icon=icons/opengeo.png
-# experimental flag
-experimental=False
+homepage=http://boundlessgeo.github.io/qgis-plugins-documentation/webappbuilder/
+tracker=https://github.com/boundlessgeo/qgis-webappbuilder-plugin/issues
+repository=https://github.com/boundlessgeo/qgis-webappbuilder-plugin
 
-# deprecated flag (applies to the whole plugin, not just a single version
+experimental=False
 deprecated=False
 
 websdkversion=1
