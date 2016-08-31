@@ -13,7 +13,7 @@ icon=icons/opengeo.png
 
 tags=plugins,boundless
 
-homepage=http://boundlessgeo.github.io/qgis-plugins-documentation/webappbuilder/
+homepage=https://connect.boundlessgeo.com/docs/desktop/plugins/webappbuilder/
 tracker=https://github.com/boundlessgeo/qgis-webappbuilder-plugin/issues
 repository=https://github.com/boundlessgeo/qgis-webappbuilder-plugin
 
