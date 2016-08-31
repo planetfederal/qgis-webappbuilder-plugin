@@ -1,7 +1,7 @@
 [general]
 name=Web App Builder
-description=Creates OL3-based web apps
-about=Easily create web apps based on OpenLayers and the Boundless WebSDK
+description=Easily create web applications based on OpenLayers and the Boundless WebSDK
+about=<p>Easily create and configure web applications based on layers, map compositions and bookmarks, using the Web App Builder plugin as a front end for the Boundless WebSDK. In addition to including web services, you can also choose from a variety of widgets such as a layer chooser, scale bars, feature identify, and more. Local data can also be published from the QGIS instance into remote GeoServer and PostGIS instances.</p><p>This plugin is available with a Boundless Desktop&nbsp;&mdash; Enterprise Subscription <a href="https://connect.boundlessgeo.com/UserLogin?returnurl=%2fPurchase-Boundless-Desktop" style="font: bold; text-decoration: none; background-color: #edd400; color: #333333; padding: 2px 6px 2px 6px; border-top: 1px solid #c4a000; border-right: 1px solid #c4a000; border-bottom: 1px solid #c4a000; border-left: 1px solid #c4a000;">Get&nbsp;access</a></p>
 category=Web
 version=0.5.1
 qgisMinimumVersion=2.0
@@ -11,7 +11,7 @@ email=volaya@boundlessgeo.com
 
 icon=icons/opengeo.png
 
-tags=plugins,boundless
+tags=boundless,openlayers, websdk, javascript
 
 homepage=https://connect.boundlessgeo.com/docs/desktop/plugins/webappbuilder/
 tracker=https://github.com/boundlessgeo/qgis-webappbuilder-plugin/issues
