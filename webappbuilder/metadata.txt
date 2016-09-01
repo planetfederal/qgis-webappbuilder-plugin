@@ -6,10 +6,10 @@ category=Web
 version=0.5.1
 qgisMinimumVersion=2.0
 
-author=Victor Olaya
+author=Boundless (Victor Olaya)
 email=volaya@boundlessgeo.com
 
-icon=icons/opengeo.png
+icon=icons/desktop.png
 
 tags=boundless,openlayers, websdk, javascript
 
