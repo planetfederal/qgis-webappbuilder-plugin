@@ -115,6 +115,7 @@ def checkAppCanBeCreated(appdef):
 								applayer.timeInfo = time
 				except:
 					#we swallow error, since this is nota vital info to add, so the app can still be created.
+					pass
 
 		if not hasTimeInfo:
 			problems.append("Timeline widget is used but there are no layers with time information")
