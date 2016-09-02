@@ -101,17 +101,20 @@ def checkAppCanBeCreated(appdef):
 	if "timeline" in appdef["Widgets"]:
 		for applayer in layers:
 			layer = applayer.layer
-			if layer.providerType().lower() != "wms":
-				url = re.search(r"url=(.*?)(?:&|$)", layer.source()).groups(0)[0]
-				layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-				r = requests.get(url + "?service=WMS&request=GetCapabilities")
-				root = ET.fromstring(r.text)
-				for layerElement in root.iter('Layer'):
-					name = layerElement.find("Name").text
-					if name == layernames:
-						time = layerElement.find('Extent')
-						if time is not None:
-							applayer.timeInfo = time
+			if layer.providerType().lower() == "wms":
+				try:
+					url = re.search(r"url=(.*?)(?:&|$)", layer.source()).groups(0)[0]
+					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+					r = requests.get(url + "?service=WMS&request=GetCapabilities")
+					root = ET.fromstring(r.text)
+					for layerElement in root.iter('Layer'):
+						name = layerElement.find("Name").text
+						if name == layernames:
+							time = layerElement.find('Extent')
+							if time is not None:
+								applayer.timeInfo = time
+				except:
+					#we swallow error, since this is nota vital info to add, so the app can still be created.
 
 		if not hasTimeInfo:
 			problems.append("Timeline widget is used but there are no layers with time information")
