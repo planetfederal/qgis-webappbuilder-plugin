@@ -114,7 +114,7 @@ def checkAppCanBeCreated(appdef):
 							if time is not None:
 								applayer.timeInfo = time
 				except:
-					#we swallow error, since this is nota vital info to add, so the app can still be created.
+					#we swallow error, since this is not a vital info to add, so the app can still be created.
 					pass
 
 		if not hasTimeInfo:

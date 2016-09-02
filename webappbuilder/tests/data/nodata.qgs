@@ -56,7 +56,7 @@
         <ymax>35.42989566969458082</ymax>
       </extent>
       <id>nodata20160630202900185</id>
-      <datasource>/home/alex/devel/python/qgis-plugins/qgis-webappbuilder-plugin/webappbuilder/tests/data/nodata.tif</datasource>
+      <datasource>./nodata.tif</datasource>
       <keywordList>
         <value></value>
       </keywordList>
