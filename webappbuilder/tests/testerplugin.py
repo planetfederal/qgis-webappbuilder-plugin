@@ -71,7 +71,9 @@ def functionalTests():
     nodataTest = Test("Verify that NODATA values are transparent")
     nodataTest.addStep("Load project", lambda: loadTestProject("nodata"))
     nodataTest.addStep("Creating web app", lambda: _createWebApp("nodata"))
-    nodataTest.addStep("Verify web app in browser. NODATA values should be transparent",
+    nodataTest.addStep("Verify web app in browser. NODATA values should be transparent. "
+                       "<b>NOTE</b> don't use Chrome/Chromium to check this web app they "
+                       "have bug and it might not work as expected. Use Firefox or another browser",
                        prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
