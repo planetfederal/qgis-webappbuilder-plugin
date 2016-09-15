@@ -103,6 +103,7 @@ def checkAppCanBeCreated(appdef):
 			layer = applayer.layer
 			if layer.providerType().lower() == "wms":
 				try:
+                                        print '***** LOOK FOR TIMEINFO'
                                         source = layer.source()
 					url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
 					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]

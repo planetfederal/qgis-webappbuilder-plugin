@@ -27,6 +27,7 @@ class AppdefValidityTest(unittest.TestCase):
         self.assertEqual(1, len(problems))
         self.assertTrue("unsupported" in problems[0])
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(AppdefValidityTest, 'test'))

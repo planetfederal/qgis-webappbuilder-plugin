@@ -11,6 +11,7 @@ from qgis.core import *
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
+from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.appwriter import writeWebApp
 from webappbuilder.utils import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
@@ -46,8 +47,10 @@ class SilentProgress():
     def setProgress(_, i):
         pass
 
-def createAppFromTestAppdef(appdefName):
+def createAppFromTestAppdef(appdefName, checkApp=False):
     appdef = testAppdef(appdefName)
+    if checkApp:
+        problems = checkAppCanBeCreated(appdef)
     folder = tempFolderInTempFolder()
     writeWebApp(appdef, folder, True, True, SilentProgress())
     return folder

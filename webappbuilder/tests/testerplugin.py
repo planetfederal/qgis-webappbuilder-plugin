@@ -11,7 +11,7 @@ import appdefvaliditytest
 import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
-                                        loadTestProject, openWAB, closeWAB, testAppdef)
+                                       openWAB, closeWAB, testAppdef)
 
 webAppFolder = None
 
@@ -23,9 +23,9 @@ def functionalTests():
     except:
         return []
 
-    def _createWebApp(n):
+    def _createWebApp(n, checkApp=False):
         global webAppFolder
-        webAppFolder = createAppFromTestAppdef(n)
+        webAppFolder = createAppFromTestAppdef(n, checkApp)
 
     def _test(n):
         test = Test("Verify '%s' tutorial" % n)
@@ -78,7 +78,15 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
 
+    wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
+    wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
+    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", True))
+    wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
+                             "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
+    tests.append(wmsTimeinfoTest )
+
     return tests
+
 
 def unitTests():
     _tests = []
