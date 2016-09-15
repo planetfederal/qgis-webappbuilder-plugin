@@ -128,11 +128,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
     useViewCrs = settings["Use view CRS for WFS connections"]
     workspace = safeName(settings["Title"])
     layer = applayer.layer
-    try:
-        timeInfo = ('{start:%s,end:%s}' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
-                            if applayer.timeInfo is not None else "null")
-    except:
-        timeInfo = '{start:"%s",end:"%s"}' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
+
     title = '"%s"' % unicode(title) if title is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
@@ -151,6 +147,12 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
     popup = applayer.popup.replace('\n', ' ').replace('\r', '').replace('"',"'")
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
+        try:
+            timeInfo = ('{start:%s,end:%s}' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
+                                if applayer.timeInfo is not None else "null")
+        except:
+            timeInfo = '{start:"%s",end:"%s"}' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
+
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
         if layer.providerType().lower() == "wfs":
             datasourceUri = QgsDataSourceURI(layer.source())
@@ -246,6 +248,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                                 "layerClass": layerClass, "sourceClass": sourceClass,
                                 "tiled": tiled, "crs": layer.crs().authid()}
     elif layer.type() == layer.RasterLayer:
+        timeInfo = applayer.timeInfo if applayer.timeInfo is not None else "null"
         layerOpacity = layer.renderer().opacity()
         if layer.providerType().lower() == "wms":
             source = layer.source()

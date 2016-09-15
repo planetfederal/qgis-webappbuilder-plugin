@@ -103,16 +103,25 @@ def checkAppCanBeCreated(appdef):
 			layer = applayer.layer
 			if layer.providerType().lower() == "wms":
 				try:
-					url = re.search(r"url=(.*?)(?:&|$)", layer.source()).groups(0)[0]
+                                        source = layer.source()
+					url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
 					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
 					r = requests.get(url + "?service=WMS&request=GetCapabilities")
-					root = ET.fromstring(r.text)
+					root = ET.fromstring(re.sub('\\sxmlns="[^"]+"', '', r.text))
 					for layerElement in root.iter('Layer'):
 						name = layerElement.find("Name").text
 						if name == layernames:
+                                                        # look for discrete values
 							time = layerElement.find('Extent')
 							if time is not None:
 								applayer.timeInfo = time
+                                                                hasTimeInfo = True
+                                                        # look for interval values
+                                                        time = layerElement.find('Dimension')
+							if time is not None and time.attrib['name'] == 'time':
+								applayer.timeInfo = '"{}"'.format(time.text)
+                                                                hasTimeInfo = True
+
 				except:
 					#we swallow error, since this is not a vital info to add, so the app can still be created.
 					pass

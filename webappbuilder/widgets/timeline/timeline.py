@@ -1,8 +1,12 @@
-from webappbuilder.webbappwidget import WebAppWidget
 import os
+
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QDate, QDateTime
-from PyQt4.Qt import Qt
+from PyQt4.QtCore import Qt, QDate, QDateTime
+
+from qgis.core import QgsMapLayer
+
+from webappbuilder.webbappwidget import WebAppWidget
+
 
 class Timeline(WebAppWidget):
 
@@ -28,7 +32,7 @@ class Timeline(WebAppWidget):
         layers = appdef["Layers"]
         times = set()
         for layer in layers:
-            if layer.timeInfo is not None:
+            if layer.timeInfo is not None and layer.layer.type() == QgsMapLayer.VectorLayer:
                 if isinstance(layer.timeInfo[0], basestring):
                     features = layer.layer.getFeatures()
                     for feature in features:
