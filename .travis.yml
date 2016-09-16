@@ -10,7 +10,11 @@ env:
     - PLUGIN_NAME=webappbuilder
   matrix:
     - QGIS_VERSION_TAG=master
+    - QGIS_VERSION_TAG=master_2
     - QGIS_VERSION_TAG=release
+matrix:
+  allow_failures:
+    - env: QGIS_VERSION_TAG=master
 before_install:
     - openssl aes-256-cbc -K $encrypted_e23aaac2ce6b_key -iv $encrypted_e23aaac2ce6b_iv -in travis_setup/id_rsa.enc -out travis_setup/id_rsa -d
     - docker pull elpaso/qgis-testing-environment:${QGIS_VERSION_TAG}
@@ -42,3 +46,6 @@ script:
     - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.widgetstest.run_tests"
     - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.settingstest.run_tests"
     - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.appdefvaliditytest.run_tests"
+notifications:
+  slack:
+    secure: muWtALOJ8Mfq+xl8iRqmpDx401jMmIp94+yZbqvLPNWCqrY7IpD1t0TRlE+biGN+mdxL/j++HYkiV9/7QfE8zhqOtFotvvxh3aPmbJAiyiY8jgHOV4xRPVP2JN6MWcVfG5feg3ElU/1/sUQgHylPn2SIhjMBTpWlNiVSdwLuC1zHT4hIxp1DdCgrYS26NZcj1e2vBLOcrRJkvhsCDBnYQfthoJxqD8MdtSwojJ7Ac7+Hb6ovFPXr12zzpMzYKnmbPgADuYtRHIlyt3YkPlBq4erkT9WpHbvz5FMtBAhi1DzIq8GimHcxAlWVs4eWtxNU7yhw6+qdHysJQ1apr6i+C2St/4qJiMQpMdctc3AUhEC8N/y1jPHeLNKuClkJNqcar7LU1gxMg/q9yPkWzuP2Bqek7TKzk9aFUAJwEOLBaw5+UYCqOJ7p3GZVz0Qp++uWsH48umEhmGXFOUxBX2s7uKA3SWpENQZf15iVZ4eyJu8iTGTMRwZB4jJFQVQ7+40OeOLfT6rBCEbAsOag2NRyq4qQhx5Uv3IZAxCxe/OM2pzpLF7L9lJowzFiocMQLssZN+/cr8Cmx9NfM6f5ITMFFy0oGVRyuxgBt7IKzOHjBBX2RF9RxsV6UQ6aPBW6KoITq9j9Zo/QmB41mXr7Y2WpTquSST39xeS/soJsDz2mELw=
