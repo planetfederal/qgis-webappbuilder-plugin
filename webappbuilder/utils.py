@@ -26,15 +26,30 @@ MULTIPLE_SELECTION_SHIFT_KEY = 2
 MULTIPLE_SELECTION_NO_KEY = 3
 
 
-
-TYPE_MAP = {
-    QGis.WKBPoint: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
+try:
+    from qgis.core import QGis
+    TYPE_MAP = {
+        QGis.WKBPoint: 'Point',
+        QGis.WKBLineString: 'LineString',
+        QGis.WKBPolygon: 'Polygon',
+        QGis.WKBMultiPoint: 'MultiPoint',
+        QGis.WKBMultiLineString: 'MultiLineString',
+        QGis.WKBMultiPolygon: 'MultiPolygon',
     }
+    QGisPoint = QGis.WKBPoint
+
+except ImportError:
+    from qgis.core import Qgis as QGis
+    from qgis.core import QgsWkbTypes
+    TYPE_MAP = {
+        QgsWkbTypes.Point: 'Point',
+        QgsWkbTypes.LineString: 'LineString',
+        QgsWkbTypes.Polygon: 'Polygon',
+        QgsWkbTypes.MultiPoint: 'MultiPoint',
+        QgsWkbTypes.MultiLineString: 'MultiLineString',
+        QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+    }
+    QGisPoint = QgsWkbTypes.Point
 
 class Layer():
 
@@ -116,7 +131,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")
                         line = removeSpaces(line)
-                        if layer.geometryType() == QGis.Point:
+                        if layer.geometryType() == QGisPoint:
                             line = line.replace("MultiPoint", "Point")
                             line = line.replace("[ [", "[")
                             line = line.replace("] ]", "]")

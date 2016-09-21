@@ -8,7 +8,11 @@ import sys
 import utils
 import os
 
-from qgis.core import QGis
+
+try:
+    from qgis.core import QGis
+except ImportError:
+    from qgis.core import Qgis as QGis
 
 from utils import *
 
