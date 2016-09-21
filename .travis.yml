@@ -2,50 +2,57 @@ sudo: required
 language: generic
 addons:
   hosts:
-    - boundless-test
+  - boundless-test
 services:
-    - docker
+- docker
 env:
   global:
-    - PLUGIN_NAME=webappbuilder
+  - PLUGIN_NAME=webappbuilder
+  - secure: taPFjYx+lUTD8492SQq2Cw3tFIhnBq4C1UgdjnnUd03RpQU2ITrlvZ+Gxt3ZDB5HGB4zMi0/nNGlzSYC3mpQC3G3Csbm/FQU1sYxAqLJU8OZaRqT6D2MQNtaRCCcmzLNigqppVvF566NBHl5Sa6Ty28tYpHKDSqZ5MoYFg9uBYepAZjWjrfwzPcPuJqXK7ZDrz0o1V+S1MCgHOhNRxlM79KVFafwgdp+8K8sB01kD0ZZ7d1jlQrH8xhyqOKYkgp+AiFe31hKQ3FbKh0vxJhJdl5xqy8MsYRD+ubnIpR//4xquCY6SphgUBqG1m8zkgqQPN2P4WGuuhW6k+EKjLlGYVXv+et/i7A3u1uV38cCRT2S+GuojjxZX1LTnRgGrgtBEjl6fPAcmg3Kbe1HiTOU9b84KoWtLfuSBDNIn0C2Uyepnf5F5J93GcLQYPAE+VNkNyM61V7n5gkPittXhupU31BqEcemTjcq3cFgLh4wxwW/6RkGDFaYRU5KLSVujK3WH+dtLRt5oAXJ6JIBIyf2U4oZwImtCfBaZ94FeyQMrrHQ9ckCQVJ7o+uqBh9iUH2Mj/0sXfa8W2jeVz0mqTNvaZg1lYLuscGCAnzHldfKrkrNIsux8CRcxxvCLFmkEHteCM7rlyL+efbEi5jI4JKDEP6bSYsePYn21/us/epPIKA=
+  - secure: C/tBiHhP+bDr0dXuuwxIIVQonh9ciinQTgkpzsKaCtj+eMubZI7vcew6E6EozaOHmolNJVyNc7eLFaEuR3t6WVdOmNsXMWcgNMUeJFTaIyJLvrdBQD9exg4Vng5+JTlYmT9e7f5PlKvsBkSc2rX9BoRHuhmfUQXRyyeiQs7s7oRwVNgJ0PQ62Xn95uxsCh0pbwJX/iWL4Ne3i7CsQT2Z5Y6knzQl4XbwkZgZazLuXaoOQXqkKyctM7KU5HuJq0YHe3/VPOFoylIP1NLPptqC8mvuOWMr21xfBe8wGX1CHWEjLjriFU3HSn8S/2mZtIhmONa9963WakjMDQK0c4nBfrN52vopN3zxTTMFvvKzrPKFo3KWBzk4JndNqoYmSpTsofwsvTNrWmlDV2/TgytVc6r/dylrQGC9+eLZgN1oPLYK0JmuEoxqt89khyGZonbmxABh4X3FkbSwYtMi1nOGn8gDSHiPKyihjYTW1W6tXh2WmpXCe9LrzAcN+HUyFQtn629ttCtyBDSLoBeVf05L+NcZwtpfaZ7lQFns048LjGR5d/mdkh9dYFXry5Nsu0LqxUuH6t6zlbRMVyLG/JfMhjDopL1RrDD88xuRjX0whn5+tzmvx+vbQoyG3kfor4caKw9UTeYJi4TIFa8sPr74f2/zRVh0hV4Xf9xmVGNK020=
   matrix:
-    - QGIS_VERSION_TAG=master
-    - QGIS_VERSION_TAG=master_2
-    - QGIS_VERSION_TAG=release
+  - QGIS_VERSION_TAG=master
+  - QGIS_VERSION_TAG=master_2
+  - QGIS_VERSION_TAG=release
 matrix:
   allow_failures:
-    - env: QGIS_VERSION_TAG=master
+  - env: QGIS_VERSION_TAG=master
 before_install:
-    - openssl aes-256-cbc -K $encrypted_e23aaac2ce6b_key -iv $encrypted_e23aaac2ce6b_iv -in travis_setup/id_rsa.enc -out travis_setup/id_rsa -d
-    - docker pull elpaso/qgis-testing-environment:${QGIS_VERSION_TAG}
-    - docker tag elpaso/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
+- openssl aes-256-cbc -K $encrypted_63638afcc0d8_key -iv $encrypted_63638afcc0d8_iv  -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d
+- tar xzvf travis_secrets.tar.gz
+- mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest
+- mv ssh_config /home/travis/.ssh/config
+- chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest
+- chmod 600 /home/travis/.ssh/config
+- docker pull elpaso/qgis-testing-environment:${QGIS_VERSION_TAG}
+- docker tag elpaso/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
 install:
-    - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
-    - sleep 10
-
-    # Probably not needed here
-    - docker exec -it qgis-testing-environment sh -c "echo '172.17.42.1   boundless-test' >> /etc/hosts"
-
-    # Setup the ssh key for sdk clone
-    - docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.ssh"
-    # Disable host checking
-    - docker exec -it qgis-testing-environment sh -c "printf 'Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null' > /root/.ssh/config"
-    - docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
-    - docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
-
-    - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
-
-    # Build the plugin
-    - docker exec -it qgis-testing-environment sh -c "pip install paver"
-    - docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
-    - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/${PLUGIN_NAME} /root/.qgis2/python/plugins/${PLUGIN_NAME}"
-
+- docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
+- sleep 10
+- docker exec -it qgis-testing-environment sh -c "echo '172.17.42.1   boundless-test' >> /etc/hosts"
+- docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.ssh"
+- docker exec -it qgis-testing-environment sh -c "printf 'Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null' > /root/.ssh/config"
+- docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
+- docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
+- docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+- docker exec -it qgis-testing-environment sh -c "pip install paver"
+- docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
+- docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/${PLUGIN_NAME} /root/.qgis2/python/plugins/${PLUGIN_NAME}"
 script:
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.layerstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.symbologytest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.widgetstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.settingstest.run_tests"
-    - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.appdefvaliditytest.run_tests"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.layerstest.run_tests"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.symbologytest.run_tests"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.widgetstest.run_tests"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.settingstest.run_tests"
+- docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.appdefvaliditytest.run_tests"
 notifications:
   slack:
-    secure: muWtALOJ8Mfq+xl8iRqmpDx401jMmIp94+yZbqvLPNWCqrY7IpD1t0TRlE+biGN+mdxL/j++HYkiV9/7QfE8zhqOtFotvvxh3aPmbJAiyiY8jgHOV4xRPVP2JN6MWcVfG5feg3ElU/1/sUQgHylPn2SIhjMBTpWlNiVSdwLuC1zHT4hIxp1DdCgrYS26NZcj1e2vBLOcrRJkvhsCDBnYQfthoJxqD8MdtSwojJ7Ac7+Hb6ovFPXr12zzpMzYKnmbPgADuYtRHIlyt3YkPlBq4erkT9WpHbvz5FMtBAhi1DzIq8GimHcxAlWVs4eWtxNU7yhw6+qdHysJQ1apr6i+C2St/4qJiMQpMdctc3AUhEC8N/y1jPHeLNKuClkJNqcar7LU1gxMg/q9yPkWzuP2Bqek7TKzk9aFUAJwEOLBaw5+UYCqOJ7p3GZVz0Qp++uWsH48umEhmGXFOUxBX2s7uKA3SWpENQZf15iVZ4eyJu8iTGTMRwZB4jJFQVQ7+40OeOLfT6rBCEbAsOag2NRyq4qQhx5Uv3IZAxCxe/OM2pzpLF7L9lJowzFiocMQLssZN+/cr8Cmx9NfM6f5ITMFFy0oGVRyuxgBt7IKzOHjBBX2RF9RxsV6UQ6aPBW6KoITq9j9Zo/QmB41mXr7Y2WpTquSST39xeS/soJsDz2mELw=
+    secure: BwLCVjcjVXxENbJ6xMh88snOfifUT0GnXMaOpKP3YJHlvYs2eSu4AIOuC5lmsxqqosTcenNrmhb+dRVzbPhpoaQAxz92yJvhOgndEy8JmwcDSJUsL+Z0fvkjGgyhc2OnJ0+f8ZN8xwHteknu+6Q1POuI+ouLIBdSNN29ULBjMPvXmAU4Vd0OuzdcF/juwXZ9UwYfJe+T+Mc+NVJm0uOMXCUh5eXlnzIFKiTaIhV0zJXe79JDt5bFgUx2BX0WpcdWEVEgcAM+Up9gn/yJ4xKfLu8e3/sA2lnH4zIhNrUH4OIry4JBtcBZ7BJb5EwT/rwZ3vupDMaUWxxub3cUgBlYiAQdJdYAv+MDQvnNGiIRFJeSPDvzwDQM1eo0Aif2IZuItTk1c86VmCNrnJ0kdjDcOvVPyS29HIbk1nHTZ8fd3aar9hmsoLAyuk/Er2cWgv1lHNeY9Doro5azsquXb6o8nifEOHOorg0O80S+gSNKBKE3U3hIDDaSV9foQCWd/R0HDWlezw+VSWzUDtzQ4w8StaMVRil4hDySU6UDgh1NIyiDrr3EiwK2CTtZtSMwvEvaI/2j//pNY8d7uxWTcjmrIV1zw1tAJahi/OlnmJsnButD5h8maZ6A88TH71jReqf2m5R495NT9vyjij5nnEoA6do85Zr/jz6p3XGObrz5OMo=
+after_success:
+- mkdir /home/travis/.ssh/
+- chmod 700 /home/travis/.ssh/
+- docker exec qgis-testing-environment sh -c "cd /tests_directory && paver package --test"
+- export RELEASE_ZIPNAME=${PLUGIN_NAME}.zip
+- echo "Uploading ${RELEASE_ZIPNAME} to QGIS Dev..."
+- scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
+- export GIT_REV=$(git rev-parse --short HEAD)
+- ssh qgisrepoguest "${UPDATER} update --dev --role DesktopPartner,DesktopDeveloper --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"

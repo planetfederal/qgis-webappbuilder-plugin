@@ -12,10 +12,12 @@ docker rm -f qgis-testing-environment
 
 # replace latest with master if you wish to test on master, latest is
 # latest supported Boundless release
-docker pull elpaso/qgis-testing-environment:latest
-docker tag elpaso/qgis-testing-environment:latest qgis-testing-environment
 
-docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory qgis-testing-environment
+QGIS_VERSION_TAG=release
+
+docker pull elpaso/qgis-testing-environment:$QGIS_VERSION_TAG
+
+docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory elpaso/qgis-testing-environment:$QGIS_VERSION_TAG
 
 
 docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $PLUGIN_NAME"
