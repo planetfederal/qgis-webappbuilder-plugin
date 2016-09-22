@@ -38,8 +38,7 @@ class WebAppBuilderPlugin:
         helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
         self.helpAction = QAction(helpIcon, "Web App Builder Help", self.iface.mainWindow())
         self.helpAction.setObjectName("webAppBuilderHelp")
-        self.helpAction.triggered.connect(lambda: webbrowser.open_new(
-                                          os.path.join(os.path.dirname(__file__), "docs", "html")))
+        self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
 
         self.iface.addWebToolBarIcon(self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
