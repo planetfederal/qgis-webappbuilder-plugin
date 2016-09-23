@@ -10,14 +10,13 @@ PLUGIN_NAME="webappbuilder"
 
 docker rm -f qgis-testing-environment
 
-# replace latest with master if you wish to test on master, latest is
-# latest supported Boundless release
+# replace master_2 with master or release if you wish to test on those builds
 
-QGIS_VERSION_TAG=release
+QGIS_VERSION_TAG=master_2
 
-docker pull elpaso/qgis-testing-environment:$QGIS_VERSION_TAG
+docker pull boundlessgeo/qgis-testing-environment:$QGIS_VERSION_TAG
 
-docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory elpaso/qgis-testing-environment:$QGIS_VERSION_TAG
+docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory boundlessgeo/qgis-testing-environment:$QGIS_VERSION_TAG
 
 
 docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $PLUGIN_NAME"
@@ -30,7 +29,7 @@ docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
 
 # Install the plugin
 docker exec -it qgis-testing-environment sh -c "pip install paver"
-docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
+docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup && paver package --tests"
 docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/$PLUGIN_NAME /root/.qgis2/python/plugins/$PLUGIN_NAME"
 
 # run the tests
