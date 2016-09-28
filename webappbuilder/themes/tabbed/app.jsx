@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
-import AppBar from 'material-ui/lib/app-bar';
-import RaisedButton from 'material-ui/lib/raised-button';
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AppBar from 'material-ui/AppBar';
+import Button from 'boundless-sdk/js/components/Button.jsx';
+import {Tabs, Tab} from 'material-ui/Tabs';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
 import MapPanel from 'boundless-sdk/js/components/MapPanel.jsx';
@@ -43,6 +43,11 @@ var map = new ol.Map({
 
 
 class TabbedApp extends React.Component {
+  getChildContext() {
+    return {
+      muiTheme: getMuiTheme()
+    };
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -93,5 +98,9 @@ class TabbedApp extends React.Component {
     );
   }
 }
+
+TabbedApp.childContextTypes = {
+  muiTheme: React.PropTypes.object
+};
 
 ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><TabbedApp /></IntlProvider>, document.getElementById('main'));

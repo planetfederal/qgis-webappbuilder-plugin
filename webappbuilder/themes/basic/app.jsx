@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
-import AppBar from 'material-ui/lib/app-bar';
-import RaisedButton from 'material-ui/lib/raised-button';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AppBar from 'material-ui/AppBar';
+import Button from 'boundless-sdk/js/components/Button.jsx';
 import enMessages from 'boundless-sdk/locale/en.js';
 import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
 import MapPanel from 'boundless-sdk/js/components/MapPanel.jsx';
@@ -43,6 +44,11 @@ var map = new ol.Map({
 
 
 class BasicApp extends React.Component {
+  getChildContext() {
+    return {
+      muiTheme: getMuiTheme()
+    };
+  }
   componentDidMount() {
     @POSTTARGETSET@
   }
@@ -87,5 +93,9 @@ class BasicApp extends React.Component {
     );
   }
 }
+
+BasicApp.childContextTypes = {
+  muiTheme: React.PropTypes.object
+};
 
 ReactDOM.render(<IntlProvider locale='en' messages={enMessages}><BasicApp /></IntlProvider>, document.getElementById('main'));
