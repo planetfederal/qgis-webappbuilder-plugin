@@ -24,6 +24,14 @@ var map = new ol.Map({
 });
 
 var TabbedApp = React.createClass({
+  childContextTypes: {
+    muiTheme: React.PropTypes.object
+  },
+  getChildContext() {
+    return {
+      muiTheme: getMuiTheme()
+    };
+  },
   getInitialState() {
     return {value: 1};
   },

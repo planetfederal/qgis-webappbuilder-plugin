@@ -10,7 +10,7 @@ class Help(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         self.writeHelpFiles(appdef, folder)
-        app.tools.append("React.createElement(RaisedButton, {style: {margin: '10px 12px'}, label: 'Help', onTouchTap: function(){window.open('help/help.html','_blank')}})")
+        app.tools.append("React.createElement(Button, {label: 'Help', onTouchTap: function(){window.open('help/help.html','_blank')}})")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "help.png"))
