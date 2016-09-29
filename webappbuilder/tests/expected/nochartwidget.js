@@ -75,13 +75,13 @@ var map = new ol.Map({
 
 var BasicApp = React.createClass({
   childContextTypes: {
-     muiTheme: React.PropTypes.object
-   },
-   getChildContext() {
-     return {
-       muiTheme: getMuiTheme()
-     };
-   },
+    muiTheme: React.PropTypes.object
+  },
+  getChildContext() {
+    return {
+      muiTheme: getMuiTheme()
+    };
+  },
   componentDidMount() {
     
   },
