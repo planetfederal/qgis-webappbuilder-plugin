@@ -61,7 +61,7 @@ def setup(options):
         sh("git checkout master")
         sh("git pull")
     else:
-        sh("git clone git@github.com:boundlessgeo/sdk.git %s" % sdkPath)
+        sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
     os.chdir(cwd)
     path(os.path.join(sdkPath, "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"
@@ -216,7 +216,7 @@ def _make_zip(zipFile, options):
         for f in files:
             relpath = os.path.join(options.plugin.name, "docs", os.path.relpath(root, options.sphinx.builddir))
             zipFile.write(path(root) / f, path(relpath) / f)
- 
+
 
 @task
 def builddocs(options):
