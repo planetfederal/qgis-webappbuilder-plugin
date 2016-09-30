@@ -18,12 +18,12 @@ matrix:
   allow_failures:
   - env: QGIS_VERSION_TAG=master
 before_install:
-- openssl aes-256-cbc -K $encrypted_63638afcc0d8_key -iv $encrypted_63638afcc0d8_iv  -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d
-- tar xzvf travis_secrets.tar.gz
-- mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest
-- mv ssh_config /home/travis/.ssh/config
-- chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest
-- chmod 600 /home/travis/.ssh/config
+- openssl aes-256-cbc -K $encrypted_63638afcc0d8_key -iv $encrypted_63638afcc0d8_iv  -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d || true
+- tar xzvf travis_secrets.tar.gz || true
+- mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest || true
+- mv ssh_config /home/travis/.ssh/config || true
+- chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest || true
+- chmod 600 /home/travis/.ssh/config || true
 - docker pull boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG}
 - docker tag boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
 install:
