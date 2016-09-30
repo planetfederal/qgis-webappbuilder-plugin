@@ -49,7 +49,7 @@ notifications:
     secure: BwLCVjcjVXxENbJ6xMh88snOfifUT0GnXMaOpKP3YJHlvYs2eSu4AIOuC5lmsxqqosTcenNrmhb+dRVzbPhpoaQAxz92yJvhOgndEy8JmwcDSJUsL+Z0fvkjGgyhc2OnJ0+f8ZN8xwHteknu+6Q1POuI+ouLIBdSNN29ULBjMPvXmAU4Vd0OuzdcF/juwXZ9UwYfJe+T+Mc+NVJm0uOMXCUh5eXlnzIFKiTaIhV0zJXe79JDt5bFgUx2BX0WpcdWEVEgcAM+Up9gn/yJ4xKfLu8e3/sA2lnH4zIhNrUH4OIry4JBtcBZ7BJb5EwT/rwZ3vupDMaUWxxub3cUgBlYiAQdJdYAv+MDQvnNGiIRFJeSPDvzwDQM1eo0Aif2IZuItTk1c86VmCNrnJ0kdjDcOvVPyS29HIbk1nHTZ8fd3aar9hmsoLAyuk/Er2cWgv1lHNeY9Doro5azsquXb6o8nifEOHOorg0O80S+gSNKBKE3U3hIDDaSV9foQCWd/R0HDWlezw+VSWzUDtzQ4w8StaMVRil4hDySU6UDgh1NIyiDrr3EiwK2CTtZtSMwvEvaI/2j//pNY8d7uxWTcjmrIV1zw1tAJahi/OlnmJsnButD5h8maZ6A88TH71jReqf2m5R495NT9vyjij5nnEoA6do85Zr/jz6p3XGObrz5OMo=
 after_success:
 - |
-    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
         mkdir /home/travis/.ssh/
         chmod 700 /home/travis/.ssh/
         export RELEASE_ZIPNAME=${PLUGIN_NAME}.zip
