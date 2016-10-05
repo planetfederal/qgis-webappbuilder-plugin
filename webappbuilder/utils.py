@@ -116,6 +116,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
                          for i,it in enumerate(txt.split('"')))
     ext = "js" if forPreview else "json"
+    regexp = re.compile(r'"geometry":.*?null\}')
     for i, appLayer in enumerate(layers):
         if appLayer.method == METHOD_FILE:
             layer = appLayer.layer
@@ -137,6 +138,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                             line = line.replace("] ]", "]")
                             line = line.replace("[[", "[")
                             line = line.replace("]]", "]")
+                        line = regexp.sub(r'"geometry":null', line)
                         f.write(line)
                     if forPreview:
                         f.write(");")
