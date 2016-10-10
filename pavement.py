@@ -8,6 +8,9 @@ from paver.easy import *
 # this pulls in the sphinx target
 import zipfile
 import shutil
+import requests
+import zipfile
+import StringIO
 
 options(
     plugin=Bunch(
@@ -54,20 +57,18 @@ def setup(options):
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
-    sdkPath = "./webappbuilder/websdk"
-    cwd = os.getcwd()
+    sdkPath = os.path.abspath("./webappbuilder/websdk")
+    
     if os.path.exists(sdkPath):
-        os.chdir(sdkPath)
-        sh("git checkout master")
-        sh("git pull")
-    else:
-        sh("git clone https://github.com/boundlessgeo/sdk.git %s" % sdkPath)
-    os.chdir(cwd)
-    path(os.path.join(sdkPath, "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
+        shutil.rmtree(sdkPath)
+    r = requests.get("https://github.com/boundlessgeo/sdk/archive/gh-pages.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=sdkPath)
+    path(os.path.join(sdkPath, "sdk-gh-pages", "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    shutil.copytree(os.path.join(sdkPath,"dist","css"), dst)
+    shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
