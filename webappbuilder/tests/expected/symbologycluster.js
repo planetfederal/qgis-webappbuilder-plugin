@@ -1,4 +1,4 @@
-var categories_points = {"2": [ new ol.style.Style({
+var categories_points = function(){ return {"2": [ new ol.style.Style({
                             image: new ol.style.Icon({
                   scale: 0.025000,
                   anchorOrigin: 'top-left',
@@ -88,7 +88,7 @@ var categories_points = {"2": [ new ol.style.Style({
 "": [ new ol.style.Style({
                             image: new ol.style.Circle({radius: 3.8, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(213,84,175,1.0)"})})
                         })
-                        ]};var categoriesSelected_points = {"2": [ new ol.style.Style({
+                        ]};};var categoriesSelected_points = {"2": [ new ol.style.Style({
                             image: new ol.style.Icon({
                   scale: 0.025000,
                   anchorOrigin: 'top-left',
@@ -237,11 +237,11 @@ var categories_points = {"2": [ new ol.style.Style({
                                 }
                             }
                             feature = feature.get('features')[0];
-                            
+
                         var value = feature.get("n");
-                        var style = categories_points[value];
+                        var style = categories_points()[value];
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
@@ -249,7 +249,7 @@ var categories_points = {"2": [ new ol.style.Style({
                         var value = feature.get("n");
                         var style = categoriesSelected_points[value]
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };

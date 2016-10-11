@@ -1,4 +1,4 @@
-var categories_lines = {"2": [ new ol.style.Style({
+var categories_lines = function(){ return {"2": [ new ol.style.Style({
                             stroke: new ol.style.Stroke({color: "rgba(84,229,181,1.0)", lineDash: null, width: 0})
                         })
                         ],
@@ -18,20 +18,20 @@ var categories_lines = {"2": [ new ol.style.Style({
                         })
                         ],
 "6": [ new ol.style.Style({
-                            
+
                         })
                         ],
 "7": [ new ol.style.Style({
                             stroke: new ol.style.Stroke({color: "rgba(255,255,255,1.0)", lineDash: null, width: 4})
                         })
                         ,new ol.style.Style({
-                            
+
                         })
                         ],
 "8": [ new ol.style.Style({
-                            
+
                         })
-                        ]};var categoriesSelected_lines = {"2": [ new ol.style.Style({
+                        ]};};var categoriesSelected_lines = {"2": [ new ol.style.Style({
                             stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0})
                         })
                         ],
@@ -51,37 +51,37 @@ var categories_lines = {"2": [ new ol.style.Style({
                         })
                         ],
 "6": [ new ol.style.Style({
-                            
+
                         })
                         ],
 "7": [ new ol.style.Style({
                             stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 4})
                         })
                         ,new ol.style.Style({
-                            
+
                         })
                         ],
 "8": [ new ol.style.Style({
-                            
+
                         })
                         ]};
                     var textStyleCache_lines={}
                     var clusterStyleCache_lines={}
                     var style_lines = function(feature, resolution){
-                        
+
                         var value = feature.get("n");
-                        var style = categories_lines[value];
+                        var style = categories_lines()[value];
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
                     var selectionStyle_lines = function(feature, resolution){
-                        
+
                         var value = feature.get("n");
                         var style = categoriesSelected_lines[value]
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
