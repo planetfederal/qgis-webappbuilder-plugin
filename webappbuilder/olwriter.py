@@ -12,6 +12,8 @@ import math
 import codecs
 import uuid
 
+exportedStyles = 0
+
 def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  layerCrs, viewCrs, layerOpacity, isSelectable,
                  timeInfo, popup, jsonp, useStrategy):
@@ -337,6 +339,8 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                                 "tiled": tiled}
 
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
+    global exportedStyles
+    exportedStyles = 0
     stylesFolder = os.path.join(folder, "data", "styles")
     QDir().mkpath(stylesFolder)
     progress.setText("Writing layer styles")
@@ -356,11 +360,11 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
                                     stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
-                defs += "var categories_%s = {" % safeName(layer.name())
+                defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
                     cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder, layer, app.variables)))
-                defs +=  ",\n".join(cats) + "};"
+                defs +=  ",\n".join(cats) + "};};"
                 defs += "var categoriesSelected_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
@@ -368,22 +372,23 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                 stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
-                style = '''var style = categories_%s[value];'''  % (safeName(layer.name()))
+                style = '''var style = categories_%s()[value];'''  % (safeName(layer.name()))
                 selectionStyle = '''var style = categoriesSelected_%s[value]'''  % (safeName(layer.name()))
             elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
                 varName = "ranges_" + safeName(layer.name())
-                defs += "var %s = [" % varName
+                defs += "var %s = function(){ return [" % varName
                 ranges = []
                 for ran in renderer.ranges():
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables)
                     selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')
                     ranges.append('[%f, %f,\n %s, %s]' % (ran.lowerValue(), ran.upperValue(),
                                                          symbolstyle, selectedSymbolStyle))
-                defs += ",\n".join(ranges) + "];"
+                defs += ",\n".join(ranges) + "];};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = %(v)s[0][2];
-                            for (var i = 0, ii = %(v)s.length; i < ii; i++){
-                                var range = %(v)s[i];
+                            var ranges = %(v)s();
+                            for (var i = 0, ii = ranges.length; i < ii; i++){
+                                var range = ranges[i];
                                 if (value > range[0] && value<=range[1]){
                                     style = range[2];
                                     break;
@@ -698,24 +703,25 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
 
         elif isinstance(sl, QgsPointPatternFillSymbolLayer):
             if color is None:
+                global exportedStyles
+                exportedStyles += 1
                 qsize = QSize(int(props["distance_x"]), int(props["distance_y"]))
                 img = sl.subSymbol().asImage(qsize)
-                patternName = "".join(c for c in str(uuid.uuid4()) if c in digits)
                 symbolPath = os.path.join(stylesFolder, "pattern%s.png" % patternName)
                 img.save(symbolPath)
-                variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
-                    var patternImg_%(p)s = new Image();
-                    patternImg_%(p)s.src = './data/styles/pattern%(p)s.png';
-                    patternImg_%(p)s.onload = function(){
+                variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
+                    var patternImg_%(p)i = new Image();
+                    patternImg_%(p)i.src = './data/styles/pattern%(p)i.png';
+                    patternImg_%(p)i.onload = function(){
                       var canvas = document.createElement('canvas');
                       var context = canvas.getContext('2d');
-                      var pattern = context.createPattern(patternImg_%(p)s, 'repeat');
-                      patternFill_%(p)s = new ol.style.Fill({
+                      var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
+                      patternFill_%(p)i = new ol.style.Fill({
                             color: pattern
                           });
                       lyr_%(layer)s.changed()
-                    };''' % ({"layer": safeName(layer.name()), "p": patternName}))
-                style = 'fill: patternFill_%s' % patternName
+                    };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
+                style = 'fill: patternFill_%i' % exportedStyles
             else:'''
                  fill: defaultSelectionFill,
                  stroke: defaultSelectionStroke
@@ -723,7 +729,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
 
         elif isinstance(sl, QgsSVGFillSymbolLayer):
             if color is None:
-                patternName = "".join(c for c in str(uuid.uuid4()) if c in digits)
+                global exportedStyles
+                exportedStyles += 1
                 def qcolorToRgba(c):
                     return ",".join([str(c.red()), str(c.green()), str(c.blue()), str(c.alpha())])
                 if color is None:
@@ -735,29 +742,30 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                     svg = "".join(f.readlines())
                 svg = re.sub(r'\"param\(outline\).*?\"', borderColor, svg)
                 svg = re.sub(r'\"param\(fill\).*?\"', fillColor, svg)
+                width = props["width"]
                 svg = re.sub(r'width=\".*?px\"', r'width="%spx"' % str(width), svg)
                 svg = re.sub(r'height=\".*?px\"', r'height="%spx"' % str(width), svg)
-                filename, ext = os.path.splitext(os.path.basename(sl.svgFilePath()))
-                filename = filename + ''.join(c for c in fillColor if c in digits) + ext
+                filename = "patternFill_%s.svg" % exportedStyles
                 path = os.path.join(stylesFolder, filename)
                 with codecs.open(path, "w", "utf-8") as f:
                     f.write(svg)
 
                 variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
-                        var patternImg_%(p)s = new Image();
-                        patternImg_%(p)s.src = './data/styles/%(filename)s';
-                        patternImg_%(p)s.onload = function(){
+                        var patternImg_%(p)i = new Image();
+                        patternImg_%(p)i.src = './data/styles/%(filename)s';
+                        patternImg_%(p)i.onload = function(){
                           var canvas = document.createElement('canvas');
                           var context = canvas.getContext('2d');
-                          var pattern = context.createPattern(patternImg_%(p)s, 'repeat');
-                          patternFill_%(p)s = new ol.style.Fill({
+                          var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
+                          patternFill_%(p)i = new ol.style.Fill({
                                 color: pattern
                               });
                           lyr_%(layer)s.changed()
-                        };''' % ({"layer": safeName(layer.name()), "p": patternName,
+                        };''' % ({"layer": safeName(layer.name()), "p": exportedStyles,
                                   "filename": filename}))
-                style = 'fill: patternFill_%s' % patternName
-            else:'''
+                style = 'fill: patternFill_%i' % exportedStyles
+            else:
+                style = '''
                  fill: defaultSelectionFill,
                  stroke: defaultSelectionStroke
                  '''
