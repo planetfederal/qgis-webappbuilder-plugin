@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Web App Builder plugin'
+project = u'Web App Builder'
 copyright = u'2016 Boundless Spatial, Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -106,7 +106,7 @@ html_theme_path = ['../themes']
 #html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
+html_short_title = project
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -169,7 +169,7 @@ htmlhelp_basename = 'WebAppBuilderQGISplugindoc'
 # Substitutions
 rst_epilog = """
 .. |BLQGIS| replace:: *Bouldless Desktop*
-.. |current_plugin| replace:: *Web App Builder plugin*
+.. |current_plugin| replace:: *Web App Builder*
 """
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -188,7 +188,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'WebAppBuilderQGISplugin.tex', u'Web App Builder QGIS plugin Documentation',
+  ('index', 'WebAppBuilderQGISplugin.tex', u'Web App Builder Documentation',
    u'Boundless', 'manual'),
 ]
 
@@ -218,7 +218,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'wabqgisplugin', u'Web App Builder QGIS plugin Documentation',
+    ('index', 'wabqgisplugin', u'Web App Builder Documentation',
      [u'Boundless'], 1)
 ]
 
@@ -232,7 +232,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'WebAppBuilderQGISplugin', u'Web App Builder QGIS plugin Documentation',
+  ('index', 'WebAppBuilderQGISplugin', u'Web App Builder Documentation',
    u'Boundless', 'WebAppBuilderQGISplugin', 'One line description of project.',
    'Miscellaneous'),
 ]
