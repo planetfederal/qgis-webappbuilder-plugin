@@ -18,11 +18,6 @@ matrix:
   allow_failures:
   - env: QGIS_VERSION_TAG=master
 before_install:
-- tar xzvf travis_secrets.tar.gz || true
-- mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest || true
-- mv ssh_config /home/travis/.ssh/config || true
-- chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest || true
-- chmod 600 /home/travis/.ssh/config || true
 - docker pull boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG}
 - docker tag boundlessgeo/qgis-testing-environment:${QGIS_VERSION_TAG} qgis-testing-environment
 install:
