@@ -18,7 +18,6 @@ matrix:
   allow_failures:
   - env: QGIS_VERSION_TAG=master
 before_install:
-- openssl aes-256-cbc -K $encrypted_63638afcc0d8_key -iv $encrypted_63638afcc0d8_iv  -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d || true
 - tar xzvf travis_secrets.tar.gz || true
 - mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest || true
 - mv ssh_config /home/travis/.ssh/config || true
@@ -29,15 +28,10 @@ before_install:
 install:
 - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
 - sleep 10
-- docker exec -it qgis-testing-environment sh -c "echo '172.17.42.1   boundless-test' >> /etc/hosts"
-- docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.ssh"
-- docker exec -it qgis-testing-environment sh -c "printf 'Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null' > /root/.ssh/config"
-- docker exec -it qgis-testing-environment sh -c "cp /tests_directory/travis_setup/id_rsa /root/.ssh/id_rsa"
-- docker exec -it qgis-testing-environment sh -c "chmod 600 /root/.ssh/id_rsa"
 - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
 - docker exec -it qgis-testing-environment sh -c "pip install paver"
-- docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup && paver package --tests"
 script:
+- docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup && paver package --tests"
 - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.layerstest.run_tests"
 - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.symbologytest.run_tests"
 - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.widgetstest.run_tests"
@@ -51,6 +45,12 @@ after_success:
     if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
         mkdir /home/travis/.ssh/
         chmod 700 /home/travis/.ssh/
+        openssl aes-256-cbc -K $encrypted_63638afcc0d8_key -iv $encrypted_63638afcc0d8_iv -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d
+        tar xzvf travis_secrets.tar.gz
+        mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest
+        mv ssh_config /home/travis/.ssh/config
+        chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest
+        chmod 600 /home/travis/.ssh/config
         export RELEASE_ZIPNAME=${PLUGIN_NAME}.zip
         echo "Uploading ${RELEASE_ZIPNAME} to QGIS Dev..."
         scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
