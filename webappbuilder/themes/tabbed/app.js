@@ -27,38 +27,38 @@ var TabbedApp = React.createClass({
   childContextTypes: {
     muiTheme: React.PropTypes.object
   },
-  getChildContext() {
+  getChildContext: function() {
     return {
       muiTheme: getMuiTheme()
     };
   },
-  getInitialState() {
+  getInitialState: function() {
     return {value: 1};
   },
-  componentDidMount() {
+  componentDidMount: function() {
     @POSTTARGETSET@
   },
-  _toggle(el) {
+  _toggle: function(el) {
     if (el.style.display === 'block') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
     }
   },
-  _toggleEdit() {
+  _toggleEdit: function() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
-  _toggleWFST() {
+  _toggleWFST: function() {
     this._toggle(document.getElementById('wfst'));
   },
-  handleChange(value) {
+  handleChange: function(value) {
     if (value === parseInt(value, 10)) {
       this.setState({
         value: value,
       });
     }
   },
-  render() {
+  render: function() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("div", {id: 'content'},
       React.createElement(AppBar, toolbarOptions @TOOLBAR@
