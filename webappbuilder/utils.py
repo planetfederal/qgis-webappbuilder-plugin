@@ -132,7 +132,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")
                         line = removeSpaces(line)
-                        if layer.geometryType() == QGisPoint:
+                        if layer.wkbType()==QGis.WKBMultiPoint:
                             line = line.replace("MultiPoint", "Point")
                             line = line.replace("[ [", "[")
                             line = line.replace("] ]", "]")
