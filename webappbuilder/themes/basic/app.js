@@ -27,42 +27,42 @@ var BasicApp = React.createClass({
   childContextTypes: {
     muiTheme: React.PropTypes.object
   },
-  getChildContext() {
+  getChildContext: function() {
     return {
       muiTheme: getMuiTheme()
     };
   },
-  componentDidMount() {
+  componentDidMount: function() {
     @POSTTARGETSET@
   },
-  _toggle(el) {
+  _toggle: function(el) {
     if (el.style.display === 'block') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
     }
   },
-  _toggleTable() {
+  _toggleTable: function() {
     this._toggle(document.getElementById('table-panel'));
     this.refs.table.getWrappedInstance().setDimensionsOnState();
   },
-  _toggleWFST() {
+  _toggleWFST: function() {
     this._toggle(document.getElementById('wfst'));
   },
-  _toggleQuery() {
+  _toggleQuery: function() {
     this._toggle(document.getElementById('query-panel'));
   },
-  _toggleEdit() {
+  _toggleEdit: function() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
-  _toggleAboutPanel() {
+  _toggleAboutPanel: function() {
     this._toggle(document.getElementById('about-panel'));
   },
-  _toggleChartPanel(evt) {
+  _toggleChartPanel: function(evt) {
     evt.preventDefault();
     this._toggle(document.getElementById('chart-panel'));
   },
-  render() {
+  render: function() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("div", {id: 'content'},
       React.createElement(AppBar, toolbarOptions @TOOLBAR@
