@@ -707,7 +707,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 exportedStyles += 1
                 qsize = QSize(int(props["distance_x"]), int(props["distance_y"]))
                 img = sl.subSymbol().asImage(qsize)
-                symbolPath = os.path.join(stylesFolder, "pattern%s.png" % patternName)
+                symbolPath = os.path.join(stylesFolder, "pattern%i.png" % exportedStyles)
                 img.save(symbolPath)
                 variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
                     var patternImg_%(p)i = new Image();
@@ -726,7 +726,6 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                  fill: defaultSelectionFill,
                  stroke: defaultSelectionStroke
                  '''
-
         elif isinstance(sl, QgsSVGFillSymbolLayer):
             if color is None:
                 global exportedStyles
