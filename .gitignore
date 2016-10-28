@@ -10,3 +10,4 @@ webappbuilder.zip
 /travis_setup/id_rsa*
 travis_secrets.tar.gz
 ssh_config
+docs/build
