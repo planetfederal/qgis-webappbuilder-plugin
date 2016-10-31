@@ -8,7 +8,7 @@ qgisMinimumVersion=2.0
 
 author=Boundless (Victor Olaya)
 email=volaya@boundlessgeo.com
-roles=desktop-qgis-plugin-wab
+#roles=desktop-qgis-plugin-wab
 icon=icons/desktop.svg
 
 tags=boundless,openlayers, websdk, javascript
