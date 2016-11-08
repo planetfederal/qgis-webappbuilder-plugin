@@ -7,7 +7,7 @@ var lyr_wms = new ol.layer.Tile({
                           params: {"LAYERS": "blue_marble_01" , "TILED": "true", "STYLES": ""},
                         })),
                         title: "wms",
-                        id: "satellite_imagery__January__2004_20161107140352374",
+                        id: "satellite_imagery__January__2004_20161108090137234",
                         popupInfo: "",
                         projection: "EPSG:4326"
                       });
