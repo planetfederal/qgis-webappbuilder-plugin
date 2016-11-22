@@ -25,13 +25,12 @@ class AttributesTable(WebAppWidget):
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append('''React.createElement(Tab,{value:%i, label:"Attributes table"},
-                                    React.createElement(FeatureTable, {ref:"table", layer:%s, pointZoom:%d,
-                                    resizeTo:"tabs-panel", offset:[50, 60], map: map})
+                                    React.createElement(FeatureTable, {ref:"table", layer:%s, pointZoom:%d, map: map})
                                 )''' % (idx, layerVar, pointZoom))
         else:
             app.tools.append("React.createElement(Button, {label: 'Table', onTouchTap: this._toggleTable.bind(this)})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
-                                          React.createElement(FeatureTable, {offset: [20, 20], ref: 'table', resizeTo: 'table-panel', layer: %s, pointZoom:%d, map: map})
+                                          React.createElement(FeatureTable, {ref: 'table', layer: %s, pointZoom:%d, map: map})
                                     )''' % (layerVar, pointZoom))
 
 

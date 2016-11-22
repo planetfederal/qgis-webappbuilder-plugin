@@ -37,6 +37,15 @@
   top: 71px;
   left: 0px;
 }
+.tabs > div {
+  height: 100%;
+}
+.tabs > div > div:last-child {
+  height: calc(100% - 50px);
+}
+.tabs > div > div:last-child > div{
+  height: 100%;
+}
 #geolocation-control {
   position: absolute;
   top: 130px;
@@ -46,6 +55,12 @@
   position: absolute;
   top: 184px;
   margin-left: 20px;
+}
+#zoom-slider {
+  position: absolute;
+  width: 150px;
+  left: 100px;
+  top: 0px;
 }
 #zoom-buttons {
   margin-left: 20px;
