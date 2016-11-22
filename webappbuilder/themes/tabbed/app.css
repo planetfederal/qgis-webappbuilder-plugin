@@ -47,6 +47,12 @@
   top: 184px;
   margin-left: 20px;
 }
+#zoom-slider {
+  position: absolute;
+  width: 150px;
+  left: 100px;
+  top: 0px;
+}
 #zoom-buttons {
   margin-left: 20px;
   position: absolute;
