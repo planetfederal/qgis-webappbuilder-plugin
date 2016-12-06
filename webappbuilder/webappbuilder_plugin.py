@@ -30,7 +30,7 @@ class WebAppBuilderPlugin:
             pass
 
     def initGui(self):
-        icon = QIcon(os.path.dirname(__file__) + "/icons/opengeo.png")
+        icon = QIcon(os.path.dirname(__file__) + "/icons/sdk.svg")
         self.action = QAction(icon, "Web App Builder", self.iface.mainWindow())
         self.action.setObjectName("startWebAppBuilder")
         self.action.triggered.connect(self.run)
