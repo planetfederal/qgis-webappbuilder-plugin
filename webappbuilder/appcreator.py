@@ -57,6 +57,15 @@ def checkAppCanBeCreated(appdef):
 	for w in widgets:
 		w.checkProblems(appdef, problems)
 
+	def getSize(lyr):
+		ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
+		return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
+	
+	MAXSIZE = 30000
+	for applayer in layers:
+		if applayer == METHOD_FILE and getSize(applayer.layer) > MAXSIZE:
+			problems.append("Layer %s might be too big for being loaded directly from a file. Using an alternative method (GeoServer or GeoServer + PostGIS) is recommended.")
+			
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
@@ -103,8 +112,7 @@ def checkAppCanBeCreated(appdef):
 			layer = applayer.layer
 			if layer.providerType().lower() == "wms":
 				try:
-                                        print '***** LOOK FOR TIMEINFO'
-                                        source = layer.source()
+					source = layer.source()
 					url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
 					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
 					r = requests.get(url + "?service=WMS&request=GetCapabilities")
@@ -112,16 +120,16 @@ def checkAppCanBeCreated(appdef):
 					for layerElement in root.iter('Layer'):
 						name = layerElement.find("Name").text
 						if name == layernames:
-                                                        # look for discrete values
+							# look for discrete values
 							time = layerElement.find('Extent')
 							if time is not None:
 								applayer.timeInfo = time
-                                                                hasTimeInfo = True
-                                                        # look for interval values
-                                                        time = layerElement.find('Dimension')
+								hasTimeInfo = True
+							# look for interval values
+							time = layerElement.find('Dimension')
 							if time is not None and time.attrib['name'] == 'time':
 								applayer.timeInfo = '"{}"'.format(time.text)
-                                                                hasTimeInfo = True
+								hasTimeInfo = True
 
 				except:
 					#we swallow error, since this is not a vital info to add, so the app can still be created.
