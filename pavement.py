@@ -4,13 +4,14 @@
 # This code is licensed under the GPL 2.0 license.
 #
 import os
-from paver.easy import *
-# this pulls in the sphinx target
 import zipfile
 import shutil
+import io
+
 import requests
-import zipfile
-import StringIO
+
+from paver.easy import *
+
 
 options(
     plugin=Bunch(
@@ -58,11 +59,11 @@ def setup(options):
             'dep' : req
         })
     sdkPath = os.path.abspath("./webappbuilder/websdk")
-    
+
     if os.path.exists(sdkPath):
         shutil.rmtree(sdkPath)
     r = requests.get("https://github.com/boundlessgeo/sdk/archive/gh-pages.zip", stream=True)
-    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z = zipfile.ZipFile(io.BytesIO(r.content))
     z.extractall(path=sdkPath)
     path(os.path.join(sdkPath, "sdk-gh-pages", "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"

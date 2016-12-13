@@ -1,12 +1,18 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from __future__ import print_function
+from builtins import str
 import os
-from PyQt4.QtGui import QIcon
-from PyQt4.Qt import QDir, QSize
-from qgis.core import *
 import json
 import re
 import requests
 import shutil
+
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QIcon
+from qgis.core import (QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer
+                      )
+from webappbuilder.webbappwidget import WebAppWidget
 
 class Legend(WebAppWidget):
 
@@ -52,19 +58,19 @@ class Legend(WebAppWidget):
         def appendSymbol(title, href):
             symbols.append({'title': title, 'href':href})
         if layer.type() == layer.VectorLayer:
-            renderer = layer.rendererV2()
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
+            renderer = layer.renderer()
+            if isinstance(renderer, QgsSingleSymbolRenderer):
                     img = renderer.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_0.png" % (ilayer))
                     img.save(symbolPath)
                     appendSymbol("",  os.path.basename(symbolPath))
-            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 for isymbol, cat in enumerate(renderer.categories()):
                     img = cat.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     appendSymbol(cat.label(), os.path.basename(symbolPath))
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 for isymbol, ran in enumerate(renderer.ranges()):
                     img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
@@ -72,7 +78,7 @@ class Legend(WebAppWidget):
                     appendSymbol("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath))
         elif layer.providerType() == "wms":
             source = layer.source()
-            print source
+            print(source)
             layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]

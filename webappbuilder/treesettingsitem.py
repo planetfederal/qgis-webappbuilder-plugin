@@ -1,14 +1,15 @@
+from builtins import str
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from texteditor import TextEditorDialog, JSON
-from exceptions import WrongValueException
-from qgis.core import *
-from qgis.gui import *
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QHBoxLayout, QLabel, QSizePolicy, QWidget, QComboBox
+from qgis.gui import QgsGenericProjectionSelector
+
+from webappbuilder.texteditor import TextEditorDialog, JSON
+from webappbuilder.exceptions import WrongValueException
 
 class TreeSettingItem(QTreeWidgetItem):
 
@@ -38,7 +39,7 @@ class TreeSettingItem(QTreeWidgetItem):
         self.name = name
         self._value = value
         self.setText(0, name)
-        if unicode(value).upper().startswith("EPSG:"):
+        if str(value).upper().startswith("EPSG:"):
             layout = QHBoxLayout()
             layout.setContentsMargins(0, 0, 0, 0)
             self.crsLabel = QLabel()
@@ -57,7 +58,7 @@ class TreeSettingItem(QTreeWidgetItem):
                     if authId.upper().startswith("EPSG:"):
                         self.newValue = authId
                         self.crsLabel.setText(authId)
-            self.label.connect(self.label, SIGNAL("linkActivated(QString)"), edit)
+            self.label.linkActivated.connect(edit)
             w = QWidget()
             w.setLayout(layout)
             self.tree.setItemWidget(self, 1, w)
@@ -74,20 +75,19 @@ class TreeSettingItem(QTreeWidgetItem):
             self.tree.setItemWidget(self, 1, self.combo)
             idx = self.combo.findText(str(value[0]))
             self.combo.setCurrentIndex(idx)
-        elif "\n" in unicode(value):
+        elif "\n" in str(value):
             self.label = QLabel()
             self.label.setText("<a href='#'>Edit</a>")
             self.newValue = value
             def edit():
-                dlg = TextEditorDialog(unicode(self.newValue), JSON)
+                dlg = TextEditorDialog(str(self.newValue), JSON)
                 dlg.exec_()
                 self.newValue = dlg.text
-            self.label.connect(self.label, SIGNAL("linkActivated(QString)"), edit)
+            self.label.linkActivated.connect(edit)
             self.tree.setItemWidget(self, 1, self.label)
         else:
             self.setFlags(self.flags() | Qt.ItemIsEditable)
-            self.setText(1, unicode(value))
-
+            self.setText(1, str(value))
 
     def value(self):
         self.setBackgroundColor(0, Qt.white)
@@ -95,14 +95,14 @@ class TreeSettingItem(QTreeWidgetItem):
         try:
             if isinstance(self._value, bool):
                 return self.checkState(1) == Qt.Checked
-            elif isinstance(self._value, (int,long)):
-                return long(self.text(1))
+            elif isinstance(self._value, int):
+                return int(self.text(1))
             elif isinstance(self._value, float):
                 return float(self.text(1))
             elif isinstance(self._value, tuple):
                 return self.combo.currentText()
-            elif ("\n" in unicode(self._value) or
-                        unicode(self._value).upper().startswith("EPSG:")):
+            elif ("\n" in str(self._value) or
+                        str(self._value).upper().startswith("EPSG:")):
                 return self.newValue
             else:
                 return self.text(1)
@@ -120,10 +120,10 @@ class TreeSettingItem(QTreeWidgetItem):
         elif isinstance(self._value, tuple):
             idx = self.combo.findText(str(value))
             self.combo.setCurrentIndex(idx)
-        elif "\n" in unicode(self._value):
+        elif "\n" in str(self._value):
             self.newValue = value
-        elif unicode(value).upper().startswith("EPSG:"):
+        elif str(value).upper().startswith("EPSG:"):
             self.newValue = value
             self.crsLabel.setText(value)
         else:
-            self.setText(1, unicode(value))
+            self.setText(1, str(value))

@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -5,13 +7,18 @@
 #
 import os
 import re
-from PyQt4.QtCore import *
-from qgis.core import *
-import subprocess
-import uuid
-from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
+import subprocess
+import uuid
+
+from qgis.PyQt.QtCore import QDir, QSize, QSettings, QPyNullVariant
+from qgis.PyQt.QtWidgets import QFileDialog, QApplication
+from qgis.PyQt.QtGui import QCursor
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsVectorFileWriter,
+                       QgsProject
+                      )
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -25,33 +32,18 @@ MULTIPLE_SELECTION_ALT_KEY = 1
 MULTIPLE_SELECTION_SHIFT_KEY = 2
 MULTIPLE_SELECTION_NO_KEY = 3
 
+from . import geomtypes
+TYPE_MAP = {
+    geomtypes.Point: 'Point',
+    geomtypes.LineString: 'LineString',
+    geomtypes.Polygon: 'Polygon',
+    geomtypes.MultiPoint: 'MultiPoint',
+    geomtypes.MultiLineString: 'MultiLineString',
+    geomtypes.MultiPolygon: 'MultiPolygon',
+}
+QGisPoint = geomtypes.Point
 
-try:
-    from qgis.core import QGis
-    TYPE_MAP = {
-        QGis.WKBPoint: 'Point',
-        QGis.WKBLineString: 'LineString',
-        QGis.WKBPolygon: 'Polygon',
-        QGis.WKBMultiPoint: 'MultiPoint',
-        QGis.WKBMultiLineString: 'MultiLineString',
-        QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
-    QGisPoint = QGis.WKBPoint
-
-except ImportError:
-    from qgis.core import Qgis as QGis
-    from qgis.core import QgsWkbTypes
-    TYPE_MAP = {
-        QgsWkbTypes.Point: 'Point',
-        QgsWkbTypes.LineString: 'LineString',
-        QgsWkbTypes.Polygon: 'Polygon',
-        QgsWkbTypes.MultiPoint: 'MultiPoint',
-        QgsWkbTypes.MultiLineString: 'MultiLineString',
-        QgsWkbTypes.MultiPolygon: 'MultiPolygon',
-    }
-    QGisPoint = QgsWkbTypes.Point
-
-class Layer():
+class Layer(object):
 
     def __init__(self, layer, visible, popup, method, clusterDistance, clusterColor,
                  allowSelection, showInOverview, timeInfo, showInControls,
@@ -71,7 +63,7 @@ class Layer():
     @staticmethod
     def fromDict(d):
         layer = Layer(*[None] * 11)
-        for a, b in d.iteritems():
+        for a, b in list(d.items()):
             setattr(layer, a, b)
         layer.layer = findProjectLayerByName(layer.layer)
         return layer
@@ -82,15 +74,15 @@ def replaceInTemplate(template, values):
     with codecs.open(path, encoding="utf-8") as f:
         lines = f.readlines()
     s = "".join(lines)
-    for name,value in values.iteritems():
+    for name,value in list(values.items()):
         s = s.replace(name, value)
     return s
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'webappbuilder')
+    tempDir = os.path.join(str(QDir.tempPath()), 'webappbuilder')
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
-    return unicode(os.path.abspath(tempDir))
+    return str(os.path.abspath(tempDir))
 
 def tempFilenameInTempFolder(basename):
     path = tempFolder()
@@ -132,7 +124,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")
                         line = removeSpaces(line)
-                        if layer.wkbType()==QGis.WKBMultiPoint:
+                        if layer.wkbType()==geomtypes.MultiPoint:
                             line = line.replace("MultiPoint", "Point")
                             line = line.replace("[ [", "[")
                             line = line.replace("] ]", "]")
@@ -148,7 +140,6 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                 img.save(destFile)
         progress.setProgress(int(i*100.0/len(layers)))
 
-
 def findLayerByName(name, layers):
     for layer in layers:
         if layer.layer.name() == name:
@@ -158,7 +149,6 @@ def safeName(name):
     #TODO: we are assuming that at least one character is valid...
     validChars = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
     return ''.join(c for c in name if c in validChars).lower()
-
 
 def findProjectLayerByName(name):
     layers = QgsProject.instance().layerTreeRoot().findLayers()
@@ -192,7 +182,7 @@ def askForFiles(parent, msg = None, isSave = False, allowMultiple = False, exts 
         exts = [exts]
     extString = ";; ".join([" %s files (*.%s)" % (e.upper(), e) if e != "*" else "All files (*.*)" for e in exts])
     if allowMultiple:
-        ret = QFileDialog.getOpenFileNames(parent, msg, path, '*.' + extString)
+        ret, __ = QFileDialog.getOpenFileNames(parent, msg, path, '*.' + extString)
         if ret:
             f = ret[0]
         else:
@@ -219,7 +209,6 @@ def askForFolder(parent, msg = None):
     if folder:
         setSetting(LAST_PATH, name, os.path.dirname(folder))
     return folder
-
 
 def setSetting(namespace, name, value):
     settings = QSettings()

@@ -5,13 +5,16 @@
 #
 import webbrowser
 
-import settingstest
-import widgetstest
-import appdefvaliditytest
-import symbologytest
-import layerstest
-from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
-                                       openWAB, closeWAB, testAppdef)
+from webappbuilder.tests import settingstest
+from webappbuilder.tests import widgetstest
+from webappbuilder.tests import appdefvaliditytest
+from webappbuilder.tests import symbologytest
+from webappbuilder.tests import layerstest
+from webappbuilder.tests.utils import (loadTestProject,
+                                       createAppFromTestAppdef,
+                                       openWAB,
+                                       closeWAB,
+                                       testAppdef)
 
 try:
     from qgis.core import QGis

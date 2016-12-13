@@ -5,7 +5,6 @@
 #
 import unittest
 import sys
-import utils
 import os
 
 
@@ -14,7 +13,7 @@ try:
 except ImportError:
     from qgis.core import Qgis as QGis
 
-from utils import *
+from webappbuilder.tests import utils
 
 
 class SymbologyTest(unittest.TestCase):
@@ -24,39 +23,40 @@ class SymbologyTest(unittest.TestCase):
 
     def testPointsSymbology(self):
         """Check that point symbology exported correctly"""
-        folder = createAppFromTestAppdef("symbologypoints")
+        folder = utils.createAppFromTestAppdef("symbologypoints")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         if QGis.QGIS_VERSION_INT < 21500:
-            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints-2.14.js"))
+            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypoints-2.14.js"))
         else:
-            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
+            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
         """Check that point clustering works correctly"""
-        folder = createAppFromTestAppdef("symbologycluster")
+        folder = utils.createAppFromTestAppdef("symbologycluster")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         if QGis.QGIS_VERSION_INT < 21500:
-            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster-2.14.js"))
+            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologycluster-2.14.js"))
         else:
-            self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
+            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         """Check that line symbology exported correctly"""
-        folder = createAppFromTestAppdef("symbologylines")
+        folder = utils.createAppFromTestAppdef("symbologylines")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologylines.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologylines.js"))
 
     def testPolygonsSymbology(self):
         """Check that polygon symbology exported correctly"""
-        folder = createAppFromTestAppdef("symbologypolygons")
+        folder = utils.createAppFromTestAppdef("symbologypolygons")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologypolygons.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypolygons.js"))
 
     def testSimpleLabelsSymbology(self):
         """Check that labels exported correctly"""
-        folder = createAppFromTestAppdef("symbologysimplelabels")
+        folder = utils.createAppFromTestAppdef("symbologysimplelabels")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "symbologysimplelabels.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologysimplelabels.js"))
+
 
 def suite():
     suite = unittest.TestSuite()

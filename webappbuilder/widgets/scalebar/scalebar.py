@@ -1,7 +1,7 @@
-from webappbuilder.webbappwidget import WebAppWidget
 import os
-from PyQt4.QtGui import QIcon
 import json
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 
 class ScaleBar(WebAppWidget):
 

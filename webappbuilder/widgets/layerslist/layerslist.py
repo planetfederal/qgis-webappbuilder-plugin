@@ -1,6 +1,7 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 
 class LayersList(WebAppWidget):
 

@@ -1,11 +1,13 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
+from builtins import range
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 from webappbuilder.utils import METHOD_WMS, safeName, METHOD_WMS_POSTGIS
 
 class AttributesTable(WebAppWidget):
 
-    zoomLevels = list((str(i) for i in xrange(1,33)))
+    zoomLevels = list((str(i) for i in range(1,33)))
 
     _parameters = {"Zoom level when zooming to point feature": ("16", zoomLevels)}
 

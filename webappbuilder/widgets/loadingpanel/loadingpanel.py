@@ -1,6 +1,6 @@
-from webappbuilder.webbappwidget import WebAppWidget
-from PyQt4.QtGui import QIcon
 import os
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 
 class LoadingPanel(WebAppWidget):
 

@@ -1,7 +1,8 @@
+from builtins import str
 import os
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import Qt, QDate, QDateTime
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import Qt, QDate, QDateTime
 
 from qgis.core import QgsMapLayer
 
@@ -33,7 +34,7 @@ class Timeline(WebAppWidget):
         times = set()
         for layer in layers:
             if layer.timeInfo is not None and layer.layer.type() == QgsMapLayer.VectorLayer:
-                if isinstance(layer.timeInfo[0], basestring):
+                if isinstance(layer.timeInfo[0], str):
                     features = layer.layer.getFeatures()
                     for feature in features:
                         for field in layer.timeInfo:
@@ -43,7 +44,7 @@ class Timeline(WebAppWidget):
                                     t = QDateTime()
                                     t.setDate(value)
                                 else:
-                                    t = QDateTime.fromString(unicode(value), Qt.ISODate)
+                                    t = QDateTime.fromString(str(value), Qt.ISODate)
                                 if t.isValid():
                                     times.add(t.toMSecsSinceEpoch())
                             except:

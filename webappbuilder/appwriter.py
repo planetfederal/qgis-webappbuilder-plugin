@@ -1,23 +1,33 @@
+from builtins import str
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-import codecs
 import os
+import codecs
 import shutil
-from qgis.core import *
-from qgis.utils import iface
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtSvg import *
-from utils import *
-from settings import *
-from olwriter import exportStyles, layerToJavascript
-from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
+from collections import OrderedDict
+
+from qgis.PyQt.QtCore import QDir
+from qgis.core import (QgsCoordinateTransform,
+                       QgsCoordinateReferenceSystem,
+                       QgsCsException,
+                       QgsRectangle
+                      )
+from qgis.utils import iface
 from qgis.utils import plugins_metadata_parser
+
+from webappbuilder.olwriter import exportStyles, layerToJavascript
+from webappbuilder.settings import baseLayers, baseOverlays
+from webappbuilder.utils import (METHOD_FILE,
+                                 replaceInTemplate,
+                                 exportLayers,
+                                 safeName
+                                )
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
@@ -47,7 +57,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
                      appdef["Settings"]["Precision for GeoJSON export"],
                      appdef["Settings"]["App view CRS"], forPreview)
 
-    class App():
+    class App(object):
         tabs = []
         ol3controls = []
         tools = []
@@ -76,7 +86,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], _app, progress)
     writeLayersAndGroups(appdef, dst, _app, forPreview, progress)
 
-    widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
+    widgets = sorted(list(appdef["Widgets"].values()), key=attrgetter('order'))
     for w in widgets:
         w.write(appdef, dst, _app, progress)
 
@@ -199,14 +209,14 @@ def writeJsx(appdef, folder, app, progress):
             return ""
     values = {"@IMPORTS@": "\n".join(app.imports),
               "@TABS@": join(app.tabs),
-                "@OL3CONTROLS@": ",\n".join(app.ol3controls),
-                "@PANELS@": join(app.panels),
-                "@MAPPANELS@": join(app.mappanels),
-                "@TOOLBAR@": ("," + ",\n".join(app.tools)) if app.tools else '',
-                "@TOOLBAROPTIONS@": toolbarOptions,
-                "@VARIABLES@": variables,
-                "@POSTTARGETSET@": "\n".join(app.posttarget),
-                "@PERMALINK@": permalink}
+              "@OL3CONTROLS@": ",\n".join(app.ol3controls),
+              "@PANELS@": join(app.panels),
+              "@MAPPANELS@": join(app.mappanels),
+              "@TOOLBAR@": ("," + ",\n".join(app.tools)) if app.tools else '',
+              "@TOOLBAROPTIONS@": toolbarOptions,
+              "@VARIABLES@": variables,
+              "@POSTTARGETSET@": "\n".join(app.posttarget),
+              "@PERMALINK@": permalink}
 
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.jsx")
@@ -216,7 +226,6 @@ def writeJsx(appdef, folder, app, progress):
     jsxFilepath = os.path.join(folder, name)
     with codecs.open(jsxFilepath, "w", encoding="utf-8") as f:
         f.write(jsx)
-
 
 def writeCss(appdef, folder):
     dst = os.path.join(folder, "app.css")
@@ -244,8 +253,8 @@ def writeHtml(appdef, folder, app, progress, filename):
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
               "@SDKVERSION@": plugins_metadata_parser["webappbuilder"].get("general","websdkversion"),
               "@TITLE@": appdef["Settings"]["Title"],
-              "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
-              "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
+              "@SCRIPTS@": "\n".join(list(OrderedDict((item,None) for item in app.scripts).keys())),
+              "@SCRIPTSBODY@": "\n".join(list(OrderedDict((item,None) for item in app.scriptsbody).keys()))
              }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
@@ -303,7 +312,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     layerVars = "\n".join(layerVars)
     groupVars = ""
     groupedLayers = {}
-    for group, groupDef in groups.iteritems():
+    for group, groupDef in list(groups.items()):
         groupLayers = groupDef["layers"]
         groupVars +=  ('''var %s = new ol.layer.Group({
                                 layers: [%s],
@@ -332,8 +341,6 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
         else:
             layersList.append("lyr_" + safeName(layer.name()))
 
-
-
     layersList = "var layersList = [%s];" % (",".join([layer for layer in layersList]))
     groupBaseLayers = appdef["Settings"]["Group base layers"]
 
@@ -355,7 +362,6 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     app.variables.append(groupVars)
     app.variables.append(visibility)
     app.variables.append(layersList)
-
 
 def bounds(useCanvas, layers, crsid):
     extent = None

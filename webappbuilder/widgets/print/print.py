@@ -1,13 +1,22 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
 import os
-from PyQt4.QtGui import QIcon, QImage, QPainter
-from PyQt4.Qt import QDir, QSize, Qt
-from qgis.core import *
 import json
-from qgis.utils import iface
 import shutil
-from webappbuilder.utils import safeName
 import uuid
+
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter
+from qgis.core import (QgsComposerLegend,
+                       QgsComposerShape,
+                       QgsComposerScaleBar,
+                       QgsComposerArrow,
+                       QgsComposerLabel,
+                       QgsComposerMap,
+                       QgsComposerPicture
+                      )
+from qgis.utils import iface
+from webappbuilder.webbappwidget import WebAppWidget
+from webappbuilder.utils import safeName
 
 class Print(WebAppWidget):
 
@@ -58,7 +67,7 @@ class Print(WebAppWidget):
             layoutDef["thumbnail"] = "%s_thumbnail.png" % layoutSafeName
             layoutDef["name"] = name
             layoutDef["elements"] = elements
-            for item in composition.items():
+            for item in list(composition.items()):
                 element = None
                 if isinstance(item, (QgsComposerLegend, QgsComposerShape, QgsComposerScaleBar, QgsComposerArrow)):
                     element = getBasicInfo(item)

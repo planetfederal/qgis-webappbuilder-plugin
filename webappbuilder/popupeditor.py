@@ -3,11 +3,11 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4 import QtGui, QtCore
-from qgis.core import *
-from settings import *
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QDialogButtonBox, QHBoxLayout, QPlainTextEdit, QToolButton
 
-class PopupEditorDialog(QtGui.QDialog):
+
+class PopupEditorDialog(QDialog):
 
     def __init__(self, text, fields):
         super(PopupEditorDialog, self).__init__()
@@ -16,12 +16,12 @@ class PopupEditorDialog(QtGui.QDialog):
         self.fields = fields
 
         self.resize(600, 350)
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
-                                                QtCore.Qt.WindowMinMaxButtonsHint)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                                                Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Editor")
 
-        layout = QtGui.QVBoxLayout()
-        label = QtGui.QLabel()
+        layout = QVBoxLayout()
+        label = QLabel()
         label.setWordWrap(True);
         labelText = ("Enter the expression to use for popup texts.\n"
                       "Use [field_name] to use the value of a given field.\n")
@@ -30,14 +30,14 @@ class PopupEditorDialog(QtGui.QDialog):
         else:
             labelText += "Use #AllAttributes to add all attributes values"
         label.setText(labelText)
-        addAllButton = QtGui.QPushButton()
+        addAllButton = QPushButton()
         addAllButton.setText("Add all attributes")
         addAllButton.clicked.connect(self.addAllAttributes)
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        hlayout = QtGui.QHBoxLayout()
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        hlayout = QHBoxLayout()
         hlayout.addWidget(addAllButton)
         hlayout.addWidget(buttonBox)
-        self.editor = QtGui.QPlainTextEdit()
+        self.editor = QPlainTextEdit()
         self.editor.setPlainText(text)
         layout.addWidget(label)
         layout.addWidget(self.editor)
@@ -57,8 +57,7 @@ class PopupEditorDialog(QtGui.QDialog):
         self.editor.setPlainText(t)
 
     def openText(self, event):
-        QtGui.QToolButton.mousePressEvent(self.button, event)
-
+        QToolButton.mousePressEvent(self.button, event)
 
     def okPressed(self):
         self.text = self.editor.toPlainText()

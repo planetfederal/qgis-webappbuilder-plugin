@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -6,8 +7,11 @@
 import os
 import re
 import codecs
+
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.core import QgsProject
 from qgis.utils import iface
-from qgis.core import *
+
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
@@ -16,7 +20,6 @@ from webappbuilder.appwriter import writeWebApp
 from webappbuilder.utils import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
-from PyQt4.QtGui import QDialog
 
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
@@ -41,7 +44,7 @@ def closeWAB():
         if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
             dialog.close()
 
-class SilentProgress():
+class SilentProgress(object):
     def setText(_, text):
         pass
     def setProgress(_, i):

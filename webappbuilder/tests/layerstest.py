@@ -5,7 +5,6 @@
 #
 import unittest
 import sys
-import utils
 import os
 
 try:
@@ -13,7 +12,7 @@ try:
 except ImportError:
     from qgis.core import Qgis as QGis
 
-from utils import *
+from webappbuilder.tests import utils
 
 
 class LayersTest(unittest.TestCase):
@@ -26,60 +25,60 @@ class LayersTest(unittest.TestCase):
 
     def testLocalPointsLayer(self):
         """Check that point layers processed correctly"""
-        folder = createAppFromTestAppdef("localpoints")
+        folder = utils.createAppFromTestAppdef("localpoints")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpoints.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_localpoints.js"))
 
     def testLocalLinesLayer(self):
         """Check that line layers processed correctly"""
-        folder = createAppFromTestAppdef("locallines")
+        folder = utils.createAppFromTestAppdef("locallines")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_locallines.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_locallines.js"))
 
     def testLocalPolygonsLayer(self):
         """Check that polygon layers processed correctly"""
-        folder = createAppFromTestAppdef("localpolygons")
+        folder = utils.createAppFromTestAppdef("localpolygons")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpolygons.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_localpolygons.js"))
 
     def testLocalRasterLayer(self):
         """Check that raster layers processed correctly"""
-        folder = createAppFromTestAppdef("localraster")
+        folder = utils.createAppFromTestAppdef("localraster")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localraster.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_localraster.js"))
 
     def testWMSLayer(self):
         """Check that WMS layers processed correctly"""
-        folder = createAppFromTestAppdef("layerwms")
+        folder = utils.createAppFromTestAppdef("layerwms")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wms.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_wms.js"))
 
     #def testWFSLayer(self):
     #    """Check that WFS layers processed correctly"""
-    #    folder = createAppFromTestAppdef("layerwfs")
+    #    folder = utils.createAppFromTestAppdef("layerwfs")
     #    appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
     #    if QGis.QGIS_VERSION_INT < 21500:
-    #        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs_2.14.js"))
+    #        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_wfs_2.14.js"))
     #    else:
-    #        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
+    #        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
 
     def testLayerGroup(self):
         """Check that groups of layers processed correctly"""
-        folder = createAppFromTestAppdef("layergroup")
+        folder = utils.createAppFromTestAppdef("layergroup")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_layergroup.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_layergroup.js"))
 
     def testMultipleBaseLayers(self):
         """Check that base and overlay layers processed correctly"""
-        folder = createAppFromTestAppdef("multiplebaselayers")
+        folder = utils.createAppFromTestAppdef("multiplebaselayers")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_multiplebaselayers.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "layers_multiplebaselayers.js"))
 
     def testPopups(self):
         """Check that popups can be added"""
-        folder = createAppFromTestAppdef("popupsonhover")
+        folder = utils.createAppFromTestAppdef("popupsonhover")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(checkTextInFile(appFile, 'popupInfo: "<b>n</b>: [n]"'))
+        self.assertTrue(utils.checkTextInFile(appFile, 'popupInfo: "<b>n</b>: [n]"'))
 
 def suite():
     suite = unittest.TestSuite()

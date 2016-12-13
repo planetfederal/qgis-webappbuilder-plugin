@@ -1,3 +1,4 @@
+from builtins import str
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -5,357 +6,381 @@
 #
 import os
 import re
+import json
 import codecs
-from appwriter import writeWebApp
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from geoserver.catalog import Catalog, FailedRequestError
-from utils import *
-from sldadapter import getGsCompatibleSld
+import xml.etree.ElementTree as ET
+
+import requests
 import jsbeautifier
 from jsmin import jsmin
 from json.encoder import JSONEncoder
-import json
-import requests
-from settings import webAppWidgets
-import viewer
-import xml.etree.ElementTree as ET
+
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QVBoxLayout, QLabel, QDialog, QTextBrowser, QDialogButtonBox
+from qgis.core import (QgsProject,
+                       QgsDataSourceURI,
+                       QgsSingleSymbolRenderer,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayerImport,
+                       QgsVectorFileWriter,
+                       QgsCoordinateTransform,
+                       QgsFeature,
+                       QgsRasterFileWriter
+                      )
+
+from geoserver.catalog import Catalog, FailedRequestError
+
+from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+
+from webappbuilder.appwriter import writeWebApp
+from webappbuilder.sldadapter import getGsCompatibleSld
+from webappbuilder.settings import webAppWidgets
+from webappbuilder import viewer
+from webappbuilder.utils import (tempFilenameInTempFolder,
+                                 safeName,
+                                 findProjectLayerByName,
+                                 run,
+                                 METHOD_DIRECT,
+                                 METHOD_WFS_POSTGIS,
+                                 METHOD_WMS_POSTGIS,
+                                 METHOD_WFS,
+                                 METHOD_WMS,
+                                 METHOD_FILE
+                                )
+
 
 def createApp(appdef, deployData, folder, forPreview, progress):
-	viewer.shutdown()
-	if deployData:
-		usesGeoServer = False
-		usesPostgis = False
-		layers = appdef["Layers"]
-		for layer in layers:
-			if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
-				usesPostgis = True
-				usesGeoServer = True
-			elif layer.method in [METHOD_WFS, METHOD_WMS]:
-				usesGeoServer = True
-		if usesPostgis:
-			importPostgis(appdef, progress)
-		if usesGeoServer:
-			publishGeoserver(appdef, progress)
-	writeWebApp(appdef, folder, deployData, forPreview, progress)
+    viewer.shutdown()
+    if deployData:
+        usesGeoServer = False
+        usesPostgis = False
+        layers = appdef["Layers"]
+        for layer in layers:
+            if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
+                usesPostgis = True
+                usesGeoServer = True
+            elif layer.method in [METHOD_WFS, METHOD_WMS]:
+                usesGeoServer = True
+        if usesPostgis:
+            importPostgis(appdef, progress)
+        if usesGeoServer:
+            publishGeoserver(appdef, progress)
+    writeWebApp(appdef, folder, deployData, forPreview, progress)
 
-	projFile = QgsProject.instance().fileName()
-	if projFile:
-		appdefFile =  projFile + ".appdef"
-		saveAppdef(appdef, appdefFile)
+    projFile = QgsProject.instance().fileName()
+    if projFile:
+        appdefFile =  projFile + ".appdef"
+        saveAppdef(appdef, appdefFile)
 
 
 def checkAppCanBeCreated(appdef):
-	##viewCrs = appdef["Settings"]["App view CRS"]
-	jsonp = appdef["Settings"]["Use JSONP for WFS connections"]
-	problems = []
-	layers = appdef["Layers"]
+    ##viewCrs = appdef["Settings"]["App view CRS"]
+    jsonp = appdef["Settings"]["Use JSONP for WFS connections"]
+    problems = []
+    layers = appdef["Layers"]
 
-	widgets = appdef["Widgets"].values()
-	for w in widgets:
-		w.checkProblems(appdef, problems)
+    widgets = list(appdef["Widgets"].values())
+    for w in widgets:
+        w.checkProblems(appdef, problems)
 
-	def getSize(lyr):
-		ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
-		return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
-	
-	MAXSIZE = 30000
-	for applayer in layers:
-		if applayer == METHOD_FILE and getSize(applayer.layer) > MAXSIZE:
-			problems.append("Layer %s might be too big for being loaded directly from a file. Using an alternative method (GeoServer or GeoServer + PostGIS) is recommended.")
-			
-	for applayer in layers:
-		layer = applayer.layer
-		if layer.providerType().lower() == "wms":
-			if applayer.popup != "":
-				source = layer.source()
-				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
-				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				if "access-control-allow-origin" not in r:
-					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
-								" Popups might not work correctly for that layer."	% layer.name())
-	for applayer in layers:
-		layer = applayer.layer
-		if layer.providerType().lower() == "wfs" and jsonp:
-			datasourceUri = QgsDataSourceURI(layer.source())
-			url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
-			r = run(lambda: requests.get(url))
-			if "text/javascript" not in r.text:
-				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
-							% layer.name())
-		if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
-			continue
-		renderer = applayer.layer.rendererV2()
-		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
-									QgsGraduatedSymbolRendererV2)):
-			problems.append("Symbology used by layer %s includes unsupported elements."
-							"Only single symbol, categorized and graduated renderers are supported."
-						"This layer will not be correctly styled in the web app."
-						% layer.name())
+    def getSize(lyr):
+        ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
+        return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
+
+    MAXSIZE = 30000
+    for applayer in layers:
+        if applayer == METHOD_FILE and getSize(applayer.layer) > MAXSIZE:
+            problems.append("Layer %s might be too big for being loaded directly from a file. Using an alternative method (GeoServer or GeoServer + PostGIS) is recommended.")
+
+    for applayer in layers:
+        layer = applayer.layer
+        if layer.providerType().lower() == "wms":
+            if applayer.popup != "":
+                source = layer.source()
+                url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
+                r = run(lambda: requests.get(url, headers={"origin": "null"}))
+                if "access-control-allow-origin" not in r:
+                    problems.append("Server for layer %s is not allowed to accept cross-origin requests."
+                                " Popups might not work correctly for that layer."  % layer.name())
+    for applayer in layers:
+        layer = applayer.layer
+        if layer.providerType().lower() == "wfs" and jsonp:
+            datasourceUri = QgsDataSourceURI(layer.source())
+            url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
+            r = run(lambda: requests.get(url))
+            if "text/javascript" not in r.text:
+                problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
+                            % layer.name())
+        if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
+            continue
+        renderer = applayer.layer.renderer()
+        if not isinstance(renderer, (QgsSingleSymbolRenderer, QgsCategorizedSymbolRenderer,
+                                    QgsGraduatedSymbolRenderer)):
+            problems.append("Symbology used by layer %s includes unsupported elements."
+                            "Only single symbol, categorized and graduated renderers are supported."
+                        "This layer will not be correctly styled in the web app."
+                        % layer.name())
 
 
-	#TODO: check that layers using time attributes are not published using WMS
+    #TODO: check that layers using time attributes are not published using WMS
 
-	hasTimeInfo = False
-	for applayer in layers:
-		if applayer.timeInfo is not None:
-			hasTimeInfo = True
-			break;
+    hasTimeInfo = False
+    for applayer in layers:
+        if applayer.timeInfo is not None:
+            hasTimeInfo = True
+            break;
 
-	if hasTimeInfo and "timeline" not in appdef["Widgets"]:
-		problems.append("There are layers with time information, but timeline widget is not used.")
+    if hasTimeInfo and "timeline" not in appdef["Widgets"]:
+        problems.append("There are layers with time information, but timeline widget is not used.")
 
-	if "timeline" in appdef["Widgets"]:
-		for applayer in layers:
-			layer = applayer.layer
-			if layer.providerType().lower() == "wms":
-				try:
-					source = layer.source()
-					url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-					r = requests.get(url + "?service=WMS&request=GetCapabilities")
-					root = ET.fromstring(re.sub('\\sxmlns="[^"]+"', '', r.text))
-					for layerElement in root.iter('Layer'):
-						name = layerElement.find("Name").text
-						if name == layernames:
-							# look for discrete values
-							time = layerElement.find('Extent')
-							if time is not None:
-								applayer.timeInfo = time
-								hasTimeInfo = True
-							# look for interval values
-							time = layerElement.find('Dimension')
-							if time is not None and time.attrib['name'] == 'time':
-								applayer.timeInfo = '"{}"'.format(time.text)
-								hasTimeInfo = True
+    if "timeline" in appdef["Widgets"]:
+        for applayer in layers:
+            layer = applayer.layer
+            if layer.providerType().lower() == "wms":
+                try:
+                    source = layer.source()
+                    url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+                    layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+                    r = requests.get(url + "?service=WMS&request=GetCapabilities")
+                    root = ET.fromstring(re.sub('\\sxmlns="[^"]+"', '', r.text))
+                    for layerElement in root.iter('Layer'):
+                        name = layerElement.find("Name").text
+                        if name == layernames:
+                            # look for discrete values
+                            time = layerElement.find('Extent')
+                            if time is not None:
+                                applayer.timeInfo = time
+                                hasTimeInfo = True
+                            # look for interval values
+                            time = layerElement.find('Dimension')
+                            if time is not None and time.attrib['name'] == 'time':
+                                applayer.timeInfo = '"{}"'.format(time.text)
+                                hasTimeInfo = True
 
-				except:
-					#we swallow error, since this is not a vital info to add, so the app can still be created.
-					pass
+                except:
+                    #we swallow error, since this is not a vital info to add, so the app can still be created.
+                    pass
 
-		if not hasTimeInfo:
-			problems.append("Timeline widget is used but there are no layers with time information")
+        if not hasTimeInfo:
+            problems.append("Timeline widget is used but there are no layers with time information")
 
-	return problems
+    return problems
 
 
 def importPostgis(appdef, progress):
-	progress.setText("Importing into PostGIS")
-	progress.setProgress(0)
-	host = appdef["Deploy"]["PostGIS host"]
-	port = appdef["Deploy"]["PostGIS port"]
-	username = appdef["Deploy"]["PostGIS username"]
-	password = appdef["Deploy"]["PostGIS password"]
-	dbname = appdef["Deploy"]["PostGIS database"]
-	schema = appdef["Deploy"]["PostGIS schema"]
-	uri = QgsDataSourceURI()
-	uri.setConnection(host, port, dbname, username, password)
-	connector = PostGisDBConnector(uri)
-	schemas = connector.getSchemas()
-	schemaExists = schema in [s[1] for s in schemas]
-	for i, layer in enumerate(appdef["Layers"]):
-		if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
-			if not schemaExists:
-				connector.createSchema(schema)
-				schemaExists = True
-			tables = connector.getTables(schema=schema)
-			tablename = safeName(layer.layer.name())
-			tableExists = tablename in [t[1] for t in tables]
-			if tableExists:
-				connector.deleteTable([schema, tablename])
-			importLayerIntoPostgis(layer.layer, host, port, username, password,
-							dbname, schema, tablename, appdef["Settings"]["App view CRS"])
-		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
+    progress.setText("Importing into PostGIS")
+    progress.setProgress(0)
+    host = appdef["Deploy"]["PostGIS host"]
+    port = appdef["Deploy"]["PostGIS port"]
+    username = appdef["Deploy"]["PostGIS username"]
+    password = appdef["Deploy"]["PostGIS password"]
+    dbname = appdef["Deploy"]["PostGIS database"]
+    schema = appdef["Deploy"]["PostGIS schema"]
+    uri = QgsDataSourceURI()
+    uri.setConnection(host, port, dbname, username, password)
+    connector = PostGisDBConnector(uri)
+    schemas = connector.getSchemas()
+    schemaExists = schema in [s[1] for s in schemas]
+    for i, layer in enumerate(appdef["Layers"]):
+        if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
+            if not schemaExists:
+                connector.createSchema(schema)
+                schemaExists = True
+            tables = connector.getTables(schema=schema)
+            tablename = safeName(layer.layer.name())
+            tableExists = tablename in [t[1] for t in tables]
+            if tableExists:
+                connector.deleteTable([schema, tablename])
+            importLayerIntoPostgis(layer.layer, host, port, username, password,
+                            dbname, schema, tablename, appdef["Settings"]["App view CRS"])
+        progress.setProgress(int(i*100.0/len(appdef["Layers"])))
 
 
 def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename, crsid):
-	pk = "id"
-	geom = "geom"
-	providerName = "postgres"
-	destCrs = QgsCoordinateReferenceSystem(crsid)
+    pk = "id"
+    geom = "geom"
+    providerName = "postgres"
+    destCrs = QgsCoordinateReferenceSystem(crsid)
 
-	uri = QgsDataSourceURI()
-	uri.setConnection(host, str(port), dbname, username, password)
-	uri.setDataSource(schema, tablename, geom, "", pk)
+    uri = QgsDataSourceURI()
+    uri.setConnection(host, str(port), dbname, username, password)
+    uri.setDataSource(schema, tablename, geom, "", pk)
 
-	ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, destCrs, False, False)
-	if ret != 0:
-		raise Exception("Could not import layer '%s': %s" % (layer.name(), errMsg))
+    ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, destCrs, False, False)
+    if ret != 0:
+        raise Exception("Could not import layer '%s': %s" % (layer.name(), errMsg))
 
 
 def publishGeoserver(appdef, progress):
-	viewCrs = appdef["Settings"]["App view CRS"]
-	usesGeoServer = False
-	for applayer in appdef["Layers"]:
-		if applayer.method != METHOD_FILE:
-			if applayer.layer.type() == applayer.layer.VectorLayer and applayer.layer.providerType().lower() != "wfs":
-				usesGeoServer = True
-	if not usesGeoServer:
-		return
-	progress.setText("Publishing to GeoServer")
-	progress.setProgress(0)
-	geoserverUrl = appdef["Deploy"]["GeoServer url"] + "/rest"
-	geoserverPassword = appdef["Deploy"]["GeoServer password"]
-	geoserverUsername = appdef["Deploy"]["GeoServer username"]
-	workspaceName = appdef["Deploy"]["GeoServer workspace"]
-	dsName = "ds_" + workspaceName
-	host = appdef["Deploy"]["PostGIS host"]
-	port = appdef["Deploy"]["PostGIS port"]
-	postgisUsername = appdef["Deploy"]["PostGIS username"]
-	postgisPassword = appdef["Deploy"]["PostGIS password"]
-	database = appdef["Deploy"]["PostGIS database"]
-	schema = appdef["Deploy"]["PostGIS schema"]
-	catalog = Catalog(geoserverUrl, geoserverUsername, geoserverPassword)
-	workspace = catalog.get_workspace(workspaceName)
-	if workspace is None:
-		workspace = catalog.create_workspace(workspaceName, workspaceName)
-	try:
-		store = catalog.get_store(dsName, workspace)
-		resources = store.get_resources()
-		for resource in resources:
-			layers = catalog.get_layers(resource)
-			for layer in layers:
-				catalog.delete(layer)
-			catalog.delete(resource)
-		catalog.delete(store)
-	except Exception:
-		pass
-	try:
-		store = catalog.get_store(dsName, workspace)
-	except FailedRequestError:
-		store = None
-	for i, applayer in enumerate(appdef["Layers"]):
-		layer = applayer.layer
-		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
-			name = safeName(layer.name())
-			sld, icons = getGsCompatibleSld(layer)
-			if sld is not None:
-				catalog.create_style(name, sld, True)
-				uploadIcons(icons, geoserverUsername, geoserverPassword, catalog.gs_base_url)
-			if layer.type() == layer.VectorLayer:
-				if applayer.method == METHOD_WFS_POSTGIS or applayer.method == METHOD_WMS_POSTGIS:
-					if store is None:
-						store = catalog.create_datastore(dsName, workspace)
-						store.connection_parameters.update(
-							host=host, port=str(port), database=database, user=postgisUsername, schema=schema,
-							passwd=postgisPassword, dbtype="postgis")
-						catalog.save(store)
-					catalog.publish_featuretype(name, store, layer.crs().authid())
-				else:
-					path = getDataFromLayer(layer, viewCrs)
-					catalog.create_featurestore(name,
-													path,
-													workspace=workspace,
-													overwrite=True)
-				gslayer = catalog.get_layer(name)
-				r = gslayer.resource
-				r.dirty['srs'] = viewCrs
-				catalog.save(r)
-			elif layer.type() == layer.RasterLayer:
-				path = getDataFromLayer(layer, viewCrs)
-				catalog.create_coveragestore(name,
-				                          path,
-				                          workspace=workspace,
-				                          overwrite=True)
-			if sld is not None:
-				publishing = catalog.get_layer(name)
-				publishing.default_style = catalog.get_style(name)
-				catalog.save(publishing)
-		progress.setProgress(int((i+1)*100.0/len(appdef["Layers"])))
-
-
+    viewCrs = appdef["Settings"]["App view CRS"]
+    usesGeoServer = False
+    for applayer in appdef["Layers"]:
+        if applayer.method != METHOD_FILE:
+            if applayer.layer.type() == applayer.layer.VectorLayer and applayer.layer.providerType().lower() != "wfs":
+                usesGeoServer = True
+    if not usesGeoServer:
+        return
+    progress.setText("Publishing to GeoServer")
+    progress.setProgress(0)
+    geoserverUrl = appdef["Deploy"]["GeoServer url"] + "/rest"
+    geoserverPassword = appdef["Deploy"]["GeoServer password"]
+    geoserverUsername = appdef["Deploy"]["GeoServer username"]
+    workspaceName = appdef["Deploy"]["GeoServer workspace"]
+    dsName = "ds_" + workspaceName
+    host = appdef["Deploy"]["PostGIS host"]
+    port = appdef["Deploy"]["PostGIS port"]
+    postgisUsername = appdef["Deploy"]["PostGIS username"]
+    postgisPassword = appdef["Deploy"]["PostGIS password"]
+    database = appdef["Deploy"]["PostGIS database"]
+    schema = appdef["Deploy"]["PostGIS schema"]
+    catalog = Catalog(geoserverUrl, geoserverUsername, geoserverPassword)
+    workspace = catalog.get_workspace(workspaceName)
+    if workspace is None:
+        workspace = catalog.create_workspace(workspaceName, workspaceName)
+    try:
+        store = catalog.get_store(dsName, workspace)
+        resources = store.get_resources()
+        for resource in resources:
+            layers = catalog.get_layers(resource)
+            for layer in layers:
+                catalog.delete(layer)
+            catalog.delete(resource)
+        catalog.delete(store)
+    except Exception:
+        pass
+    try:
+        store = catalog.get_store(dsName, workspace)
+    except FailedRequestError:
+        store = None
+    for i, applayer in enumerate(appdef["Layers"]):
+        layer = applayer.layer
+        if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
+            name = safeName(layer.name())
+            sld, icons = getGsCompatibleSld(layer)
+            if sld is not None:
+                catalog.create_style(name, sld, True)
+                uploadIcons(icons, geoserverUsername, geoserverPassword, catalog.gs_base_url)
+            if layer.type() == layer.VectorLayer:
+                if applayer.method == METHOD_WFS_POSTGIS or applayer.method == METHOD_WMS_POSTGIS:
+                    if store is None:
+                        store = catalog.create_datastore(dsName, workspace)
+                        store.connection_parameters.update(
+                            host=host, port=str(port), database=database, user=postgisUsername, schema=schema,
+                            passwd=postgisPassword, dbtype="postgis")
+                        catalog.save(store)
+                    catalog.publish_featuretype(name, store, layer.crs().authid())
+                else:
+                    path = getDataFromLayer(layer, viewCrs)
+                    catalog.create_featurestore(name,
+                                                    path,
+                                                    workspace=workspace,
+                                                    overwrite=True)
+                gslayer = catalog.get_layer(name)
+                r = gslayer.resource
+                r.dirty['srs'] = viewCrs
+                catalog.save(r)
+            elif layer.type() == layer.RasterLayer:
+                path = getDataFromLayer(layer, viewCrs)
+                catalog.create_coveragestore(name,
+                                          path,
+                                          workspace=workspace,
+                                          overwrite=True)
+            if sld is not None:
+                publishing = catalog.get_layer(name)
+                publishing.default_style = catalog.get_style(name)
+                catalog.save(publishing)
+        progress.setProgress(int((i+1)*100.0/len(appdef["Layers"])))
 
 def uploadIcons(icons, url, geoserverUsername, geoserverPassword):
-	url = url + "app/api/icons"
-	for icon in icons:
-		files = {'file': (icon[1], icon[2])}
-		r = requests.post(url, files=files, auth=(geoserverUsername, geoserverPassword))
-		try:
-			r.raise_for_status()
-		except Exception, e:
-			raise Exception ("Error uploading SVG icon to GeoServer:\n" + str(e))
-		break
+    url = url + "app/api/icons"
+    for icon in icons:
+        files = {'file': (icon[1], icon[2])}
+        r = requests.post(url, files=files, auth=(geoserverUsername, geoserverPassword))
+        try:
+            r.raise_for_status()
+        except Exception as e:
+            raise Exception ("Error uploading SVG icon to GeoServer:\n" + str(e))
+        break
 
 def getDataFromLayer(layer, crsid):
-	if layer.type() == layer.RasterLayer:
-		data = exportRasterLayer(layer, crsid)
-	else:
-		filename = exportVectorLayer(layer, crsid)
-		basename, extension = os.path.splitext(filename)
-		data = {
-		    'shp': basename + '.shp',
-		    'shx': basename + '.shx',
-		    'dbf': basename + '.dbf',
-		    'prj': basename + '.prj'
-		}
-	return data
+    if layer.type() == layer.RasterLayer:
+        data = exportRasterLayer(layer, crsid)
+    else:
+        filename = exportVectorLayer(layer, crsid)
+        basename, extension = os.path.splitext(filename)
+        data = {
+            'shp': basename + '.shp',
+            'shx': basename + '.shx',
+            'dbf': basename + '.dbf',
+            'prj': basename + '.prj'
+        }
+    return data
 
 def exportVectorLayer(layer, crsid):
-	destCrs = QgsCoordinateReferenceSystem(crsid)
-	settings = QSettings()
-	systemEncoding = settings.value( "/UI/encoding", "System" )
-	filename = unicode(layer.source())
-	destFilename = unicode(layer.name())
-	if not filename.lower().endswith("shp") or layer.crs().authid() != crsid:
-		output = tempFilenameInTempFolder(destFilename + ".shp")
-		provider = layer.dataProvider()
-		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), destCrs)
-		crsTransform = QgsCoordinateTransform(layer.crs(), destCrs)
-		outFeat = QgsFeature()
-		for f in layer.getFeatures():
-			geom = f.geometry()
-			geom.transform(crsTransform)
-			outFeat.setGeometry(geom)
-			outFeat.setAttributes(f.attributes())
-			writer.addFeature(outFeat)
-		del writer
-		return output
-	else:
-		return filename
+    destCrs = QgsCoordinateReferenceSystem(crsid)
+    settings = QSettings()
+    systemEncoding = settings.value( "/UI/encoding", "System" )
+    filename = str(layer.source())
+    destFilename = str(layer.name())
+    if not filename.lower().endswith("shp") or layer.crs().authid() != crsid:
+        output = tempFilenameInTempFolder(destFilename + ".shp")
+        provider = layer.dataProvider()
+        writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), destCrs)
+        crsTransform = QgsCoordinateTransform(layer.crs(), destCrs)
+        outFeat = QgsFeature()
+        for f in layer.getFeatures():
+            geom = f.geometry()
+            geom.transform(crsTransform)
+            outFeat.setGeometry(geom)
+            outFeat.setAttributes(f.attributes())
+            writer.addFeature(outFeat)
+        del writer
+        return output
+    else:
+        return filename
 
 def exportRasterLayer(layer, crsid):
-	destCrs = QgsCoordinateReferenceSystem(crsid)
-	if not unicode(layer.source()).lower().endswith("tif") or layer.crs().authid() != crsid:
-		filename = str(layer.name())
-		output = tempFilenameInTempFolder(filename + ".tif")
-		writer = QgsRasterFileWriter(output)
-		writer.setOutputFormat("GTiff");
-		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), destCrs)
-		del writer
-		return output
-	else:
-		return unicode(layer.source())
-
+    destCrs = QgsCoordinateReferenceSystem(crsid)
+    if not str(layer.source()).lower().endswith("tif") or layer.crs().authid() != crsid:
+        filename = str(layer.name())
+        output = tempFilenameInTempFolder(filename + ".tif")
+        writer = QgsRasterFileWriter(output)
+        writer.setOutputFormat("GTiff");
+        writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), destCrs)
+        del writer
+        return output
+    else:
+        return str(layer.source())
 
 class DefaultEncoder(JSONEncoder):
-	def default(self, o):
-		return o.__dict__
+    def default(self, o):
+        return o.__dict__
 
 def saveAppdef(appdef, filename):
-	toSave = {k:v for k,v in appdef.iteritems() if k != "Widgets"}
-	for group in toSave["Groups"]:
-		toSave["Groups"][group]["layers"] = [layer.name()
-								for layer in toSave["Groups"][group]["layers"]]
-	toSave["Widgets"] = {}
-	for wName, w in appdef["Widgets"].iteritems():
-		toSave["Widgets"][wName] = {"Parameters":w.parameters()}
-	layers = []
-	for layer in toSave["Layers"]:
-		layer.layer = layer.layer.name()
-		layers.append(layer)
-	toSave["Layers"] = layers
-	with codecs.open(filename, "w", encoding="utf-8") as f:
-		f.write(json.dumps(toSave, sort_keys=True, indent=4, cls=DefaultEncoder))
+    toSave = {k:v for k,v in list(appdef.items()) if k != "Widgets"}
+    for group in toSave["Groups"]:
+        toSave["Groups"][group]["layers"] = [layer.name()
+                                for layer in toSave["Groups"][group]["layers"]]
+    toSave["Widgets"] = {}
+    for wName, w in list(appdef["Widgets"].items()):
+        toSave["Widgets"][wName] = {"Parameters":w.parameters()}
+    layers = []
+    for layer in toSave["Layers"]:
+        layer.layer = layer.layer.name()
+        layers.append(layer)
+    toSave["Layers"] = layers
+    with codecs.open(filename, "w", encoding="utf-8") as f:
+        f.write(json.dumps(toSave, sort_keys=True, indent=4, cls=DefaultEncoder))
 
 def loadAppdef(filename):
-	try:
-		with codecs.open(filename, encoding="utf-8") as f:
-			data = json.load(f)
-		return data
-	except Exception, e:
-		return None
+    try:
+        with codecs.open(filename, encoding="utf-8") as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        return None
 
 '''
 Converts a appdef coming from an appdef file (a dict with only string objects)
@@ -364,70 +389,66 @@ that create the webapp based on it. It modifies values of objects in the appdef 
 based on the content of the current project.
 '''
 def processAppdef(appdef):
-	newWidgets = {}
-	for w, props in appdef["Widgets"].iteritems():
-		obj = webAppWidgets[w]
-		obj.setParameters(props["Parameters"])
-		newWidgets[w] = obj
-	appdef["Widgets"] = newWidgets
-	newLayers = []
-	for layer in appdef["Layers"]:
-		newLayers.append(Layer.fromDict(layer))
-	appdef["Layers"] = newLayers
-	newGroups = {}
-	for groupName, group in appdef["Groups"].iteritems():
-		newGroups[groupName] = {}
-		groupLayers = []
-		for layer in group["layers"]:
-			groupLayers.append(findProjectLayerByName(layer))
-		newGroups[groupName]["layers"] = groupLayers
-		newGroups[groupName]["showContent"] = group["showContent"]
-	appdef["Groups"] = newGroups
-
-
-
+    newWidgets = {}
+    for w, props in list(appdef["Widgets"].items()):
+        obj = webAppWidgets[w]
+        obj.setParameters(props["Parameters"])
+        newWidgets[w] = obj
+    appdef["Widgets"] = newWidgets
+    newLayers = []
+    for layer in appdef["Layers"]:
+        newLayers.append(Layer.fromDict(layer))
+    appdef["Layers"] = newLayers
+    newGroups = {}
+    for groupName, group in list(appdef["Groups"].items()):
+        newGroups[groupName] = {}
+        groupLayers = []
+        for layer in group["layers"]:
+            groupLayers.append(findProjectLayerByName(layer))
+        newGroups[groupName]["layers"] = groupLayers
+        newGroups[groupName]["showContent"] = group["showContent"]
+    appdef["Groups"] = newGroups
 
 warningIcon = os.path.join(os.path.dirname(__file__), "icons", "warning.png")
 
 class AppDefProblemsDialog(QDialog):
 
-	def __init__(self, problems, parent=None):
-		super(AppDefProblemsDialog, self).__init__(parent)
-		self.title = "Wrong Web App Definition"
-		self.msg = ("The following problems were found in your app definition:\n"
-					"Do you want to create the web app?")
-		self.problems = problems
-		self.ok = False
-		self.initGui()
+    def __init__(self, problems, parent=None):
+        super(AppDefProblemsDialog, self).__init__(parent)
+        self.title = "Wrong Web App Definition"
+        self.msg = ("The following problems were found in your app definition:\n"
+                    "Do you want to create the web app?")
+        self.problems = problems
+        self.ok = False
+        self.initGui()
 
+    def initGui(self):
+        self.setWindowTitle(self.title)
+        layout = QVBoxLayout()
 
-	def initGui(self):
-		self.setWindowTitle(self.title)
-		layout = QVBoxLayout()
+        msgLabel = QLabel(self.msg)
+        msgLabel.setWordWrap(True)
+        layout.addWidget(msgLabel)
 
-		msgLabel = QLabel(self.msg)
-		msgLabel.setWordWrap(True)
-		layout.addWidget(msgLabel)
+        class MyBrowser(QTextBrowser):
+            def loadResource(self, type_, name):
+                return None
+        self.textBrowser = MyBrowser()
+        problems = ['<li><img src="%s"/> &nbsp; %s</li>' % (warningIcon, p) for p in self.problems]
+        text = '<html><ul>%s</ul></html>' % "".join(problems)
+        self.textBrowser.setHtml(text)
+        layout.addWidget(self.textBrowser)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Yes | QDialogButtonBox.No)
+        layout.addWidget(buttonBox)
+        self.setLayout(layout)
 
-		class MyBrowser(QTextBrowser):
-			def loadResource(self, type_, name):
-				return None
-		self.textBrowser = MyBrowser()
-		problems = ['<li><img src="%s"/> &nbsp; %s</li>' % (warningIcon, p) for p in self.problems]
-		text = '<html><ul>%s</ul></html>' % "".join(problems)
-		self.textBrowser.setHtml(text)
-		layout.addWidget(self.textBrowser)
-		buttonBox = QDialogButtonBox(QDialogButtonBox.Yes | QDialogButtonBox.No)
-		layout.addWidget(buttonBox)
-		self.setLayout(layout)
+        buttonBox.rejected.connect(self.close)
+        buttonBox.accepted.connect(self.okPressed)
 
-		self.connect(buttonBox, SIGNAL("rejected()"), self.close)
-		self.connect(buttonBox, SIGNAL("accepted()"), self.okPressed)
+        self.setMinimumWidth(400)
+        self.setMinimumHeight(400)
+        self.resize(500, 400)
 
-		self.setMinimumWidth(400)
-		self.setMinimumHeight(400)
-		self.resize(500, 400)
-
-	def okPressed(self):
-		self.ok = True
-		self.close()
+    def okPressed(self):
+        self.ok = True
+        self.close()

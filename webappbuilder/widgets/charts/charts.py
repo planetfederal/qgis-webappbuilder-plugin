@@ -1,7 +1,8 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import range
 import os
-from PyQt4.QtGui import QIcon
 import json
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 from webappbuilder.utils import findLayerByName, findProjectLayerByName
 
 class ChartTool(WebAppWidget):
@@ -31,7 +32,7 @@ class ChartTool(WebAppWidget):
                                                 React.createElement("div", {id: 'chart'})
                                         )''' )
             charts = []
-            for chartName, chart in self._parameters["charts"].iteritems():
+            for chartName, chart in list(self._parameters["charts"].items()):
                 charts.append(copy.copy(chart))
                 charts[-1]["title"] = chartName
                 charts[-1]["layer"] = findProjectLayerByName(chart["layer"]).id()
@@ -52,7 +53,7 @@ class ChartTool(WebAppWidget):
         self._parameters["charts"] = dlg.charts
 
     def checkProblems(self, appdef, problems):
-        widgetNames = [w.name() for w in appdef["Widgets"].values()]
+        widgetNames = [w.name() for w in list(appdef["Widgets"].values())]
         charts = self._parameters["charts"]
         if len(charts) == 0:
             problems.append("Chart tool added, but no charts have been defined. "
@@ -61,7 +62,7 @@ class ChartTool(WebAppWidget):
             problems.append("Chart tool added, but the web app has no selection tools. "
                         "Charts are created based on selected features, so you should add selection "
                         "tools to the web app, to allow the user selecting features in the map")
-        for name, chart in charts.iteritems():
+        for name, chart in list(charts.items()):
             layer = findLayerByName(chart["layer"], appdef["Layers"])
             if layer is None:
                 problems.append("Chart tool %s uses a layer (%s) that is not added to web app" % (name, chart["layer"]))
@@ -70,8 +71,8 @@ class ChartTool(WebAppWidget):
                             "Selection should be enabled for that layer.") % (name, chart["layer"]))
 
 from qgis.core import *
-from PyQt4 import QtCore, QtGui
-from ui_charttooldialog import Ui_ChartToolDialog
+from qgis.PyQt import QtCore, QtGui
+from .ui_charttooldialog import Ui_ChartToolDialog
 import copy
 import sys
 
@@ -86,7 +87,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.populateLayers()
         self.populateList()
         if self.layers:
-            self.populateFieldCombos(self.layers.keys()[0])
+            self.populateFieldCombos(list(self.layers.keys())[0])
         self.layerCombo.currentIndexChanged.connect(self.layerComboChanged)
         self.displayModeCombo.currentIndexChanged.connect(self.displayModeComboChanged)
         self.addButton.clicked.connect(self.addChart)
@@ -123,7 +124,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         try:
             offset = 0 if sys.platform in ['darwin', 'linux2'] else 1
             valueFields = self._charts[name]["valueFields"]
-            for i in xrange(offset, self.model.rowCount()):
+            for i in range(offset, self.model.rowCount()):
                 item = self.model.item(i)
                 item.setData(QtCore.Qt.Checked if item.text() in valueFields else QtCore.Qt.Unchecked,
                          QtCore.Qt.CheckStateRole)
@@ -136,7 +137,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
     def populateList(self):
         self.chartsList.clear()
         toDelete = []
-        for chartName, chart in self._charts.iteritems():
+        for chartName, chart in list(self._charts.items()):
             if chart["layer"] in self.layers:
                 fields = [f.name() for f in self.layers[chart["layer"]].pendingFields()]
                 if chart["categoryField"] in fields:
@@ -165,7 +166,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                 if isinstance(child.layer(), QgsVectorLayer):
                     self.layers[child.layer().name()] = child.layer()
 
-        self.layerCombo.addItems(self.layers.keys())
+        self.layerCombo.addItems(list(self.layers.keys()))
 
     def populateFieldCombos(self, layerName):
         fields = [f.name() for f in self.layers[layerName].pendingFields()]
@@ -208,7 +209,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         categoryField = self.categoryFieldCombo.currentText()
         operation = self.operationCombo.currentIndex()
         valueFields = []
-        for i in xrange(self.model.rowCount()):
+        for i in range(self.model.rowCount()):
             item = self.model.item(i)
             checked = item.data(QtCore.Qt.CheckStateRole)
             if checked == QtCore.Qt.Checked:

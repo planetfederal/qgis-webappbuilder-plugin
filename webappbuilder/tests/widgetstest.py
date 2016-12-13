@@ -8,7 +8,7 @@ import unittest
 
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.settings import webAppWidgets
-from webappbuilder.tests.utils import *
+from webappbuilder.tests import utils
 
 widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
            "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
@@ -20,7 +20,7 @@ widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
 class WidgetsTest(unittest.TestCase):
 
     def setUp(self):
-        loadTestProject("bakeries")
+        utils.loadTestProject("bakeries")
 
     def testWidgetsCorrectlyLoaded(self):
         """Check that all widgets loaded"""
@@ -29,9 +29,9 @@ class WidgetsTest(unittest.TestCase):
 
     def testChartWidgetNotAdeed(self):
         """Check that chart widget is not generated if it is not configured"""
-        folder = createAppFromTestAppdef("chartwidget")
+        folder = utils.createAppFromTestAppdef("chartwidget")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "nochartwidget.js", True))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "nochartwidget.js", True))
 
 
 def suite():

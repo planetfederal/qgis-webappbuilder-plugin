@@ -1,8 +1,10 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
+from builtins import range
 import os
-from PyQt4.QtGui import QIcon
 import json
-from ui_bookmarksdialog import Ui_BookmarksDialog
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.widgets.bookmarks.ui_bookmarksdialog import Ui_BookmarksDialog
+from webappbuilder.webbappwidget import WebAppWidget
 
 SHOW_BOOKMARKS_IN_PANEL_GO = 0
 SHOW_BOOKMARKS_IN_PANEL_PAN = 1
@@ -79,7 +81,7 @@ class Bookmarks(WebAppWidget):
 
 
 from qgis.core import *
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt import QtCore, QtGui
 import sqlite3
 
 
@@ -141,9 +143,9 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
         cursor = db.cursor()
         cursor.execute ("SELECT * FROM tbl_bookmarks")
         allBookmarks = cursor.fetchall()
-        usedBookmarks = [self.bookmarksList.item(i).name for i in xrange(self.bookmarksList.count())]
+        usedBookmarks = [self.bookmarksList.item(i).name for i in range(self.bookmarksList.count())]
         qgisBookmarks = {b[1]: b for b in allBookmarks if b[1] not in usedBookmarks}
-        dlg = ListSelectorDialog(qgisBookmarks.keys(), self)
+        dlg = ListSelectorDialog(list(qgisBookmarks.keys()), self)
         dlg.exec_()
         if dlg.selected:
             for name in dlg.selected:
@@ -195,7 +197,7 @@ class BookmarksEditorDialog(QtGui.QDialog, Ui_BookmarksDialog):
     def okPressed(self):
         bookmarks = []
         self.selectionChanged()
-        for i in xrange(self.bookmarksList.count()):
+        for i in range(self.bookmarksList.count()):
             item = self.bookmarksList.item(i)
             bookmarks.append([item.name, item.extent, item.description])
         self.bookmarks = bookmarks
@@ -240,7 +242,7 @@ class BookmarksFromLayerDialog(QtGui.QDialog):
         label.setText("Layer")
         layout.addWidget(label)
         self.layerCombo = QtGui.QComboBox()
-        self.layerCombo.addItems(self.layers.keys())
+        self.layerCombo.addItems(list(self.layers.keys()))
         layout.addWidget(self.layerCombo)
         self.layerCombo.currentIndexChanged.connect(self.layerComboChanged)
         label = QtGui.QLabel()
@@ -285,8 +287,8 @@ class BookmarksFromLayerDialog(QtGui.QDialog):
         for feature in layer.getFeatures():
             geom = feature.geometry()
             extent = transform.transform(geom.boundingBox())
-            name = unicode(feature[nameField])
-            description = unicode(feature[descriptionField])
+            name = str(feature[nameField])
+            description = str(feature[descriptionField])
             self.bookmarks.append([name, [extent.xMinimum(), extent.yMinimum(),
                                 extent.xMaximum(), extent.yMaximum()], description])
         self.close()
@@ -323,7 +325,7 @@ class ListSelectorDialog(QtGui.QDialog):
 
     def okPressed(self):
         self.selected = []
-        for i in xrange(self.optionsList.count()):
+        for i in range(self.optionsList.count()):
             item = self.optionsList.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 self.selected.append(item.text())

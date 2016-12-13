@@ -5,9 +5,9 @@
 #
 import unittest
 import sys
-import utils
 import os
-from utils import *
+
+from webappbuilder.tests import utils
 
 
 class SettingsTest(unittest.TestCase):
@@ -17,40 +17,40 @@ class SettingsTest(unittest.TestCase):
 
     def testViewCrs(self):
         """Check that custom CRS correctly restored from appdef"""
-        folder = createAppFromTestAppdef("viewcrs")
+        folder = utils.createAppFromTestAppdef("viewcrs")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(checkTextInFile(outputFile, "EPSG:23030"))
+        self.assertTrue(utils.checkTextInFile(outputFile, "EPSG:23030"))
 
     def testCanvasExtent(self):
         """Check that map extent correctly restored from appdef"""
-        folder = createAppFromTestAppdef("canvasextent")
+        folder = utils.createAppFromTestAppdef("canvasextent")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         #can't check canvas extent, since it depends on screen config, so we check it doesn't use layer one
-        self.assertFalse(checkTextInFile(outputFile, "[55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
+        self.assertFalse(utils.checkTextInFile(outputFile, "[55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
 
     def testLayersExtent(self):
         """Check that layer extent correctly restored from appdef"""
-        folder = createAppFromTestAppdef("layersextent")
+        folder = utils.createAppFromTestAppdef("layersextent")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(checkTextInFile(outputFile, "[55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
+        self.assertTrue(utils.checkTextInFile(outputFile, "[55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
 
     def testRestrictedExtent(self):
         """Check that extent restrictions correctly restored from appdef"""
-        folder = createAppFromTestAppdef("restrictedextent")
+        folder = utils.createAppFromTestAppdef("restrictedextent")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(checkTextInFile(outputFile, "extent: [55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
+        self.assertTrue(utils.checkTextInFile(outputFile, "extent: [55659.745397, 55660.451865, 1057535.162536, 1062414.311268]"))
 
     def testScaleDependentVisibility(self):
         """Check that scale-dependent visibility correctly restored from appdef"""
-        folder = createAppFromTestAppdef("scaledependentvisibility")
+        folder = utils.createAppFromTestAppdef("scaledependentvisibility")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(checkTextInFile(outputFile, "maxResolution:28000.0672002,"))
+        self.assertTrue(utils.checkTextInFile(outputFile, "maxResolution:28000.0672002,"))
 
     def testNoScaleDependentVisibility(self):
         """Check app creation without scale-dependent restrictions"""
-        folder = createAppFromTestAppdef("noscaledependentvisibility")
+        folder = utils.createAppFromTestAppdef("noscaledependentvisibility")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertFalse(checkTextInFile(outputFile, "maxResolution:"))
+        self.assertFalse(utils.checkTextInFile(outputFile, "maxResolution:"))
 
 
 def suite():

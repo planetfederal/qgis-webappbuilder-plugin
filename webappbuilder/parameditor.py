@@ -1,13 +1,15 @@
+from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4 import QtGui, QtCore
-from treesettingsitem import TreeSettingItem
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox, QTreeWidget, QTreeWidgetItem
+from webappbuilder.treesettingsitem import TreeSettingItem
 
 
-class ParametersEditorDialog(QtGui.QDialog):
+class ParametersEditorDialog(QDialog):
 
     def __init__(self, params, parent = None):
         super(ParametersEditorDialog, self).__init__(parent)
@@ -15,25 +17,25 @@ class ParametersEditorDialog(QtGui.QDialog):
         self.params = params
 
         self.resize(600, 350)
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
-                                                QtCore.Qt.WindowMinMaxButtonsHint)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                                                Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle('Edit control parameters')
 
-        layout = QtGui.QVBoxLayout()
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.tree = QtGui.QTreeWidget()
+        layout = QVBoxLayout()
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.tree = QTreeWidget()
         layout.addWidget(self.tree)
         layout.addWidget(buttonBox)
         self.setLayout(layout)
 
-        self.mainItem = QtGui.QTreeWidgetItem()
+        self.mainItem = QTreeWidgetItem()
         self.mainItem.setText(0, "Parameters")
-        for name, value in params.iteritems():
+        for name, value in list(params.items()):
             subitem = TreeSettingItem(self.mainItem, self.tree, name, value)
             self.mainItem.addChild(subitem)
         self.tree.addTopLevelItem(self.mainItem)
 
-        #self.mainItem.sortChildren(0,QtCore.Qt.AscendingOrder)
+        #self.mainItem.sortChildren(0, Qt.AscendingOrder)
         self.tree.expandAll()
         self.tree.headerItem().setText(0, "Parameter")
         self.tree.headerItem().setText(1, "Value")
@@ -44,7 +46,7 @@ class ParametersEditorDialog(QtGui.QDialog):
         buttonBox.rejected.connect(self.cancelPressed)
 
     def okPressed(self):
-        for i in xrange(self.mainItem.childCount()):
+        for i in range(self.mainItem.childCount()):
             item = self.mainItem.child(i)
             if isinstance(self.params[item.name], tuple):
                 self.params[item.name] = (item.value(), self.params[item.name][1])

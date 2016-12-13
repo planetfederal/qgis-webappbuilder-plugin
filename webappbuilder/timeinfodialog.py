@@ -3,11 +3,9 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from qgis.core import *
-from PyQt4 import QtCore, QtGui, uic
-
-from PyQt4.QtCore import QDateTime
 import os
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt, QDateTime
 
 
 WIDGET, BASE = uic.loadUiType(
@@ -15,7 +13,7 @@ WIDGET, BASE = uic.loadUiType(
 
 class TimeInfoDialog(BASE, WIDGET):
     def __init__(self, timeInfo, layer):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        super(TimeInfoDialog, self).__init__(None, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setupUi(self)
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -26,7 +24,7 @@ class TimeInfoDialog(BASE, WIDGET):
         self.fromDateAttributeComboBox.addItems(fields)
         if timeInfo is None:
             self.radioButtonNoTimeInfo.setChecked(True)
-        elif isinstance(timeInfo[0], basestring):
+        elif isinstance(timeInfo[0], str):
             self.fromDateAttributeComboBox.setCurrentIndex(self.fromDateAttributeComboBox.findText(timeInfo[0]))
             self.toDateAttributeComboBox.setCurrentIndex(self.toDateAttributeComboBox.findText(timeInfo[1]))
             self.radioButtonFeatureTimeInfo.setChecked(True)

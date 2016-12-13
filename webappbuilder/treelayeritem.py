@@ -1,17 +1,29 @@
+from builtins import str
+from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
 import os
-from qgis.core import *
-from popupeditor import PopupEditorDialog
-from utils import *
-from exceptions import WrongValueException
+
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QComboBox, QLabel, QColorDialog
+from qgis.PyQt.QtGui import QIcon
 from qgis.utils import iface
-from timeinfodialog import TimeInfoDialog
+
+from webappbuilder.popupeditor import PopupEditorDialog
+from webappbuilder.exceptions import WrongValueException
+from webappbuilder.timeinfodialog import TimeInfoDialog
+from webappbuilder import geomtypes
+from webappbuilder.utils import (METHOD_WMS,
+                                 METHOD_WMS_POSTGIS,
+                                 METHOD_WFS,
+                                 METHOD_WFS_POSTGIS,
+                                 METHOD_DIRECT,
+                                 Layer,
+
+                                )
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -68,9 +80,9 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         if layer.type() == layer.VectorLayer:
-            if layer.geometryType() == QGis.Point:
+            if layer.geometryType() == geomtypes.PointGeometry:
                 icon = pointIcon
-            elif layer.geometryType() == QGis.Line:
+            elif layer.geometryType() == geomtypes.LineGeometry:
                 icon = lineIcon
             else:
                 icon = polygonIcon
@@ -107,7 +119,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
             self.addChild(self.allowSelectionItem)
-            if layer.geometryType() == QGis.Point:
+            if layer.geometryType() == geomtypes.PointGeometry:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
                 self.clusterItem.setText(0, "Cluster points")
@@ -155,9 +167,8 @@ class TreeLayerItem(QTreeWidgetItem):
                 dlg = PopupEditorDialog(self.popup, fields)
                 dlg.exec_()
                 self.popup = dlg.text.strip()
-            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), editPopup)
+            self.popupLabel.linkActivated.connect(editPopup)
             self.addChild(self.popupItem)
-
         if layer.type() == layer.VectorLayer:
             self.timeInfoItem = QTreeWidgetItem(self)
             self.timeInfoItem.setText(0, "Layer time info")
@@ -169,7 +180,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 dlg.exec_()
                 if dlg.ok:
                     self.timeInfo = dlg.timeInfo
-            self.timeInfoLabel.connect(self.timeInfoLabel, SIGNAL("linkActivated(QString)"), editTimeInfo)
+            self.timeInfoLabel.linkActivated.connect(editTimeInfo)
             self.addChild(self.timeInfoItem)
 
         self.singleTileItem = QTreeWidgetItem(self)
@@ -178,13 +189,12 @@ class TreeLayerItem(QTreeWidgetItem):
         self.addChild(self.singleTileItem)
         self.singleTileItem.setDisabled(layer.providerType().lower() not in ["wms", "wfs"])
 
-
     def connTypeChanged(self):
         try:
             current = self.connTypeCombo.currentIndex()
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             if self.layer.type() == self.layer.VectorLayer:
-                if self.layer.geometryType() == QGis.Point:
+                if self.layer.geometryType() == geomtypes.PointGeometry:
                     self.clusterItem.setDisabled(disable)
                     self.clusterDistanceItem.setDisabled(disable)
                     self.clusterColorItem.setDisabled(disable)
@@ -204,11 +214,9 @@ class TreeLayerItem(QTreeWidgetItem):
             except:
                 pass
 
-
-
     def toggleChildren(self):
         disabled = self.checkState(0) == Qt.Unchecked
-        for i in xrange(self.childCount()):
+        for i in range(self.childCount()):
             subitem = self.child(i)
             subitem.setDisabled(disabled)
         try:
@@ -225,7 +233,6 @@ class TreeLayerItem(QTreeWidgetItem):
             pass
         if not disabled:
             self.connTypeChanged()
-
 
     @property
     def allowSelection(self):
@@ -275,7 +282,6 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             raise WrongValueException()
 
-
     def setValues(self, visible, popup, method, clusterDistance, clusterColor,
                   allowSelection, showInOverview, timeInfo,
                   showInControls, singleTile):
@@ -287,7 +293,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.clusterColor = clusterColor
             self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
                                                % (self.clusterColor, self.clusterColor))
-
         else:
             try:
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
@@ -316,6 +321,7 @@ class TreeLayerItem(QTreeWidgetItem):
         return Layer(self.layer, self.visible, self.popup, self.method,
                      self.clusterDistance, self.clusterColor,self.allowSelection,
                      self.showInOverview, self.timeInfo,self.showInControls, self.singleTile)
+
 
 class TreeGroupItem(QTreeWidgetItem):
 

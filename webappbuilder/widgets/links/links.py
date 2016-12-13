@@ -1,6 +1,7 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
 import os
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt import QtCore, QtGui
+from webappbuilder.webbappwidget import WebAppWidget
 
 class Links(WebAppWidget):
 
@@ -9,7 +10,7 @@ class Links(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         links = self._parameters["links"]
         items = []
-        for name, url in links.iteritems():
+        for name, url in list(links.items()):
             items.append('React.createElement(MenuItem, {primaryText: "%s", href:"%s"})' % (name, url))
         app.tools.append('''React.createElement(IconMenu, {iconButtonElement: React.createElement(Button, {label: "Links"})},
                                         %s
@@ -178,14 +179,14 @@ class NewLinkDialog(QtGui.QDialog):
         self.resize(400, 200)
 
     def okPressed(self):
-        self.name = unicode(self.nameBox.text()).strip()
+        self.name = str(self.nameBox.text()).strip()
         if self.name == "":
             self.nameBox.setStyleSheet("QLineEdit{background: yellow}")
             return
         else:
             self.nameBox.setStyleSheet("QLineEdit{background: white}")
 
-        self.url = unicode(self.urlBox.text()).strip()
+        self.url = str(self.urlBox.text()).strip()
         if self.url == "":
             self.urlBox.setStyleSheet("QLineEdit{background: yellow}")
             return

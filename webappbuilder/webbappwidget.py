@@ -1,14 +1,17 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.Qt import QIcon, QDir
 import os
-from parameditor import ParametersEditorDialog
 import inspect
 import shutil
 import codecs
+
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.parameditor import ParametersEditorDialog
 
 class WebAppWidget(object):
 
@@ -42,7 +45,7 @@ class WebAppWidget(object):
     def parameters(self):
         if self._parameters:
             params = self._parameters.copy()
-            for k, v, in params.iteritems():
+            for k, v, in list(params.items()):
                 if isinstance(v, tuple):
                     params[k] = v[0]
             return params
@@ -54,13 +57,12 @@ class WebAppWidget(object):
         self._parameters = copy.deepcopy(self.defaultParameters)
 
     def setParameters(self, params):
-        for paramName, value in params.iteritems():
+        for paramName, value in list(params.items()):
             if paramName in self._parameters:
                 if isinstance(self._parameters[paramName], tuple):
                     self._parameters[paramName] = (value, self._parameters[paramName][1])
                 else:
                     self._parameters[paramName] = value
-
 
     def widgetHelp(self):
         path = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), "description.html")

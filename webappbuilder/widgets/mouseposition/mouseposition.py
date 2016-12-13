@@ -1,7 +1,8 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from __future__ import print_function
 import os
-from PyQt4.QtGui import QIcon
 import json
+from qgis.PyQt.QtGui import QIcon
+from webappbuilder.webbappwidget import WebAppWidget
 
 class MousePosition(WebAppWidget):
 
@@ -24,9 +25,9 @@ class MousePosition(WebAppWidget):
         else:
             fmt = "ol.coordinate.createStringXY(4)"
         s = json.dumps(params)
-        print s
+        print(s)
         s = s[:-1] + ', "coordinateFormat": {}'.format(fmt) + s[-1]
-        print s
+        print(s)
         s = s.replace('"%s"' % fmt, fmt)
         app.ol3controls.append("new ol.control.MousePosition(%s)" % s)
 

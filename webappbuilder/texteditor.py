@@ -3,18 +3,18 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.Qsci import QsciScintilla, QsciLexerCSS, QsciLexerHTML,\
-    QsciLexerJavaScript
-from PyQt4 import QtGui, QtCore
-from qgis.core import *
-from settings import *
 from functools import partial
+
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox, QToolButton
+from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor
+from qgis.PyQt.Qsci import QsciScintilla
 
 CSS = 0
 HTML = 1
 JSON = 2
 
-class TextEditorDialog(QtGui.QDialog):
+class TextEditorDialog(QDialog):
 
     def __init__(self, text, textType, parent = None):
         super(TextEditorDialog, self).__init__(parent)
@@ -22,12 +22,12 @@ class TextEditorDialog(QtGui.QDialog):
         self.text = text
 
         self.resize(600, 350)
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
-                                                QtCore.Qt.WindowMinMaxButtonsHint)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                                                Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle("Editor")
 
-        layout = QtGui.QVBoxLayout()
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
+        layout = QVBoxLayout()
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         self.editor = TextEditorWidget(text, textType)
         layout.addWidget(self.editor)
         layout.addWidget(buttonBox)
@@ -37,8 +37,7 @@ class TextEditorDialog(QtGui.QDialog):
         buttonBox.rejected.connect(self.cancelPressed)
 
     def openText(self, event):
-        QtGui.QToolButton.mousePressEvent(self.button, event)
-
+        QToolButton.mousePressEvent(self.button, event)
 
     def okPressed(self):
         self.text = self.editor.text()
@@ -55,23 +54,23 @@ class TextEditorWidget(QsciScintilla):
     def __init__(self, text, textType, parent=None):
         super(TextEditorWidget, self).__init__(parent)
 
-        font = QtGui.QFont()
+        font = QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
         font.setPointSize(10)
         self.setFont(font)
         self.setMarginsFont(font)
 
-        fontmetrics = QtGui.QFontMetrics(font)
+        fontmetrics = QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(0, fontmetrics.width("00000") + 6)
         self.setMarginLineNumbers(0, True)
-        self.setMarginsBackgroundColor(QtGui.QColor("#cccccc"))
+        self.setMarginsBackgroundColor(QColor("#cccccc"))
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
 
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
+        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
 
         if textType == CSS:
             lexer = QsciLexerCSS()

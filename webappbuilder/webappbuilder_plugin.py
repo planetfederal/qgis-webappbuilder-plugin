@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -7,10 +8,10 @@ import os
 import shutil
 import webbrowser
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
-from qgis.core import *
+from qgis.core import QgsApplication, QgsProject
 
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
@@ -18,7 +19,7 @@ from webappbuilder.settings import initialize
 from webappbuilder.utils import tempFolder
 
 
-class WebAppBuilderPlugin:
+class WebAppBuilderPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface

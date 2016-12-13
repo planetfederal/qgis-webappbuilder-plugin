@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -5,7 +7,6 @@
 #
 import os
 import copy
-from qgis.core import *
 import importlib
 import glob
 import inspect
@@ -31,7 +32,6 @@ def loadWidgets():
                         _widgets[obj.name()] = obj
 
     return _widgets
-
 
 def loadBaseLayers():
     path = os.path.join(os.path.dirname(__file__), "baselayers", "baselayers.txt")
@@ -64,7 +64,7 @@ baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
 webAppWidgets = loadWidgets()
 
-zoomLevels = list((str(i) for i in xrange(1,33)))
+zoomLevels = list((str(i) for i in range(1,33)))
 precisionLevels = list((str(i) for i in range(6)))
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
@@ -83,11 +83,10 @@ defaultAppSettings = {
                 "Open hyperlinks in": ("Same window/tab", ("Same window/tab", "New window/tab"))}
 
 
-
 def initialize():
     global currentCss
     global appSettings
-    for w in webAppWidgets.values():
+    for w in list(webAppWidgets.values()):
         w.resetParameters()
     appSettings = copy.deepcopy(defaultAppSettings)
 
