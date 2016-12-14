@@ -1,9 +1,26 @@
 from builtins import range
+
 import os
+import copy
+import sys
 import json
-from qgis.PyQt.QtGui import QIcon
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox
+from qgis.core import (QgsProject,
+                       QgsLayerTreeGroup,
+                       QgsLayerTreeLayer,
+                       QgsVectorLayer
+                      )
+
 from webappbuilder.webbappwidget import WebAppWidget
 from webappbuilder.utils import findLayerByName, findProjectLayerByName
+
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), 'ui_charttooldialog.ui'))
+
 
 class ChartTool(WebAppWidget):
 
@@ -70,15 +87,10 @@ class ChartTool(WebAppWidget):
                 problems.append(("Chart tool %s uses a layer (%s) that does not allow selection. " +
                             "Selection should be enabled for that layer.") % (name, chart["layer"]))
 
-from qgis.core import *
-from qgis.PyQt import QtCore, QtGui
-from .ui_charttooldialog import Ui_ChartToolDialog
-import copy
-import sys
 
-class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
+class ChartToolDialog(BASE, WIDGET):
     def __init__(self, charts):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        super(ChartToolDialog, self).__init__(None, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setupUi(self)
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -126,8 +138,8 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
             valueFields = self._charts[name]["valueFields"]
             for i in range(offset, self.model.rowCount()):
                 item = self.model.item(i)
-                item.setData(QtCore.Qt.Checked if item.text() in valueFields else QtCore.Qt.Unchecked,
-                         QtCore.Qt.CheckStateRole)
+                item.setData(Qt.Checked if item.text() in valueFields else Qt.Unchecked,
+                         Qt.CheckStateRole)
         except:
             pass
 
@@ -141,7 +153,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
             if chart["layer"] in self.layers:
                 fields = [f.name() for f in self.layers[chart["layer"]].pendingFields()]
                 if chart["categoryField"] in fields:
-                    item = QtGui.QListWidgetItem()
+                    item = QListWidgetItem()
                     item.setText(chartName)
                     self.chartsList.addItem(item)
                 else:
@@ -150,8 +162,6 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                 toDelete.append(chartName)
         for d in toDelete:
             del self._charts[d]
-
-
 
     def populateLayers(self):
         self.layers = {}
@@ -174,8 +184,8 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         self.categoryFieldCombo.addItems(fields)
         valueFieldsVisible = self.displayModeCombo.currentIndex() != 2
         if valueFieldsVisible:
-            self.model = QtGui.QStandardItemModel(len(fields), 1)
-            item = QtGui.QStandardItem("Select fields")
+            self.model = QStandardItemModel(len(fields), 1)
+            item = QStandardItem("Select fields")
             if sys.platform in ['darwin', 'linux2']:
                 self.valueFieldsCombo.setVisible(False)
                 self.valueFieldsCombo.setVisible(True)
@@ -188,9 +198,9 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                 self.model.setItem(0, 0, item);
                 offset = 1
             for i, f in enumerate(fields):
-                item = QtGui.QStandardItem(f)
-                item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-                item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole);
+                item = QStandardItem(f)
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(Qt.Unchecked, Qt.CheckStateRole);
                 self.model.setItem(i + offset, 0, item);
             toUse.setModel(self.model)
         else:
@@ -211,8 +221,8 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
         valueFields = []
         for i in range(self.model.rowCount()):
             item = self.model.item(i)
-            checked = item.data(QtCore.Qt.CheckStateRole)
-            if checked == QtCore.Qt.Checked:
+            checked = item.data(Qt.CheckStateRole)
+            if checked == Qt.Checked:
                 valueFields.append(item.text())
         if valueFields or displayMode == 2:
             self._charts[name] = {"layer": layer,
@@ -221,7 +231,7 @@ class ChartToolDialog(QtGui.QDialog, Ui_ChartToolDialog):
                               "displayMode": displayMode,
                               "operation": operation}
         else:
-            QtGui.QMessageBox.warning(self, "Cannot create chart", "At least one value field must be selected")
+            QMessageBox.warning(self, "Cannot create chart", "At least one value field must be selected")
             return
         self.populateList()
 
