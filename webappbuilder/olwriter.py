@@ -17,7 +17,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsSingleSymbolRenderer,
-                       QgsCategorizedSymbolrenderer,
+                       QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
                        QgsMessageLog,
                        QgsSimpleMarkerSymbolLayer,
@@ -385,7 +385,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 value = 'var value = "";'
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
                                     stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')
-            elif isinstance(renderer, QgsCategorizedSymbolrenderer):
+            elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
