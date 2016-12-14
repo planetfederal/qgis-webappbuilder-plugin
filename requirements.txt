@@ -1,5 +1,5 @@
 jsmin
-gsconfig
+gsconfig-py3
 requests
 jsbeautifier
 beautifulsoup
