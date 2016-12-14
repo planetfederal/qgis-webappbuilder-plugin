@@ -13,7 +13,7 @@ import math
 import codecs
 import uuid
 
-from qgis.core import (QgsDataSourceURI,
+from qgis.core import (QgsDataSourceUri,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsSingleSymbolRenderer,
@@ -184,7 +184,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
 
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
         if layer.providerType().lower() == "wfs":
-            datasourceUri = QgsDataSourceURI(layer.source())
+            datasourceUri = QgsDataSourceUri(layer.source())
             url = datasourceUri.param("url")
             typeName = datasourceUri.param("typename")
             return _getWfsLayer(url, title, layer, typeName,

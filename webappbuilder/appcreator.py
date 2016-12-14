@@ -19,7 +19,7 @@ from json.encoder import JSONEncoder
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QVBoxLayout, QLabel, QDialog, QTextBrowser, QDialogButtonBox
 from qgis.core import (QgsProject,
-                       QgsDataSourceURI,
+                       QgsDataSourceUri,
                        QgsSingleSymbolRenderer,
                        QgsCategorizedSymbolRenderer,
                        QgsGraduatedSymbolRenderer,
@@ -108,7 +108,7 @@ def checkAppCanBeCreated(appdef):
     for applayer in layers:
         layer = applayer.layer
         if layer.providerType().lower() == "wfs" and jsonp:
-            datasourceUri = QgsDataSourceURI(layer.source())
+            datasourceUri = QgsDataSourceUri(layer.source())
             url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
             r = run(lambda: requests.get(url))
             if "text/javascript" not in r.text:
@@ -179,7 +179,7 @@ def importPostgis(appdef, progress):
     password = appdef["Deploy"]["PostGIS password"]
     dbname = appdef["Deploy"]["PostGIS database"]
     schema = appdef["Deploy"]["PostGIS schema"]
-    uri = QgsDataSourceURI()
+    uri = QgsDataSourceUri()
     uri.setConnection(host, port, dbname, username, password)
     connector = PostGisDBConnector(uri)
     schemas = connector.getSchemas()
@@ -205,7 +205,7 @@ def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema
     providerName = "postgres"
     destCrs = QgsCoordinateReferenceSystem(crsid)
 
-    uri = QgsDataSourceURI()
+    uri = QgsDataSourceUri()
     uri.setConnection(host, str(port), dbname, username, password)
     uri.setDataSource(schema, tablename, geom, "", pk)
 
