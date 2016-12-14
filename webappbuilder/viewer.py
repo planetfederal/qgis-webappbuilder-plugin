@@ -1,11 +1,12 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+
 import http.server
 import socketserver
 import os

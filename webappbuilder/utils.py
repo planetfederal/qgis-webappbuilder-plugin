@@ -1,10 +1,11 @@
-from builtins import str
-from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import object
+
 import os
 import re
 import inspect
@@ -17,7 +18,8 @@ from qgis.PyQt.QtWidgets import QFileDialog, QApplication
 from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
-                       QgsProject
+                       QgsProject,
+                       QgsWkbTypes
                       )
 
 METHOD_FILE= 0
@@ -32,16 +34,15 @@ MULTIPLE_SELECTION_ALT_KEY = 1
 MULTIPLE_SELECTION_SHIFT_KEY = 2
 MULTIPLE_SELECTION_NO_KEY = 3
 
-from . import geomtypes
 TYPE_MAP = {
-    geomtypes.Point: 'Point',
-    geomtypes.LineString: 'LineString',
-    geomtypes.Polygon: 'Polygon',
-    geomtypes.MultiPoint: 'MultiPoint',
-    geomtypes.MultiLineString: 'MultiLineString',
-    geomtypes.MultiPolygon: 'MultiPolygon',
-}
-QGisPoint = geomtypes.Point
+    QgsWkbTypes.Point: 'Point',
+    QgsWkbTypes.LineString: 'LineString',
+    QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    QgsWkbTypes.MultiLineString: 'MultiLineString',
+    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+   }
+QGisPoint = QgsWkbTypes.Point
 
 class Layer(object):
 
@@ -124,7 +125,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                         line = reducePrecision.sub(r"\1", line)
                         line = line.strip("\n\t ")
                         line = removeSpaces(line)
-                        if layer.wkbType()==geomtypes.MultiPoint:
+                        if layer.wkbType()==QgsWkbTypes.MultiPoint:
                             line = line.replace("MultiPoint", "Point")
                             line = line.replace("[ [", "[")
                             line = line.replace("] ]", "]")

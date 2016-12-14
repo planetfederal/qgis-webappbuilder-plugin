@@ -1,10 +1,11 @@
-from builtins import range
-from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import range
+from builtins import object
+
 import sys
 import os
 from functools import partial
@@ -15,7 +16,19 @@ import traceback
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QPushButton, QDialogButtonBox, QFileDialog, QMessageBox, QToolButton, QMenu, QAction, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import (QPushButton,
+                                 QDialogButtonBox,
+                                 QFileDialog,
+                                 QMessageBox,
+                                 QToolButton,
+                                 QMenu,
+                                 QAction,
+                                 QLabel,
+                                 QHBoxLayout,
+                                 QSpacerItem,
+                                 QSizePolicy,
+                                 QTreeWidgetItem
+                                )
 from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsApplication,
                        QgsMessageLog,

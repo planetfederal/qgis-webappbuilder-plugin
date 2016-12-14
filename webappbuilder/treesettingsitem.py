@@ -1,9 +1,10 @@
-from builtins import str
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QHBoxLayout, QLabel, QSizePolicy, QWidget, QComboBox
 from qgis.gui import QgsGenericProjectionSelector

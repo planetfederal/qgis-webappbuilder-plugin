@@ -1,10 +1,11 @@
-from builtins import str
-from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import range
+
 import os
 import copy
 import importlib

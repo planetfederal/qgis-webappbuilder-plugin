@@ -1,10 +1,11 @@
-from builtins import str
-from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import range
+
 import urllib.parse
 import traceback
 from string import digits
@@ -25,7 +26,8 @@ from qgis.core import (QgsDataSourceURI,
                        QgsSimpleFillSymbolLayer,
                        QgsGradientFillSymbolLayer,
                        QgsPointPatternFillSymbolLayer,
-                       QgsSVGFillSymbolLayer
+                       QgsSVGFillSymbolLayer,
+                       QgsWkbTypes
                       )
 
 from webappbuilder.utils import (METHOD_FILE,
@@ -35,7 +37,6 @@ from webappbuilder.utils import (METHOD_FILE,
                                  METHOD_WFS_POSTGIS,
                                  safeName
                                 )
-from webappbuilder import geomtypes
 
 exportedStyles = 0
 
@@ -84,13 +85,13 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                      "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
 
     GEOM_TYPE_NAME = {
-        geomtypes.Point: 'Point',
-        geomtypes.LineString: 'LineString',
-        geomtypes.Polygon: 'Polygon',
-        geomtypes.MultiPoint: 'MultiPoint',
-        geomtypes.MultiLineString: 'MultiLineString',
-        geomtypes.MultiPolygon: 'MultiPolygon',
-    }
+        QgsWkbTypes.Point: 'Point',
+        QgsWkbTypes.LineString: 'LineString',
+        QgsWkbTypes.Polygon: 'Polygon',
+        QgsWkbTypes.MultiPoint: 'MultiPoint',
+        QgsWkbTypes.MultiLineString: 'MultiLineString',
+        QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+       }
 
     wfst = str(bool(layer.capabilitiesString())).lower()
     wfsInfo = '''{featureNS: '%(ns)s',
@@ -105,7 +106,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                           "wfst": wfst #TODO: fill NS
                           }
 
-    if clusterDistance > 0 and geometryType== geomtypes.Point:
+    if clusterDistance > 0 and geometryType== QgsWkbTypes.Point:
         vectorLayer = ('''var cluster_%(layerName)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: wfsSource_%(layerName)s
@@ -198,7 +199,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                             format: new ol.format.GeoJSON(),
                             url: './data/lyr_%s.json'
                             }''' % layerName
-            if applayer.clusterDistance > 0 and layer.geometryType() == geomtypes.PointGeometry:
+            if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.Point:
                 js =  ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: new ol.source.Vector(%(source)s),
@@ -241,7 +242,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                  "source": source})
 
             if forPreview:
-                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == geomtypes.PointGeometry else ""
+                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.Point else ""
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
                         };''' % {"n": layerName, "cs": clusterSource}
@@ -434,7 +435,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cannotWriteStyle = True
 
             if (appLayer.clusterDistance > 0 and layer.type() == layer.VectorLayer
-                                        and layer.geometryType() == geomtypes.PointGeometry):
+                                        and layer.geometryType() == QgsWkbTypes.Point):
                 cluster = '''var features = feature.get('features');
                             var size = 0;
                             for (var i = 0, ii = features.length; i < ii; ++i) {

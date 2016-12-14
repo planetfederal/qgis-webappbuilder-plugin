@@ -24,8 +24,6 @@ from qgis.core import (QgsSingleSymbolRenderer,
                        QgsSingleBandPseudoColorRenderer
                       )
 
-from webappbuilder import geomtypes
-
 SIZE_FACTOR = 4
 RASTER_SLD_TEMPLATE = ('<?xml version="1.0" encoding="UTF-8"?>'
                     '<sld:StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:sld="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.''net/gml" version="1.0.0">'
@@ -76,7 +74,7 @@ def adaptQgsToGs(sld, layer):
         sld = sld.replace(w, newwidth)
     #//replace "native" SLD symbols
     wknReplacements = {}
-    if layer.geometryType() == geomtypes.PointGeometry:
+    if layer.geometryType() == QgsWkbTypes.Point:
         wknReplacements = {"regular_star":"star",
                        "cross2": "x",
                        "equilateral_triangle": "triangle",
@@ -85,7 +83,7 @@ def adaptQgsToGs(sld, layer):
                        "line": "shape://vertline",
                        "arrow": "ttf://Wingdings#0xE9",
                        "diamond": "ttf://Wingdings#0x75"}
-    if layer.geometryType() == geomtypes.PolygonGeometry:
+    if layer.geometryType() == QgsWkbTypes.Polygon:
         wknReplacements = {"horline":"shape://horline",
                        "vertline":"shape://vertline",
                        "cross":"shape://plus",
@@ -161,7 +159,7 @@ def getLabelingAsSld(layer):
             s += '<CssParameter name="font-weight">bold</CssParameter>'
         s += "</Font>"
         s += "<LabelPlacement>"
-        if layer.geometryType() == geomtypes.PointGeometry:
+        if layer.geometryType() == QgsWkbTypes.Point:
             s += ("<PointPlacement>"
                 "<AnchorPoint>"
                 "<AnchorPointX>0.5</AnchorPointX>"
@@ -173,7 +171,7 @@ def getLabelingAsSld(layer):
             s += "</Displacement>"
             s += "<Rotation>-" + str(layer.customProperty("labeling/angleOffset")) + "</Rotation>"
             s += "</PointPlacement>"
-        elif layer.geometryType() == geomtypes.LineGeometry:
+        elif layer.geometryType() == QgsWkbTypes.LineString:
             mode = layer.customProperty("labeling/placement")
             print(mode)
             if mode != 4:

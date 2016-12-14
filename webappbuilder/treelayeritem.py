@@ -1,28 +1,28 @@
-from builtins import str
-from builtins import range
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import range
+
 import os
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QComboBox, QLabel, QColorDialog
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsWkbTypes
 from qgis.utils import iface
 
 from webappbuilder.popupeditor import PopupEditorDialog
 from webappbuilder.exceptions import WrongValueException
 from webappbuilder.timeinfodialog import TimeInfoDialog
-from webappbuilder import geomtypes
 from webappbuilder.utils import (METHOD_WMS,
                                  METHOD_WMS_POSTGIS,
                                  METHOD_WFS,
                                  METHOD_WFS_POSTGIS,
                                  METHOD_DIRECT,
-                                 Layer,
-
+                                 Layer
                                 )
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
@@ -80,9 +80,9 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         if layer.type() == layer.VectorLayer:
-            if layer.geometryType() == geomtypes.PointGeometry:
+            if layer.geometryType() == QgsWkbTypes.Point:
                 icon = pointIcon
-            elif layer.geometryType() == geomtypes.LineGeometry:
+            elif layer.geometryType() == QgsWkbTypes.LineString:
                 icon = lineIcon
             else:
                 icon = polygonIcon
@@ -119,7 +119,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
             self.addChild(self.allowSelectionItem)
-            if layer.geometryType() == geomtypes.PointGeometry:
+            if layer.geometryType() == QgsWkbTypes.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
                 self.clusterItem.setText(0, "Cluster points")
@@ -194,7 +194,7 @@ class TreeLayerItem(QTreeWidgetItem):
             current = self.connTypeCombo.currentIndex()
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             if self.layer.type() == self.layer.VectorLayer:
-                if self.layer.geometryType() == geomtypes.PointGeometry:
+                if self.layer.geometryType() == QgsWkbTypes.Point:
                     self.clusterItem.setDisabled(disable)
                     self.clusterDistanceItem.setDisabled(disable)
                     self.clusterColorItem.setDisabled(disable)
