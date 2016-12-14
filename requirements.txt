@@ -1,4 +1,5 @@
 jsmin
+gsconfig
 requests
 jsbeautifier
 beautifulsoup
