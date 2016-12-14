@@ -7,12 +7,6 @@ import unittest
 import sys
 import os
 
-
-try:
-    from qgis.core import QGis
-except ImportError:
-    from qgis.core import Qgis as QGis
-
 from webappbuilder.tests import utils
 
 
@@ -25,19 +19,13 @@ class SymbologyTest(unittest.TestCase):
         """Check that point symbology exported correctly"""
         folder = utils.createAppFromTestAppdef("symbologypoints")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        if QGis.QGIS_VERSION_INT < 21500:
-            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypoints-2.14.js"))
-        else:
-            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologypoints.js"))
 
     def testClusterSymbology(self):
         """Check that point clustering works correctly"""
         folder = utils.createAppFromTestAppdef("symbologycluster")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        if QGis.QGIS_VERSION_INT < 21500:
-            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologycluster-2.14.js"))
-        else:
-            self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
+        self.assertTrue(utils.compareWithExpectedOutputFile(appFile, "symbologycluster.js"))
 
     def testLinesSymbology(self):
         """Check that line symbology exported correctly"""

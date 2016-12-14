@@ -16,11 +16,6 @@ from webappbuilder.tests.utils import (loadTestProject,
                                        closeWAB,
                                        testAppdef)
 
-try:
-    from qgis.core import QGis
-except ImportError:
-    from qgis.core import Qgis as QGis
-
 webAppFolder = None
 
 
@@ -69,11 +64,7 @@ def functionalTests():
     tests.append(wrongLogoTest)
 
     previewWithAllWidgetsTest = Test("Verify preview of an app with all widgets")
-    if QGis.QGIS_VERSION_INT < 21500:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers-2.14"))
-    else:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
-
+    previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
     appdef = testAppdef("allwidgets", False)
     previewWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
     previewWithAllWidgetsTest.addStep("Click on 'Preview' and verify app is correctly shown and it works.")
