@@ -14,7 +14,7 @@ import math
 import codecs
 import uuid
 
-from qgis.PyQt4.QtCore import QDir, QSize
+from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (QgsDataSourceUri,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
