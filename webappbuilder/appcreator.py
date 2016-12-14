@@ -48,7 +48,8 @@ from webappbuilder.utils import (tempFilenameInTempFolder,
                                  METHOD_WMS_POSTGIS,
                                  METHOD_WFS,
                                  METHOD_WMS,
-                                 METHOD_FILE
+                                 METHOD_FILE,
+                                 Layer
                                 )
 
 
