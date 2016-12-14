@@ -12,6 +12,7 @@ import importlib
 import glob
 import inspect
 import codecs
+import webappbuilder.widgets
 
 
 def loadWidgets():
@@ -19,10 +20,15 @@ def loadWidgets():
     basePath = os.path.join(os.path.dirname(__file__), "widgets")
     widgetFolders = [os.path.join(basePath,o) for o in os.listdir(basePath)
                  if os.path.isdir(os.path.join(basePath,o))]
+    print("FOLDERS\n", widgetFolders)
     for folder in widgetFolders:
+        print("PROCESSING", folder)
         for f in glob.glob(folder + "/*.py"):
             moduleName = os.path.splitext(os.path.basename(f))[0]
             pkgName = os.path.basename(folder)
+            print("MODULE", moduleName)
+            print("PACKAGE", pkgName)
+            importlib.import_module("webappbuilder.widgets." + pkgName)
             module = importlib.import_module("." + moduleName, package="webappbuilder.widgets." + pkgName)
             for c in inspect.getmembers(module):
                 if inspect.isclass(c[1]):

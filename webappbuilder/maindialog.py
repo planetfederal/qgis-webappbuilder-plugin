@@ -16,6 +16,7 @@ import traceback
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (QPushButton,
                                  QDialogButtonBox,
                                  QFileDialog,
@@ -324,7 +325,7 @@ class MainDialog(BASE, WIDGET):
             row = i / 5
             col = i % 5
             self.gridLayoutWidgets.addWidget(button, row, col, 1, 1)
-            button.mousePressEvent = MethodType(_mousePressEvent, button, QToolButton)
+            button.mousePressEvent = MethodType(_mousePressEvent, button)
             self.widgetButtons[button] = w.name()
         spacerItem3 = QSpacerItem(20, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.gridLayoutWidgets.addItem(spacerItem3, row + 1, 0, 1, 1)

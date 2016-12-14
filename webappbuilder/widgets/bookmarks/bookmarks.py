@@ -28,7 +28,6 @@ from qgis.core import (QgsRectangle,
                        QgsApplication
                       )
 
-from webappbuilder.widgets.bookmarks.ui_bookmarksdialog import Ui_BookmarksDialog
 from webappbuilder.webbappwidget import WebAppWidget
 
 WIDGET, BASE = uic.loadUiType(

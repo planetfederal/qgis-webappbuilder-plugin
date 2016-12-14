@@ -8,7 +8,7 @@ from functools import partial
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox, QToolButton
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor
-from qgis.PyQt.Qsci import QsciScintilla
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerCSS, QsciLexerJavaScript, QsciLexerHTML
 
 CSS = 0
 HTML = 1
@@ -47,7 +47,6 @@ class TextEditorDialog(QDialog):
         self.close()
 
 
-
 class TextEditorWidget(QsciScintilla):
     ARROW_MARKER_NUM = 8
 
@@ -80,6 +79,6 @@ class TextEditorWidget(QsciScintilla):
             lexer = QsciLexerHTML()
         lexer.setDefaultFont(font)
         self.setLexer(lexer)
-        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, b"Courier")
 
         self.setText(text)

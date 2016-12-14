@@ -6,6 +6,7 @@
 from builtins import str
 
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QHBoxLayout, QLabel, QSizePolicy, QWidget, QComboBox
 from qgis.gui import QgsGenericProjectionSelector
 
@@ -91,8 +92,9 @@ class TreeSettingItem(QTreeWidgetItem):
             self.setText(1, str(value))
 
     def value(self):
-        self.setBackgroundColor(0, Qt.white)
-        self.setBackgroundColor(1, Qt.white)
+        brush = QBrush(Qt.white)
+        self.setBackground(0, QBrush(Qt.white))
+        self.setBackground(1, QBrush(Qt.white))
         try:
             if isinstance(self._value, bool):
                 return self.checkState(1) == Qt.Checked
@@ -108,8 +110,9 @@ class TreeSettingItem(QTreeWidgetItem):
             else:
                 return self.text(1)
         except:
-            self.setBackgroundColor(0, Qt.yellow)
-            self.setBackgroundColor(1, Qt.yellow)
+            brush.setColor(Qt.yellow)
+            self.setBackground(0, brush)
+            self.setBackground(1, brush)
             raise WrongValueException()
 
     def setValue(self, value):
