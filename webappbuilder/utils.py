@@ -13,7 +13,7 @@ import codecs
 import subprocess
 import uuid
 
-from qgis.PyQt.QtCore import QDir, QSize, QSettings, QPyNullVariant
+from qgis.PyQt.QtCore import QDir, QSize, QSettings
 from qgis.PyQt.QtWidgets import QFileDialog, QApplication
 from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsCoordinateReferenceSystem,
@@ -217,8 +217,6 @@ def setSetting(namespace, name, value):
 
 def getSetting(namespace, name):
     v = QSettings().value(namespace + "/" + name, None)
-    if isinstance(v, QPyNullVariant):
-        v = None
     return v
 
 def run(f):
