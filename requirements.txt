@@ -2,6 +2,6 @@ jsmin
 gsconfig-py3
 requests
 jsbeautifier
-beautifulsoup
+beautifulsoup4
 
 # test requirements
