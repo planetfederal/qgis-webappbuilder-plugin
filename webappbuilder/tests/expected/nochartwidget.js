@@ -22,7 +22,7 @@ var defaultSelectionStroke = new ol.style.Stroke({
                         
                         var value = "";
                         var style = [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 5, radius1: 11.4, radius2: 5.7, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(227,123,48,1.0)"}), angle: 0})
+                            image: new ol.style.RegularShape({points: 5, radius1: 11.399999999999999, radius2: 5.699999999999999, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(227,123,48,1.0)"}), angle: 0})
                         })
                         ];
                         var allStyles = [];
@@ -31,10 +31,9 @@ var defaultSelectionStroke = new ol.style.Stroke({
                         return allStyles;
                     };
                     var selectionStyle_bakeries = function(feature, resolution){
-                        
                         var value = "";
                         var style = [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 5, radius1: 11.4, radius2: 5.7, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0})
+                            image: new ol.style.RegularShape({points: 5, radius1: 11.399999999999999, radius2: 5.699999999999999, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0})
                         })
                         ]
                         var allStyles = [];
@@ -65,7 +64,7 @@ bakeries_geojson_callback = function(geojson) {
 lyr_bakeries.setVisible(true);
 var layersList = [lyr_bakeries];
 var view = new ol.View({ maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
-var originalExtent = [256354.556143, 6247253.046488, 266261.287425, 6257016.770510];
+var originalExtent = [256354.666420, 6247593.745681, 266261.177148, 6256675.692006];
 
 var map = new ol.Map({
   layers: layersList,
@@ -115,8 +114,7 @@ var BasicApp = React.createClass({
   render: function() {
     var toolbarOptions = {style: {height: 71}, showMenuIconButton: false, title:"My Web App"};
     return React.createElement("div", {id: 'content'},
-      React.createElement(AppBar, toolbarOptions,
-       React.createElement(Select, {toggleGroup: 'navigation', map:map}),
+      React.createElement(AppBar, toolbarOptions ,React.createElement(Select, {toggleGroup: 'navigation', map:map}),
 React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})
       ),
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}

@@ -3,9 +3,9 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-import unittest
-import sys
 import os
+import sys
+import unittest
 
 from webappbuilder.tests import utils
 
@@ -44,7 +44,7 @@ class SettingsTest(unittest.TestCase):
         """Check that scale-dependent visibility correctly restored from appdef"""
         folder = utils.createAppFromTestAppdef("scaledependentvisibility")
         outputFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(utils.checkTextInFile(outputFile, "maxResolution:28000.0672002,"))
+        self.assertTrue(utils.checkTextInFile(outputFile, " maxResolution:28000.06720016128,"))
 
     def testNoScaleDependentVisibility(self):
         """Check app creation without scale-dependent restrictions"""

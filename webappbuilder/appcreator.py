@@ -28,7 +28,8 @@ from qgis.core import (QgsProject,
                        QgsVectorFileWriter,
                        QgsCoordinateTransform,
                        QgsFeature,
-                       QgsRasterFileWriter
+                       QgsRasterFileWriter,
+                       QgsWkbTypes
                       )
 
 from geoserver.catalog import Catalog, FailedRequestError
@@ -88,7 +89,7 @@ def checkAppCanBeCreated(appdef):
         w.checkProblems(appdef, problems)
 
     def getSize(lyr):
-        ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
+        ptsInFeature = 1 if lyr.geometryType() == QgsWkbTypes.PointGeometry else 10 #quick estimate...
         return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
 
     MAXSIZE = 30000

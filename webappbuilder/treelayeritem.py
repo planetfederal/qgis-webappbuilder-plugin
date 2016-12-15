@@ -80,9 +80,9 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         if layer.type() == layer.VectorLayer:
-            if layer.geometryType() == QgsWkbTypes.Point:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry:
                 icon = pointIcon
-            elif layer.geometryType() == QgsWkbTypes.LineString:
+            elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                 icon = lineIcon
             else:
                 icon = polygonIcon
@@ -119,7 +119,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
             self.addChild(self.allowSelectionItem)
-            if layer.geometryType() == QgsWkbTypes.Point:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
                 self.clusterItem.setText(0, "Cluster points")
@@ -141,7 +141,7 @@ class TreeLayerItem(QTreeWidgetItem):
                         self.clusterColor = color.name()
                         self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
                                                % (self.clusterColor, self.clusterColor))
-                self.clusterColorLabel.connect(self.clusterColorLabel, SIGNAL("linkActivated(QString)"), editColor)
+                self.clusterColorLabel.linkActivated.connect(editColor)
 
                 self.addChild(self.clusterItem)
         elif layer.providerType().lower() != "wms":
@@ -194,7 +194,7 @@ class TreeLayerItem(QTreeWidgetItem):
             current = self.connTypeCombo.currentIndex()
             disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
             if self.layer.type() == self.layer.VectorLayer:
-                if self.layer.geometryType() == QgsWkbTypes.Point:
+                if self.layer.geometryType() == QgsWkbTypes.PointGeometry:
                     self.clusterItem.setDisabled(disable)
                     self.clusterDistanceItem.setDisabled(disable)
                     self.clusterColorItem.setDisabled(disable)

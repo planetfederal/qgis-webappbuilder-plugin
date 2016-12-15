@@ -74,7 +74,7 @@ def adaptQgsToGs(sld, layer):
         sld = sld.replace(w, newwidth)
     #//replace "native" SLD symbols
     wknReplacements = {}
-    if layer.geometryType() == QgsWkbTypes.Point:
+    if layer.geometryType() == QgsWkbTypes.PointGeometry:
         wknReplacements = {"regular_star":"star",
                        "cross2": "x",
                        "equilateral_triangle": "triangle",
@@ -83,7 +83,7 @@ def adaptQgsToGs(sld, layer):
                        "line": "shape://vertline",
                        "arrow": "ttf://Wingdings#0xE9",
                        "diamond": "ttf://Wingdings#0x75"}
-    if layer.geometryType() == QgsWkbTypes.Polygon:
+    if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
         wknReplacements = {"horline":"shape://horline",
                        "vertline":"shape://vertline",
                        "cross":"shape://plus",
@@ -159,7 +159,7 @@ def getLabelingAsSld(layer):
             s += '<CssParameter name="font-weight">bold</CssParameter>'
         s += "</Font>"
         s += "<LabelPlacement>"
-        if layer.geometryType() == QgsWkbTypes.Point:
+        if layer.geometryType() == QgsWkbTypes.PointGeometry:
             s += ("<PointPlacement>"
                 "<AnchorPoint>"
                 "<AnchorPointX>0.5</AnchorPointX>"
@@ -171,7 +171,7 @@ def getLabelingAsSld(layer):
             s += "</Displacement>"
             s += "<Rotation>-" + str(layer.customProperty("labeling/angleOffset")) + "</Rotation>"
             s += "</PointPlacement>"
-        elif layer.geometryType() == QgsWkbTypes.LineString:
+        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
             mode = layer.customProperty("labeling/placement")
             print(mode)
             if mode != 4:

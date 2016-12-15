@@ -1,135 +1,37 @@
 {
-    "Base layers": [
-        "CartoDB"
-    ], 
+    "Base layers": [],
     "Deploy": {
-        "GeoServer password": "geoserver", 
-        "GeoServer url": "http://localhost:8080/geoserver", 
-        "GeoServer username": "admin", 
-        "GeoServer workspace": "mywebapp", 
-        "PostGIS database": "database", 
-        "PostGIS host": "localhost", 
-        "PostGIS password": "postgres", 
-        "PostGIS port": "5432", 
-        "PostGIS schema": "mywebapp", 
+        "GeoServer password": "geoserver",
+        "GeoServer url": "http://localhost:8080/geoserver",
+        "GeoServer username": "admin",
+        "GeoServer workspace": "mywebapp",
+        "PostGIS database": "database",
+        "PostGIS host": "localhost",
+        "PostGIS password": "postgres",
+        "PostGIS port": "5432",
+        "PostGIS schema": "mywebapp",
         "PostGIS username": "postgres"
-    }, 
-    "Groups": {}, 
-    "Layers": [
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "bakeries", 
-            "method": 0, 
-            "popup": "", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }
-    ], 
+    },
+    "Groups": {},
+    "Layers": [],
     "Settings": {
-        "Add permalink functionality": true, 
-        "App view CRS": "EPSG:3857", 
-        "Extent": "Canvas extent", 
-        "Group base layers": true, 
-        "Logo": "", 
-        "Max zoom level": "32", 
-        "Min zoom level": "1", 
-        "Minify JavaScript": false, 
-        "Open hyperlinks in": "Same window/tab", 
-        "Precision for GeoJSON export": "2", 
-        "Restrict to extent": false, 
-        "Show popups on hover": false, 
-        "Theme": "basic", 
-        "Title": "My Web App", 
-        "Use JSONP for WFS connections": true, 
-        "Use layer scale dependent visibility": true, 
+        "Add permalink functionality": true,
+        "App view CRS": "EPSG:3857",
+        "Extent": "Canvas extent",
+        "Group base layers": true,
+        "Logo": "",
+        "Max zoom level": "32",
+        "Min zoom level": "1",
+        "Minify JavaScript": false,
+        "Open hyperlinks in": "Same window/tab",
+        "Precision for GeoJSON export": "2",
+        "Restrict to extent": false,
+        "Show popups on hover": false,
+        "Theme": "basic",
+        "Title": "My Web App",
+        "Use JSONP for WFS connections": true,
+        "Use layer scale dependent visibility": true,
         "Use view CRS for WFS connections": true
-    }, 
-    "Widgets": {
-        "bookmarks": {
-            "Parameters": {
-                "bookmarks": [
-                    [
-                        "Le Grenier \u00e0 Pain", 
-                        [
-                            260119.36358071663, 
-                            6255406.499633233, 
-                            260119.36358071663, 
-                            6255406.499633233
-                        ], 
-                        "<br><b>Address: </b>38 rue des Abbesses<br><b>Telephone :</b>33 (0)1 46 06 41 81<br><a href=\"\"http://www.legrenierapain.com\"\">Website</a>\""
-                    ], 
-                    [
-                        "Poil\u00e2ne", 
-                        [
-                            259260.31107026438, 
-                            6249657.357231667, 
-                            259260.31107026438, 
-                            6249657.357231667
-                        ], 
-                        "<br><b>Address: </b>8 rue du Cherche-Midi<br><b>Telephone :</b>33 (0)1 45 48 42 59<br><a href=\"\"http://www.poilane.fr\"\">Website</a>\""
-                    ], 
-                    [
-                        "Pain d'Epis", 
-                        [
-                            256590.53572256956, 
-                            6250493.796573546, 
-                            256590.53572256956, 
-                            6250493.796573546
-                        ], 
-                        "<br><b>Address: </b>Pain d'Epis<br><b>Telephone :</b>33 (0)1 45 51 75 01<br><a href=\"\"#\"\">Website</a>\""
-                    ], 
-                    [
-                        "Le Moulin de la Vierge", 
-                        [
-                            256968.3540743203, 
-                            6248861.767573942, 
-                            256968.3540743203, 
-                            6248861.767573942
-                        ], 
-                        "<br><b>Address: </b>166 avenue de Suffren<br><b>Telephone :</b>33 (0)1 47 83 45 55<br><a href=\"\"#\"\">Website</a>\""
-                    ], 
-                    [
-                        "Maison Kayser", 
-                        [
-                            261561.84154241486, 
-                            6249273.847636435, 
-                            261561.84154241486, 
-                            6249273.847636435
-                        ], 
-                        "<br><b>Address: </b>14 rue Monge<br><b>Telephone :</b>33 (0)1 44 07 17 81<br><a href=\"\"http://www.maison-kayser.com/\"\">Website</a>\""
-                    ], 
-                    [
-                        "Au 140", 
-                        [
-                            266025.3078452615, 
-                            6253720.715774443, 
-                            266025.3078452615, 
-                            6253720.715774443
-                        ], 
-                        "<br><b>Address: </b>140 rue de Belleville<br><b>Telephone :</b>33 (0)1 46 36 92 47<br><a href=\"\"http://www.davidlebovitz.com/2006/12/140/\"\">Website</a>\""
-                    ], 
-                    [
-                        "Le Notre", 
-                        [
-                            263483.32727299846, 
-                            6250096.883626265, 
-                            263483.32727299846, 
-                            6250096.883626265
-                        ], 
-                        "<br><b>Address: </b>10 rue Saint Antoine<br><b>Telephone :</b>33 (0)1 53 01 91 91<br><a href=\"\"http://www.lenotre.fr/fr/boulanger.php\"\">Website</a>\""
-                    ]
-                ], 
-                "format": 0, 
-                "interval": 0, 
-                "introText": "Bakeries in Paris", 
-                "introTitle": "Bakeries", 
-                "showIndicators": true
-            }
-        }
-    }
+    },
+    "Widgets": {}
 }

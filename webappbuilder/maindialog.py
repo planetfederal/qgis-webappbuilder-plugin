@@ -16,8 +16,9 @@ import traceback
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import (QPushButton,
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import (QApplication,
+                                 QPushButton,
                                  QDialogButtonBox,
                                  QFileDialog,
                                  QMessageBox,

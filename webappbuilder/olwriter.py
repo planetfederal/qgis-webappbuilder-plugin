@@ -7,6 +7,7 @@ from builtins import str
 from builtins import range
 
 import os
+import re
 import urllib.parse
 import traceback
 from string import digits
@@ -201,7 +202,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                             format: new ol.format.GeoJSON(),
                             url: './data/lyr_%s.json'
                             }''' % layerName
-            if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.Point:
+            if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.PointGeometry:
                 js =  ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: new ol.source.Vector(%(source)s),
@@ -244,7 +245,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                  "source": source})
 
             if forPreview:
-                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.Point else ""
+                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.PointGeometry else ""
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
                         };''' % {"n": layerName, "cs": clusterSource}
@@ -437,7 +438,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cannotWriteStyle = True
 
             if (appLayer.clusterDistance > 0 and layer.type() == layer.VectorLayer
-                                        and layer.geometryType() == QgsWkbTypes.Point):
+                                        and layer.geometryType() == QgsWkbTypes.PointGeometry):
                 cluster = '''var features = feature.get('features');
                             var size = 0;
                             for (var i = 0, ii = features.length; i < ii; ++i) {
@@ -592,7 +593,7 @@ def getLabeling(layer):
     textBaselines = ["bottom", "middle", "top"]
     textAligns = ["end", "center", "start"]
     quad = int(layer.customProperty("labeling/quadOffset"))
-    textBaseline = textBaselines[quad / 3]
+    textBaseline = textBaselines[int(quad / 3)]
     textAlign = textAligns[quad % 3]
 
     if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":

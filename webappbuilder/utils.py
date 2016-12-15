@@ -190,11 +190,11 @@ def askForFiles(parent, msg = None, isSave = False, allowMultiple = False, exts 
             f = ret = None
     else:
         if isSave:
-            ret = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString) or None
+            ret, _ = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString) or None
             if ret is not None and not ret.endswith(exts[0]):
                 ret += "." + exts[0]
         else:
-            ret = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString) or None
+            ret, _ = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString) or None
         f = ret
 
     if f is not None:
