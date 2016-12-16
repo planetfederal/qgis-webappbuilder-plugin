@@ -18,5 +18,4 @@ Documentation content:
    wabandwebsdk
    usage
    controls
-   tutorials/index
 

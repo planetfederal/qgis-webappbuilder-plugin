@@ -3,7 +3,7 @@
 Usage
 =====
 
-This page will detail how to use the Web App Builder (WAB). For more usage examples, please see the :ref:`qgis.webappbuilder.tutorials` page.
+This page will detail how to use the Web App Builder (WAB). For more usage examples, please see the "Working with the Web App Builder plugin" tutorial in `Desktop Learning Center <https://connect.boundlessgeo.com/Learn/Boundless-Desktop-Learning>`_.
 
 The |current_plugin| is started from the :menuselection:`Web --> Web App Builder --> Web App Builder` menu item.
 
@@ -42,8 +42,6 @@ At the bottom of the Web App Builder main dialog, there are five buttons that al
      - Generates the complete app
    * - Preview
      - Shows a preview of the app
-
-|
 
 To create a web app, you must define its characteristics using the definitions available in each dialog's tab and then press the :guilabel:`Preview` or :guilabel:`Create App` button.
 
