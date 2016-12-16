@@ -4,11 +4,13 @@ import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
-import Button from 'boundless-sdk/js/components/Button.jsx';
+import Button from 'boundless-sdk/components/Button';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import enMessages from 'boundless-sdk/locale/en.js';
-import InfoPopup from 'boundless-sdk/js/components/InfoPopup.jsx';
-import MapPanel from 'boundless-sdk/js/components/MapPanel.jsx';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';{
+import enMessages from 'boundless-sdk/locale/en';
+import InfoPopup from 'boundless-sdk/components/InfoPopup';
+import MapPanel from 'boundless-sdk/components/MapPanel';
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
