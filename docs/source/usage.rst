@@ -3,7 +3,7 @@
 Usage
 =====
 
-This page will detail how to use the Web App Builder (WAB). For more usage examples, please see the "Working with the Web App Builder plugin" tutorial in `Desktop Learning Center <https://connect.boundlessgeo.com/Learn/Boundless-Desktop-Learning>`_.
+This page will detail how to use the Web App Builder (WAB). For more usage examples, please see the *"Working with the Web App Builder plugin"* tutorial in `Desktop Learning Center <https://connect.boundlessgeo.com/Learn/Boundless-Desktop-Learning>`_.
 
 The |current_plugin| is started from the :menuselection:`Web --> Web App Builder --> Web App Builder` menu item.
 
