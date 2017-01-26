@@ -391,7 +391,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                                          symbolstyle, selectedSymbolStyle))
                 defs += ",\n".join(ranges) + "];};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
-                style = '''var style = %(v)s[0][2];
+                style = '''var style = %(v)s()[0][2];
                             var ranges = %(v)s();
                             for (var i = 0, ii = ranges.length; i < ii; i++){
                                 var range = ranges[i];
