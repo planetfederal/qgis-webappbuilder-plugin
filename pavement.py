@@ -57,8 +57,8 @@ def setup(options):
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
+    
     sdkPath = os.path.abspath("./webappbuilder/websdk")
-
     if os.path.exists(sdkPath):
         shutil.rmtree(sdkPath)
     r = requests.get("https://github.com/boundlessgeo/sdk/archive/gh-pages.zip", stream=True)
@@ -69,6 +69,16 @@ def setup(options):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
+    shutil.rmtree(sdkPath)
+
+    mapboxPath = os.path.abspath("./webappbuilder/mapboxgl")
+    if os.path.exists(mapboxPath):
+        shutil.rmtree(mapboxPath)
+    r = requests.get("https://github.com/boundlessgeo/lib-mapboxgl-qgis/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=mapboxPath)
+    path(os.path.join(mapboxPath, "lib-mapboxgl-qgis-master", "mapboxgl", "mapboxgl.py")).copy2("./webappbuilder")
+    shutil.rmtree(mapboxPath)
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
