@@ -11,6 +11,8 @@ from string import digits
 import math
 import codecs
 import uuid
+import mapboxgl
+import json
 
 exportedStyles = 0
 
@@ -345,6 +347,10 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     QDir().mkpath(stylesFolder)
     progress.setText("Writing layer styles")
     progress.setProgress(0)
+    qgisLayers = [lay.layer for lay in layers]
+    mapbox = mapboxgl.toMapbox(qgisLayers)
+    with open(os.path.join(stylesFolder, "mapbox.json"), "w") as f:
+        json.dump(mapbox, f)
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
         layer = appLayer.layer
