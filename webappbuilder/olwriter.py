@@ -349,14 +349,13 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     progress.setProgress(0)
     qgisLayers = [lay.layer for lay in layers]
     mapbox = mapboxgl.toMapbox(qgisLayers)
-    with open(os.path.join(stylesFolder, "mapbox.json"), "w") as f:
-        json.dump(mapbox, f)
+
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
             continue
-        defs = ""
+        defs = "var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
         try:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
