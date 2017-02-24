@@ -6,6 +6,7 @@
 import codecs
 import os
 import shutil
+import tempfile
 from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
@@ -18,6 +19,9 @@ from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
+from networkaccessmanager import NetworkAccessManager
+
+authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
@@ -101,7 +105,59 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
 
         app = _app.newInstance()
         app.scriptsbody.extend(['<script src="/loader.js"></script><script src="/build/app-debug.js"></script>'])
-        writeHtml(appdef, dst, app, progress, "index.html") # with SDK
+        writeHtml(appdef, dst, app, progress, "index.html")
+
+        # apply SDK compilation to the saved webapp
+        appSDKification(dst)
+
+def appSDKification(folder):
+    ''' zip app folder and send to WAB compiler to apply SDK compilation.
+    The returned zip will be the official webapp
+    '''
+    token = utils.getToken()
+
+    # zip folder to send for compiling
+    zipBaseFileName = tempFilenameInTempFolder() # in def in utils module
+    try:
+        zipFileName = shutil.make_archive(zipBaseFileName, 'zip', folder)
+    except:
+        raise Exception("Could not zip webapp folder: {}".format(folder))
+
+    # prepare data for WAB compiling request
+    boundary = "----WebAppBuilderFormBoundary7MA4YWxkTrZu0gW"
+    template = """--{0}
+        Content-Disposition: form-data; name="file"; filename="{1}"
+    --{0}--"""
+    body = template.format(boundary, zipFileName)
+
+    headers = {}
+    headers["Authorization"] = "Bearer {}".format(token)
+    headers["Content-Type"] = "multipart/form-data; boundary={}".format(boundary)
+
+    # upload file and wait for compilation result
+    # TODO: verify if it works
+    # TODO: verify if it does not block interface => listener for progress bar?
+    nam = NetworkAccessManager()
+    try:
+        res, resText = nam.request(authEndpointUrl, method="POST", body=body, headers=headers)
+    except RequestsException, e:
+        raise e
+
+    # todo: check res code in case not authorization
+    if !res.ok:
+        raise Exception("Cannot get token: {}".format(res.reason))
+
+    # save result as new zip file
+    with open(zipFileName, 'wb') as newZipContent:
+        newZipContent.write(resText)
+
+    # unzip new content as new compiled web appdef
+    # TODO: verify unzipped content is the expected one
+    try:
+        shutil.unpack_archive(zipFileName, folder, 'zip')
+    except:
+        raise Exception("Could not unzip webapp {} in folder {}".format(zipFileName, folder))
+
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]

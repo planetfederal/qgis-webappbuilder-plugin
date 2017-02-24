@@ -12,6 +12,8 @@ import uuid
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
+import json
+from webappbuilder.appwriter import authEndpointUrl
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -237,3 +239,80 @@ def run(f):
         return f()
     finally:
         QApplication.restoreOverrideCursor()
+
+def setRepositoryAuth(authConfigId):
+    """Add auth to the repository
+    """
+    setSetting("auth", "authcfg", authConfigId)
+
+def getRepositoryAuth():
+    """check if a authid is already configured in settings, otherwise try to get
+    connect plugin auth configuration.
+    """
+    authcfg = getSetting(authEndpointUrl, "authcfg")
+    if not authcfg:
+        # check if auth setting is available in connect plugin
+        try:
+            from boundlessconnect.plugins import boundlessRepoName
+            authcfg = getSetting(boundlessRepoName, "authcfg")
+        except:
+            pass
+
+    return authcfg
+
+def getCredentialsFromAuthDb(authid):
+    credentials = (None, None)
+    if self.authId:
+        authConfig = QgsAuthMethodConfig()
+        QgsAuthManager.instance().loadAuthenticationConfig(authId, authConfig, True)
+        credentials = (authConfig.config('username'), authConfig.config('password'))
+
+    return credentials
+
+def getToken():
+    """
+    Function to get a access token from endpoint sending "custom" basic auth.
+    Parameters
+
+    The return value is a token string or Exception
+
+    ----------
+    exception_class : Exception
+        Custom exception class
+    """
+    token = None
+
+    # get authid to pont to saved credentials in QGIS Auth manager
+    authid = utils.getRepositoryAuth()
+    usr, pwd = utils.getCredentialsFromAuthDb(authid)
+
+    # prepare data for the token request
+    template = """{
+        "username":"{0}",
+        "password":"{1}",
+    }"""
+    body = base64.encodestring(template.format(usr, pwd))[:-1]
+
+    headers = {}
+    headers["Authorization"] = "Basic Og=="
+    headers["Content-Type"] = "application/json"
+
+    # request token
+    nam = NetworkAccessManager()
+    try:
+        res, resText = nam.request(authEndpointUrl, method="POST", body=body, headers=headers)
+    except RequestsException, e:
+        raise e
+
+    # todo: check res code in case not authorization
+    if !res.ok:
+        raise Exception("Cannot get token: {}".format(res.reason))
+
+    # parse token from resText
+    resDict = json.loads(resText)
+    try:
+        token = resDict["token"]
+    except:
+        pass
+
+    return token
