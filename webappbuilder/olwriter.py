@@ -355,7 +355,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
             continue
-        defs = "var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
+        defs = ""#var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
         try:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
