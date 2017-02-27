@@ -144,7 +144,7 @@ def appSDKification(folder):
         raise e
 
     # todo: check res code in case not authorization
-    if !res.ok:
+    if not res.ok:
         raise Exception("Cannot get token: {}".format(res.reason))
 
     # save result as new zip file

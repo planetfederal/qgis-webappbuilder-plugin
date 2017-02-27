@@ -287,25 +287,20 @@ def getToken():
     usr, pwd = utils.getCredentialsFromAuthDb(authid)
 
     # prepare data for the token request
-    template = """{
-        "username":"{0}",
-        "password":"{1}",
-    }"""
-    body = base64.encodestring(template.format(usr, pwd))[:-1]
-
+    httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
     headers = {}
-    headers["Authorization"] = "Basic Og=="
+    headers["Authorization"] = "Basic {}".format(httpAuth)
     headers["Content-Type"] = "application/json"
 
     # request token
     nam = NetworkAccessManager()
     try:
-        res, resText = nam.request(authEndpointUrl, method="POST", body=body, headers=headers)
+        res, resText = nam.request(authEndpointUrl, method="GET", headers=headers)
     except RequestsException, e:
         raise e
 
     # todo: check res code in case not authorization
-    if !res.ok:
+    if not res.ok:
         raise Exception("Cannot get token: {}".format(res.reason))
 
     # parse token from resText
