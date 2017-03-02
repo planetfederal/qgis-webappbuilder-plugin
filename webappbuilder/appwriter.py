@@ -6,13 +6,14 @@
 import codecs
 import os
 import shutil
-import tempfile
+import uuid
 from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtSvg import *
 from utils import *
+import utils
 from settings import *
 from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
@@ -20,8 +21,6 @@ import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from networkaccessmanager import NetworkAccessManager
-
-authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
@@ -117,35 +116,45 @@ def appSDKification(folder):
     token = utils.getToken()
 
     # zip folder to send for compiling
-    zipBaseFileName = tempFilenameInTempFolder() # in def in utils module
+    zipBaseFileName = tempFilenameInTempFolder(str(uuid.uuid4())) # def in utils module
     try:
         zipFileName = shutil.make_archive(zipBaseFileName, 'zip', folder)
     except:
         raise Exception("Could not zip webapp folder: {}".format(folder))
 
     # prepare data for WAB compiling request
-    boundary = "----WebAppBuilderFormBoundary7MA4YWxkTrZu0gW"
+    boundary = "WebAppBuilderFormBoundary7MA4YWxkTrZu0gW"
     template = """--{0}
-        Content-Disposition: form-data; name="file"; filename="{1}"
-    --{0}--"""
-    body = template.format(boundary, zipFileName)
+Content-Disposition: form-data; name="file"; filename="{1}"
+Content-Type: application/zip
+
+{2}
+--{0}--
+"""
+    with open(zipFileName, 'rb') as f:
+        fileContent = f.read()
+    payload = template.format(boundary, os.path.basename(zipFileName), fileContent )
+    QgsMessageLog.logMessage("BODY: {}".format(payload), "WebAppBuilder")
 
     headers = {}
     headers["Authorization"] = "Bearer {}".format(token)
+    headers["Cache-Control"] = "no-cache"
     headers["Content-Type"] = "multipart/form-data; boundary={}".format(boundary)
+    headers["Content-Length"] = str(len(payload))
+
 
     # upload file and wait for compilation result
     # TODO: verify if it works
     # TODO: verify if it does not block interface => listener for progress bar?
     nam = NetworkAccessManager()
     try:
-        res, resText = nam.request(authEndpointUrl, method="POST", body=body, headers=headers)
-    except RequestsException, e:
+        res, resText = nam.request(utils.wabCompilerUrl, method="POST", body=payload, headers=headers)
+    except Exception, e:
         raise e
 
     # todo: check res code in case not authorization
     if not res.ok:
-        raise Exception("Cannot get token: {}".format(res.reason))
+        raise Exception("Cannot post preview webapp: {}".format(res.reason))
 
     # save result as new zip file
     with open(zipFileName, 'wb') as newZipContent:

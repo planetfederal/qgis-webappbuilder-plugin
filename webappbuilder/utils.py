@@ -7,13 +7,20 @@ import os
 import re
 from PyQt4.QtCore import *
 from qgis.core import *
+from qgis.gui import *
+import qgis
 import subprocess
 import uuid
+import base64
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
 import json
-from webappbuilder.appwriter import authEndpointUrl
+from networkaccessmanager import NetworkAccessManager
+
+authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
+wabCompilerUrl = "http://localhost:8080/package/829a7c9c-f9d8-11e6-860a-a3196743537c"
+tokenRealm = "Connect token"
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -246,7 +253,7 @@ def setRepositoryAuth(authConfigId):
     setSetting("auth", "authcfg", authConfigId)
 
 def getRepositoryAuth():
-    """check if a authid is already configured in settings, otherwise try to get
+    """check if a authcfg is already configured in settings, otherwise try to get
     connect plugin auth configuration.
     """
     authcfg = getSetting(authEndpointUrl, "authcfg")
@@ -254,17 +261,18 @@ def getRepositoryAuth():
         # check if auth setting is available in connect plugin
         try:
             from boundlessconnect.plugins import boundlessRepoName
-            authcfg = getSetting(boundlessRepoName, "authcfg")
+            from pyplugin_installer.installer_data import reposGroup
+            authcfg = getSetting(reposGroup + '/' + boundlessRepoName, 'authcfg')
         except:
             pass
 
     return authcfg
 
-def getCredentialsFromAuthDb(authid):
+def getCredentialsFromAuthDb(authcfg):
     credentials = (None, None)
-    if self.authId:
+    if authcfg:
         authConfig = QgsAuthMethodConfig()
-        QgsAuthManager.instance().loadAuthenticationConfig(authId, authConfig, True)
+        QgsAuthManager.instance().loadAuthenticationConfig(authcfg, authConfig, True)
         credentials = (authConfig.config('username'), authConfig.config('password'))
 
     return credentials
@@ -282,9 +290,19 @@ def getToken():
     """
     token = None
 
-    # get authid to pont to saved credentials in QGIS Auth manager
-    authid = utils.getRepositoryAuth()
-    usr, pwd = utils.getCredentialsFromAuthDb(authid)
+    # get authcfg to point to saved credentials in QGIS Auth manager
+    authcfg = getRepositoryAuth()
+    if not authcfg:
+        ok, usr, pwd = QgsCredentials.instance().get(tokenRealm, "", "")
+        if not ok:
+            # try to select a saved identity
+            # TODO: embed QgsAuthConfigSelect to get a saved identity
+
+            # TODO: return token=None or Exception ?
+            return token
+    else:
+        QgsMessageLog.logMessage("Authcfg: {}".format(authcfg), "WebAppBuilder")
+        usr, pwd = getCredentialsFromAuthDb(authcfg)
 
     # prepare data for the token request
     httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
@@ -296,7 +314,7 @@ def getToken():
     nam = NetworkAccessManager()
     try:
         res, resText = nam.request(authEndpointUrl, method="GET", headers=headers)
-    except RequestsException, e:
+    except Exception, e:
         raise e
 
     # todo: check res code in case not authorization
@@ -309,5 +327,22 @@ def getToken():
         token = resDict["token"]
     except:
         pass
+
+    # If I get a valid token and no previous authcfg => save current valid
+    # credentials in authDb
+    if token and not authcfg:
+        authConfig = QgsAuthMethodConfig('Basic')
+        authcfg = QgsAuthManager.instance().uniqueConfigId()
+        authConfig.setId(authcfg)
+        authConfig.setConfig('username', usr)
+        authConfig.setConfig('password', pwd)
+        authConfig.setUri(authEndpointUrl)
+        authConfig.setName('Boundless Connect Portal')
+
+        if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
+            # save authcfg to reference credential config for the next setssion
+            setRepositoryAuth(authcfg)
+        else:
+            QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
 
     return token
