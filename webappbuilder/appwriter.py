@@ -21,6 +21,7 @@ import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from networkaccessmanager import NetworkAccessManager
+from requests.packages.urllib3.filepost import encode_multipart_formdata
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     progress.setText("Copying resources files")
@@ -123,25 +124,19 @@ def appSDKification(folder):
         raise Exception("Could not zip webapp folder: {}".format(folder))
 
     # prepare data for WAB compiling request
-    boundary = "WebAppBuilderFormBoundary7MA4YWxkTrZu0gW"
-    template = """--{0}
-Content-Disposition: form-data; name="file"; filename="{1}"
-Content-Type: application/zip
-
-{2}
---{0}--
-"""
     with open(zipFileName, 'rb') as f:
         fileContent = f.read()
-    payload = template.format(boundary, os.path.basename(zipFileName), fileContent )
+    #payload = template.format(boundary, os.path.basename(zipFileName), fileContent )
+    fields = { 'file': (os.path.basename(zipFileName), fileContent) }
+    payload, content_type = encode_multipart_formdata(fields)
+    #payload = template.format(boundary, os.path.basename(zipFileName), base64.encodestring('{}'.format(fileContent))[:-1] )
     QgsMessageLog.logMessage("BODY: {}".format(payload), "WebAppBuilder")
 
     headers = {}
-    headers["Authorization"] = "Bearer {}".format(token)
-    headers["Cache-Control"] = "no-cache"
-    headers["Content-Type"] = "multipart/form-data; boundary={}".format(boundary)
-    headers["Content-Length"] = str(len(payload))
+    headers["authorization"] = "Bearer {}".format(token)
+    headers["Content-Type"] = content_type
 
+    QgsMessageLog.logMessage("HEADERS: {}".format(headers), "WebAppBuilder")
 
     # upload file and wait for compilation result
     # TODO: verify if it works
