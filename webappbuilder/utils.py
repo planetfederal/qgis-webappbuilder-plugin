@@ -322,7 +322,7 @@ def getToken():
         raise Exception("Cannot get token: {}".format(res.reason))
 
     # parse token from resText
-    resDict = json.loads(resText)
+    resDict = json.loads(str(resText))
     try:
         token = resDict["token"]
     except:

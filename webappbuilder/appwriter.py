@@ -6,6 +6,7 @@
 import codecs
 import os
 import shutil
+import zipfile
 import uuid
 from qgis.core import *
 from qgis.utils import iface
@@ -115,28 +116,25 @@ def appSDKification(folder):
     The returned zip will be the official webapp
     '''
     token = utils.getToken()
+    if not token:
+        raise Exception("Cannot get authentication token")
 
     # zip folder to send for compiling
-    zipBaseFileName = tempFilenameInTempFolder(str(uuid.uuid4())) # def in utils module
+    zipBaseFileName = tempFilenameInTempFolder( os.path.basename(folder) ) # def in utils module
     try:
-        zipFileName = shutil.make_archive(zipBaseFileName, 'zip', folder)
+        zipFileName = shutil.make_archive(zipBaseFileName, 'zip', os.path.dirname(folder))
     except:
         raise Exception("Could not zip webapp folder: {}".format(folder))
 
     # prepare data for WAB compiling request
     with open(zipFileName, 'rb') as f:
         fileContent = f.read()
-    #payload = template.format(boundary, os.path.basename(zipFileName), fileContent )
     fields = { 'file': (os.path.basename(zipFileName), fileContent) }
     payload, content_type = encode_multipart_formdata(fields)
-    #payload = template.format(boundary, os.path.basename(zipFileName), base64.encodestring('{}'.format(fileContent))[:-1] )
-    QgsMessageLog.logMessage("BODY: {}".format(payload), "WebAppBuilder")
 
     headers = {}
     headers["authorization"] = "Bearer {}".format(token)
     headers["Content-Type"] = content_type
-
-    QgsMessageLog.logMessage("HEADERS: {}".format(headers), "WebAppBuilder")
 
     # upload file and wait for compilation result
     # TODO: verify if it works
@@ -144,21 +142,21 @@ def appSDKification(folder):
     nam = NetworkAccessManager()
     try:
         res, resText = nam.request(utils.wabCompilerUrl, method="POST", body=payload, headers=headers)
-    except Exception, e:
+    except Exception as e:
         raise e
 
     # todo: check res code in case not authorization
     if not res.ok:
         raise Exception("Cannot post preview webapp: {}".format(res.reason))
 
-    # save result as new zip file
     with open(zipFileName, 'wb') as newZipContent:
         newZipContent.write(resText)
 
     # unzip new content as new compiled web appdef
     # TODO: verify unzipped content is the expected one
     try:
-        shutil.unpack_archive(zipFileName, folder, 'zip')
+        with zipfile.ZipFile(zipFileName, 'r') as zf:
+            zf.extractall(folder)
     except:
         raise Exception("Could not unzip webapp {} in folder {}".format(zipFileName, folder))
 
