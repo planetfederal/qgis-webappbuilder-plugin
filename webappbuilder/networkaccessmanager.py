@@ -255,8 +255,7 @@ class NetworkAccessManager(object):
                 self.http_call_result.exception = RequestsException(msg)
         else:
             ba = self.reply.readAll()
-            txt = QTextStream(ba).readAll()
-            self.http_call_result.text = str(txt)
+            self.http_call_result.text = bytes(ba)
             self.http_call_result.ok = True
 
     @pyqtSlot()
