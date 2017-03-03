@@ -141,7 +141,7 @@ def appSDKification(folder):
     # TODO: verify if it does not block interface => listener for progress bar?
     nam = NetworkAccessManager()
     try:
-        res, resText = nam.request(utils.wabCompilerUrl, method="POST", body=payload, headers=headers)
+        res, resText = nam.request(utils.wabCompilerUrl+str(uuid.uuid4()), method="POST", body=payload, headers=headers)
     except Exception as e:
         raise e
 

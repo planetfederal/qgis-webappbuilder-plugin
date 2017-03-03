@@ -19,7 +19,7 @@ import json
 from networkaccessmanager import NetworkAccessManager
 
 authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
-wabCompilerUrl = "http://localhost:8080/package/829a7c9c-f9d8-11e6-860a-a3196743537c"
+wabCompilerUrl = "http://localhost:8080/package/"
 tokenRealm = "Connect token"
 
 METHOD_FILE= 0
