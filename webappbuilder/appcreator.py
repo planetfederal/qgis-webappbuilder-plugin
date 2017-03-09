@@ -41,6 +41,7 @@ def createApp(appdef, deployData, folder, forPreview, progress):
 	# save to global __appdef to patch a PyPubSub limit that does not allow
 	# to register a lambda function as listener (weak reference is unregistered
 	# as soon the lamda is out of scope)
+	global __appdef
 	__appdef = appdef
 
 	viewer.shutdown()
