@@ -8,6 +8,7 @@ import os
 import shutil
 import zipfile
 import uuid
+from pubsub import pub
 from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
@@ -21,12 +22,13 @@ from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
-from networkaccessmanager import NetworkAccessManager
+from asyncnetworkccessmanager import AsyncNetworkAccessManager
 from requests.packages.urllib3.filepost import encode_multipart_formdata
+import urllib.parse
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
+
     progress.setText("Copying resources files")
-    progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
         shutil.rmtree(dst)
@@ -99,6 +101,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
             if layer.layer.type() == layer.layer.VectorLayer and layer.method == METHOD_FILE:
                 app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
         writeHtml(appdef, dst, app, progress, "index_debug.html")
+        pub.sendMessage(utils.topics.endWriteWebApp)
 
     else:
         app = _app.newInstance()
@@ -109,15 +112,50 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         writeHtml(appdef, dst, app, progress, "index.html")
 
         # apply SDK compilation to the saved webapp
-        appSDKification(dst)
+        pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
+        appSDKification(dst, progress)
 
-def appSDKification(folder):
+def endAppSDKificationListener():
+    pub.sendMessage(utils.topics.endWriteWebApp)
+
+# prepare callback to manage post result
+__netManager = None
+__zipFileName = None
+__folder = None
+def manageFinished():
+    '''Callback used to manage result of web app upload to compilator.
+    '''
+    result = __netManager.httpResult()
+
+    # todo: check res code in case not authorization
+    if not result.ok:
+        raise Exception("Cannot post preview webapp: {}".format(result.reason))
+
+    with open(__zipFileName, 'wb') as newZipContent:
+        newZipContent.write( result.text )
+
+    # unzip new content as new compiled web appdef
+    try:
+        with zipfile.ZipFile(__zipFileName, 'r') as zf:
+            zf.extractall(__folder)
+    except:
+        raise Exception("Could not unzip webapp {} in folder {}".format(__zipFileName, __folder))
+
+    pub.sendMessage(utils.topics.endAppSDKification)
+
+def appSDKification(folder, progress):
     ''' zip app folder and send to WAB compiler to apply SDK compilation.
     The returned zip will be the official webapp
     '''
-    token = utils.getToken()
-    if not token:
-        raise Exception("Cannot get authentication token")
+    progress.oscillate()
+
+    progress.setText("Get Authorization token")
+    try:
+        token = utils.getToken()
+        if not token:
+            raise Exception("Cannot get authentication token")
+    except Exception as e:
+        raise e
 
     # zip folder to send for compiling
     zipBaseFileName = tempFilenameInTempFolder( os.path.basename(folder) ) # def in utils module
@@ -136,30 +174,22 @@ def appSDKification(folder):
     headers["authorization"] = "Bearer {}".format(token)
     headers["Content-Type"] = content_type
 
-    # upload file and wait for compilation result
-    # TODO: verify if it works
-    # TODO: verify if it does not block interface => listener for progress bar?
-    nam = NetworkAccessManager()
-    try:
-        res, resText = nam.request(utils.wabCompilerUrl+str(uuid.uuid4()), method="POST", body=payload, headers=headers)
-    except Exception as e:
-        raise e
+    # prepare request (as in NetworkAccessManager) but without blocking request
+    progress.setText("Waiting for compilation")
+    url = utils.wabCompilerUrl + str(uuid.uuid4())
+    url = urllib.parse.unquote(url) # Avoid double quoting form QUrl
 
-    # todo: check res code in case not authorization
-    if not res.ok:
-        raise Exception("Cannot post preview webapp: {}".format(res.reason))
+    # do http post
+    anam = AsyncNetworkAccessManager()
+    anam.request(url, method='POST', body=payload, headers=headers, blocking=False)
 
-    with open(zipFileName, 'wb') as newZipContent:
-        newZipContent.write(resText)
-
-    # unzip new content as new compiled web appdef
-    # TODO: verify unzipped content is the expected one
-    try:
-        with zipfile.ZipFile(zipFileName, 'r') as zf:
-            zf.extractall(folder)
-    except:
-        raise Exception("Could not unzip webapp {} in folder {}".format(zipFileName, folder))
-
+    global __netManager
+    global __zipFileName
+    global __folder
+    __netManager = anam
+    __zipFileName = zipFileName
+    __folder = folder
+    anam.reply.finished.connect( manageFinished )
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]

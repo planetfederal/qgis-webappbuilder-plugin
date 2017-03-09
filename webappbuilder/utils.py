@@ -21,6 +21,15 @@ from networkaccessmanager import NetworkAccessManager
 authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 wabCompilerUrl = "http://localhost:8080/package/"
 tokenRealm = "Connect token"
+class topics:
+    """Class to store PyPubSub topics shared among various parts of code."""
+    endFunction = "endFunction"
+    endWriteWebApp = "endWriteWebApp"
+    endAppSDKification = "endAppSDKification"
+
+    def __init__():
+        pass
+
 
 METHOD_FILE= 0
 METHOD_WMS = 1
@@ -310,7 +319,7 @@ def getToken():
     headers["Authorization"] = "Basic {}".format(httpAuth)
     headers["Content-Type"] = "application/json"
 
-    # request token
+    # request token in synchronous way => block GUI
     nam = NetworkAccessManager()
     try:
         res, resText = nam.request(authEndpointUrl, method="GET", headers=headers)

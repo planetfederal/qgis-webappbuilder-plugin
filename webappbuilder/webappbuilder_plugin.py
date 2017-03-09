@@ -70,5 +70,15 @@ class WebAppBuilderPlugin:
                 if ret == QMessageBox.Yes:
                     appdef = loadAppdef(appdefFile)
         initialize()
-        dlg = MainDialog(appdef)
-        dlg.exec_()
+        try:
+            dlg = MainDialog(appdef)
+            dlg.exec_()
+        except:
+            dlg.progressBar.setMaximum(100)
+            dlg.progressBar.setValue(0)
+            dlg.progressBar.setVisible(False)
+            dlg.progressLabel.setVisible(False)
+            QApplication.restoreOverrideCursor()
+
+            QgsMessageLog.logMessage(traceback.format_exc(), "WebAppBuilder", level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Unmanaged error. See QGIS log for more details.")

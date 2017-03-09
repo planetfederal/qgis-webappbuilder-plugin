@@ -5,6 +5,8 @@
 #
 import sys
 import os
+from pubsub import pub
+import pubsub
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -100,7 +102,9 @@ class MainDialog(BASE, WIDGET):
                 self.progressBar.setValue(i)
                 QApplication.processEvents()
             def oscillate(_):
-                self.progressBar.setMaximum(100)
+                self.progressBar.setMaximum(0)
+                self.progressBar.setMinimum(0)
+                QApplication.processEvents()
 
         self.progress = Progress()
 
@@ -447,6 +451,13 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
+    def endFunctionListener(self):
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(0)
+        self.progressBar.setVisible(False)
+        self.progressLabel.setVisible(False)
+        QApplication.restoreOverrideCursor()
+
     def _run(self, f):
         self.progressBar.setVisible(True)
         self.progressLabel.setVisible(True)
@@ -454,12 +465,16 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setValue(0)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
+            pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
             return f()
-        finally:
-            self.progressBar.setVisible(False)
-            self.progressLabel.setVisible(False)
-            QApplication.restoreOverrideCursor()
+        except Exception as ex:
+            self.endFunctionListener()
+            raise ex
 
+
+    def endcreateAppListener(self):
+        path = "file:///" + folder.replace("\\","/") + "/webapp/index_debug.html"
+        webbrowser.open_new(path)
 
     def preview(self):
         try:
@@ -474,15 +489,21 @@ class MainDialog(BASE, WIDGET):
                 return
         try:
             folder = utils.tempFolderInTempFolder()
+            pub.subscribe(self.endcreateAppListener, utils.topics.endFunction)
             self._run(lambda: createApp(appdef, True, folder, True, self.progress))
-            path = "file:///" + folder.replace("\\","/") + "/webapp/index_debug.html"
-            webbrowser.open_new(path)
         except WrongValueException:
             pass
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                                  "Could not create web app.\nSee QGIS log for more details.")
+
+    def endCreateAppListener(self):
+        box = QMessageBox()
+        box.setWindowTitle("Web App Builder");
+        box.setTextFormat(Qt.RichText)
+        box.setText("Successfylly comiled WebApp with Boundless WebSDK")
+        box.exec_()
 
     def createApp(self):
         try:
@@ -501,13 +522,9 @@ class MainDialog(BASE, WIDGET):
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                     if ret == QMessageBox.No:
                         return
+
+                pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
                 self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, False, self.progress))
-                box = QMessageBox()
-                box.setWindowTitle("Web App Builder");
-                box.setTextFormat(Qt.RichText)
-                box.setText("Application files have been correctly generated.<br>"
-                            "Use the  <a href='http://boundlessgeo.com/products/opengeo-suite/'> Boundless WebSDK </a> for building the final webapp from them.")
-                box.exec_()
         except WrongValueException:
             pass
         except:

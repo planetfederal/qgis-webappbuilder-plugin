@@ -6,6 +6,7 @@
 import os
 import re
 import codecs
+from pubsub import pub
 from appwriter import writeWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -13,6 +14,7 @@ from qgis.core import *
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from geoserver.catalog import Catalog, FailedRequestError
 from utils import *
+import utils
 from sldadapter import getGsCompatibleSld
 import jsbeautifier
 from jsmin import jsmin
@@ -23,7 +25,24 @@ from settings import webAppWidgets
 import viewer
 import xml.etree.ElementTree as ET
 
+# need a global where to store parameters to be used in PyPubSub listener
+# because PyPubSub does not support persistence of lambda functions
+__appdef = None
+def endWriteWebAppListener():
+	projFile = QgsProject.instance().fileName()
+	if projFile:
+		appdefFile =  projFile + ".appdef"
+		saveAppdef(__appdef, appdefFile)
+
+	# communicate end of function
+	pub.sendMessage(utils.topics.endFunction)
+
 def createApp(appdef, deployData, folder, forPreview, progress):
+	# save to global __appdef to patch a PyPubSub limit that does not allow
+	# to register a lambda function as listener (weak reference is unregistered
+	# as soon the lamda is out of scope)
+	__appdef = appdef
+
 	viewer.shutdown()
 	if deployData:
 		usesGeoServer = False
@@ -39,12 +58,9 @@ def createApp(appdef, deployData, folder, forPreview, progress):
 			importPostgis(appdef, progress)
 		if usesGeoServer:
 			publishGeoserver(appdef, progress)
-	writeWebApp(appdef, folder, deployData, forPreview, progress)
 
-	projFile = QgsProject.instance().fileName()
-	if projFile:
-		appdefFile =  projFile + ".appdef"
-		saveAppdef(appdef, appdefFile)
+	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
+	writeWebApp(appdef, folder, deployData, forPreview, progress)
 
 
 def checkAppCanBeCreated(appdef):
@@ -60,12 +76,12 @@ def checkAppCanBeCreated(appdef):
 	def getSize(lyr):
 		ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
 		return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
-	
+
 	MAXSIZE = 30000
 	for applayer in layers:
 		if applayer == METHOD_FILE and getSize(applayer.layer) > MAXSIZE:
 			problems.append("Layer %s might be too big for being loaded directly from a file. Using an alternative method (GeoServer or GeoServer + PostGIS) is recommended.")
-			
+
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
