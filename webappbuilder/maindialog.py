@@ -507,7 +507,7 @@ class MainDialog(BASE, WIDGET):
         box = QMessageBox()
         box.setWindowTitle("Web App Builder");
         box.setTextFormat(Qt.RichText)
-        box.setText("Successfylly comiled WebApp with Boundless WebSDK")
+        box.setText("Successfully compiled WebApp with Boundless WebSDK")
         box.exec_()
 
     def createApp(self):
