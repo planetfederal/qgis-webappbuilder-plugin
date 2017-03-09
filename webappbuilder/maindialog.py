@@ -452,13 +452,13 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(1)
 
     def endFunctionListener(self):
-        # to solve module unload error
-        from PyQt4.QtGui import QApplication
-        
+
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
+        # to solve module unload error
+        from PyQt4.QtGui import QApplication
         QApplication.restoreOverrideCursor()
 
     def _run(self, f):
