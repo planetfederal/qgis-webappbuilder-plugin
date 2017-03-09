@@ -475,9 +475,8 @@ class MainDialog(BASE, WIDGET):
             raise ex
 
 
-    __folder = None
     def endCreatePreviewListener(self):
-        path = "file:///" + __folder.replace("\\","/") + "/webapp/index_debug.html"
+        path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
         webbrowser.open_new(path)
 
     def preview(self):
@@ -492,10 +491,9 @@ class MainDialog(BASE, WIDGET):
             if not dlg.ok:
                 return
         try:
-            global __folder
-            __folder = utils.tempFolderInTempFolder()
+            self.currentFolder = utils.tempFolderInTempFolder()
             pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-            self._run(lambda: createApp(appdef, True, __folder, True, self.progress))
+            self._run(lambda: createApp(appdef, True, self.currentFolder, True, self.progress))
         except WrongValueException:
             pass
         except:
