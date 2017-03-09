@@ -452,7 +452,7 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(1)
 
     def endFunctionListener(self):
-
+        pub.unsubscribe(self.endFunctionListener, utils.topics.endFunction)
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
         self.progressBar.setVisible(False)
@@ -476,6 +476,7 @@ class MainDialog(BASE, WIDGET):
 
 
     def endCreatePreviewListener(self):
+        pub.unsubscribe(self.endCreatePreviewListener, utils.topics.endFunction)
         path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
         webbrowser.open_new(path)
 
@@ -502,6 +503,7 @@ class MainDialog(BASE, WIDGET):
                                  "Could not create web app.\nSee QGIS log for more details.")
 
     def endCreateAppListener(self):
+        pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
         box = QMessageBox()
         box.setWindowTitle("Web App Builder");
         box.setTextFormat(Qt.RichText)

@@ -116,6 +116,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         appSDKification(dst, progress)
 
 def endAppSDKificationListener():
+    pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
     pub.sendMessage(utils.topics.endWriteWebApp)
 
 # prepare callback to manage post result

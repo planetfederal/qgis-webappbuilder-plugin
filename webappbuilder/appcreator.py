@@ -29,6 +29,8 @@ import xml.etree.ElementTree as ET
 # because PyPubSub does not support persistence of lambda functions
 __appdef = None
 def endWriteWebAppListener():
+	pub.unsubscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
+	
 	projFile = QgsProject.instance().fileName()
 	if projFile:
 		appdefFile =  projFile + ".appdef"
