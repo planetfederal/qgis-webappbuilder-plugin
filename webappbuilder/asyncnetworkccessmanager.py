@@ -208,7 +208,7 @@ class AsyncNetworkAccessManager(object):
         # block if blocking mode otherwise return immediatly
         # it's up to the caller to manage listeners in case of no blocking mode
         if not blocking:
-            return None
+            return (None, None)
 
         self.el = QEventLoop()
         self.reply.finished.connect(self.el.quit)
