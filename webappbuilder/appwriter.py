@@ -159,15 +159,18 @@ def appSDKification(folder, progress):
 
     # zip folder to send for compiling
     zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
-    zf = zipfile.ZipFile(zipFileName, "w")
     try:
-        for dirname, subdirs, files in os.walk(folder):
-            if 'data' in subdirs:
-                subdirs.remove('data')
-            zf.write(dirname)
-            for filename in files:
-                zf.write(os.path.join(dirname, filename))
-        zf.close()
+        with zipfile.ZipFile(zipFileName, "w") as zf:
+            relativeFrom = os.path.dirname(folder)
+            for dirname, subdirs, files in os.walk(folder):
+                # eclude data folder
+                if 'data' in subdirs:
+                    subdirs.remove('data')
+                if relativeFrom in dirname:
+                    zf.write(dirname, dirname[len(relativeFrom):])
+                for filename in files:
+                    fiename = os.path.join(dirname, filename)
+                    zf.write(fiename, fiename[len(relativeFrom):])
     except:
         raise Exception("Could not zip webapp folder: {}".format(folder))
 
