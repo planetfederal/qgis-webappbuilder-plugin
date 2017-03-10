@@ -80,7 +80,8 @@ def checkAppCanBeCreated(appdef):
 		layer = applayer.layer
 		if layer.providerType().lower() == "wfs" and jsonp:
 			datasourceUri = QgsDataSourceURI(layer.source())
-			url = datasourceUri.param("url") + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
+			url = datasourceUri.param("url") or layer.source().split("?")[0]
+			url = url + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
 			r = run(lambda: requests.get(url))
 			if "text/javascript" not in r.text:
 				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."

@@ -161,7 +161,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
         layerOpacity = 1 - (layer.layerTransparency() / 100.0)
         if layer.providerType().lower() == "wfs":
             datasourceUri = QgsDataSourceURI(layer.source())
-            url = datasourceUri.param("url")
+            url = datasourceUri.param("url") or layer.source().split("?")[0]
             typeName = datasourceUri.param("typename")
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
