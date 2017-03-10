@@ -3,7 +3,15 @@
 	 "label": "SDK Service Endpoint",
 	 "description": "The URL of the WebSDK server",
 	 "type": "string",
-	 "default": "https://api.dev.boundlessgeo.io/v1/websdk/package",
+     "#default": "http://localhost:8080/package/",
+     "default": "https://api.dev.boundlessgeo.io/v1/websdk/package",
+	 "group": "General"
+	},
+	{"name":"tokenendpoint",
+	 "label": "Connect authentication endpoint",
+	 "description": "The URL of the Connect portal authenitcation serice",
+	 "type": "string",
+     "default": "https://api.dev.boundlessgeo.io/v1/token/",
 	 "group": "General"
 	}
 ]

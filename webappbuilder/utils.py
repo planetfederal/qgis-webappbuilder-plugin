@@ -26,6 +26,9 @@ authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint"))
 
+def authUrl():
+    return urllib.parse.unquote(pluginSetting("tokenendpoint"))
+
 tokenRealm = "Connect token"
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""
@@ -271,7 +274,7 @@ def getRepositoryAuth():
     """check if a authcfg is already configured in settings, otherwise try to get
     connect plugin auth configuration.
     """
-    authcfg = getSetting(authEndpointUrl, "authcfg")
+    authcfg = getSetting(authUrl(), "authcfg")
     if not authcfg:
         # check if auth setting is available in connect plugin
         try:
@@ -328,7 +331,7 @@ def getToken():
     # request token in synchronous way => block GUI
     nam = NetworkAccessManager()
     try:
-        res, resText = nam.request(authEndpointUrl, method="GET", headers=headers)
+        res, resText = nam.request(authUrl(), method="GET", headers=headers)
     except Exception, e:
         raise e
 
@@ -351,7 +354,7 @@ def getToken():
         authConfig.setId(authcfg)
         authConfig.setConfig('username', usr)
         authConfig.setConfig('password', pwd)
-        authConfig.setUri(authEndpointUrl)
+        authConfig.setUri(authUrl())
         authConfig.setName('Boundless Connect Portal')
 
         if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):

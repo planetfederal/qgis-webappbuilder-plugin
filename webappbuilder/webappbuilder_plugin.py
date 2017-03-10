@@ -53,7 +53,7 @@ class WebAppBuilderPlugin:
         self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
-        removeSettingsMenu()
+        removeSettingsMenu("Web App Builder")
         shutil.rmtree(tempFolder())
 
         try:
