@@ -348,7 +348,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     progress.setText("Writing layer styles")
     progress.setProgress(0)
     qgisLayers = [lay.layer for lay in layers]
-    mapbox = mapboxgl.toMapbox(qgisLayers, stylesFolder)
+    #mapbox = mapboxgl.toMapbox(qgisLayers, stylesFolder)
 
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
