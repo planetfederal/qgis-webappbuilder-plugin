@@ -20,7 +20,7 @@ from networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting
 import urllib.parse
 
-authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
+#authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 #wabCompilerUrl = "http://localhost:8080/package/"
 
 def wabCompilerUrl():
