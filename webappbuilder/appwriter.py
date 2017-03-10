@@ -142,7 +142,7 @@ def manageFinished():
         raise Exception("Could not unzip webapp {} in folder {}".format(__zipFileName, __folder))
 
     pub.sendMessage(utils.topics.endAppSDKification)
-    
+
 def appSDKification(folder, progress):
     ''' zip app folder and send to WAB compiler to apply SDK compilation.
     The returned zip will be the official webapp
@@ -183,6 +183,8 @@ def appSDKification(folder, progress):
 
     # prepare request (as in NetworkAccessManager) but without blocking request
     # do http post
+    progress.setText("Wait compilation")
+
     anam = AsyncNetworkAccessManager()
     anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
 
