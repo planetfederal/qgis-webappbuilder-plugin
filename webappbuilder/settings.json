@@ -1,0 +1,9 @@
+[
+	{"name":"sdkendpoint",
+	 "label": "SDK Service Endpoint",
+	 "description": "The URL of the WebSDK server",
+	 "type": "string",
+	 "default": "https://api.dev.boundlessgeo.io/v1/websdk/package",
+	 "group": "General"
+	}
+]

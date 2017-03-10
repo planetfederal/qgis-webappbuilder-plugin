@@ -6,6 +6,7 @@
 import os
 import shutil
 import webbrowser
+import traceback
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -17,6 +18,7 @@ from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
 from webappbuilder.utils import tempFolder
 
+from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings
 
 class WebAppBuilderPlugin:
 
@@ -28,6 +30,7 @@ class WebAppBuilderPlugin:
             addTestModule(testerplugin, "Web App Builder")
         except:
             pass
+        readSettings()
 
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/sdk.svg")
@@ -44,10 +47,13 @@ class WebAppBuilderPlugin:
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
+        addSettingsMenu("Web App Builder", self.iface.addPluginToWebMenu)
+
     def unload(self):
         self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
+        removeSettingsMenu()
         shutil.rmtree(tempFolder())
 
         try:
@@ -81,4 +87,4 @@ class WebAppBuilderPlugin:
             QApplication.restoreOverrideCursor()
 
             QgsMessageLog.logMessage(traceback.format_exc(), "WebAppBuilder", level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Unmanaged error. See QGIS log for more details.")
+            QMessageBox.critical(self.iface.mainWindow(), "Unmanaged error. See QGIS log for more details.")

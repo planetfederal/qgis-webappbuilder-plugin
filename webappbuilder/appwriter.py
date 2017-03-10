@@ -24,7 +24,6 @@ from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager
 from requests.packages.urllib3.filepost import encode_multipart_formdata
-import urllib.parse
 
 def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
 
@@ -176,13 +175,9 @@ def appSDKification(folder, progress):
     headers["Content-Type"] = content_type
 
     # prepare request (as in NetworkAccessManager) but without blocking request
-    progress.setText("Waiting for compilation")
-    url = utils.wabCompilerUrl + str(uuid.uuid4())
-    url = urllib.parse.unquote(url) # Avoid double quoting form QUrl
-
     # do http post
     anam = AsyncNetworkAccessManager()
-    anam.request(url, method='POST', body=payload, headers=headers, blocking=False)
+    anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
 
     global __netManager
     global __zipFileName

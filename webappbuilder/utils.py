@@ -17,10 +17,15 @@ import inspect
 import codecs
 import json
 from networkaccessmanager import NetworkAccessManager
+from qgiscommons.settings import pluginSetting
+import urllib.parse
 
 authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 #wabCompilerUrl = "http://localhost:8080/package/"
-wabCompilerUrl = "http://a25d20632ff6911e6aded0a029acdebf-1162260929.us-east-1.elb.amazonaws.com:8080/package/"
+
+def wabCompilerUrl():
+    return urllib.parse.unquote(pluginSetting("sdkendpoint"))
+
 tokenRealm = "Connect token"
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""

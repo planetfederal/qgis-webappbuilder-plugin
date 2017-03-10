@@ -80,6 +80,17 @@ def setup(options):
     path(os.path.join(mapboxPath, "lib-mapboxgl-qgis-master", "mapboxgl", "mapboxgl.py")).copy2("./webappbuilder")
     shutil.rmtree(mapboxPath)
 
+    tmpCommonsPath = path(__file__).dirname() / "qgiscommons"
+    dst = ext_libs / "qgiscommons"
+    if dst.exists():
+        dst.rmtree()
+    r = requests.get("https://github.com/boundlessgeo/lib-qgis-commons/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=tmpCommonsPath.abspath())
+    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons"
+    src.copytree(dst.abspath())
+    tmpCommonsPath.rmtree()
+
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
     lines = open('requirements.txt').readlines()
