@@ -71,7 +71,7 @@ def checkSDKServerVersion():
 		package = json.load(f)
 	localVersion = package["version"]
 	remoteVersion = localVersion #TODO: ask the server for its version
-	if localVersion == remoteVersion:
+	if localVersion != remoteVersion:
 		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
 	else:
 		return None
