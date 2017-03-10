@@ -65,6 +65,16 @@ def createApp(appdef, deployData, folder, forPreview, progress):
 	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 	writeWebApp(appdef, folder, deployData, forPreview, progress)
 
+def checkSDKServerVersion():
+	path = os.path.join(os.path.dirname(__file__), "package.json")
+	with open(path) as f:
+		package = json.load(f)
+	localVersion = package["version"]
+	remoteVersion = localVersion #TODO: ask the server for its version
+	if localVersion == remoteVersion:
+		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
+	else:
+		return None
 
 def checkAppCanBeCreated(appdef):
 	##viewCrs = appdef["Settings"]["App view CRS"]

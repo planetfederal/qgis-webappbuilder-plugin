@@ -14,7 +14,7 @@ from PyQt4.QtWebKit import *
 import utils
 from collections import defaultdict
 from qgis.utils import iface
-from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
+from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated, checkSDKServerVersion
 import settings
 from types import MethodType
 import webbrowser
@@ -519,6 +519,11 @@ class MainDialog(BASE, WIDGET):
                 dlg.exec_()
                 if not dlg.ok:
                     return
+            errMessage = checkSDKServerVersion()
+            if errMessage:
+                QMessageBox.warning(self, "Incompatible SDK version", errMessage,
+                                        QMessageBox.Close)
+                return
             folder = askForFolder(self, "Select folder to store app")
             if folder:
                 if os.path.exists(os.path.join(folder, "webapp")):

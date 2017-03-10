@@ -70,6 +70,10 @@ def setup(options):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
     shutil.rmtree(sdkPath)
+    r = requests.get("https://raw.githubusercontent.com/boundlessgeo/sdk/master/package.json")
+    packageFile = options.plugin.source_dir / "package.json"
+    with open(packageFile.abspath(), "w") as f:
+        f.write(r.text)
 
     mapboxPath = os.path.abspath("./webappbuilder/mapboxgl")
     if os.path.exists(mapboxPath):

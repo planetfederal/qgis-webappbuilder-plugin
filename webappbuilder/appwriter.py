@@ -142,7 +142,7 @@ def manageFinished():
         raise Exception("Could not unzip webapp {} in folder {}".format(__zipFileName, __folder))
 
     pub.sendMessage(utils.topics.endAppSDKification)
-
+    
 def appSDKification(folder, progress):
     ''' zip app folder and send to WAB compiler to apply SDK compilation.
     The returned zip will be the official webapp
