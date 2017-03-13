@@ -12,26 +12,19 @@ class AttributesTable(WebAppWidget):
     order = 2
 
     def write(self, appdef, folder, app, progress):
-        layerVar = ""
-        layers = appdef["Layers"]
-        for applayer in layers:
-            layer = applayer.layer
-            if layer.type() == layer.VectorLayer and applayer.method not in [METHOD_WMS, METHOD_WMS_POSTGIS]:
-                layerVar = "lyr_" + safeName(layer.name())
-                break
         self.addReactComponent(app, "FeatureTable")
         pointZoom = int(self._parameters["Zoom level when zooming to point feature"][0])
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append('''React.createElement(Tab,{value:%i, label:"Attributes table"},
-                                    React.createElement(FeatureTable, {ref:"table", layer:%s, pointZoom:%d, map: map})
-                                )''' % (idx, layerVar, pointZoom))
+                                    React.createElement(FeatureTable, {ref:"table", pointZoom:%d, map: map})
+                                )''' % (idx, pointZoom))
         else:
             app.tools.append("React.createElement(Button, {label: 'Table', onTouchTap: this._toggleTable.bind(this)})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
-                                          React.createElement(FeatureTable, {ref: 'table', layer: %s, pointZoom:%d, map: map})
-                                    )''' % (layerVar, pointZoom))
+                                          React.createElement(FeatureTable, {ref: 'table', pointZoom:%d, map: map})
+                                    )''' % (pointZoom))
 
 
     def icon(self):
