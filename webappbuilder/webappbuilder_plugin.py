@@ -80,7 +80,6 @@ class WebAppBuilderPlugin:
             dlg = MainDialog(appdef)
             dlg.exec_()
         except:
-            raise
             dlg.progressBar.setMaximum(100)
             dlg.progressBar.setValue(0)
             dlg.progressBar.setVisible(False)

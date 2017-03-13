@@ -72,6 +72,8 @@ QGIS Layers
 
 This tab you should select which layers from your existing QGIS project that you would like to add to your web app.
 
+Vector layer will be exported to a GeoJSON file and the app will use it directly. The file will be saved in the output folder in which the app itself will be created.
+
 .. figure:: img/qgislayers.png
 
    QGIS Layers tab
@@ -85,26 +87,14 @@ The following list represents the common options for both vector, raster or WMS/
 * The :guilabel:`Show in overview map` check box specifies whether the layer will be added to the overview map (if added as a control. see :ref:`qgis.webappbuilder.controls.overview` in the :ref:`qgis.webappbuilder.controls` page).
 * The :guilabel:`Show in controls` check box specifies whether the layer will be added to controls other than the overview map, such as the legend control or the layer list (if added as a control).
 
-The following sub-sections descrive he different options that you might find for each type of layer (:ref:`qgis.webappbuilder.usage.vector`, :ref:`qgis.webappbuilder.usage.raster` and :ref:`qgis.webappbuilder.usage.wmswfs`), and how the app builder deals with them.
+The following sub-sections descrive he different options that you might find for certain types of layer (:ref:`qgis.webappbuilder.usage.vector` and :ref:`qgis.webappbuilder.usage.wmswfs`), and how the app builder deals with them.
 
 .. _qgis.webappbuilder.usage.vector:
 
 Vector layers
 ~~~~~~~~~~~~~
 
-For each vector layer, in addiction to the common option, the following options are available:
-
-* The :guilabel:`Connect to this layer using` combo box will determine how to create the data source that will be used by the app. It has the following options:
-
-  * :guilabel:`Use file directly`: PostGIS and GeoServer will not be used. The layer will be exported to a GeoJSON file and the app will use it directly. The file will be saved in the output folder in which the app itself will be created.
-
-  * :guilabel:`GeoServer -> WMS`: The data will be published to GeoServer and then the app will connect to it as a WMS service. Styling will be done server side by GeoServer.
-
-  * :guilabel:`GeoServer -> WFS`: The data will be published to GeoServer and then the app will connect to it as a WFS service. Styling will be done client side by the app itself.
-
-  * :guilabel:`GeoServer -> PostGIS -> WMS`: The data will be imported into PostGIS and then a store will be created in GeoServer to consume that data from the PostGIS database. The app will connect to it as a WMS service. Styling will be done server side by GeoServer.
-
-  * :guilabel:`GeoServer -> PostGIS -> WFS`: The data will be imported into PostGIS and then a store will be created in GeoServer to consume that data from the PostGIS database. The app will connect to it as a WFS service. Styling will be done client side by the app itself.
+For each vector layer, in addition to the common options, the following options are available:
 
 * The :guilabel:`Allow selection on this layer` check box specifies whether the user will be able to select the features in this layer using any of the available selection tools (if added as a control). Notice that, if you want to create charts based on the features of a given layer, you should allow selection on it.
 
@@ -147,25 +137,10 @@ For each vector layer, in addiction to the common option, the following options 
 
 * :guilabel:`Do not consume as tiled layer`. In certain cases, you might not want to use a tiling strategy for remote layers. If this option is selected, WMS layers won't be accessed as tiles, and WFS layers will be downloaded completely instead of using a bounding box strategy based on the current extent of the map.
 
-.. _qgis.webappbuilder.usage.raster:
-
-Raster layers
-~~~~~~~~~~~~~
-
-For each raster layer, in addiction to the common option, the following options are available:
-
-* :guilabel:`Connect to this layer using`. Determines how to create the data source that will be used by the app. It has the following options:
-
-  * :guilabel:`GeoServer -> WMS`: The data will be published to GeoServer and then the app will connect to it as a WMS service. Styling will be done server side by GeoServer.
-
-  * :guilabel:`Use file directly`: GeoServer will not be used. The layer will be exported to an image file and the app will use it directly. The file will be saved in the output folder in which the app itself will be created.
-
 .. _qgis.webappbuilder.usage.wmswfs:
 
 WMS/WFS layers
 ~~~~~~~~~~~~~~
-
-For WFS and WMS, you will find most of the same options for vector and raster layers, except for the *Connect to this layer using* option, as the original service will always be used.
 
 For WMS layers, the :guilabel:`Info popup content` option will work similar to the case of a vector or WFS layers, but with a small limitation. The attribute names will not be shown in the popup editor since there is no information in QGIS about them. You can use the same syntax that was explained for vector layer popups, in case you know the attribute names. Otherwise, you can click on the :guilabel:`Add all attributes` button to add all attribute names and values to the popup content. The popup will show the full feature information as it is returned by the WMS service when it's queried using its GetFeatureInfo method.
   
@@ -222,14 +197,6 @@ Some controls can be configured. This is done by right-clicking their correspond
 
 For a more detailed description of all available controls and their settings see the :ref:`qgis.webappbuilder.controls` page.
 
-Deploy
-------
-
-The `Deploy` tab is used to specify where your data will be stored. It has two groups: :guilabel:`PostGIS` and :guilabel:`GeoServer`, where you should insert all the connection information on how to store data to each. They are used only if your data configuration uses PostGIS or GeoServer (as explained in the :ref:`qgis.webappbuilder.usage.qgislayers` section above).
-
-.. figure:: img/deploy.png
-
-   Deploy tab
 
 .. _qgis.webappbuilder.usage.settings:
 
