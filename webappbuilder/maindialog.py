@@ -414,7 +414,7 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
-    def endFunctionListener(self):
+    def endFunctionListener(self, success, reason):
         from pubsub import pub
         pub.unsubscribe(self.endFunctionListener, utils.topics.endFunction)
         self.progressBar.setMaximum(100)
@@ -435,15 +435,19 @@ class MainDialog(BASE, WIDGET):
             pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
             return f()
         except Exception as ex:
-            self.endFunctionListener()
-            raise ex
+            self.endFunctionListener(false, str(ex))
 
 
-    def endCreatePreviewListener(self):
+    def endCreatePreviewListener(self, success, reason):
         from pubsub import pub
         pub.unsubscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-        path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
-        webbrowser.open_new(path)
+        if success:
+            path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
+            webbrowser.open_new(path)
+        else:
+            QgsMessageLog.logMessage(reason, level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
+                                 "Could not create web app.\nCheck the QGIS log for more details.")
 
     def preview(self):
         try:
@@ -464,14 +468,18 @@ class MainDialog(BASE, WIDGET):
             pass
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nSee QGIS log for more details.")
+            self.endCreatePreviewListener(False, traceback.format_exc())
 
-    def endCreateAppListener(self):
+    def endCreateAppListener(self, success, reason):
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
-        QMessageBox.information(iface.mainWindow(), "Web app",
-                                 "Web app was correctly created and built.")
+        if success:
+            QMessageBox.information(iface.mainWindow(), "Web app",
+                                     "Web app was correctly created and built.")
+        else:
+            QgsMessageLog.logMessage(reason, level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
+                                 "Could not create web app.\nCheck the QGIS log for more details.")
 
     def createApp(self):
         try:
@@ -500,11 +508,8 @@ class MainDialog(BASE, WIDGET):
                 self._run(lambda: createApp(appdef, folder, False, self.progress))
         except WrongValueException:
             pass
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nCheck the QGIS log for more details.")
-
+        except Exception as ex:
+            self.endCreateAppListener(False, traceback.format_exc())
 
     def createAppDefinition(self):
         layers, groups = self.getLayersAndGroups()

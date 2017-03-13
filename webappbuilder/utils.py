@@ -16,7 +16,7 @@ from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
 import json
-from networkaccessmanager import NetworkAccessManager
+from qgiscommons.networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting
 import urllib.parse
 

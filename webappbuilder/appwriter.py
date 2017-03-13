@@ -26,7 +26,9 @@ from asyncnetworkccessmanager import AsyncNetworkAccessManager
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 
 def writeWebApp(appdef, folder, forPreview, progress):
-
+    """WriteApp end is notifed using
+    pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
+    """
     progress.setText("Copying resources files")
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
@@ -99,7 +101,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
             if layer.layer.type() == layer.layer.VectorLayer:
                 app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
         writeHtml(appdef, dst, app, progress, "index_debug.html")
-        pub.sendMessage(utils.topics.endWriteWebApp)
+        pub.sendMessage(utils.topics.endWriteWebApp, success=True, reason=None)
 
     else:
         app = _app.newInstance()
@@ -113,42 +115,44 @@ def writeWebApp(appdef, folder, forPreview, progress):
         pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
         appSDKification(dst, progress)
 
-def endAppSDKificationListener():
+def endAppSDKificationListener(success, reason):
     from pubsub import pub
     pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
-    pub.sendMessage(utils.topics.endWriteWebApp)
+    pub.sendMessage(utils.topics.endWriteWebApp, success=success, reason=reason)
 
 # prepare callback to manage post result
-__netManager = None
-__zipFileName = None
-__folder = None
-def manageFinished():
+def manageFinished(netManager, zipFileName, folder):
     '''Callback used to manage result of web app upload to compilator.
+    manageFinished can be triggered by slot => any Exception is not trapped
+    by a standard try:catch => real termination is managed sending signals
     '''
-    result = __netManager.httpResult()
+    result = netManager.httpResult()
 
     # todo: check res code in case not authorization
     if not result.ok:
-        raise Exception("Cannot post preview webapp: {}".format(result.reason))
+        e = Exception("Cannot post preview webapp: {}".format(result.reason))
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
 
-    with open(__zipFileName, 'wb') as newZipContent:
+
+    with open(zipFileName, 'wb') as newZipContent:
         newZipContent.write( result.text )
 
     # unzip new content as new compiled web appdef
     try:
-        with zipfile.ZipFile(__zipFileName, 'r') as zf:
-            zf.extractall(__folder)
+        with zipfile.ZipFile(zipFileName, 'r') as zf:
+            zf.extractall(folder)
     except:
-        raise Exception("Could not unzip webapp {} in folder {}".format(__zipFileName, __folder))
+        e = Exception("Could not unzip webapp {} in folder {}".format(zipFileName, folder))
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
 
-    pub.sendMessage(utils.topics.endAppSDKification)
+    pub.sendMessage(utils.topics.endAppSDKification, success=True, reason=None)
 
 def appSDKification(folder, progress):
     ''' zip app folder and send to WAB compiler to apply SDK compilation.
     The returned zip will be the official webapp
     '''
     progress.oscillate()
-    
+
     progress.setText("Get Authorization token")
     try:
         token = utils.getToken()
@@ -156,7 +160,7 @@ def appSDKification(folder, progress):
             raise Exception("Cannot get authentication token")
     except Exception as e:
         raise e
-   
+
     # zip folder to send for compiling
     zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
     try:
@@ -190,14 +194,7 @@ def appSDKification(folder, progress):
 
     anam = AsyncNetworkAccessManager()
     anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
-
-    global __netManager
-    global __zipFileName
-    global __folder
-    __netManager = anam
-    __zipFileName = zipFileName
-    __folder = folder
-    anam.reply.finished.connect( manageFinished )
+    anam.reply.finished.connect( lambda: manageFinished(anam, zipFileName, folder) )
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]

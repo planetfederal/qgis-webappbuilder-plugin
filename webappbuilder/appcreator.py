@@ -27,7 +27,7 @@ import xml.etree.ElementTree as ET
 # need a global where to store parameters to be used in PyPubSub listener
 # because PyPubSub does not support persistence of lambda functions
 __appdef = None
-def endWriteWebAppListener():
+def endWriteWebAppListener(success, reason):
 	from pubsub import pub
 	pub.unsubscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 
@@ -38,7 +38,7 @@ def endWriteWebAppListener():
 		saveAppdef(__appdef, appdefFile)
 
 	# communicate end of function
-	pub.sendMessage(utils.topics.endFunction)
+	pub.sendMessage(utils.topics.endFunction, success=success, reason=reason)
 
 def createApp(appdef, folder, forPreview, progress):
 	# save to global __appdef to patch a PyPubSub limitation that does not allow
