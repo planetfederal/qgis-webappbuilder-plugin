@@ -13,5 +13,12 @@
 	 "type": "string",
      "default": "https://api.dev.boundlessgeo.io/v1/token/",
 	 "group": "General"
+ 	},
+	{"name":"authcfg",
+	 "label": "Credential configuration ID",
+	 "description": "The authcfg identifier to point credentials stored in QGIS Authentication DB",
+	 "type": "string",
+     "default": "",
+	 "group": "General"
 	}
 ]

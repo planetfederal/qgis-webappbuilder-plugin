@@ -17,18 +17,21 @@ import inspect
 import codecs
 import json
 from qgiscommons.networkaccessmanager import NetworkAccessManager
-from qgiscommons.settings import pluginSetting
+from qgiscommons.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
 #authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 #wabCompilerUrl = "http://localhost:8080/package/"
-tokenRealm = "Connect token"
+tokenRealm = "Connect token server"
 
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint"))
 
 def authUrl():
     return urllib.parse.unquote(pluginSetting("tokenendpoint"))
+
+def authCfg():
+    return urllib.parse.unquote(pluginSetting("authcfg"))
 
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""
@@ -174,13 +177,13 @@ def run(f):
 def setRepositoryAuth(authConfigId):
     """Add auth to the repository
     """
-    setSetting("WebAppBuilder", "{}/{}".format(authUrl(), "authcfg"), authConfigId)
+    setPluginSetting("authcfg", authConfigId)
 
 def getRepositoryAuth():
     """check if a authcfg is already configured in settings, otherwise try to get
     connect plugin auth configuration.
     """
-    authcfg = getSetting("WebAppBuilder", "{}/{}".format(authUrl(), "authcfg"))
+    authcfg = authCfg()
     if not authcfg:
         # check if auth setting is available in connect plugin
         try:
