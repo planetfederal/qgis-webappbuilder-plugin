@@ -125,7 +125,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
 
 
-def layerToJavascript(applayer, settings, deploy, title, forPreview):
+def layerToJavascript(applayer, settings, title, forPreview):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
     useStrategy = not applayer.singleTile
@@ -167,7 +167,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity,
                                 applayer.allowSelection, timeInfo, popup, jsonp, useStrategy)
-        elif applayer.method == METHOD_FILE:
+        else:
             if forPreview:
                 source = ""
             else:
@@ -216,42 +216,14 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source})
-
+    
             if forPreview:
                 clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
                         };''' % {"n": layerName, "cs": clusterSource}
             return js
-        elif applayer.method == METHOD_WFS or applayer.method == METHOD_WFS_POSTGIS:
-                url = deploy["GeoServer url"] + "/wfs"
-                typeName = ":".join([safeName(settings["Title"]), layerName])
-                return _getWfsLayer(url, title, layer, typeName, minResolution,
-                            maxResolution, applayer.clusterDistance,
-                            layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                            timeInfo, popup, jsonp, useStrategy)
-        else:
-            source = layer.source()
-            layers = layer.name()
-            url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
-            return '''var lyr_%(n)s = new %(layerClass)s({
-                        opacity: %(opacity)s,
-                        %(min)s %(max)s
-                        timeInfo: %(timeInfo)s,
-                        filters: [],
-                        source: new %(sourceClass)s(({
-                          url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s" %(tiled)s},
-                        })),
-                        title: %(name)s,
-                        id: "%(id)s",
-                        projection: "%(crs)s"
-                      });''' % {"opacity": layerOpacity, "layers": layerName,
-                                "url": url, "n": layerName, "name": title,
-                                "min": minResolution, "max": maxResolution,
-                                "timeInfo": timeInfo, "id": layer.id(),
-                                "layerClass": layerClass, "sourceClass": sourceClass,
-                                "tiled": tiled, "crs": layer.crs().authid()}
+        
     elif layer.type() == layer.RasterLayer:
         timeInfo = applayer.timeInfo if applayer.timeInfo is not None else "null"
         layerOpacity = layer.renderer().opacity()
@@ -279,7 +251,7 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                                 "id": layer.id(), "layerClass": layerClass,
                                 "sourceClass": sourceClass, "tiled": tiled,
                                 "popup": popup, "crs": layer.crs().authid()}
-        elif applayer.method == METHOD_FILE:
+        else:
             if layer.providerType().lower() == "gdal":
                 provider = layer.dataProvider()
                 transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
@@ -321,24 +293,6 @@ def layerToJavascript(applayer, settings, deploy, title, forPreview):
                                       "crs": viewCrs, "timeInfo": timeInfo,
                                       "id": layer.id(), "ndR": nodata[0],
                                       "ndG": nodata[1], "ndB": nodata[2]}
-        else:
-            url = "%s/%s/wms" % (deploy["GeoServer url"], workspace)
-            return '''var lyr_%(n)s = %(layerClass)s({
-                        opacity: %(opacity)s,
-                        %(min)s %(max)s
-                        timeInfo: %(timeInfo)s,
-                        source: new %(sourceClass)s(({
-                          url: "%(url)s",
-                          params: {"LAYERS": "%(layers)s" %(tiled)s},
-                        })),
-                        title: %(name)s,
-                        id: "%(id)s"
-                      });''' % {"opacity": layerOpacity, "layers": layerName,
-                                "url": url, "n": layerName, "name": title,
-                                "min": minResolution, "max": maxResolution,
-                                "timeInfo": timeInfo, "id": layer.id(),
-                                "layerClass": layerClass, "sourceClass": sourceClass,
-                                "tiled": tiled}
 
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     global exportedStyles
@@ -353,7 +307,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
         layer = appLayer.layer
-        if layer.type() != layer.VectorLayer or appLayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
+        if layer.type() != layer.VectorLayer:
             continue
         defs = ""#var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
         try:

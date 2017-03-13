@@ -15,7 +15,6 @@ from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from geoserver.catalog import Catalog, FailedRequestError
 from utils import *
 import utils
-from sldadapter import getGsCompatibleSld
 import jsbeautifier
 from jsmin import jsmin
 from json.encoder import JSONEncoder
@@ -41,31 +40,16 @@ def endWriteWebAppListener():
 	# communicate end of function
 	pub.sendMessage(utils.topics.endFunction)
 
-def createApp(appdef, deployData, folder, forPreview, progress):
-	# save to global __appdef to patch a PyPubSub limit that does not allow
+def createApp(appdef, folder, forPreview, progress):
+	# save to global __appdef to patch a PyPubSub limitation that does not allow
 	# to register a lambda function as listener (weak reference is unregistered
 	# as soon the lamda is out of scope)
 	global __appdef
 	__appdef = appdef
 
 	viewer.shutdown()
-	if deployData:
-		usesGeoServer = False
-		usesPostgis = False
-		layers = appdef["Layers"]
-		for layer in layers:
-			if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
-				usesPostgis = True
-				usesGeoServer = True
-			elif layer.method in [METHOD_WFS, METHOD_WMS]:
-				usesGeoServer = True
-		if usesPostgis:
-			importPostgis(appdef, progress)
-		if usesGeoServer:
-			publishGeoserver(appdef, progress)
-
 	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
-	writeWebApp(appdef, folder, deployData, forPreview, progress)
+	writeWebApp(appdef, folder, forPreview, progress)
 
 def checkSDKServerVersion():
 	path = os.path.join(os.path.dirname(__file__), "package.json")
@@ -94,8 +78,8 @@ def checkAppCanBeCreated(appdef):
 
 	MAXSIZE = 30000
 	for applayer in layers:
-		if applayer == METHOD_FILE and getSize(applayer.layer) > MAXSIZE:
-			problems.append("Layer %s might be too big for being loaded directly from a file. Using an alternative method (GeoServer or GeoServer + PostGIS) is recommended.")
+		if applayer.layer.providerType().lower() not in ["wms", "wfs"] and getSize(applayer.layer) > MAXSIZE:
+			problems.append("Layer %s might be too big for being loaded directly from a file.")
 
 	for applayer in layers:
 		layer = applayer.layer
@@ -116,7 +100,7 @@ def checkAppCanBeCreated(appdef):
 			if "text/javascript" not in r.text:
 				problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
 							% layer.name())
-		if layer.type() != layer.VectorLayer or applayer.method == METHOD_WMS:
+		if layer.type() != layer.VectorLayer:
 			continue
 		renderer = applayer.layer.rendererV2()
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
@@ -170,194 +154,6 @@ def checkAppCanBeCreated(appdef):
 			problems.append("Timeline widget is used but there are no layers with time information")
 
 	return problems
-
-
-def importPostgis(appdef, progress):
-	progress.setText("Importing into PostGIS")
-	progress.setProgress(0)
-	host = appdef["Deploy"]["PostGIS host"]
-	port = appdef["Deploy"]["PostGIS port"]
-	username = appdef["Deploy"]["PostGIS username"]
-	password = appdef["Deploy"]["PostGIS password"]
-	dbname = appdef["Deploy"]["PostGIS database"]
-	schema = appdef["Deploy"]["PostGIS schema"]
-	uri = QgsDataSourceURI()
-	uri.setConnection(host, port, dbname, username, password)
-	connector = PostGisDBConnector(uri)
-	schemas = connector.getSchemas()
-	schemaExists = schema in [s[1] for s in schemas]
-	for i, layer in enumerate(appdef["Layers"]):
-		if layer.method in [METHOD_WFS_POSTGIS, METHOD_WMS_POSTGIS]:
-			if not schemaExists:
-				connector.createSchema(schema)
-				schemaExists = True
-			tables = connector.getTables(schema=schema)
-			tablename = safeName(layer.layer.name())
-			tableExists = tablename in [t[1] for t in tables]
-			if tableExists:
-				connector.deleteTable([schema, tablename])
-			importLayerIntoPostgis(layer.layer, host, port, username, password,
-							dbname, schema, tablename, appdef["Settings"]["App view CRS"])
-		progress.setProgress(int(i*100.0/len(appdef["Layers"])))
-
-
-def importLayerIntoPostgis(layer, host, port, username, password, dbname, schema, tablename, crsid):
-	pk = "id"
-	geom = "geom"
-	providerName = "postgres"
-	destCrs = QgsCoordinateReferenceSystem(crsid)
-
-	uri = QgsDataSourceURI()
-	uri.setConnection(host, str(port), dbname, username, password)
-	uri.setDataSource(schema, tablename, geom, "", pk)
-
-	ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, destCrs, False, False)
-	if ret != 0:
-		raise Exception("Could not import layer '%s': %s" % (layer.name(), errMsg))
-
-
-def publishGeoserver(appdef, progress):
-	viewCrs = appdef["Settings"]["App view CRS"]
-	usesGeoServer = False
-	for applayer in appdef["Layers"]:
-		if applayer.method != METHOD_FILE:
-			if applayer.layer.type() == applayer.layer.VectorLayer and applayer.layer.providerType().lower() != "wfs":
-				usesGeoServer = True
-	if not usesGeoServer:
-		return
-	progress.setText("Publishing to GeoServer")
-	progress.setProgress(0)
-	geoserverUrl = appdef["Deploy"]["GeoServer url"] + "/rest"
-	geoserverPassword = appdef["Deploy"]["GeoServer password"]
-	geoserverUsername = appdef["Deploy"]["GeoServer username"]
-	workspaceName = appdef["Deploy"]["GeoServer workspace"]
-	dsName = "ds_" + workspaceName
-	host = appdef["Deploy"]["PostGIS host"]
-	port = appdef["Deploy"]["PostGIS port"]
-	postgisUsername = appdef["Deploy"]["PostGIS username"]
-	postgisPassword = appdef["Deploy"]["PostGIS password"]
-	database = appdef["Deploy"]["PostGIS database"]
-	schema = appdef["Deploy"]["PostGIS schema"]
-	catalog = Catalog(geoserverUrl, geoserverUsername, geoserverPassword)
-	workspace = catalog.get_workspace(workspaceName)
-	if workspace is None:
-		workspace = catalog.create_workspace(workspaceName, workspaceName)
-	try:
-		store = catalog.get_store(dsName, workspace)
-		resources = store.get_resources()
-		for resource in resources:
-			layers = catalog.get_layers(resource)
-			for layer in layers:
-				catalog.delete(layer)
-			catalog.delete(resource)
-		catalog.delete(store)
-	except Exception:
-		pass
-	try:
-		store = catalog.get_store(dsName, workspace)
-	except FailedRequestError:
-		store = None
-	for i, applayer in enumerate(appdef["Layers"]):
-		layer = applayer.layer
-		if applayer.method != METHOD_FILE and applayer.method != METHOD_DIRECT:
-			name = safeName(layer.name())
-			sld, icons = getGsCompatibleSld(layer)
-			if sld is not None:
-				catalog.create_style(name, sld, True)
-				uploadIcons(icons, geoserverUsername, geoserverPassword, catalog.gs_base_url)
-			if layer.type() == layer.VectorLayer:
-				if applayer.method == METHOD_WFS_POSTGIS or applayer.method == METHOD_WMS_POSTGIS:
-					if store is None:
-						store = catalog.create_datastore(dsName, workspace)
-						store.connection_parameters.update(
-							host=host, port=str(port), database=database, user=postgisUsername, schema=schema,
-							passwd=postgisPassword, dbtype="postgis")
-						catalog.save(store)
-					catalog.publish_featuretype(name, store, layer.crs().authid())
-				else:
-					path = getDataFromLayer(layer, viewCrs)
-					catalog.create_featurestore(name,
-													path,
-													workspace=workspace,
-													overwrite=True)
-				gslayer = catalog.get_layer(name)
-				r = gslayer.resource
-				r.dirty['srs'] = viewCrs
-				catalog.save(r)
-			elif layer.type() == layer.RasterLayer:
-				path = getDataFromLayer(layer, viewCrs)
-				catalog.create_coveragestore(name,
-				                          path,
-				                          workspace=workspace,
-				                          overwrite=True)
-			if sld is not None:
-				publishing = catalog.get_layer(name)
-				publishing.default_style = catalog.get_style(name)
-				catalog.save(publishing)
-		progress.setProgress(int((i+1)*100.0/len(appdef["Layers"])))
-
-
-
-def uploadIcons(icons, url, geoserverUsername, geoserverPassword):
-	url = url + "app/api/icons"
-	for icon in icons:
-		files = {'file': (icon[1], icon[2])}
-		r = requests.post(url, files=files, auth=(geoserverUsername, geoserverPassword))
-		try:
-			r.raise_for_status()
-		except Exception, e:
-			raise Exception ("Error uploading SVG icon to GeoServer:\n" + str(e))
-		break
-
-def getDataFromLayer(layer, crsid):
-	if layer.type() == layer.RasterLayer:
-		data = exportRasterLayer(layer, crsid)
-	else:
-		filename = exportVectorLayer(layer, crsid)
-		basename, extension = os.path.splitext(filename)
-		data = {
-		    'shp': basename + '.shp',
-		    'shx': basename + '.shx',
-		    'dbf': basename + '.dbf',
-		    'prj': basename + '.prj'
-		}
-	return data
-
-def exportVectorLayer(layer, crsid):
-	destCrs = QgsCoordinateReferenceSystem(crsid)
-	settings = QSettings()
-	systemEncoding = settings.value( "/UI/encoding", "System" )
-	filename = unicode(layer.source())
-	destFilename = unicode(layer.name())
-	if not filename.lower().endswith("shp") or layer.crs().authid() != crsid:
-		output = tempFilenameInTempFolder(destFilename + ".shp")
-		provider = layer.dataProvider()
-		writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), destCrs)
-		crsTransform = QgsCoordinateTransform(layer.crs(), destCrs)
-		outFeat = QgsFeature()
-		for f in layer.getFeatures():
-			geom = f.geometry()
-			geom.transform(crsTransform)
-			outFeat.setGeometry(geom)
-			outFeat.setAttributes(f.attributes())
-			writer.addFeature(outFeat)
-		del writer
-		return output
-	else:
-		return filename
-
-def exportRasterLayer(layer, crsid):
-	destCrs = QgsCoordinateReferenceSystem(crsid)
-	if not unicode(layer.source()).lower().endswith("tif") or layer.crs().authid() != crsid:
-		filename = str(layer.name())
-		output = tempFilenameInTempFolder(filename + ".tif")
-		writer = QgsRasterFileWriter(output)
-		writer.setOutputFormat("GTiff");
-		writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), destCrs)
-		del writer
-		return output
-	else:
-		return unicode(layer.source())
 
 
 class DefaultEncoder(JSONEncoder):
@@ -414,9 +210,6 @@ def processAppdef(appdef):
 		newGroups[groupName]["layers"] = groupLayers
 		newGroups[groupName]["showContent"] = group["showContent"]
 	appdef["Groups"] = newGroups
-
-
-
 
 warningIcon = os.path.join(os.path.dirname(__file__), "icons", "warning.png")
 

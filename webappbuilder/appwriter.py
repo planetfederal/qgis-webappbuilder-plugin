@@ -25,7 +25,7 @@ from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 
-def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
+def writeWebApp(appdef, folder, forPreview, progress):
 
     progress.setText("Copying resources files")
     dst = os.path.join(folder, "webapp")
@@ -48,10 +48,9 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     shutil.copytree(cssFolder, cssDstFolder)
     shutil.copy(os.path.join(sdkFolder, "ol.css"), cssDstFolder)
     layers = appdef["Layers"]
-    if writeLayersData:
-        exportLayers(layers, dst, progress,
-                     appdef["Settings"]["Precision for GeoJSON export"],
-                     appdef["Settings"]["App view CRS"], forPreview)
+    exportLayers(layers, dst, progress,
+                 appdef["Settings"]["Precision for GeoJSON export"],
+                 appdef["Settings"]["App view CRS"], forPreview)
 
     class App():
         tabs = []
@@ -97,7 +96,7 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         app.scriptsbody.extend(['<script src="full-debug.js"></script>',
                                 '<script src="app_prebuilt.js"></script>'])
         for layer in appdef["Layers"]:
-            if layer.layer.type() == layer.layer.VectorLayer and layer.method == METHOD_FILE:
+            if layer.layer.type() == layer.layer.VectorLayer:
                 app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
         writeHtml(appdef, dst, app, progress, "index_debug.html")
         pub.sendMessage(utils.topics.endWriteWebApp)
@@ -149,7 +148,7 @@ def appSDKification(folder, progress):
     The returned zip will be the official webapp
     '''
     progress.oscillate()
-
+    
     progress.setText("Get Authorization token")
     try:
         token = utils.getToken()
@@ -157,7 +156,7 @@ def appSDKification(folder, progress):
             raise Exception("Cannot get authentication token")
     except Exception as e:
         raise e
-
+   
     # zip folder to send for compiling
     zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
     try:
@@ -361,7 +360,6 @@ def writeHtml(appdef, folder, app, progress, filename):
 def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
-    deploy = appdef["Deploy"]
     groups = appdef["Groups"]
     widgets = appdef["Widgets"]
     baseJs =[]
@@ -395,7 +393,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     progress.setText("Writing layer definitions")
     for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
-        layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle, forPreview))
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, forPreview))
         progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""

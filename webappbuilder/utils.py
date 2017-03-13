@@ -39,14 +39,6 @@ class topics:
     def __init__():
         pass
 
-
-METHOD_FILE= 0
-METHOD_WMS = 1
-METHOD_WFS = 2
-METHOD_WMS_POSTGIS = 3
-METHOD_WFS_POSTGIS = 4
-METHOD_DIRECT = 5
-
 MULTIPLE_SELECTION_DISABLED = 0
 MULTIPLE_SELECTION_ALT_KEY = 1
 MULTIPLE_SELECTION_SHIFT_KEY = 2
@@ -80,13 +72,12 @@ except ImportError:
 
 class Layer():
 
-    def __init__(self, layer, visible, popup, method, clusterDistance, clusterColor,
+    def __init__(self, layer, visible, popup, clusterDistance, clusterColor,
                  allowSelection, showInOverview, timeInfo, showInControls,
                  singleTile):
         self.layer = layer
         self.visible = visible
         self.popup = popup
-        self.method = method
         self.clusterDistance = clusterDistance
         self.clusterColor = clusterColor
         self.allowSelection = allowSelection
@@ -97,7 +88,7 @@ class Layer():
 
     @staticmethod
     def fromDict(d):
-        layer = Layer(*[None] * 11)
+        layer = Layer(*[None] * 10)
         for a, b in d.iteritems():
             setattr(layer, a, b)
         layer.layer = findProjectLayerByName(layer.layer)
@@ -145,34 +136,33 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     ext = "js" if forPreview else "json"
     regexp = re.compile(r'"geometry":.*?null\}')
     for i, appLayer in enumerate(layers):
-        if appLayer.method == METHOD_FILE:
-            layer = appLayer.layer
-            if layer.type() == layer.VectorLayer:
-                path = os.path.join(layersFolder, "lyr_%s.%s" % (safeName(layer.name()), ext))
-                QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
-                with codecs.open(path, encoding="utf-8") as f:
-                    lines = f.readlines()
-                with codecs.open(path, "w", encoding="utf-8") as f:
-                    if forPreview:
-                        f.write("%s_geojson_callback(" % safeName(layer.name()))
-                    for line in lines:
-                        line = reducePrecision.sub(r"\1", line)
-                        line = line.strip("\n\t ")
-                        line = removeSpaces(line)
-                        if layer.wkbType()==QGis.WKBMultiPoint:
-                            line = line.replace("MultiPoint", "Point")
-                            line = line.replace("[ [", "[")
-                            line = line.replace("] ]", "]")
-                            line = line.replace("[[", "[")
-                            line = line.replace("]]", "]")
-                        line = regexp.sub(r'"geometry":null', line)
-                        f.write(line)
-                    if forPreview:
-                        f.write(");")
-            elif layer.type() == layer.RasterLayer:
-                destFile = os.path.join(layersFolder, safeName(layer.name()) + ".png").replace("\\", "/")
-                img = layer.previewAsImage(QSize(layer.width(),layer.height()))
-                img.save(destFile)
+        layer = appLayer.layer
+        if layer.type() == layer.VectorLayer:
+            path = os.path.join(layersFolder, "lyr_%s.%s" % (safeName(layer.name()), ext))
+            QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
+            with codecs.open(path, encoding="utf-8") as f:
+                lines = f.readlines()
+            with codecs.open(path, "w", encoding="utf-8") as f:
+                if forPreview:
+                    f.write("%s_geojson_callback(" % safeName(layer.name()))
+                for line in lines:
+                    line = reducePrecision.sub(r"\1", line)
+                    line = line.strip("\n\t ")
+                    line = removeSpaces(line)
+                    if layer.wkbType()==QGis.WKBMultiPoint:
+                        line = line.replace("MultiPoint", "Point")
+                        line = line.replace("[ [", "[")
+                        line = line.replace("] ]", "]")
+                        line = line.replace("[[", "[")
+                        line = line.replace("]]", "]")
+                    line = regexp.sub(r'"geometry":null', line)
+                    f.write(line)
+                if forPreview:
+                    f.write(");")
+        elif layer.type() == layer.RasterLayer:
+            destFile = os.path.join(layersFolder, safeName(layer.name()) + ".png").replace("\\", "/")
+            img = layer.previewAsImage(QSize(layer.width(),layer.height()))
+            img.save(destFile)
         progress.setProgress(int(i*100.0/len(layers)))
 
 

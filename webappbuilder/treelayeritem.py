@@ -91,18 +91,6 @@ class TreeLayerItem(QTreeWidgetItem):
         self.showInControlsItem.setText(0, "Show in controls")
         self.addChild(self.visibleItem)
         if layer.type() == layer.VectorLayer:
-            if layer.providerType().lower() != "wfs":
-                self.connTypeItem = QTreeWidgetItem(self)
-                self.connTypeItem.setText(0, "Connect to this layer using")
-                self.addChild(self.connTypeItem)
-                self.connTypeCombo = QComboBox()
-                self.connTypeCombo.setStyleSheet(self.comboStyle)
-                options = ["Use file directly", "GeoServer->WMS", "GeoServer->WFS",
-                           "PostGIS->GeoServer->WMS", "PostGIS->GeoServer->WFS"]
-                for option in options:
-                    self.connTypeCombo.addItem(option)
-                tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
-                self.connTypeCombo.currentIndexChanged.connect(self.connTypeChanged)
             self.allowSelectionItem = QTreeWidgetItem(self)
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
@@ -132,17 +120,6 @@ class TreeLayerItem(QTreeWidgetItem):
                 self.clusterColorLabel.connect(self.clusterColorLabel, SIGNAL("linkActivated(QString)"), editColor)
 
                 self.addChild(self.clusterItem)
-        elif layer.providerType().lower() != "wms":
-                self.connTypeItem = QTreeWidgetItem(self)
-                self.connTypeItem.setText(0, "Connect to this layer using")
-                self.addChild(self.connTypeItem)
-                self.connTypeCombo = QComboBox()
-                self.connTypeCombo.setStyleSheet(self.comboStyle)
-                options = ["Use file directly", "GeoServer->WMS"]
-                for option in options:
-                    self.connTypeCombo.addItem(option)
-                tree.setItemWidget(self.connTypeItem, 1, self.connTypeCombo)
-
         if layer.providerType().lower() == "wms" or layer.type() == layer.VectorLayer:
             self.popupItem = QTreeWidgetItem(self)
             self.popupItem.setText(0, "Info popup content")
@@ -179,30 +156,6 @@ class TreeLayerItem(QTreeWidgetItem):
         self.singleTileItem.setDisabled(layer.providerType().lower() not in ["wms", "wfs"])
 
 
-    def connTypeChanged(self):
-        try:
-            current = self.connTypeCombo.currentIndex()
-            disable = current in [METHOD_WMS, METHOD_WMS_POSTGIS]
-            if self.layer.type() == self.layer.VectorLayer:
-                if self.layer.geometryType() == QGis.Point:
-                    self.clusterItem.setDisabled(disable)
-                    self.clusterDistanceItem.setDisabled(disable)
-                    self.clusterColorItem.setDisabled(disable)
-                self.popupItem.setDisabled(disable)
-                self.popupLabel.setDisabled(disable)
-                self.allowSelectionItem.setDisabled(disable)
-            try:
-                disable = (self. layer.providerType().lower() not in ["wms", "wfs"]
-                            and current not in
-                            [METHOD_WMS, METHOD_WMS_POSTGIS, METHOD_WFS, METHOD_WFS_POSTGIS])
-                self.singleTileItem.setDisabled(disable)
-            except:
-                pass
-        except:
-            try:
-                self.singleTileItem.setDisabled(False)
-            except:
-                pass
 
 
 
@@ -212,10 +165,6 @@ class TreeLayerItem(QTreeWidgetItem):
             subitem = self.child(i)
             subitem.setDisabled(disabled)
         try:
-            self.connTypeCombo.setDisabled(disabled)
-        except:
-            pass
-        try:
             self.popupLabel.setDisabled(disabled)
         except:
             pass
@@ -223,8 +172,6 @@ class TreeLayerItem(QTreeWidgetItem):
             self.clusterDistanceItem.setDisabled(disabled)
         except:
             pass
-        if not disabled:
-            self.connTypeChanged()
 
 
     @property
@@ -254,13 +201,6 @@ class TreeLayerItem(QTreeWidgetItem):
             return False
 
     @property
-    def method(self):
-        try:
-            return self.connTypeCombo.currentIndex()
-        except:
-            return METHOD_DIRECT
-
-    @property
     def clusterDistance(self):
         try:
             if self.clusterItem.checkState(0) == Qt.Checked:
@@ -276,7 +216,7 @@ class TreeLayerItem(QTreeWidgetItem):
             raise WrongValueException()
 
 
-    def setValues(self, visible, popup, method, clusterDistance, clusterColor,
+    def setValues(self, visible, popup, clusterDistance, clusterColor,
                   allowSelection, showInOverview, timeInfo,
                   showInControls, singleTile):
         self.timeInfo = timeInfo
@@ -304,16 +244,12 @@ class TreeLayerItem(QTreeWidgetItem):
         except:
             pass
         self.visibleItem.setCheckState(0, Qt.Checked if visible else Qt.Unchecked)
-        try:
-            self.connTypeCombo.setCurrentIndex(method)
-        except:
-            pass
         self.popup = popup
         self.showInOverviewItem.setCheckState(0, Qt.Checked if showInOverview else Qt.Unchecked)
         self.showInControlsItem.setCheckState(0, Qt.Checked if showInControls else Qt.Unchecked)
 
     def appLayer(self):
-        return Layer(self.layer, self.visible, self.popup, self.method,
+        return Layer(self.layer, self.visible, self.popup,
                      self.clusterDistance, self.clusterColor,self.allowSelection,
                      self.showInOverview, self.timeInfo,self.showInControls, self.singleTile)
 
