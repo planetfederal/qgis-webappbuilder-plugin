@@ -19,13 +19,14 @@ import settings
 from types import MethodType
 import webbrowser
 from treesettingsitem import TreeSettingItem
-from utils import *
 from functools import partial
 from settings import webAppWidgets
+from qgiscommons.gui import askForFiles, askForFolder
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
+from qgiscommons.files import tempFolderInTempFolder
 
 # Adding so that our UI files can find resources_rc.py
 sys.path.append(os.path.dirname(__file__))
@@ -463,7 +464,7 @@ class MainDialog(BASE, WIDGET):
             if not dlg.ok:
                 return
         try:
-            self.currentFolder = utils.tempFolderInTempFolder()
+            self.currentFolder = tempFolderInTempFolder()
             pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
             self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
         except WrongValueException:

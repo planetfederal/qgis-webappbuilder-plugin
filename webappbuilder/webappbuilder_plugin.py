@@ -16,7 +16,7 @@ from qgis.core import *
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
-from webappbuilder.utils import tempFolder
+from qgiscommons.files import removeTempFolder
 
 from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings
 
@@ -54,7 +54,7 @@ class WebAppBuilderPlugin:
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
         removeSettingsMenu("Web App Builder")
-        shutil.rmtree(tempFolder())
+        removeTempFolder
 
         try:
             from webappbuilder.tests import testerplugin

@@ -13,7 +13,7 @@ from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.appwriter import writeWebApp
-from webappbuilder.utils import tempFolderInTempFolder
+from qgiscommons.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog

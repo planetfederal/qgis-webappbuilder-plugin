@@ -5,13 +5,13 @@
 #
 import os
 import re
-from PyQt4.QtCore import *
 from qgis.core import *
 from qgis.gui import *
 import qgis
 import subprocess
 import uuid
 import base64
+from PyQt4.QtCore import *
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
@@ -104,27 +104,6 @@ def replaceInTemplate(template, values):
         s = s.replace(name, value)
     return s
 
-def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'webappbuilder')
-    if not QDir(tempDir).exists():
-        QDir().mkpath(tempDir)
-    return unicode(os.path.abspath(tempDir))
-
-def tempFilenameInTempFolder(basename):
-    path = tempFolder()
-    folder = os.path.join(path, str(uuid.uuid4()).replace("-",""))
-    if not QDir(folder).exists():
-        QDir().mkpath(folder)
-    filename =  os.path.join(folder, basename)
-    return filename
-
-def tempFolderInTempFolder():
-    path = tempFolder()
-    folder = os.path.join(path, str(uuid.uuid4()).replace("-",""))
-    if not QDir(folder).exists():
-        QDir().mkpath(folder)
-    return folder
-
 def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     progress.setText("Writing local layer files")
     destCrs = QgsCoordinateReferenceSystem(crsid)
@@ -184,69 +163,6 @@ def findProjectLayerByName(name):
         if mapLayer.name() == name:
             return mapLayer
 
-def _callerName():
-    stack = inspect.stack()
-    parentframe = stack[2][0]
-    name = []
-    module = inspect.getmodule(parentframe)
-    name.append(module.__name__)
-    if 'self' in parentframe.f_locals:
-        name.append(parentframe.f_locals['self'].__class__.__name__)
-    codename = parentframe.f_code.co_name
-    if codename != '<module>':
-        name.append( codename )
-    del parentframe
-    return  ".".join(name)
-
-LAST_PATH = "LastPath"
-
-def askForFiles(parent, msg = None, isSave = False, allowMultiple = False, exts = "*"):
-    msg = msg or 'Select file'
-    name = _callerName()
-    path = getSetting(LAST_PATH, name)
-    f = None
-    if not isinstance(exts, list):
-        exts = [exts]
-    extString = ";; ".join([" %s files (*.%s)" % (e.upper(), e) if e != "*" else "All files (*.*)" for e in exts])
-    if allowMultiple:
-        ret = QFileDialog.getOpenFileNames(parent, msg, path, '*.' + extString)
-        if ret:
-            f = ret[0]
-        else:
-            f = ret = None
-    else:
-        if isSave:
-            ret = QFileDialog.getSaveFileName(parent, msg, path, '*.' + extString) or None
-            if ret is not None and not ret.endswith(exts[0]):
-                ret += "." + exts[0]
-        else:
-            ret = QFileDialog.getOpenFileName(parent, msg , path, '*.' + extString) or None
-        f = ret
-
-    if f is not None:
-        setSetting(LAST_PATH, name, os.path.dirname(f))
-
-    return ret
-
-def askForFolder(parent, msg = None):
-    msg = msg or 'Select folder'
-    name = _callerName()
-    path = getSetting(LAST_PATH, name)
-    folder =  QFileDialog.getExistingDirectory(parent, "Select folder to store app", path, QFileDialog.ShowDirsOnly)
-    if folder:
-        setSetting(LAST_PATH, name, os.path.dirname(folder))
-    return folder
-
-
-def setSetting(namespace, name, value):
-    settings = QSettings()
-    settings.setValue(namespace + "/" + name, value)
-
-def getSetting(namespace, name):
-    v = QSettings().value(namespace + "/" + name, None)
-    if isinstance(v, QPyNullVariant):
-        v = None
-    return v
 
 def run(f):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
