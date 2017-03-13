@@ -22,6 +22,7 @@ import urllib.parse
 
 #authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 #wabCompilerUrl = "http://localhost:8080/package/"
+tokenRealm = "Connect token"
 
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint"))
@@ -29,7 +30,6 @@ def wabCompilerUrl():
 def authUrl():
     return urllib.parse.unquote(pluginSetting("tokenendpoint"))
 
-tokenRealm = "Connect token"
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""
     endFunction = "endFunction"
@@ -309,7 +309,6 @@ def getToken():
             # TODO: return token=None or Exception ?
             return token
     else:
-        QgsMessageLog.logMessage("Authcfg: {}".format(authcfg), "WebAppBuilder")
         usr, pwd = getCredentialsFromAuthDb(authcfg)
 
     # prepare data for the token request
@@ -319,11 +318,14 @@ def getToken():
     headers["Content-Type"] = "application/json"
 
     # request token in synchronous way => block GUI
-    nam = NetworkAccessManager()
+    nam = NetworkAccessManager(debug=True)
     try:
         res, resText = nam.request(authUrl(), method="GET", headers=headers)
-    except Exception, e:
-        raise e
+    except Exception as e:
+        if nam.http_call_result.status_code == 403:
+            raise Exception("Permission denied")
+        else:
+            raise e
 
     # todo: check res code in case not authorization
     if not res.ok:

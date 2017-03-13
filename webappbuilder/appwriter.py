@@ -113,7 +113,10 @@ def writeWebApp(appdef, folder, forPreview, progress):
 
         # apply SDK compilation to the saved webapp
         pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
-        appSDKification(dst, progress)
+        try:
+            appSDKification(dst, progress)
+        except Exception as e:
+            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
 
 def endAppSDKificationListener(success, reason):
     from pubsub import pub
@@ -130,9 +133,9 @@ def manageFinished(netManager, zipFileName, folder):
 
     # todo: check res code in case not authorization
     if not result.ok:
-        e = Exception("Cannot post preview webapp: {}".format(result.reason))
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
-
+        msg = "Cannot post preview webapp: {}".format(result.reason)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
 
     with open(zipFileName, 'wb') as newZipContent:
         newZipContent.write( result.text )
@@ -142,8 +145,9 @@ def manageFinished(netManager, zipFileName, folder):
         with zipfile.ZipFile(zipFileName, 'r') as zf:
             zf.extractall(folder)
     except:
-        e = Exception("Could not unzip webapp {} in folder {}".format(zipFileName, folder))
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+        msg = "Could not unzip webapp {} in folder {}".format(zipFileName, folder)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
 
     pub.sendMessage(utils.topics.endAppSDKification, success=True, reason=None)
 
@@ -157,9 +161,12 @@ def appSDKification(folder, progress):
     try:
         token = utils.getToken()
         if not token:
-            raise Exception("Cannot get authentication token")
+            msg = "Cannot get authentication token"
+            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+            return
     except Exception as e:
-        raise e
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+        return
 
     # zip folder to send for compiling
     zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
@@ -176,7 +183,9 @@ def appSDKification(folder, progress):
                     fiename = os.path.join(dirname, filename)
                     zf.write(fiename, fiename[len(relativeFrom):])
     except:
-        raise Exception("Could not zip webapp folder: {}".format(folder))
+        msg = "Could not zip webapp folder: {}".format(folder)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
 
     # prepare data for WAB compiling request
     with open(zipFileName, 'rb') as f:
@@ -192,7 +201,7 @@ def appSDKification(folder, progress):
     # do http post
     progress.setText("Wait compilation")
 
-    anam = AsyncNetworkAccessManager()
+    anam = AsyncNetworkAccessManager(debug=True)
     anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
     anam.reply.finished.connect( lambda: manageFinished(anam, zipFileName, folder) )
 

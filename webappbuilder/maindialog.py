@@ -447,7 +447,7 @@ class MainDialog(BASE, WIDGET):
             path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
             webbrowser.open_new(path)
         else:
-            QgsMessageLog.logMessage(reason, level=QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
                                  "Could not create web app.\nCheck the QGIS log for more details.")
 
@@ -479,7 +479,7 @@ class MainDialog(BASE, WIDGET):
             QMessageBox.information(iface.mainWindow(), "Web app",
                                      "Web app was correctly created and built.")
         else:
-            QgsMessageLog.logMessage(reason, level=QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                                  "Could not create web app.\nCheck the QGIS log for more details.")
 
