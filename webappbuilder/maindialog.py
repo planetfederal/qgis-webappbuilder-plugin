@@ -435,7 +435,7 @@ class MainDialog(BASE, WIDGET):
             pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
             return f()
         except Exception as ex:
-            self.endFunctionListener(false, str(ex))
+            self.endFunctionListener(False, str(ex))
 
 
     def endCreatePreviewListener(self, success, reason):
