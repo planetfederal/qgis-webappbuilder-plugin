@@ -258,13 +258,13 @@ def run(f):
 def setRepositoryAuth(authConfigId):
     """Add auth to the repository
     """
-    setSetting("auth", "authcfg", authConfigId)
+    setSetting("WebAppBuilder", "{}/{}".format(authUrl(), "authcfg"), authConfigId)
 
 def getRepositoryAuth():
     """check if a authcfg is already configured in settings, otherwise try to get
     connect plugin auth configuration.
     """
-    authcfg = getSetting(authUrl(), "authcfg")
+    authcfg = getSetting("WebAppBuilder", "{}/{}".format(authUrl(), "authcfg"))
     if not authcfg:
         # check if auth setting is available in connect plugin
         try:
@@ -280,8 +280,8 @@ def getCredentialsFromAuthDb(authcfg):
     credentials = (None, None)
     if authcfg:
         authConfig = QgsAuthMethodConfig()
-        QgsAuthManager.instance().loadAuthenticationConfig(authcfg, authConfig, True)
-        credentials = (authConfig.config('username'), authConfig.config('password'))
+        if QgsAuthManager.instance().loadAuthenticationConfig(authcfg, authConfig, True):
+            credentials = (authConfig.config('username'), authConfig.config('password'))
 
     return credentials
 
@@ -310,6 +310,8 @@ def getToken():
             return token
     else:
         usr, pwd = getCredentialsFromAuthDb(authcfg)
+        if not usr and not pwd:
+            raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
 
     # prepare data for the token request
     httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
