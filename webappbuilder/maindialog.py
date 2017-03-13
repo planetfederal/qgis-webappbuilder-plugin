@@ -421,6 +421,7 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setValue(0)
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
+        self.buttonBox.setEnabled(True)
         # to solve module unload error
         from PyQt4.QtGui import QApplication
         QApplication.restoreOverrideCursor()
@@ -430,6 +431,7 @@ class MainDialog(BASE, WIDGET):
         self.progressLabel.setVisible(True)
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
+        self.buttonBox.setEnabled(False)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
