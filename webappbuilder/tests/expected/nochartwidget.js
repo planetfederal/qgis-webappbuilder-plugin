@@ -122,7 +122,7 @@ React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}
         ,
 React.createElement("div", {id: 'popup', className: 'ol-popup'},
-                                    React.createElement(InfoPopup, {map: map, hover: false})
+                                    React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: false})
                                   )
       )
       
