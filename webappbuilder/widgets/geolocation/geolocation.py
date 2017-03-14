@@ -10,8 +10,9 @@ class Geolocation(WebAppWidget):
     
     def write(self, appdef, folder, app, progress):
         try:
-            zoom = "zoom: %i" % int(self._parameters["zoom"])
-        except:
+            zoom = ", zoom: %i" % int(self._parameters["zoom"][0])
+        except Exception,e:
+            print e
             zoom =""
         app.panels.append('''React.createElement("div", {id:'geolocation-control'},
                                     React.createElement(Geolocation, {map:map%s})
