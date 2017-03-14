@@ -117,7 +117,6 @@ html, body {
   height: 50%;
   width: 100%;
   z-index: 101;
-  overflow: auto;
 }
 .chart-panel{
   display: none;
