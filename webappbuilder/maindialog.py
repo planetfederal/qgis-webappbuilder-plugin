@@ -464,7 +464,7 @@ class MainDialog(BASE, WIDGET):
             if not dlg.ok:
                 return
         try:
-            self.currentFolder = tempFolderInTempFolder()
+            self.currentFolder = tempFolderInTempFolder("webappbuilder")
             pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
             self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
         except WrongValueException:

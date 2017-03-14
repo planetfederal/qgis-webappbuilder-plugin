@@ -52,7 +52,7 @@ def createAppFromTestAppdef(appdefName, checkApp=False):
     appdef = testAppdef(appdefName)
     if checkApp:
         problems = checkAppCanBeCreated(appdef)
-    folder = tempFolderInTempFolder()
+    folder = tempFolderInTempFolder("webappbuilder")
     writeWebApp(appdef, folder, True, SilentProgress())
     return folder
 
