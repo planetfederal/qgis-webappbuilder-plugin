@@ -101,3 +101,8 @@ class Print(WebAppWidget):
             progress.setProgress(int((i+1)*100.0/len(composers)))
 
         app.variables.append("var printLayouts = %s;" % json.dumps(layoutDefs))
+
+    def checkProblems(self, appdef, problems):
+        composers = iface.activeComposers()
+        if len(composers) == 0:
+            problems.append("Print widget has been added to the web app, but no print composer is defined in the current project")
