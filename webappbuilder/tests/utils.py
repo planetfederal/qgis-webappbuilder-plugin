@@ -53,7 +53,7 @@ def createAppFromTestAppdef(appdefName, checkApp=False):
     if checkApp:
         problems = checkAppCanBeCreated(appdef)
     folder = tempFolderInTempFolder()
-    writeWebApp(appdef, folder, True, True, SilentProgress())
+    writeWebApp(appdef, folder, True, SilentProgress())
     return folder
 
 def ignoreLayerID(text):
