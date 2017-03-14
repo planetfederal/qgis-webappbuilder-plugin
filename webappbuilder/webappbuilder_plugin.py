@@ -6,6 +6,7 @@
 import os
 import shutil
 import webbrowser
+import traceback
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -15,8 +16,9 @@ from qgis.core import *
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
-from webappbuilder.utils import tempFolder
+from qgiscommons.files import removeTempFolder
 
+from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings
 
 class WebAppBuilderPlugin:
 
@@ -28,6 +30,7 @@ class WebAppBuilderPlugin:
             addTestModule(testerplugin, "Web App Builder")
         except:
             pass
+        readSettings()
 
     def initGui(self):
         icon = QIcon(os.path.dirname(__file__) + "/icons/sdk.svg")
@@ -44,11 +47,14 @@ class WebAppBuilderPlugin:
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
+        addSettingsMenu("Web App Builder", self.iface.addPluginToWebMenu)
+
     def unload(self):
         self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
-        shutil.rmtree(tempFolder())
+        removeSettingsMenu("Web App Builder")
+        removeTempFolder
 
         try:
             from webappbuilder.tests import testerplugin
@@ -70,5 +76,15 @@ class WebAppBuilderPlugin:
                 if ret == QMessageBox.Yes:
                     appdef = loadAppdef(appdefFile)
         initialize()
-        dlg = MainDialog(appdef)
-        dlg.exec_()
+        try:
+            dlg = MainDialog(appdef)
+            dlg.exec_()
+        except:
+            dlg.progressBar.setMaximum(100)
+            dlg.progressBar.setValue(0)
+            dlg.progressBar.setVisible(False)
+            dlg.progressLabel.setVisible(False)
+            QApplication.restoreOverrideCursor()
+
+            QgsMessageLog.logMessage(traceback.format_exc(), "WebAppBuilder", level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(self.iface.mainWindow(), "Unmanaged error. See QGIS log for more details.")

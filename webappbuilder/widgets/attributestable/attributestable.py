@@ -1,7 +1,7 @@
 from webappbuilder.webbappwidget import WebAppWidget
 import os
 from PyQt4.QtGui import QIcon
-from webappbuilder.utils import METHOD_WMS, safeName, METHOD_WMS_POSTGIS
+from webappbuilder.utils import safeName
 
 class AttributesTable(WebAppWidget):
 
@@ -41,7 +41,7 @@ class AttributesTable(WebAppWidget):
         nonVectorLayers = 0
         for applayer in layers:
             layer = applayer.layer
-            if layer.type() != layer.VectorLayer or applayer.method in [METHOD_WMS, METHOD_WMS_POSTGIS]:
+            if layer.type() != layer.VectorLayer:
                 nonVectorLayers += 1
 
         if nonVectorLayers == len(layers):

@@ -11,7 +11,9 @@ import appdefvaliditytest
 import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
-                                       openWAB, closeWAB, testAppdef)
+                                       openWAB, closeWAB, testAppdef, _setWrongSDKEndpoint,
+                                       _resetSDKEndpoint)
+from qgis.utils import iface
 
 try:
     from qgis.core import QGis
@@ -87,6 +89,32 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
 
+    createWithAllWidgetsTest = Test("Verify creating an app with all widgets")
+    if QGis.QGIS_VERSION_INT < 21500:
+        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers-2.14"))
+    else:
+        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
+    appdef = testAppdef("allwidgets", False)
+    createWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
+    createWithAllWidgetsTest.addStep("Click on 'create App' and verify app is correctly created.")
+    createWithAllWidgetsTest.setCleanup(closeWAB)
+    tests.append(previewWithAllWidgetsTest)
+    
+    createEmpyAppTest = Test("Verify creating an app with no layers")
+    createEmpyAppTest.addStep("Load project", iface.newProject)
+    createEmpyAppTest.addStep("Open WAB", lambda: openWAB())
+    createEmpyAppTest.addStep("Create an app and check it is correctly created")
+    createEmpyAppTest.setCleanup(closeWAB)
+    tests.append(createEmpyAppTest)
+    
+    wrongEndpointTest = Test("Verify wrong SDK service URL")
+    wrongEndpointTest.addStep("Load project", iface.newProject)
+    wrongEndpointTest.addStep("Load project", _setWrongSDKEndpoint)
+    wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
+    wrongEndpointTest.addStep("Try to create an app and check it complains of a wrong URL")
+    wrongEndpointTest.setCleanup(_resetSDKEndpoint)
+    tests.append(wrongEndpointTest)
+    
     wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
     wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
     wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", True))

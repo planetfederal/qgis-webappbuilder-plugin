@@ -6,22 +6,31 @@
 import codecs
 import os
 import shutil
+import zipfile
+import uuid
+from pubsub import pub
 from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtSvg import *
 from utils import *
+import utils
 from settings import *
 from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
+from asyncnetworkccessmanager import AsyncNetworkAccessManager
+from requests.packages.urllib3.filepost import encode_multipart_formdata
+from qgiscommons.files import tempFilenameInTempFolder
 
-def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
+def writeWebApp(appdef, folder, forPreview, progress):
+    """WriteApp end is notifed using
+    pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
+    """
     progress.setText("Copying resources files")
-    progress.setProgress(0)
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
         shutil.rmtree(dst)
@@ -42,10 +51,9 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
     shutil.copytree(cssFolder, cssDstFolder)
     shutil.copy(os.path.join(sdkFolder, "ol.css"), cssDstFolder)
     layers = appdef["Layers"]
-    if writeLayersData:
-        exportLayers(layers, dst, progress,
-                     appdef["Settings"]["Precision for GeoJSON export"],
-                     appdef["Settings"]["App view CRS"], forPreview)
+    exportLayers(layers, dst, progress,
+                 appdef["Settings"]["Precision for GeoJSON export"],
+                 appdef["Settings"]["App view CRS"], forPreview)
 
     class App():
         tabs = []
@@ -91,9 +99,10 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
         app.scriptsbody.extend(['<script src="full-debug.js"></script>',
                                 '<script src="app_prebuilt.js"></script>'])
         for layer in appdef["Layers"]:
-            if layer.layer.type() == layer.layer.VectorLayer and layer.method == METHOD_FILE:
+            if layer.layer.type() == layer.layer.VectorLayer:
                 app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
         writeHtml(appdef, dst, app, progress, "index_debug.html")
+        pub.sendMessage(utils.topics.endWriteWebApp, success=True, reason=None)
 
     else:
         app = _app.newInstance()
@@ -101,7 +110,101 @@ def writeWebApp(appdef, folder, writeLayersData, forPreview, progress):
 
         app = _app.newInstance()
         app.scriptsbody.extend(['<script src="/loader.js"></script><script src="/build/app-debug.js"></script>'])
-        writeHtml(appdef, dst, app, progress, "index.html") # with SDK
+        writeHtml(appdef, dst, app, progress, "index.html")
+
+        # apply SDK compilation to the saved webapp
+        pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
+        try:
+            appSDKification(dst, progress)
+        except Exception as e:
+            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+
+def endAppSDKificationListener(success, reason):
+    from pubsub import pub
+    pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
+    pub.sendMessage(utils.topics.endWriteWebApp, success=success, reason=reason)
+
+# prepare callback to manage post result
+def manageFinished(netManager, zipFileName, folder):
+    '''Callback used to manage result of web app upload to compilator.
+    manageFinished can be triggered by slot => any Exception is not trapped
+    by a standard try:catch => real termination is managed sending signals
+    '''
+    result = netManager.httpResult()
+
+    # todo: check res code in case not authorization
+    if not result.ok:
+        msg = "Cannot post preview webapp: {}".format(result.reason)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
+
+    with open(zipFileName, 'wb') as newZipContent:
+        newZipContent.write( result.text )
+
+    # unzip new content as new compiled web appdef
+    try:
+        with zipfile.ZipFile(zipFileName, 'r') as zf:
+            zf.extractall(folder)
+    except:
+        msg = "Could not unzip webapp {} in folder {}".format(zipFileName, folder)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
+
+    pub.sendMessage(utils.topics.endAppSDKification, success=True, reason=None)
+
+def appSDKification(folder, progress):
+    ''' zip app folder and send to WAB compiler to apply SDK compilation.
+    The returned zip will be the official webapp
+    '''
+    progress.oscillate()
+
+    progress.setText("Get Authorization token")
+    try:
+        token = utils.getToken()
+        if not token:
+            msg = "Cannot get authentication token"
+            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+            return
+    except Exception as e:
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+        return
+
+    # zip folder to send for compiling
+    zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
+    try:
+        with zipfile.ZipFile(zipFileName, "w") as zf:
+            relativeFrom = os.path.dirname(folder)
+            for dirname, subdirs, files in os.walk(folder):
+                # eclude data folder
+                if 'data' in subdirs:
+                    subdirs.remove('data')
+                if relativeFrom in dirname:
+                    zf.write(dirname, dirname[len(relativeFrom):])
+                for filename in files:
+                    fiename = os.path.join(dirname, filename)
+                    zf.write(fiename, fiename[len(relativeFrom):])
+    except:
+        msg = "Could not zip webapp folder: {}".format(folder)
+        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+        return
+
+    # prepare data for WAB compiling request
+    with open(zipFileName, 'rb') as f:
+        fileContent = f.read()
+    fields = { 'file': (os.path.basename(zipFileName), fileContent) }
+    payload, content_type = encode_multipart_formdata(fields)
+
+    headers = {}
+    headers["authorization"] = "Bearer {}".format(token)
+    headers["Content-Type"] = content_type
+
+    # prepare request (as in NetworkAccessManager) but without blocking request
+    # do http post
+    progress.setText("Wait compilation")
+
+    anam = AsyncNetworkAccessManager(debug=True)
+    anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
+    anam.reply.finished.connect( lambda: manageFinished(anam, zipFileName, folder) )
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]
@@ -264,7 +367,6 @@ def writeHtml(appdef, folder, app, progress, filename):
 def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
-    deploy = appdef["Deploy"]
     groups = appdef["Groups"]
     widgets = appdef["Widgets"]
     baseJs =[]
@@ -298,7 +400,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     progress.setText("Writing layer definitions")
     for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
-        layerVars.append(layerToJavascript(layer, appdef["Settings"], deploy, layerTitle, forPreview))
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, forPreview))
         progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""

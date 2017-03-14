@@ -5,6 +5,8 @@
 #
 import sys
 import os
+from pubsub import pub
+import pubsub
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -12,18 +14,19 @@ from PyQt4.QtWebKit import *
 import utils
 from collections import defaultdict
 from qgis.utils import iface
-from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated
+from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated, checkSDKServerVersion
 import settings
 from types import MethodType
 import webbrowser
 from treesettingsitem import TreeSettingItem
-from utils import *
 from functools import partial
 from settings import webAppWidgets
+from qgiscommons.gui import askForFiles, askForFolder
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
+from qgiscommons.files import tempFolderInTempFolder
 
 # Adding so that our UI files can find resources_rc.py
 sys.path.append(os.path.dirname(__file__))
@@ -80,8 +83,6 @@ class MainDialog(BASE, WIDGET):
         self.buttonPreview.clicked.connect(self.preview)
         self.buttonBox.helpRequested.connect(self.showHelp)
 
-        self.checkBoxDeployData.stateChanged.connect(self.deployCheckChanged)
-        self.tabPanel.currentChanged.connect(self.tabChanged)
         self.expandLayersButton.clicked.connect(lambda: self.layersTree.expandAll())
         self.collapseLayersButton.clicked.connect(self.collapseLayers)
         self.filterLayersBox.textChanged.connect(self.filterLayers)
@@ -100,7 +101,9 @@ class MainDialog(BASE, WIDGET):
                 self.progressBar.setValue(i)
                 QApplication.processEvents()
             def oscillate(_):
-                self.progressBar.setMaximum(100)
+                self.progressBar.setMaximum(0)
+                self.progressBar.setMinimum(0)
+                QApplication.processEvents()
 
         self.progress = Progress()
 
@@ -111,26 +114,6 @@ class MainDialog(BASE, WIDGET):
 
     def showHelp(self):
         webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html"))
-
-    def tabChanged(self, index):
-        if index == 4:
-            self.updateDeployGroups()
-
-    def updateDeployGroups(self):
-        postGisMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS]
-        geoServerMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS,
-                           utils.METHOD_WMS, utils.METHOD_WFS]
-        usesGeoServer = False
-        usesPostGis = False
-        layers, _ = self.getLayersAndGroups()
-        for layer in layers:
-            if layer.method in geoServerMethods:
-                usesGeoServer = True
-                if layer.method in postGisMethods:
-                    usesPostGis = True
-        self.lblDeployWarning.setVisible(not (usesGeoServer and usesPostGis))
-        self.geoserverGroupBox.setEnabled(usesGeoServer)
-        self.postgisGroupBox.setEnabled(not self.checkBoxDeployData.isChecked() and usesPostGis)
 
     def collapseLayers(self):
         self.layersTree.collapseAll()
@@ -175,7 +158,7 @@ class MainDialog(BASE, WIDGET):
         appdefFile = askForFiles(self, "Select app definition file", True,
                                           exts = "appdef")
         if appdefFile:
-            saveAppdef(self.createAppDefinition(False), appdefFile)
+            saveAppdef(self.createAppDefinition(), appdefFile)
 
     def loadAppdef(self, appdef):
         try:
@@ -218,7 +201,7 @@ class MainDialog(BASE, WIDGET):
                 if item.layer.name() in layers:
                     item.setCheckState(0, Qt.Checked)
                     layer = layers[item.layer.name()]
-                    item.setValues(layer["visible"], layer["popup"], layer["method"],
+                    item.setValues(layer["visible"], layer["popup"],
                                    layer["clusterDistance"], layer["clusterColor"],
                                    layer["allowSelection"],
                                    layer["showInOverview"], layer["timeInfo"],
@@ -226,25 +209,10 @@ class MainDialog(BASE, WIDGET):
                 else:
                     item.setCheckState(0, Qt.Unchecked)
 
-                deploy = appdef["Deploy"]
-
-                self.postgisHostBox.setText(deploy["PostGIS host"])
-                self.postgisPortBox.setText(deploy["PostGIS port"])
-                self.postgisDatabaseBox.setText(deploy["PostGIS database"])
-                self.postgisSchemaBox.setText(deploy["PostGIS schema"])
-                self.postgisUsernameBox.setText(deploy["PostGIS username"])
-                self.postgisPasswordBox.setText(deploy["PostGIS password"])
-                self.geoserverUrlBox.setText(deploy["GeoServer url"])
-                self.geoserverUsernameBox.setText(deploy["GeoServer username"])
-                self.geoserverPasswordBox.setText(deploy["GeoServer password"])
-                self.geoserverWorkspaceBox.setText(deploy["GeoServer workspace"])
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             QMessageBox.warning(iface.mainWindow(), "Error loading app definition",
                 "App definition could not be loaded.\nCheck QGIS log for more details")
-
-    def deployCheckChanged(self):
-        self.updateDeployGroups()
 
     buttonStyle = '''QToolButton {background-color: #7c899f;
                                      border-color: #7c899f;
@@ -447,23 +415,46 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
+    def endFunctionListener(self, success, reason):
+        from pubsub import pub
+        pub.unsubscribe(self.endFunctionListener, utils.topics.endFunction)
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(0)
+        self.progressBar.setVisible(False)
+        self.progressLabel.setVisible(False)
+        self.buttonBox.setEnabled(True)
+        # to solve module unload error
+        from PyQt4.QtGui import QApplication
+        QApplication.restoreOverrideCursor()
+
     def _run(self, f):
         self.progressBar.setVisible(True)
         self.progressLabel.setVisible(True)
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
+        self.buttonBox.setEnabled(False)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
+            pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
             return f()
-        finally:
-            self.progressBar.setVisible(False)
-            self.progressLabel.setVisible(False)
-            QApplication.restoreOverrideCursor()
+        except Exception as ex:
+            self.endFunctionListener(False, str(ex))
 
+
+    def endCreatePreviewListener(self, success, reason):
+        from pubsub import pub
+        pub.unsubscribe(self.endCreatePreviewListener, utils.topics.endFunction)
+        if success:
+            path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
+            webbrowser.open_new(path)
+        else:
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
+                                 "Could not create web app.\nCheck the QGIS log for more details.")
 
     def preview(self):
         try:
-            appdef = self.createAppDefinition(True)
+            appdef = self.createAppDefinition()
         except WrongValueException:
             return
         problems = checkAppCanBeCreated(appdef)
@@ -473,16 +464,25 @@ class MainDialog(BASE, WIDGET):
             if not dlg.ok:
                 return
         try:
-            folder = utils.tempFolderInTempFolder()
-            self._run(lambda: createApp(appdef, True, folder, True, self.progress))
-            path = "file:///" + folder.replace("\\","/") + "/webapp/index_debug.html"
-            webbrowser.open_new(path)
+            self.currentFolder = tempFolderInTempFolder()
+            pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
+            self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
         except WrongValueException:
             pass
         except:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+            self.endCreatePreviewListener(False, traceback.format_exc())
+
+    def endCreateAppListener(self, success, reason):
+        from pubsub import pub
+        pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
+        if success:
+            QMessageBox.information(iface.mainWindow(), "Web app",
+                                     "Web app was correctly created and built.")
+        else:
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nSee QGIS log for more details.")
+                                 "Could not create web app.\nCheck the QGIS log for more details.")
 
     def createApp(self):
         try:
@@ -493,6 +493,11 @@ class MainDialog(BASE, WIDGET):
                 dlg.exec_()
                 if not dlg.ok:
                     return
+            errMessage = checkSDKServerVersion()
+            if errMessage:
+                QMessageBox.warning(self, "Incompatible SDK version", errMessage,
+                                        QMessageBox.Close)
+                return
             folder = askForFolder(self, "Select folder to store app")
             if folder:
                 if os.path.exists(os.path.join(folder, "webapp")):
@@ -501,39 +506,22 @@ class MainDialog(BASE, WIDGET):
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                     if ret == QMessageBox.No:
                         return
-                self._run(lambda: createApp(appdef, not self.checkBoxDeployData.isChecked(), folder, False, self.progress))
-                box = QMessageBox()
-                box.setWindowTitle("Web App Builder");
-                box.setTextFormat(Qt.RichText)
-                box.setText("Application files have been correctly generated.<br>"
-                            "Use the  <a href='http://boundlessgeo.com/products/opengeo-suite/'> Boundless WebSDK </a> for building the final webapp from them.")
-                box.exec_()
+
+                pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
+                self._run(lambda: createApp(appdef, folder, False, self.progress))
         except WrongValueException:
             pass
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nCheck the QGIS log for more details.")
+        except Exception as ex:
+            self.endCreateAppListener(False, traceback.format_exc())
 
-
-    def createAppDefinition(self, preview = False):
+    def createAppDefinition(self):
         layers, groups = self.getLayersAndGroups()
         appdef = {}
         appdef["Settings"] = self.getSettings()
         appdef["Base layers"] = self.getBaseLayers()
         appdef["Layers"] = layers
-        if preview:
-            for layer in layers:
-                providerType = layer.layer.providerType().lower()
-                if providerType not in ["wms", "wfs"]:
-                    layer.method = utils.METHOD_FILE
         appdef["Groups"] = groups
         appdef["Widgets"] = self.getWidgets()
-        appdef["Deploy"] = self.getDeployConfiguration(layers)
-        if appdef["Deploy"]["GeoServer workspace"] == "":
-            appdef["Deploy"]["GeoServer workspace"] = utils.safeName(appdef["Settings"]["Title"])
-        if appdef["Deploy"]["PostGIS schema"] == "":
-            appdef["Deploy"]["PostGIS schema"] = utils.safeName(appdef["Settings"]["Title"])
 
         return appdef
 
@@ -561,39 +549,6 @@ class MainDialog(BASE, WIDGET):
             textbox.setStyleSheet("QLineEdit{background: yellow}")
             raise WrongValueException()
         return value
-
-    def getDeployConfiguration(self, layers):
-        postGisMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS]
-        geoServerMethods = [utils.METHOD_WMS_POSTGIS, utils.METHOD_WFS_POSTGIS,
-                           utils.METHOD_WMS, utils.METHOD_WFS]
-        usesGeoServer = False
-        usesPostGis = False
-        layers, _ = self.getLayersAndGroups()
-        for layer in layers:
-            if layer.method in geoServerMethods:
-                usesGeoServer = True
-                if layer.method in postGisMethods:
-                    usesPostGis = True
-
-        deploy = not self.checkBoxDeployData.isChecked()
-        usesPostGis = usesPostGis and deploy
-        try:
-            params = {
-                "PostGIS host": self._getValue(self.postgisHostBox, usesPostGis),
-                "PostGIS port": self._getValue(self.postgisPortBox, usesPostGis),
-                "PostGIS database": self._getValue(self.postgisDatabaseBox, usesPostGis),
-                "PostGIS schema": self.postgisSchemaBox.text().strip(),
-                "PostGIS username": self._getValue(self.postgisUsernameBox, usesPostGis),
-                "PostGIS password": self._getValue(self.postgisPasswordBox, usesPostGis),
-                "GeoServer url": self._getValue(self.geoserverUrlBox, usesGeoServer).strip("/"),
-                "GeoServer username": self._getValue(self.geoserverUsernameBox, usesGeoServer),
-                "GeoServer password": self._getValue(self.geoserverPasswordBox, usesGeoServer),
-                "GeoServer workspace": self.geoserverWorkspaceBox.text().strip(),
-            }
-            return params
-        except WrongValueException, e:
-            self.tabPanel.setCurrentIndex(4)
-            raise e
 
 
     def getSettings(self):

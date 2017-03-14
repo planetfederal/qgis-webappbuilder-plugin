@@ -13,10 +13,11 @@ from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.appwriter import writeWebApp
-from webappbuilder.utils import tempFolderInTempFolder
+from qgiscommons.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
+from qgiscommons.settings import setPluginSetting, pluginSetting
 
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
@@ -87,3 +88,13 @@ def checkTextInFile(filename, text):
 
 def removeExtent(text):
     return re.sub('varoriginalExtent=(\\[.*?\\]);', '', text)
+
+_sdkEndpoint = None
+def _setWrongSDKEndpoint():
+    global _sdkEndpoint
+    _sdkEndpoint = pluginSetting("sdkendpoint") 
+    setPluginSetting("sdkendpoint", "wrong")
+
+def _resetSdkEndpoint():
+    setPluginSetting(_sdkEndpoint)
+    closeWAB()

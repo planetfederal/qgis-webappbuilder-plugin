@@ -70,6 +70,10 @@ def setup(options):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
     shutil.rmtree(sdkPath)
+    r = requests.get("https://raw.githubusercontent.com/boundlessgeo/sdk/master/package.json")
+    packageFile = options.plugin.source_dir / "package.json"
+    with open(packageFile.abspath(), "w") as f:
+        f.write(r.text)
 
     mapboxPath = os.path.abspath("./webappbuilder/mapboxgl")
     if os.path.exists(mapboxPath):
@@ -79,6 +83,17 @@ def setup(options):
     z.extractall(path=mapboxPath)
     path(os.path.join(mapboxPath, "lib-mapboxgl-qgis-master", "mapboxgl", "mapboxgl.py")).copy2("./webappbuilder")
     shutil.rmtree(mapboxPath)
+
+    tmpCommonsPath = path(__file__).dirname() / "qgiscommons"
+    dst = ext_libs / "qgiscommons"
+    if dst.exists():
+        dst.rmtree()
+    r = requests.get("https://github.com/boundlessgeo/lib-qgis-commons/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=tmpCommonsPath.abspath())
+    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons"
+    src.copytree(dst.abspath())
+    tmpCommonsPath.rmtree()
 
 def read_requirements():
     '''return a list of runtime and list of test requirements'''
