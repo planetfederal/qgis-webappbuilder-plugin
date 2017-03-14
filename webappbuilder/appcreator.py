@@ -78,8 +78,9 @@ def checkAppCanBeCreated(appdef):
 
 	MAXSIZE = 30000
 	for applayer in layers:
-		if applayer.layer.providerType().lower() not in ["wms", "wfs"] and getSize(applayer.layer) > MAXSIZE:
-			problems.append("Layer %s might be too big for being loaded directly from a file." % applayer.layer.name())
+		if applayer.layer.type() != applayer.layer.VectorLayer and applayer.layer.providerType().lower() != "wfs":
+			if getSize(applayer.layer) > MAXSIZE:
+				problems.append("Layer %s might be too big for being loaded directly from a file." % applayer.layer.name())
 
 	for applayer in layers:
 		layer = applayer.layer
