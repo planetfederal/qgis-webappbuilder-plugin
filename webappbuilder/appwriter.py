@@ -229,7 +229,7 @@ def writeJs(appdef, folder, app, progress):
     variables ="\n".join(app.variables)
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
-                                    React.createElement(InfoPopup, {map: map, hover: %s})
+                                    React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: %s})
                                   )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
 
     permalink = str(appdef["Settings"]["Add permalink functionality"]).lower()
@@ -286,7 +286,7 @@ def writeJsx(appdef, folder, app, progress):
     toolbarOptions = '{style:{height: 71}, title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
-                                    React.createElement(InfoPopup, {map: map, hover: %s})
+                                    React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: %s})
                                   )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
 
     variables ="\n".join(app.variables)
