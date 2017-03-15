@@ -11,6 +11,7 @@ import shutil
 import requests
 import zipfile
 import StringIO
+import json
 
 options(
     plugin=Bunch(
