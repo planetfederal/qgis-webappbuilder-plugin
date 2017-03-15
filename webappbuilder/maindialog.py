@@ -22,6 +22,7 @@ from treesettingsitem import TreeSettingItem
 from functools import partial
 from settings import webAppWidgets
 from qgiscommons.gui import askForFiles, askForFolder
+from qgiscommons.settings import pluginSetting
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
@@ -500,7 +501,7 @@ class MainDialog(BASE, WIDGET):
                 return
             folder = askForFolder(self, "Select folder to store app")
             if folder:
-                if os.path.exists(os.path.join(folder, "webapp")):
+                if os.path.exists(os.path.join(folder, "webapp")) and pluginSetting("overwritewarning"):
                     ret = QMessageBox.warning(self, "Output folder", " The selected folder already contains a 'webapp' subfolder.\n"
                                         "Do you confirm that you want to overwrite it?",
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)

@@ -4,7 +4,6 @@
 # This code is licensed under the GPL 2.0 license.
 #
 import os
-import shutil
 import webbrowser
 import traceback
 
@@ -18,7 +17,7 @@ from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
 from qgiscommons.files import removeTempFolder
 
-from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings
+from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
 
 class WebAppBuilderPlugin:
 
@@ -69,11 +68,14 @@ class WebAppBuilderPlugin:
         if projFile:
             appdefFile =  projFile + ".appdef"
             if os.path.exists(appdefFile):
-                ret = QMessageBox.question(self.iface.mainWindow(), "Web app builder",
-                                          "This project has been already published as a web app.\n"
-                                          "Do you want to reload app configuration?",
-                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-                if ret == QMessageBox.Yes:
+                if pluginSetting("askreload") == "Ask":
+                    ret = QMessageBox.question(self.iface.mainWindow(), "Web app builder",
+                                              "This project has been already published as a web app.\n"
+                                              "Do you want to reload app configuration?",
+                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+                    if ret == QMessageBox.Yes:
+                        appdef = loadAppdef(appdefFile)
+                elif pluginSetting("askreload") == "Open last configuration":
                     appdef = loadAppdef(appdefFile)
         initialize()
         try:

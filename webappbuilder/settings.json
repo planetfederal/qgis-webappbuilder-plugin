@@ -9,7 +9,7 @@
 	},
 	{"name":"tokenendpoint",
 	 "label": "Connect authentication endpoint",
-	 "description": "The URL of the Connect portal authenitcation serice",
+	 "description": "The URL of the Connect portal authenitcation service",
 	 "type": "string",
      "default": "https://api.dev.boundlessgeo.io/v1/token/",
 	 "group": "General"
@@ -20,5 +20,21 @@
 	 "type": "string",
      "default": "",
 	 "group": "General"
-	}
+	},
+	{"name":"overwritewarning",
+     "label": "Warn when output folder exists",
+     "description": "If output webapp folder exists, ask permission to overwrite it",
+     "type": "bool",
+     "default": true,
+     "group": "General"
+    },
+    {"name":"askreload",
+     "label": "Behaviour when opening WAB dialog",
+     "description": "Defines the action to perform when WAB is opened",
+     "type": "choice",
+     "default": "Ask",
+     "options": ["Ask", "Open last configuration", "Open new configuration"],
+     "group": "General"
+    }
+	
 ]
