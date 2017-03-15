@@ -12,6 +12,7 @@ import requests
 import zipfile
 import StringIO
 import json
+from collections import defaultdict
 
 options(
     plugin=Bunch(
