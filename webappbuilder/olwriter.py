@@ -33,7 +33,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
         wfsSource =  ('''window.wfsCallback_%(layerName)s = function(jsonData) {
                         wfsSource_%(layerName)s.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
                     };
-                    var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: %(layerCrs)s});
+                    var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: "%(layerCrs)s"});
                     wfsFormat_%(layerName)s.readProjectionFromObject = function() { return this.defaultDataProjection; };
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: wfsFormat_%(layerName)s,
@@ -50,7 +50,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
     else:
-        wfsSource =  ('''var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: %(layerCrs)s});
+        wfsSource =  ('''var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: "%(layerCrs)s"});
                       wfsFormat_%(layerName)s.readProjectionFromObject = function() { return this.defaultDataProjection; };
                       var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: wfsFormat_%(layerName)s,
