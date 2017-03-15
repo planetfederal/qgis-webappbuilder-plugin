@@ -116,7 +116,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     regexp = re.compile(r'"geometry":.*?null\}')
     for i, appLayer in enumerate(layers):
         layer = appLayer.layer
-        if layer.type() == layer.VectorLayer:
+        if layer.type() == layer.VectorLayer and layer.providerName().lower() != "wfs":
             path = os.path.join(layersFolder, "lyr_%s.%s" % (safeName(layer.name()), ext))
             QgsVectorFileWriter.writeAsVectorFormat(layer,  path, "utf-8", destCrs, 'GeoJson')
             with codecs.open(path, encoding="utf-8") as f:
