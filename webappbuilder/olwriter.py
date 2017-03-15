@@ -57,7 +57,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                           var xmlhttp = new XMLHttpRequest();
                           xmlhttp.onreadystatechange = function() {
                             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                              var features = wfsSource_%(layerName)s.getFormat().readFeatures(xmlhttp.responseText, {featureProjection: "%(viewCrs)s", dataProjection: "%(layerCrs)s"});
+                              var features = wfsSource_%(layerName)s.getFormat().readFeatures(xmlhttp.responseText, {featureProjection: projection, dataProjection: "%(layerCrs)s"});
                               wfsSource_%(layerName)s.addFeatures(features);
                             }
                           };
