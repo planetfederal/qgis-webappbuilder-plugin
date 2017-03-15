@@ -71,8 +71,8 @@ new ol.layer.Tile({
 /*Stamen terrain*/
 new ol.layer.Tile({
     type: 'base',
-    title: 'Stamen watercolor',
-    source: new ol.source.Stamen({layer: 'watercolor'}),
+    title: 'Stamen terrain',
+    source: new ol.source.Stamen({layer: 'terrain'}),
     projection: 'EPSG:3857'
 })
 
