@@ -46,7 +46,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     });
                     ''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
-                     "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
+                     "layerCrs": layerCrs, "viewCrs": viewCrs, "strategy": strategy, "bbox": bbox})
     else:
         wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
