@@ -31,7 +31,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
         strategy = ""
     if jsonp:
         wfsSource =  ('''window.wfsCallback_%(layerName)s = function(jsonData) {
-                        wfsSource_%(layerName)s.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
+                        wfsSource_%(layerName)s.addFeatures(wfsSource_%(layerName)s.getFormat().readFeatures(jsonData, {featureProjection: "%(viewCrs)s", dataProjection: "%(layerCrs)s"}));
                     };
                     var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
@@ -46,14 +46,23 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     });
                     ''' %
                     {"url": url, "layerName":layerName, "typeName": typeName,
-                     "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
+                     "layerCrs": layerCrs, "viewCrs": viewCrs, "strategy": strategy, "bbox": bbox})
     else:
         wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
                         format: new ol.format.GeoJSON(),
-                        url: function(extent, resolution, projection) {
-                            return '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
+                        loader: function(extent, resolution, projection) {
+                          var url = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=application/json&' +
                                 '&srsname=%(layerCrs)s%(bbox)s';
+                          var xmlhttp = new XMLHttpRequest();
+                          xmlhttp.onreadystatechange = function() {
+                            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                              var features = wfsSource_%(layerName)s.getFormat().readFeatures(xmlhttp.responseText, {featureProjection: projection, dataProjection: "%(layerCrs)s"});
+                              wfsSource_%(layerName)s.addFeatures(features);
+                            }
+                          };
+                          xmlhttp.open('GET', url, true);
+                          xmlhttp.send();
                         },
                         %(strategy)s
                     });''' %
