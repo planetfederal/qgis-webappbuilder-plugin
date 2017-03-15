@@ -31,11 +31,12 @@ def endWriteWebAppListener(success, reason):
 	from pubsub import pub
 	pub.unsubscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 
-	from PyQt4.QtCore import *
-	projFile = QgsProject.instance().fileName()
-	if projFile:
-		appdefFile =  projFile + ".appdef"
-		saveAppdef(__appdef, appdefFile)
+	if success:
+		from PyQt4.QtCore import *
+		projFile = QgsProject.instance().fileName()
+		if projFile:
+			appdefFile =  projFile + ".appdef"
+			saveAppdef(__appdef, appdefFile)
 
 	# communicate end of function
 	pub.sendMessage(utils.topics.endFunction, success=success, reason=reason)

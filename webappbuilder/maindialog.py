@@ -479,7 +479,7 @@ class MainDialog(BASE, WIDGET):
         if success:
             QMessageBox.information(iface.mainWindow(), "Web app",
                                      "Web app was correctly created and built.")
-        else:
+        elif reason:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                                  "Could not create web app.\nCheck the QGIS log for more details.")

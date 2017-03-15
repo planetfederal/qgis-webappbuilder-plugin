@@ -259,9 +259,12 @@ def getToken():
     except:
         pass
 
+    if token is None:
+        raise Exception("Cannot get authentication token")
+    
     # If I get a valid token and no previous authcfg => save current valid
     # credentials in authDb
-    if token and not authcfg:
+    if not authcfg:
         authConfig = QgsAuthMethodConfig('Basic')
         authcfg = QgsAuthManager.instance().uniqueConfigId()
         authConfig.setId(authcfg)

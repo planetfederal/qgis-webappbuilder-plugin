@@ -162,8 +162,7 @@ def appSDKification(folder, progress):
     try:
         token = utils.getToken()
         if not token:
-            msg = "Cannot get authentication token"
-            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
+            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=None)
             return
     except Exception as e:
         pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
