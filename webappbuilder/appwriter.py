@@ -161,14 +161,12 @@ def appSDKification(folder, progress):
     progress.setText("Get Authorization token")
     try:
         token = utils.getToken()
-        if not token:
-            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=None)
-            return
     except Exception as e:
         pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
         return
 
     # zip folder to send for compiling
+    progress.setText("Preparing data to compile")
     zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
     try:
         with zipfile.ZipFile(zipFileName, "w") as zf:

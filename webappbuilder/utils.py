@@ -7,6 +7,7 @@ import os
 import re
 from qgis.core import *
 from qgis.gui import *
+import qgis.utils
 import qgis
 import subprocess
 import uuid
@@ -22,16 +23,12 @@ import urllib.parse
 
 #authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
 #wabCompilerUrl = "http://localhost:8080/package/"
-tokenRealm = "Connect token server"
 
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint"))
 
 def authUrl():
     return urllib.parse.unquote(pluginSetting("tokenendpoint"))
-
-def authCfg():
-    return urllib.parse.unquote(pluginSetting("authcfg"))
 
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""
@@ -174,24 +171,26 @@ def run(f):
     finally:
         QApplication.restoreOverrideCursor()
 
-def setRepositoryAuth(authConfigId):
-    """Add auth to the repository
+def getConnectAuthCfg():
+    """try to get connect plugin auth configuration.
     """
-    setPluginSetting("authcfg", authConfigId)
+    authcfg = None
+    # check if Connect plugin is istalled
+    try:
+        qgis.utils.plugins["boundlessconnect"]
+        from boundlessconnect.plugins import boundlessRepoName
+        from pyplugin_installer.installer_data import reposGroup
+    except:
+        msg = "You need to log is via Connect plugin but it is not installed or enabled"
+        raise Exception(msg)
 
-def getRepositoryAuth():
-    """check if a authcfg is already configured in settings, otherwise try to get
-    connect plugin auth configuration.
-    """
-    authcfg = authCfg()
+    # check if auth setting is available in connect plugin
+    settings = QSettings()
+    settings.beginGroup(reposGroup)
+    authcfg = settings.value(boundlessRepoName + '/authcfg', '')
     if not authcfg:
-        # check if auth setting is available in connect plugin
-        try:
-            from boundlessconnect.plugins import boundlessRepoName
-            from pyplugin_installer.installer_data import reposGroup
-            authcfg = getSetting(reposGroup + '/' + boundlessRepoName, 'authcfg')
-        except:
-            pass
+        msg = "You need to login via Connect plugin"
+        raise Exception(msg)
 
     return authcfg
 
@@ -210,27 +209,17 @@ def getToken():
     Parameters
 
     The return value is a token string or Exception
-
-    ----------
-    exception_class : Exception
-        Custom exception class
     """
     token = None
 
     # get authcfg to point to saved credentials in QGIS Auth manager
-    authcfg = getRepositoryAuth()
+    authcfg = getConnectAuthCfg()
     if not authcfg:
-        ok, usr, pwd = QgsCredentials.instance().get(tokenRealm, "", "")
-        if not ok:
-            # try to select a saved identity
-            # TODO: embed QgsAuthConfigSelect to get a saved identity
+        raise Exception("Connect authcfg is empty")
 
-            # TODO: return token=None or Exception ?
-            return token
-    else:
-        usr, pwd = getCredentialsFromAuthDb(authcfg)
-        if not usr and not pwd:
-            raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
+    usr, pwd = getCredentialsFromAuthDb(authcfg)
+    if not usr and not pwd:
+        raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
 
     # prepare data for the token request
     httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
@@ -259,24 +248,7 @@ def getToken():
     except:
         pass
 
-    if token is None:
+    if not token:
         raise Exception("Cannot get authentication token")
-    
-    # If I get a valid token and no previous authcfg => save current valid
-    # credentials in authDb
-    if not authcfg:
-        authConfig = QgsAuthMethodConfig('Basic')
-        authcfg = QgsAuthManager.instance().uniqueConfigId()
-        authConfig.setId(authcfg)
-        authConfig.setConfig('username', usr)
-        authConfig.setConfig('password', pwd)
-        authConfig.setUri(authUrl())
-        authConfig.setName('Boundless Connect Portal')
-
-        if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
-            # save authcfg to reference credential config for the next setssion
-            setRepositoryAuth(authcfg)
-        else:
-            QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
 
     return token

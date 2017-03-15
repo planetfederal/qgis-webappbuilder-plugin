@@ -14,13 +14,6 @@
      "default": "https://api.dev.boundlessgeo.io/v1/token/",
 	 "group": "General"
  	},
-	{"name":"authcfg",
-	 "label": "Credential configuration ID",
-	 "description": "The authcfg identifier to point credentials stored in QGIS Authentication DB",
-	 "type": "string",
-     "default": "",
-	 "group": "General"
-	},
 	{"name":"overwritewarning",
      "label": "Warn when output folder exists",
      "description": "If output webapp folder exists, ask permission to overwrite it",
@@ -36,5 +29,4 @@
      "options": ["Ask", "Open last configuration", "Open new configuration"],
      "group": "General"
     }
-	
 ]
