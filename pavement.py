@@ -263,11 +263,31 @@ def _make_zip(zipFile, options):
             relpath = os.path.join(options.plugin.name, "docs", os.path.relpath(root, options.sphinx.builddir))
             zipFile.write(path(root) / f, path(relpath) / f)
 
+def create_settings_docs(options):
+    settings_file = path(options.plugin.name) / "settings.json"
+    doc_file = options.sphinx.sourcedir / "settingsconf.rst"
+    with open(settings_file) as f:
+        settings = json.load(f)
+
+    grouped = defaultdict(list)
+    for setting in settings:
+        grouped[setting["group"]].append(setting)
+    with open (doc_file, "w") as f:
+        f.write("Plugin settings\n###############\n\nThe plugin can be adjusted using the following settings, to be found in its settings dialog:\n")
+        for groupName, group in grouped.iteritems():        
+            f.write("\n* %s \n" % groupName)
+            for setting in group:
+                f.write("\t - *%s*: %s\n\n" % (setting["label"], setting["description"]))
+
 
 @task
 def builddocs(options):
-    sh("git submodule init")
-    sh("git submodule update")
+    try: #this might fail if the plugin code is not in a git repo
+        sh("git submodule init")
+        sh("git submodule update")
+    except:
+        pass
+    create_settings_docs(options)
     cwd = os.getcwd()
     os.chdir(options.sphinx.docroot)
     sh("make html")

@@ -47,11 +47,11 @@ To create a web app, you must define its characteristics using the definitions a
 
 .. note::
 
-   The :guilabel:`Preview` button will create the web app in a temporary folder and open your default internet browser to load it. **This preview web app is based on a precompiled version of Web SDK and is not ready for production**, but only for preview and debug purposes. Please see :ref:`qgis.webappbuilder.wabandwebsdk` for more details.
+   The :guilabel:`Preview` button will create the web app in a temporary folder and open your default internet browser to load it. **This preview web app is based on a precompiled version of Web SDK and is not ready for production**, but only for preview and debug purposes. 
 
-   The :guilabel:`Create App` button will create the files needed for building a web app using *Boundless WebSDK*. Those files will be saved in a folder specified by the user, and they are not the web app itself. They have to be built using Node.js and *Boundless WebSDK*. Usage of *Boundless WebSDK* is not explained here. Please refer to the WebSDK documentation for more details.
+   The :guilabel:`Create App` button will create a web app using *Boundless WebSDK*. The web app is stored in a folder specified by the user. *Boundless WebSDK* is offered as a service to Boundless customers, so you will need your Boundless Connect credentials. You will be prompted to enter them if it is the first time that you WebSDK in the current QGIS session.
 
-The following sections will explain each tab in the Web App Builder dialog, it's contents and options.
+The following sections will explain each tab in the Web App Builder dialog, its contents and options.
 
 Description
 -----------
