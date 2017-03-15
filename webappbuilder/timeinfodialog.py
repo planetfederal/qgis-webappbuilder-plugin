@@ -32,8 +32,8 @@ class TimeInfoDialog(BASE, WIDGET):
             self.radioButtonFeatureTimeInfo.setChecked(True)
         else:
             self.radioButtonLayerTimeInfo.setChecked(True)
-            self.toDateTimeEdit.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo[0]))
-            self.fromDateTimeEdit.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo[1]))
+            self.toDateTimeEdit.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo[1]))
+            self.fromDateTimeEdit.setDateTime(QDateTime.fromMSecsSinceEpoch(timeInfo[0]))
 
     def okPressed(self):
         if self.radioButtonFeatureTimeInfo.isChecked():
