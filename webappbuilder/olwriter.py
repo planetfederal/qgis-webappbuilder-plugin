@@ -80,7 +80,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
     wfst = str(bool(layer.capabilitiesString())).lower()
     wfsInfo = '''{featureNS: '%(ns)s',
-                    typeName: '%(typeName)s',
+                    featureType: '%(typeName)s',
                     geometryType: '%(geomType)s',
                     geometryName: '%(geomName)s',
                     url: '%(url)s'
