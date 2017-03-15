@@ -33,8 +33,10 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
         wfsSource =  ('''window.wfsCallback_%(layerName)s = function(jsonData) {
                         wfsSource_%(layerName)s.addFeatures(new ol.format.GeoJSON().readFeatures(jsonData));
                     };
+                    var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: %(layerCrs)s});
+                    wfsFormat_%(layerName)s.readProjectionFromObject = function() { return this.defaultDataProjection; };
                     var wfsSource_%(layerName)s = new ol.source.Vector({
-                        format: new ol.format.GeoJSON(),
+                        format: wfsFormat_%(layerName)s,
                         loader: function(extent, resolution, projection) {
                             var script = document.createElement('script');
                             script.src = '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
@@ -48,8 +50,10 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     {"url": url, "layerName":layerName, "typeName": typeName,
                      "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
     else:
-        wfsSource =  ('''var wfsSource_%(layerName)s = new ol.source.Vector({
-                        format: new ol.format.GeoJSON(),
+        wfsSource =  ('''var wfsFormat_%(layerName)s = new ol.format.GeoJSON({defaultDataProjection: %(layerCrs)s});
+                      wfsFormat_%(layerName)s.readProjectionFromObject = function() { return this.defaultDataProjection; };
+                      var wfsSource_%(layerName)s = new ol.source.Vector({
+                        format: wfsFormat_%(layerName)s,
                         url: function(extent, resolution, projection) {
                             return '%(url)s?service=WFS&version=1.1.0&request=GetFeature' +
                                 '&typename=%(typeName)s&outputFormat=application/json&' +
