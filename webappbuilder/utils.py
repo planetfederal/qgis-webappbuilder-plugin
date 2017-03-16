@@ -181,7 +181,7 @@ def getConnectAuthCfg():
         from boundlessconnect.plugins import boundlessRepoName
         from pyplugin_installer.installer_data import reposGroup
     except:
-        msg = "You need to log is via Connect plugin but it is not installed or enabled"
+        msg = "You need to log in via Connect plugin but it is not installed or enabled"
         raise Exception(msg)
 
     # check if auth setting is available in connect plugin
