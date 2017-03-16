@@ -17,6 +17,9 @@
 .container {
   height: 100%;
 }
+canvas {
+  background-color: white;
+}
 #content {
   width: 100%;
   height:  100%;
