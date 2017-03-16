@@ -478,12 +478,18 @@ class MainDialog(BASE, WIDGET):
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
         if success:
-            QMessageBox.information(iface.mainWindow(), "Web app",
-                                     "Web app was correctly created and built.")
+            QMessageBox.information(iface.mainWindow(), self.tr("Web app"),
+                                     self.tr("Web app was correctly created and built."))
         elif reason:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
-                                 "Could not create web app.\nCheck the QGIS log for more details.")
+            if 'Network error #5: Operation canceled' in reason:
+                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                                self.tr("Network error due to a timeout.\n"
+                                "Please configure a longer in:\n"
+                                "Settings->Options->Network->Timeout for network requests (ms)."))
+            else:
+                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                                self.tr("Could not create web app.\nCheck the QGIS log for more details."))
 
     def createApp(self):
         try:
