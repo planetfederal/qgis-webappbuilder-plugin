@@ -18,4 +18,5 @@ Documentation content:
    usage
    controls
    settingsconf
+   wabandwebsdk
 
