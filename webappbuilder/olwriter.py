@@ -78,16 +78,19 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
         QGis.WKBMultiPolygon: 'MultiPolygon',
     }
 
+    featurePrefix = ("'%s'" % typeName.split(":")[0]) if ":" in typeName else "undefined"
     wfst = str(bool(layer.capabilitiesString())).lower()
     wfsInfo = '''{featureNS: '%(ns)s',
                     featureType: '%(featureType)s',
                     geometryType: '%(geomType)s',
                     geometryName: '%(geomName)s',
+                    featurePrefix: %(featurePrefix)s,
                     url: '%(url)s'
                   },
                   isWFST:%(wfst)s,''' % {"geomType": GEOM_TYPE_NAME[geometryType],
                           "url": url, "geomName": "the_geom",
                           "featureType": typeName.split(":")[-1], "ns": "",
+                          "featurePrefix": featurePrefix,
                           "wfst": wfst #TODO: fill NS
                           }
 
