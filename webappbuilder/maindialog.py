@@ -485,7 +485,7 @@ class MainDialog(BASE, WIDGET):
             if 'Network error #5: Operation canceled' in reason:
                 QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
                                 self.tr("Network error due to a timeout.\n"
-                                "Please configure a longer in:\n"
+                                "Please configure a longer timeout going to:\n"
                                 "Settings->Options->Network->Timeout for network requests (ms)."))
             else:
                 QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
