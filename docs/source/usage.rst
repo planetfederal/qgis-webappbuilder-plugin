@@ -3,26 +3,26 @@
 Usage
 =====
 
-This page will detail how to use the Web App Builder (WAB). For more usage examples, please see the *"Working with the Web App Builder plugin"* tutorial in `Desktop Learning Center <https://connect.boundlessgeo.com/Learn/Boundless-Desktop-Learning>`_.
+This page will detail how to use the Web App Builder (WAB). For more usage
+examples, please see the *"Working with the Web App Builder plugin"* tutorial
+in `Desktop Learning Center <https://connect.boundlessgeo.com/Learn/Boundless-Desktop-Learning>`_.
 
-The |current_plugin| is started from the :menuselection:`Web --> Web App Builder --> Web App Builder` menu item.
+The |current_plugin| is started from the :menuselection:`Web --> Web App Builder --> Web App Builder`
+menu item or by clicking the button in the :guilabel:`Web toolbar`.
 
 .. TODO:: Update figure
 .. figure:: img/menu.png
 
    Menu path to launch the Web App Builder
 
-Once launched, the main dialog of the |current_plugin| looks like this:
+Once started, the main dialog of the |current_plugin| looks like this:
 
 .. figure:: img/maindialog.png
 
    Web App Builder main dialog - Description tab
 
-At the bottom of the Web App Builder main dialog, there are five buttons that allow you to manage your app definitions, as shown below:
-
-.. figure:: img/builderbuttons.png
-
-   App definition and management buttons
+At the bottom of the Web App Builder main dialog, there are six buttons that
+allow you to manage your app definitions, as shown below:
 
 .. list-table::
    :header-rows: 1
@@ -36,34 +36,58 @@ At the bottom of the Web App Builder main dialog, there are five buttons that al
      - Opens an existing app definitions file (``.appdef``)
    * - Save
      - Saves the current app definitions to a file (``.appdef``)
-   * - Help
-     - Brings up a the help dialog
-   * - Create app
-     - Generates the complete app
    * - Preview
      - Shows a preview of the app
+   * - Help
+     - Brings up the help dialog
+   * - Create app
+     - Generates the complete app
+   * - Close
+     - Closes the dialog
 
-To create a web app, you must define its characteristics using the definitions available in each dialog's tab and then press the :guilabel:`Preview` or :guilabel:`Create App` button.
+To generate a web app, you must define its characteristics using the
+definitions available in each tab of the dialog and then press the
+:guilabel:`Preview` or :guilabel:`Create App` button.
 
 .. note::
 
-   The :guilabel:`Preview` button will create the web app in a temporary folder and open your default internet browser to load it. **This preview web app is based on a precompiled version of Web SDK and is not ready for production**, but only for preview and debug purposes. 
+   The :guilabel:`Preview` button will create the web app in a temporary
+   folder and open your default internet browser to load it. **This preview
+   web app is based on a precompiled version of Web SDK and is not ready for
+   production**, but only for preview and debugging purposes.
 
-   The :guilabel:`Create App` button will create a web app using *Boundless WebSDK*. The web app is stored in a folder specified by the user. *Boundless WebSDK* is offered as a service to Boundless customers, so you will need your Boundless Connect credentials. You will be prompted to enter them if it is the first time that you WebSDK in the current QGIS session.
+   The :guilabel:`Create App` button will create a fully functional web app
+   using *Boundless WebSDK* service. The web app is stored in a folder
+   specified by the user.
 
-The following sections will explain each tab in the Web App Builder dialog, its contents and options.
+   *Boundless WebSDK* is offered as an online service to Boundless customers, so
+   you will need to be connected to the internet and use your Boundless Connect
+   credentials. You will be prompted to enter the credentials on the first time
+   that you use WebSDK in each QGIS session.
+
+The following sections will explain each tab in the Web App Builder dialog,
+its contents, and options.
 
 Description
 -----------
 
-The elements in the Description tab control the basic structure of the app page.
+The elements in the :guilabel:`Description` tab control the basic structure of the app page.
 
 Set the title of the project in the :guilabel:`App Title` box. In case you want to add a logo along with your title, enter the path to the logo image file in the :guilabel:`Logo image` box.
 
 From the available themes, select the one you want to use for your app. A theme defines how the elements of the web app (map, widgets, menus, etc.) will appear visually.
 
 There are two themes: *Basic* and *Tabbed*.
-.. TODO:: Explain differences betwen the two options 
+
+.. figure:: img/basic_theme_example.png
+
+   Basic theme example
+
+.. figure:: img/tab_theme_example.png
+
+   Tabbed theme example
+
+.. TODO:: Explain differences between the two options
 
 .. _qgis.webappbuilder.usage.qgislayers:
 
@@ -72,13 +96,17 @@ QGIS Layers
 
 This tab you should select which layers from your existing QGIS project that you would like to add to your web app.
 
-Vector layer will be exported to a GeoJSON file and the app will use it directly. The file will be saved in the output folder in which the app itself will be created.
+Vector layers will be exported to GeoJSON files and the app will use them
+directly. The file will be saved in the output folder in which the app
+itself will be created.
 
 .. figure:: img/qgislayers.png
 
    QGIS Layers tab
 
-Every layer in every group in the QGIS project will be listed in this tab. For each layer, there are several options depending on the layer's type. If the options are not visible, expand them by clicking on the :guilabel:`+` sign.
+Every layer in every group in the QGIS project will be listed in this tab. For
+each layer, there are several options which depend on the layer's type. If the
+options are not visible, expand them by clicking on the :guilabel:`+` sign.
 
 The following list represents the common options for both vector, raster or WMS/WFS layers.
 
@@ -87,7 +115,9 @@ The following list represents the common options for both vector, raster or WMS/
 * The :guilabel:`Show in overview map` check box specifies whether the layer will be added to the overview map (if added as a control. see :ref:`qgis.webappbuilder.controls.overview` in the :ref:`qgis.webappbuilder.controls` page).
 * The :guilabel:`Show in controls` check box specifies whether the layer will be added to controls other than the overview map, such as the legend control or the layer list (if added as a control).
 
-The following sub-sections descrive he different options that you might find for certain types of layer (:ref:`qgis.webappbuilder.usage.vector` and :ref:`qgis.webappbuilder.usage.wmswfs`), and how the app builder deals with them.
+The following sub-sections describe the different options that you might find
+for particular types of layer (:ref:`qgis.webappbuilder.usage.vector` and
+:ref:`qgis.webappbuilder.usage.wmswfs`), and how the app builder deals with them.
 
 .. _qgis.webappbuilder.usage.vector:
 
@@ -100,7 +130,7 @@ For each vector layer, in addition to the common options, the following options 
 
 * :guilabel:`Cluster points`. Check this option to have your point features clustered. **Only available for point layers**. To set how your points will be clustered set the following options (If the options are not visible, expand them by clicking on the :guilabel:`+` sign):
 
-  * :guilabel:`Cluster distance`. Specify the distance (in pixels) to use for clustering. Point features next to each other closer than this distance ill be shown together in the map.
+  * :guilabel:`Cluster distance`. Specify the distance (in pixels) to use for clustering. Point features next to each other closer than this distance ill be shown together on the map.
 
   * :guilabel:`Cluster color`. Specify the color to use for representing clusters in the map.
 
@@ -121,9 +151,14 @@ For each vector layer, in addition to the common options, the following options 
 
      Popup info example
 
-* :guilabel:`Layer time info`. You can add time information for layers, which will be used by the :ref:`qgis.webappbuilder.controls.timeline` control in case it is added. The rendering of layers with time information will be controlled by the *timeline* control. If the *Timeline* control is not added to the web app, the time information will be ignored, and the layer will be rendered normally.
+* :guilabel:`Layer time info`. You can add time information for layers, which
+  will be used by the :ref:`qgis.webappbuilder.controls.timeline` control in
+  case it is added. The *timeline* control will control the rendering of
+  layers with time information. If the *Timeline* control is not added to the
+  web app, the time information will be ignored, and the layer will be
+  rendered normally.
 
-  To configure the time information of the layer, click in the  :guilabel:`Edit` label. You will see the following dialog:
+  To configure the time information of the layer, click the  :guilabel:`Edit` label. You will see the following dialog:
 
   .. figure:: img/timeinfodialog.png
 
@@ -132,7 +167,8 @@ For each vector layer, in addition to the common options, the following options 
   There are three options available:
   
   * :guilabel:`No time info`. The layer will be rendered normally.
-  * :guilabel:`Single time info for the whole layer`. The layer will be rendered if the current date and time set by the Timeline control falls between the two dates defined in the :guilabel:`From date` and :guilabel:`To date` boxes.
+  * :guilabel:`Single time info for the whole layer`. The layer will be rendered if the current date and time set by the Timeline control falls between the two dates defined in the :guilabel:`From date` and
+:guilabel:`To date` boxes.
   * :guilabel:`Feature time info is stored in layer attribute`. Each feature has a different pair of to/from dates, and will only be rendered if the current time falls between them. The fields in which the dates are stored are selected using the :guilabel:`From date field` and :guilabel:`To date field` dropdown menus.
 
 * :guilabel:`Do not consume as tiled layer`. In certain cases, you might not want to use a tiling strategy for remote layers. If this option is selected, WMS layers won't be accessed as tiles, and WFS layers will be downloaded completely instead of using a bounding box strategy based on the current extent of the map.
@@ -163,11 +199,15 @@ The `Other Layers` tab allows you to add other layers to your application. You c
 
 .. figure:: img/otherlayers.png
 
-   Other layers tab with "Open topo map" and Hydda roads and labels selected
+   Other layers tab with "Carto DB" base layer selected
 
-You can select from a list of **Base Layers**, which will be displayed below your layers and **Overlays**, which can be shown along side with your layers.
+You can select from a list of **Base Layers**, which will be displayed below
+your layers and **Overlays**, which can be shown alongside with your layers.
 
-`Base Layers` contain data such as roads and topography, while `Overlays` are normally complementary layers that would serve as additional information (such as places names labels). Both lists content based on available web services.
+`Base Layers` contain data such as roads and topography, while `Overlays` are
+usually complementary layers that would serve as additional information
+(such as places names labels). Both lists content based on available web
+services. For adding more services see :ref:`qgis.webappbuilder.baselayers`.
 
 .. note:: Selecting Base Layers or Overlays is entirely optional.
 
@@ -189,7 +229,7 @@ Controls are activated by clicking their button.
 
    Controls tab with Full screen, geocoding and Layers list selected
 
-Some controls can be configured. This is done by right-clicking their corresponding button and selecting the :guilabel:`Configure` option.
+Some controls can be configured by right-clicking their corresponding button and selecting the :guilabel:`Configure` option.
 
 .. figure:: img/controlcontext.png
 
@@ -220,7 +260,8 @@ The `Settings` tab shows additional configuration for the application:
    * - Add permalink functionality
      - Creates URLs with map current Zoom/Extent information allowing the user to share a link with an exact position.
    * - App view CRS
-     - The CRS of the finished map. Default is ``EPSG:3857`` (Web Mercator). Can be set to other CRS by clicking the :guilabel:Edit link.   
+     - The CRS of the finished map. The default is ``EPSG:3857`` (Web Mercator).
+       Can be set to other CRS by clicking the :guilabel:`Edit link`.
    * - Extent
      - The extent of the map. There are two options: :guilabel:`Canvas extent`, which uses the current state of the QGIS canvas, or :guilabel:`Fit to Layers extent`, which will calculate the extent based on the union of all the layers in the project.
    * - Group base layers     
@@ -232,7 +273,7 @@ The `Settings` tab shows additional configuration for the application:
    * - Minify JavaScript
      - Minify the JavaScript code generated by the Web App Builder.
    * - Precision for GeoJSON export
-     - Number of decimal places to use when exporting features using GeoJSON. Higher numbers increase accuracy but also data size. Default is 2.
+     - Number of decimal places to use when exporting features using GeoJSON. Higher numbers increase accuracy but also data size. The default is 2.
    * - Restrict to extent
      - Do not allow the map to be panned outside of the extent.
    * - Show popups on hover

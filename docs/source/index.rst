@@ -17,6 +17,6 @@ Documentation content:
    installation
    usage
    controls
-   settingsconf
    wabandwebsdk
-
+   baselayers
+   settingsconf
