@@ -9,7 +9,7 @@ import unittest
 
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.settings import webAppWidgets
-from webappbuilder.tests.utils import *
+from webappbuilder.tests.utils import *.widgets
 
 
 class WidgetsTest(unittest.TestCase):
@@ -19,7 +19,7 @@ class WidgetsTest(unittest.TestCase):
 
     def testWidgetsCorrectlyLoaded(self):
         """Check that all widgets loaded"""
-        for w in utils.widgets:
+        for w in widgets:
             self.assertTrue(w in webAppWidgets), 'Widget {} not loaded'.format(w)
 
     def testChartWidgetNotAdded(self):
