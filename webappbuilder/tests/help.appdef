@@ -1,0 +1,133 @@
+{
+    "Base layers": [
+        "Stamen toner lite"
+    ], 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": false, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Raleigh downtown", 
+            "popup": "", 
+            "showInControls": false, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Buildings", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": false, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": false
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Parks", 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>PARK_TYPE</td><td style=\"text-align:right\">[PARK_TYPE]</td></tr><tr><td>FILE_NUMBE</td><td style=\"text-align:right\">[FILE_NUMBE]</td></tr><tr><td>ID_NUMBER</td><td style=\"text-align:right\">[ID_NUMBER]</td></tr><tr><td>DEVELOPED</td><td style=\"text-align:right\">[DEVELOPED]</td></tr><tr><td>MAP_ACRES</td><td style=\"text-align:right\">[MAP_ACRES]</td></tr><tr><td>SHAPEAREA</td><td style=\"text-align:right\">[SHAPEAREA]</td></tr><tr><td>SHAPELEN</td><td style=\"text-align:right\">[SHAPELEN]</td></tr></table>", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "landmarks", 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>ADDRESS</td><td style=\"text-align:right\">[ADDRESS]</td></tr><tr><td>ORDINANCE</td><td style=\"text-align:right\">[ORDINANCE]</td></tr><tr><td>ORD_DATE</td><td style=\"text-align:right\">[ORD_DATE]</td></tr><tr><td>NR_STATUS</td><td style=\"text-align:right\">[NR_STATUS]</td></tr><tr><td>SIGN_PERIO</td><td style=\"text-align:right\">[SIGN_PERIO]</td></tr><tr><td>ACREAGE</td><td style=\"text-align:right\">[ACREAGE]</td></tr><tr><td>ORD_LINK</td><td style=\"text-align:right\">[ORD_LINK]</td></tr></table>", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
+        "Title": "Raleigh Downtown Parks", 
+        "Use JSONP for WFS connections": true, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "attributestable": {
+            "Parameters": {
+                "Zoom level when zooming to point feature": "16"
+            }
+        }, 
+        "attribution": {
+            "Parameters": {}
+        }, 
+        "geocoding": {
+            "Parameters": {}
+        }, 
+        "geolocation": {
+            "Parameters": {
+                "zoom": "Current zoom"
+            }
+        }, 
+        "help": {
+            "Parameters": {}
+        }, 
+        "layerslist": {
+            "Parameters": {
+                "allowFiltering": true, 
+                "allowReordering": false, 
+                "downloadFormat": "GeoJSON", 
+                "showDownload": false, 
+                "showOpacity": false, 
+                "showZoomTo": false, 
+                "tipLabel": "Layers"
+            }
+        }, 
+        "legend": {
+            "Parameters": {
+                "showExpandedOnStartup": false, 
+                "size": 20
+            }
+        }, 
+        "loadingpanel": {
+            "Parameters": {}
+        }, 
+        "scalebar": {
+            "Parameters": {
+                "minWidth": 64, 
+                "units": "metric"
+            }
+        }, 
+        "selectiontools": {
+            "Parameters": {}
+        }, 
+        "zoomcontrols": {
+            "Parameters": {
+                "delta": 1.2, 
+                "duration": 250, 
+                "zoomInTipLabel": "Zoom in", 
+                "zoomOutTipLabel": "Zoom out"
+            }
+        }
+    }
+}

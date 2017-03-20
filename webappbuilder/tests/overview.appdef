@@ -1,0 +1,114 @@
+{
+    "Base layers": [
+        "Stamen toner lite"
+    ], 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": false, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Raleigh downtown", 
+            "popup": "", 
+            "showInControls": false, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Buildings", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": false, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
+        "Title": "Raleigh Downtown Parks", 
+        "Use JSONP for WFS connections": true, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "attributestable": {
+            "Parameters": {
+                "Zoom level when zooming to point feature": "16"
+            }
+        }, 
+        "attribution": {
+            "Parameters": {}
+        }, 
+        "geocoding": {
+            "Parameters": {}
+        }, 
+        "geolocation": {
+            "Parameters": {
+                "zoom": "Current zoom"
+            }
+        }, 
+        "homebutton": {
+            "Parameters": {}
+        }, 
+        "layerslist": {
+            "Parameters": {
+                "allowFiltering": true, 
+                "allowReordering": false, 
+                "downloadFormat": "GeoJSON", 
+                "showDownload": false, 
+                "showOpacity": false, 
+                "showZoomTo": false, 
+                "tipLabel": "Layers"
+            }
+        }, 
+        "legend": {
+            "Parameters": {
+                "showExpandedOnStartup": false, 
+                "size": 20
+            }
+        }, 
+        "loadingpanel": {
+            "Parameters": {}
+        }, 
+        "northarrow": {
+            "Parameters": {
+                "autoHide": false
+            }
+        }, 
+        "overviewmap": {
+            "Parameters": {
+                "Base layer": "Use main map base layer", 
+                "Collapsed": true
+            }
+        }, 
+        "selectiontools": {
+            "Parameters": {}
+        }, 
+        "zoomcontrols": {
+            "Parameters": {
+                "delta": 1.2, 
+                "duration": 250, 
+                "zoomInTipLabel": "Zoom in", 
+                "zoomOutTipLabel": "Zoom out"
+            }
+        }
+    }
+}
