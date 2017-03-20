@@ -9,7 +9,7 @@ import unittest
 
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.settings import webAppWidgets
-from webappbuilder.tests.utils import *.widgets
+from webappbuilder.tests.utils import widgets
 
 
 class WidgetsTest(unittest.TestCase):
