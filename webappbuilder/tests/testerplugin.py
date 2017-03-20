@@ -4,7 +4,7 @@
 # This code is licensed under the GPL 2.0 license.
 #
 import webbrowser
-
+import os
 import settingstest
 import widgetstest
 import appdefvaliditytest
@@ -12,7 +12,7 @@ import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSDKEndpoint,
-                                       _resetSDKEndpoint)
+                                       _resetSDKEndpoint, widgets)
 from qgis.utils import iface
 
 try:
@@ -42,6 +42,21 @@ def functionalTests():
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
     tests = [_test("bakeries"), _test("schools"), _test("fires")]
+    
+    appdefFolder = os.path.join(os.path.dirname(__file__), "data")
+    
+    def _testWidget(n):
+        test = Test("Verify '%s' widget" % n)
+        test.addStep("Setting up project", lambda: loadTestProject("widgets"))
+        test.addStep("Creating web app", lambda: _createWebApp(n))
+        test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
+                    "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
+        return test
+
+    for w in widgets:
+        f = os.path.join(appdefFolder, "%s.appdef" % w)
+        if os.path.exists(f):
+            tests.append(_testWidget(w))
 
     unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
     unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())

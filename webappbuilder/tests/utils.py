@@ -19,6 +19,13 @@ from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
 from qgiscommons.settings import setPluginSetting, pluginSetting
 
+widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
+           "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
+           "geocoding", "geolocation", "help", "homebutton", "layerslist",
+           "legend", "links", "loadingpanel", "measuretools", "mouseposition",
+           "northarrow", "overviewmap", "print", "query", "refresh", "scalebar",
+           "selectiontools", "timeline", "wfst", "zoomcontrols", "zoomslider"]
+
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
     currentProjectFile  = QgsProject.instance().fileName()
