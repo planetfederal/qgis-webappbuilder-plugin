@@ -97,11 +97,11 @@ def removeExtent(text):
     return re.sub('varoriginalExtent=(\\[.*?\\]);', '', text)
 
 _sdkEndpoint = None
-def _setWrongSDKEndpoint():
+def _setWrongSdkEndpoint():
     global _sdkEndpoint
-    _sdkEndpoint = pluginSetting("sdkendpoint") 
+    _sdkEndpoint = pluginSetting("sdkendpoint")
     setPluginSetting("sdkendpoint", "wrong")
 
 def _resetSdkEndpoint():
-    setPluginSetting(_sdkEndpoint)
+    setPluginSetting("sdkendpoint", _sdkEndpoint)
     closeWAB()

@@ -11,8 +11,8 @@ import appdefvaliditytest
 import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
-                                       openWAB, closeWAB, testAppdef, _setWrongSDKEndpoint,
-                                       _resetSDKEndpoint, widgets)
+                                       openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
+                                       _resetSdkEndpoint, widgets)
 from qgis.utils import iface
 
 try:
@@ -42,9 +42,9 @@ def functionalTests():
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
     tests = [_test("bakeries"), _test("schools"), _test("fires")]
-    
+
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
-    
+
     def _testWidget(n):
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
@@ -114,22 +114,22 @@ def functionalTests():
     createWithAllWidgetsTest.addStep("Click on 'create App' and verify app is correctly created.")
     createWithAllWidgetsTest.setCleanup(closeWAB)
     tests.append(previewWithAllWidgetsTest)
-    
+
     createEmpyAppTest = Test("Verify creating an app with no layers")
     createEmpyAppTest.addStep("Load project", iface.newProject)
     createEmpyAppTest.addStep("Open WAB", lambda: openWAB())
     createEmpyAppTest.addStep("Create an app and check it is correctly created")
     createEmpyAppTest.setCleanup(closeWAB)
     tests.append(createEmpyAppTest)
-    
+
     wrongEndpointTest = Test("Verify wrong SDK service URL")
     wrongEndpointTest.addStep("Load project", iface.newProject)
-    wrongEndpointTest.addStep("Load project", _setWrongSDKEndpoint)
+    wrongEndpointTest.addStep("Load project", _setWrongSdkEndpoint)
     wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
     wrongEndpointTest.addStep("Try to create an app and check it complains of a wrong URL")
-    wrongEndpointTest.setCleanup(_resetSDKEndpoint)
+    wrongEndpointTest.setCleanup(_resetSdkEndpoint)
     tests.append(wrongEndpointTest)
-    
+
     wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
     wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
     wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", True))
