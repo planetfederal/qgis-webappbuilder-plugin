@@ -167,12 +167,12 @@ def appSDKification(folder, progress):
 
     # zip folder to send for compiling
     progress.setText("Preparing data to compile")
-    zipFileName = tempFilenameInTempFolder( "webapp.zip" ) # def in utils module
+    zipFileName = tempFilenameInTempFolder("webapp.zip", "webappbuilder")
     try:
         with zipfile.ZipFile(zipFileName, "w") as zf:
             relativeFrom = os.path.dirname(folder)
             for dirname, subdirs, files in os.walk(folder):
-                # eclude data folder
+                # exclude data folder
                 if 'data' in subdirs:
                     subdirs.remove('data')
                 if relativeFrom in dirname:

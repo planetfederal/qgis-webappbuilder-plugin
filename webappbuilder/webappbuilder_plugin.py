@@ -53,7 +53,7 @@ class WebAppBuilderPlugin:
         self.iface.removePluginWebMenu("Web App Builder", self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
         removeSettingsMenu("Web App Builder")
-        removeTempFolder
+        removeTempFolder()
 
         try:
             from webappbuilder.tests import testerplugin
