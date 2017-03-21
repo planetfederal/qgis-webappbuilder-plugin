@@ -169,6 +169,9 @@ class MainDialog(BASE, WIDGET):
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
                     button.webAppWidget.setParameters(appdef["Widgets"][widgetName]["Parameters"])
+                else:
+                    button.setChecked(False)
+                    button.webAppWidget.resetParameters()
 
             for name in self.settingsItems:
                 if name in appdef["Settings"]:
