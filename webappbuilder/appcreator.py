@@ -90,10 +90,11 @@ def checkAppCanBeCreated(appdef):
 				source = layer.source()
 				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
 				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				if "access-control-allow-origin" not in r:
+				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+				if cors not in ["null", "*"]:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
-				
+
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wfs":
@@ -107,7 +108,8 @@ def checkAppCanBeCreated(appdef):
 								% layer.name())
 			else:
 				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				if "access-control-allow-origin" not in r:
+				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+				if cors not in ["null", "*"]:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests." % layer.name())
 
 		if layer.type() != layer.VectorLayer:
