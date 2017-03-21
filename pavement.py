@@ -9,7 +9,6 @@ from paver.easy import *
 import zipfile
 import shutil
 import requests
-import zipfile
 import StringIO
 import json
 from collections import defaultdict
