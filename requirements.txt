@@ -3,6 +3,6 @@ gsconfig
 requests
 jsbeautifier
 beautifulsoup
-pypubsub==3.3 # 3.3 for python2 otherwise latest version it's ok
+pypubsub==3.3
 
 # test requirements
