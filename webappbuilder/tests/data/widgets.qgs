@@ -360,7 +360,7 @@
         <ymax>744885.99499986390583217</ymax>
       </extent>
       <id>raleigh_downtown20161228143332835</id>
-      <datasource>./data/raleigh_downtown.shp</datasource>
+      <datasource>./raleigh_downtown.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -710,7 +710,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>746927.68448618054389954</ymax>
       </extent>
       <id>raleigh_downtown_blocks_201020170320131722800</id>
-      <datasource>./data/raleigh_downtown_blocks_2010.shp</datasource>
+      <datasource>./raleigh_downtown_blocks_2010.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1193,7 +1193,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>raleigh_downtown_buildings20170320122317569</id>
-      <datasource>./data/raleigh_downtown_buildings.shp</datasource>
+      <datasource>./raleigh_downtown_buildings.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1631,7 +1631,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>746572.40016689395997673</ymax>
       </extent>
       <id>raleigh_downtown_fire_incidents_201620170320135633439</id>
-      <datasource>./data/raleigh_downtown_fire_incidents_2016.shp</datasource>
+      <datasource>./raleigh_downtown_fire_incidents_2016.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2106,7 +2106,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>744488.33754104934632778</ymax>
       </extent>
       <id>raleigh_downtown_landmarks20170320122528962</id>
-      <datasource>./data/raleigh_downtown_landmarks.shp</datasource>
+      <datasource>./raleigh_downtown_landmarks.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2456,7 +2456,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>raleigh_downtown_meters20170320163316104</id>
-      <datasource>./data/raleigh_downtown_meters.shp</datasource>
+      <datasource>./raleigh_downtown_meters.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2610,7 +2610,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>744214.59874207782559097</ymax>
       </extent>
       <id>raleigh_downtown_parks20170320123421893</id>
-      <datasource>./data/raleigh_downtown_parks.shp</datasource>
+      <datasource>./raleigh_downtown_parks.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2960,7 +2960,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>744983.53917113528586924</ymax>
       </extent>
       <id>raleigh_downtown_streets20161228143254740</id>
-      <datasource>./data/raleigh_downtown_streets.shp</datasource>
+      <datasource>./raleigh_downtown_streets.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
