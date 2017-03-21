@@ -7,7 +7,7 @@ import os
 import re
 import codecs
 from pubsub import pub
-from appwriter import writeWebApp
+from appwriter import writeWebApp, stopWritingWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -40,6 +40,9 @@ def endWriteWebAppListener(success, reason):
 
 	# communicate end of function
 	pub.sendMessage(utils.topics.endFunction, success=success, reason=reason)
+
+def stopAppCreation():
+	stopWritingWebApp()
 
 def createApp(appdef, folder, forPreview, progress):
 	# save to global __appdef to patch a PyPubSub limitation that does not allow
@@ -93,7 +96,7 @@ def checkAppCanBeCreated(appdef):
 				if "access-control-allow-origin" not in r:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
-				
+
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wfs":

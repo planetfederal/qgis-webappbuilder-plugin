@@ -26,6 +26,13 @@ from asyncnetworkccessmanager import AsyncNetworkAccessManager
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons.files import tempFilenameInTempFolder
 
+__anam = None # AsycnNetworkAccessmanager instance
+def stopWritingWebApp():
+    global __anam
+    if __anam:
+        __anam.abort()
+        __anam.deleteLater()
+
 def writeWebApp(appdef, folder, forPreview, progress):
     """WriteApp end is notifed using
     pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
@@ -199,9 +206,12 @@ def appSDKification(folder, progress):
     # do http post
     progress.setText("Wait compilation")
 
-    anam = AsyncNetworkAccessManager(debug=True)
-    anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
-    anam.reply.finished.connect( lambda: manageFinished(anam, zipFileName, folder) )
+    global __anam
+    if __anam:
+        __anam.deleteLater()
+    __anam = AsyncNetworkAccessManager(debug=True)
+    __anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
+    __anam.reply.finished.connect( lambda: manageFinished(__anam, zipFileName, folder) )
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]

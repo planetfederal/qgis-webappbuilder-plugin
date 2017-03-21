@@ -14,7 +14,15 @@ from PyQt4.QtWebKit import *
 import utils
 from collections import defaultdict
 from qgis.utils import iface
-from appcreator import createApp, AppDefProblemsDialog, loadAppdef, saveAppdef, checkAppCanBeCreated, checkSDKServerVersion
+from appcreator import (
+    createApp,
+    stopAppCreation,
+    AppDefProblemsDialog,
+    loadAppdef,
+    saveAppdef,
+    checkAppCanBeCreated,
+    checkSDKServerVersion,
+)
 import settings
 from types import MethodType
 import webbrowser
@@ -64,8 +72,9 @@ class MainDialog(BASE, WIDGET):
         self.buttonPreview = QPushButton("Preview")
         self.buttonPreview.setIcon(icon("preview.gif"))
 
-        self.buttonCreateApp = QPushButton(self.tr("CreateApp"))
-        self.buttonCreateApp.setIcon(icon("export.png"))
+        self.onCreatingApp = False
+        self.buttonCreateOrStopApp = QPushButton(self.tr("CreateApp"))
+        self.buttonCreateOrStopApp.setIcon(icon("export.png"))
 
         self.buttonHelp = self.buttonBox.button(QDialogButtonBox.Help)
         self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
@@ -76,11 +85,11 @@ class MainDialog(BASE, WIDGET):
         self.buttonBox.addButton(self.buttonOpen, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonSave, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonPreview, QDialogButtonBox.ActionRole)
-        self.buttonBox.addButton(self.buttonCreateApp, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.buttonCreateOrStopApp, QDialogButtonBox.ActionRole)
 
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
-        self.buttonCreateApp.clicked.connect(self.createApp)
+        self.buttonCreateOrStopApp.clicked.connect(self.createOrStopApp)
         self.buttonPreview.clicked.connect(self.preview)
         self.buttonBox.helpRequested.connect(self.showHelp)
 
@@ -419,6 +428,15 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
+    def setButtonsEnabled(status, excludeList=None):
+        """Set enable status for all buttons in self.buttonBox escluding that
+        in the excludeList.
+        """
+        for button in self.buttonBox.buttons():
+            if button in excludeList:
+                continue
+            button.setEnabled(status)
+
     def endFunctionListener(self, success, reason):
         from pubsub import pub
         pub.unsubscribe(self.endFunctionListener, utils.topics.endFunction)
@@ -426,7 +444,7 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setValue(0)
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
-        self.buttonBox.setEnabled(True)
+        self.setButtonsEnabled(status=True)
         # to solve module unload error
         from PyQt4.QtGui import QApplication
         QApplication.restoreOverrideCursor()
@@ -436,7 +454,6 @@ class MainDialog(BASE, WIDGET):
         self.progressLabel.setVisible(True)
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
-        self.buttonBox.setEnabled(False)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
@@ -478,6 +495,8 @@ class MainDialog(BASE, WIDGET):
             self.endCreatePreviewListener(False, traceback.format_exc())
 
     def endCreateAppListener(self, success, reason):
+        self.onCreatingApp = False
+
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
         if success:
@@ -494,7 +513,16 @@ class MainDialog(BASE, WIDGET):
                 QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
                                 self.tr("Could not create web app.\nCheck the QGIS log for more details."))
 
-    def createApp(self):
+        # reset button status
+        self.buttonCreateOrStopApp.setText(self.createAppButtonText)
+
+    def createOrStopApp(self):
+        # check if app is compiling
+        if self.onCreatingApp:
+            stopAppCreation()
+            return
+
+        # start compilation
         try:
             appdef = self.createAppDefinition()
             problems = checkAppCanBeCreated(appdef)
@@ -526,7 +554,13 @@ class MainDialog(BASE, WIDGET):
                     if ret == QMessageBox.No:
                         return
 
+                # set buttons status
+                self.setButtonsEnabled(status=False, excludeList=[self.buttonCreateOrStopApp])
+                self.createAppButtonText = self.buttonCreateOrStopApp.text()
+                self.buttonCreateOrStopApp.setText(self.tr("Stop"))
+
                 pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
+                self.onCreatingApp = True
                 self._run(lambda: createApp(appdef, folder, False, self.progress))
         except WrongValueException:
             pass

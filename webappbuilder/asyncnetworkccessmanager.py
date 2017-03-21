@@ -295,3 +295,11 @@ class AsyncNetworkAccessManager(object):
                 self.msg_log("SSL Error: %s" % v)
         if self.disable_ssl_certificate_validation:
             reply.ignoreSslErrors()
+
+    @pyqtSlot()
+    def abort(self):
+        """
+        Handle request to cancell HTTP call
+        """
+        if (self.reply and self.reply.isRunning()):
+            self.reply.abort()
