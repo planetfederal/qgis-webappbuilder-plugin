@@ -16,7 +16,7 @@ from collections import defaultdict
 options(
     plugin=Bunch(
         name='webappbuilder',
-        sdkversion="v0.10.30",
+        sdkversion="0.10.30",
         ext_libs=path('webappbuilder/ext-libs'),
         ext_src=path('webappbuilder/ext-src'),
         source_dir=path('webappbuilder'),
@@ -67,11 +67,10 @@ def setup(options):
         r = requests.get("https://raw.githubusercontent.com/boundlessgeo/sdk/master/package.json")
         package = r.text
         inzipFolder = "sdk-gh-pages"
-    
     else:
-        sdkUrl = "https://github.com/boundlessgeo/sdk/archive/v%s-artefacts.zip" % option.plugin.sdkversion
-        package = {"version": option.plugin.sdkversion}
-        inzipFolder = "sdk-%s-artifacts" % option.plugin.sdkversion
+        sdkUrl = "https://github.com/boundlessgeo/sdk/archive/v%s-artefacts.zip" % options.plugin.sdkversion
+        package = str({"version": options.plugin.sdkversion})
+        inzipFolder = "sdk-%s-artefacts" % options.plugin.sdkversion
     
     sdkPath = os.path.abspath("./webappbuilder/websdk")
     if os.path.exists(sdkPath):
@@ -83,7 +82,7 @@ def setup(options):
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
+    shutil.copytree(os.path.join(sdkPath, inzipFolder, "dist", "css"), dst)
     shutil.rmtree(sdkPath)
     packageFile = options.plugin.source_dir / "package.json"
     with open(packageFile.abspath(), "w") as f:
