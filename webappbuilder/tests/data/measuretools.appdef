@@ -21,7 +21,7 @@
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
             "layer": "Buildings", 
-            "popup": "", 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>FTR_CODE</td><td style=\"text-align:right\">[FTR_CODE]</td></tr><tr><td>DESCRIPTIO</td><td style=\"text-align:right\">[DESCRIPTIO]</td></tr><tr><td>SUBTYPE</td><td style=\"text-align:right\">[SUBTYPE]</td></tr><tr><td>IMPERVIOUS</td><td style=\"text-align:right\">[IMPERVIOUS]</td></tr><tr><td>UPDATE_DAT</td><td style=\"text-align:right\">[UPDATE_DAT]</td></tr><tr><td>SHAPE_2_AR</td><td style=\"text-align:right\">[SHAPE_2_AR]</td></tr><tr><td>SHAPE_2_LE</td><td style=\"text-align:right\">[SHAPE_2_LE]</td></tr></table>", 
             "showInControls": true, 
             "showInOverview": false, 
             "singleTile": false, 
@@ -34,7 +34,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Logo": "", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -56,21 +56,6 @@
         }, 
         "attribution": {
             "Parameters": {}
-        }, 
-        "charttool": {
-            "Parameters": {
-                "charts": {
-                    "building_catefory": {
-                        "categoryField": "DESCRIPTIO", 
-                        "displayMode": 2, 
-                        "layer": "Buildings", 
-                        "operation": 0, 
-                        "valueFields": [
-                            "DESCRIPTIO"
-                        ]
-                    }
-                }
-            }
         }, 
         "geocoding": {
             "Parameters": {}
@@ -101,6 +86,9 @@
             }
         }, 
         "loadingpanel": {
+            "Parameters": {}
+        }, 
+        "measuretools": {
             "Parameters": {}
         }, 
         "northarrow": {

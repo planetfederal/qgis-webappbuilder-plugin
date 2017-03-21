@@ -26,8 +26,8 @@
             "showInOverview": true, 
             "singleTile": false, 
             "timeInfo": [
-                "Dispatch d", 
-                "Cleared da"
+                "start_date", 
+                "end_date"
             ], 
             "visible": true
         }
@@ -107,9 +107,9 @@
         }, 
         "timeline": {
             "Parameters": {
-                "autoPlayFromStartup": false, 
-                "interval": 500, 
-                "numIntervals": 100
+                "autoPlayFromStartup": true, 
+                "interval": 5000, 
+                "numIntervals": 300
             }
         }, 
         "zoomcontrols": {

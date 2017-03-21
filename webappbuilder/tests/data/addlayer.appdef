@@ -81,15 +81,15 @@
         "Use view CRS for WFS connections": true
     }, 
     "Widgets": {
+        "addlayer": {
+            "Parameters": {}
+        }, 
         "attributestable": {
             "Parameters": {
                 "Zoom level when zooming to point feature": "16"
             }
         }, 
         "attribution": {
-            "Parameters": {}
-        }, 
-        "edit": {
             "Parameters": {}
         }, 
         "geocoding": {

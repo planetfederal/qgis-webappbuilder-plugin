@@ -2,7 +2,14 @@
     "Base layers": [
         "Stamen toner lite"
     ], 
-    "Groups": {}, 
+    "Groups": {
+        "points of interest": {
+            "layers": [
+                "Parks"
+            ], 
+            "showContent": true
+        }
+    }, 
     "Layers": [
         {
             "allowSelection": false, 
@@ -20,10 +27,10 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Buildings", 
+            "layer": "Parks", 
             "popup": "", 
             "showInControls": true, 
-            "showInOverview": false, 
+            "showInOverview": true, 
             "singleTile": false, 
             "timeInfo": null, 
             "visible": true
@@ -34,7 +41,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Logo": "", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -93,10 +100,10 @@
                 "autoHide": false
             }
         }, 
-        "overviewmap": {
+        "scalebar": {
             "Parameters": {
-                "Base layer": "Use main map base layer", 
-                "Collapsed": true
+                "minWidth": 64, 
+                "units": "metric"
             }
         }, 
         "selectiontools": {

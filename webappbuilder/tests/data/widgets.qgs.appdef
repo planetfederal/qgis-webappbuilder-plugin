@@ -20,12 +20,15 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "Buildings", 
+            "layer": "fire_incidents_2016", 
             "popup": "", 
             "showInControls": true, 
-            "showInOverview": false, 
+            "showInOverview": true, 
             "singleTile": false, 
-            "timeInfo": null, 
+            "timeInfo": [
+                "start_date", 
+                "end_date"
+            ], 
             "visible": true
         }
     ], 
@@ -56,21 +59,6 @@
         }, 
         "attribution": {
             "Parameters": {}
-        }, 
-        "charttool": {
-            "Parameters": {
-                "charts": {
-                    "building_catefory": {
-                        "categoryField": "DESCRIPTIO", 
-                        "displayMode": 2, 
-                        "layer": "Buildings", 
-                        "operation": 0, 
-                        "valueFields": [
-                            "DESCRIPTIO"
-                        ]
-                    }
-                }
-            }
         }, 
         "geocoding": {
             "Parameters": {}
@@ -103,13 +91,6 @@
         "loadingpanel": {
             "Parameters": {}
         }, 
-        "mouseposition": {
-            "Parameters": {
-                "coordinateFormat": "Lat/Lon", 
-                "projection": "EPSG:4326", 
-                "undefinedHTML": "&nbsp;"
-            }
-        }, 
         "northarrow": {
             "Parameters": {
                 "autoHide": false
@@ -123,6 +104,13 @@
         }, 
         "selectiontools": {
             "Parameters": {}
+        }, 
+        "timeline": {
+            "Parameters": {
+                "autoPlayFromStartup": false, 
+                "interval": 5000, 
+                "numIntervals": 300
+            }
         }, 
         "zoomcontrols": {
             "Parameters": {

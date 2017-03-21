@@ -26,30 +26,6 @@
             "showInOverview": false, 
             "singleTile": false, 
             "timeInfo": null, 
-            "visible": false
-        }, 
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "Parks", 
-            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>PARK_TYPE</td><td style=\"text-align:right\">[PARK_TYPE]</td></tr><tr><td>FILE_NUMBE</td><td style=\"text-align:right\">[FILE_NUMBE]</td></tr><tr><td>ID_NUMBER</td><td style=\"text-align:right\">[ID_NUMBER]</td></tr><tr><td>DEVELOPED</td><td style=\"text-align:right\">[DEVELOPED]</td></tr><tr><td>MAP_ACRES</td><td style=\"text-align:right\">[MAP_ACRES]</td></tr><tr><td>SHAPEAREA</td><td style=\"text-align:right\">[SHAPEAREA]</td></tr><tr><td>SHAPELEN</td><td style=\"text-align:right\">[SHAPELEN]</td></tr></table>", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }, 
-        {
-            "allowSelection": true, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "landmarks", 
-            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>ADDRESS</td><td style=\"text-align:right\">[ADDRESS]</td></tr><tr><td>ORDINANCE</td><td style=\"text-align:right\">[ORDINANCE]</td></tr><tr><td>ORD_DATE</td><td style=\"text-align:right\">[ORD_DATE]</td></tr><tr><td>NR_STATUS</td><td style=\"text-align:right\">[NR_STATUS]</td></tr><tr><td>SIGN_PERIO</td><td style=\"text-align:right\">[SIGN_PERIO]</td></tr><tr><td>ACREAGE</td><td style=\"text-align:right\">[ACREAGE]</td></tr><tr><td>ORD_LINK</td><td style=\"text-align:right\">[ORD_LINK]</td></tr></table>", 
-            "showInControls": true, 
-            "showInOverview": true, 
-            "singleTile": false, 
-            "timeInfo": null, 
             "visible": true
         }
     ], 
@@ -58,7 +34,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Logo": "", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -81,8 +57,20 @@
         "attribution": {
             "Parameters": {}
         }, 
-        "exportasimage": {
-            "Parameters": {}
+        "charttool": {
+            "Parameters": {
+                "charts": {
+                    "building_catefory": {
+                        "categoryField": "DESCRIPTIO", 
+                        "displayMode": 2, 
+                        "layer": "Buildings", 
+                        "operation": 0, 
+                        "valueFields": [
+                            "DESCRIPTIO"
+                        ]
+                    }
+                }
+            }
         }, 
         "geocoding": {
             "Parameters": {}
@@ -91,6 +79,9 @@
             "Parameters": {
                 "zoom": "Current zoom"
             }
+        }, 
+        "homebutton": {
+            "Parameters": {}
         }, 
         "layerslist": {
             "Parameters": {
