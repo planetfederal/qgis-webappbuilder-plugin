@@ -66,7 +66,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "", 
+        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -103,18 +103,12 @@
         "layerslist": {
             "Parameters": {
                 "allowFiltering": true, 
-                "allowReordering": false, 
+                "allowReordering": true, 
                 "downloadFormat": "GeoJSON", 
-                "showDownload": false, 
-                "showOpacity": false, 
-                "showZoomTo": false, 
+                "showDownload": true, 
+                "showOpacity": true, 
+                "showZoomTo": true, 
                 "tipLabel": "Layers"
-            }
-        }, 
-        "legend": {
-            "Parameters": {
-                "showExpandedOnStartup": false, 
-                "size": 20
             }
         }, 
         "loadingpanel": {

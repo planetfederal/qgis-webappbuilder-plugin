@@ -20,10 +20,34 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
+            "layer": "Streets", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
             "layer": "Buildings", 
             "popup": "", 
             "showInControls": true, 
             "showInOverview": false, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "fire_incidents_2016", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
             "singleTile": false, 
             "timeInfo": null, 
             "visible": true
@@ -81,7 +105,7 @@
         }, 
         "legend": {
             "Parameters": {
-                "showExpandedOnStartup": false, 
+                "showExpandedOnStartup": true, 
                 "size": 20
             }
         }, 

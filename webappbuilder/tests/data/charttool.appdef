@@ -60,7 +60,7 @@
         "charttool": {
             "Parameters": {
                 "charts": {
-                    "building_catefory": {
+                    "building_category": {
                         "categoryField": "DESCRIPTIO", 
                         "displayMode": 2, 
                         "layer": "Buildings", 

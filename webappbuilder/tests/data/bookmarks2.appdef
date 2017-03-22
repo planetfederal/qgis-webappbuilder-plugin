@@ -43,18 +43,6 @@
             "layer": "Parks", 
             "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>PARK_TYPE</td><td style=\"text-align:right\">[PARK_TYPE]</td></tr><tr><td>FILE_NUMBE</td><td style=\"text-align:right\">[FILE_NUMBE]</td></tr><tr><td>ID_NUMBER</td><td style=\"text-align:right\">[ID_NUMBER]</td></tr><tr><td>DEVELOPED</td><td style=\"text-align:right\">[DEVELOPED]</td></tr><tr><td>MAP_ACRES</td><td style=\"text-align:right\">[MAP_ACRES]</td></tr><tr><td>SHAPEAREA</td><td style=\"text-align:right\">[SHAPEAREA]</td></tr><tr><td>SHAPELEN</td><td style=\"text-align:right\">[SHAPELEN]</td></tr></table>", 
             "showInControls": true, 
-            "showInOverview": false, 
-            "singleTile": false, 
-            "timeInfo": null, 
-            "visible": true
-        }, 
-        {
-            "allowSelection": false, 
-            "clusterColor": "#3399CC", 
-            "clusterDistance": 0, 
-            "layer": "landmarks", 
-            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>ADDRESS</td><td style=\"text-align:right\">[ADDRESS]</td></tr><tr><td>ORDINANCE</td><td style=\"text-align:right\">[ORDINANCE]</td></tr><tr><td>ORD_DATE</td><td style=\"text-align:right\">[ORD_DATE]</td></tr><tr><td>NR_STATUS</td><td style=\"text-align:right\">[NR_STATUS]</td></tr><tr><td>SIGN_PERIO</td><td style=\"text-align:right\">[SIGN_PERIO]</td></tr><tr><td>ACREAGE</td><td style=\"text-align:right\">[ACREAGE]</td></tr><tr><td>ORD_LINK</td><td style=\"text-align:right\">[ORD_LINK]</td></tr></table>", 
-            "showInControls": true, 
             "showInOverview": true, 
             "singleTile": false, 
             "timeInfo": null, 
@@ -64,15 +52,12 @@
             "allowSelection": true, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
-            "layer": "fire_incidents_2016", 
-            "popup": "", 
+            "layer": "landmarks", 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>OBJECTID</td><td style=\"text-align:right\">[OBJECTID]</td></tr><tr><td>NAME</td><td style=\"text-align:right\">[NAME]</td></tr><tr><td>ADDRESS</td><td style=\"text-align:right\">[ADDRESS]</td></tr><tr><td>ORDINANCE</td><td style=\"text-align:right\">[ORDINANCE]</td></tr><tr><td>ORD_DATE</td><td style=\"text-align:right\">[ORD_DATE]</td></tr><tr><td>NR_STATUS</td><td style=\"text-align:right\">[NR_STATUS]</td></tr><tr><td>SIGN_PERIO</td><td style=\"text-align:right\">[SIGN_PERIO]</td></tr><tr><td>ACREAGE</td><td style=\"text-align:right\">[ACREAGE]</td></tr><tr><td>ORD_LINK</td><td style=\"text-align:right\">[ORD_LINK]</td></tr></table>", 
             "showInControls": true, 
             "showInOverview": true, 
             "singleTile": false, 
-            "timeInfo": [
-                "Dispatch d", 
-                "Cleared da"
-            ], 
+            "timeInfo": null, 
             "visible": true
         }
     ], 
@@ -90,19 +75,16 @@
         "Restrict to extent": false, 
         "Show popups on hover": false, 
         "Theme": "basic", 
-        "Title": "Raleigh Downtown", 
+        "Title": "Raleigh Downtown Parks", 
         "Use JSONP for WFS connections": true, 
         "Use layer scale dependent visibility": true, 
         "Use view CRS for WFS connections": true
     }, 
     "Widgets": {
-        "aboutpanel": {
+        "attributestable": {
             "Parameters": {
-                "content": "<h1>Panel Title</h1>\n<p>This is the description of my web app</p>"
+                "Zoom level when zooming to point feature": "16"
             }
-        }, 
-        "addlayer": {
-            "Parameters": {}
         }, 
         "attribution": {
             "Parameters": {}
@@ -138,7 +120,7 @@
                             -8753941.879080513, 
                             4269754.571666754
                         ], 
-                        "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. <b>Lorem ipsum dolor sit amet, consectetur adipiscing elit</b>. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>"
+                        ""
                     ], 
                     [
                         "Moore Square", 
@@ -153,24 +135,13 @@
                 ], 
                 "format": 0, 
                 "interval": 0, 
-                "introText": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. </p>\n", 
-                "introTitle": "Lorem ipsum dolor sit ame", 
+                "introText": "This Webmap allow you to visit some of Raleigh most iconic parks.", 
+                "introTitle": "Raleigh Downtown Parks", 
                 "showIndicators": true
             }
         }, 
-        "edit": {
-            "Parameters": {}
-        }, 
-        "fullscreen": {
-            "Parameters": {}
-        }, 
         "geocoding": {
             "Parameters": {}
-        }, 
-        "geolocation": {
-            "Parameters": {
-                "zoom": "Current zoom"
-            }
         }, 
         "layerslist": {
             "Parameters": {
@@ -192,22 +163,9 @@
         "loadingpanel": {
             "Parameters": {}
         }, 
-        "mouseposition": {
-            "Parameters": {
-                "coordinateFormat": "Lat/Lon", 
-                "projection": "EPSG:4326", 
-                "undefinedHTML": "&nbsp;"
-            }
-        }, 
         "northarrow": {
             "Parameters": {
                 "autoHide": false
-            }
-        }, 
-        "overviewmap": {
-            "Parameters": {
-                "Base layer": "Use main map base layer", 
-                "Collapsed": false
             }
         }, 
         "scalebar": {
@@ -216,22 +174,7 @@
                 "units": "metric"
             }
         }, 
-        "timeline": {
-            "Parameters": {
-                "autoPlayFromStartup": false, 
-                "interval": 500, 
-                "numIntervals": 100
-            }
-        }, 
-        "zoomcontrols": {
-            "Parameters": {
-                "delta": 1.2, 
-                "duration": 250, 
-                "zoomInTipLabel": "Zoom in", 
-                "zoomOutTipLabel": "Zoom out"
-            }
-        }, 
-        "zoomslider": {
+        "selectiontools": {
             "Parameters": {}
         }
     }
