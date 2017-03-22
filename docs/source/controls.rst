@@ -9,8 +9,7 @@ In this page, you can find the description of all the controls that can be
 About panel
 -----------
 
-Adds a button which toggles a translucent text panel over the map, usually
-for describing the app.
+Adds a translucent text panel over the map, usually for describing the app.
 
 .. figure:: img/aboutpanel.png
 
@@ -31,7 +30,7 @@ The following properties can be configured for this control:
        :guilabel:`Edit` to open a text editor.
 
 Add layer
------------
+---------
 
 Adds a menu entry named *upload* that can be used by the web app user to add
 a layer to the map. Only vector layers can be added. Supported formats for
@@ -47,11 +46,11 @@ There are no configurable properties for this control.
 Attributes table
 ----------------
 
-Adds a menu entry named *table* with the ability to display a table
-containing the attributes of the features in a given layer. Features can be
-selected/deselected clicking on the table rows. Multiple selection is
-available using the shift or ctrl keys. Selected features of layer are shown
-in a different color in the map view.
+Adds a menu entry (or a tab if in tabbed mode) named *table* with the ability
+to display a table containing the attributes of the features in a given layer.
+Features can be selected/deselected clicking on the table rows. Multiple
+selection is available using the shift or ctrl keys. Selected features of
+layer are shown in a different color in the map view.
 
 .. figure:: img/attributestable.png
 
@@ -64,16 +63,15 @@ in a different color in the map view.
 
 The attributes table control came with several tools:
  
-* :guilabel:`Layer` combo box allows to choose what layer to list the attributes.
-* :guilabel:`Zoom` button will zoom the map view to the selected features.
+* :guilabel:`Layer` combo-box allows to choose what layer to list the
+  attributes.
+* :guilabel:`Zoom to selected` button will zoom the map view to the selected
+  features.
 * :guilabel:`Clear` will deselect any selected features.
-* :guilabel:`Move` button will move selected features attributes to the top
-  of the table.
-* :guilabel:`Filter` field allows to filter the table using an expression,
-  using the notation accepted by the
-  `Filtrex <https://github.com/joewalnes/filtrex#expressions>`_ library.
-* The :guilabel:`Show only selected features` checkbox will hide from the
-  table unselected features.
+* :guilabel:`Filter` field allows to filter the table using an expression.
+* From the :guilabel:`More options` button, enabling
+  :guilabel:`Only show selected` option will hide unselected
+  features from the table.
 
 The following properties can be configured for this control:
 
@@ -93,7 +91,7 @@ The following properties can be configured for this control:
 Attribution
 -----------
 
-Adds an attribution note on the bottom right of the map.
+Adds an attribution note on the bottom right corner of the map.
 
 .. figure:: img/attribution.png
 
@@ -106,10 +104,10 @@ Bookmarks
 ---------
 
 Adds the ability to create and retrieve spatial bookmarks. A spatial bookmark
-consists of a name, an extent and a description.
+consists of a name, an spatial extent and a description.
 
-The bookmarks are defined in the `Bookmarks` tab. There are two options for
-adding bookmarks:
+Under :guilabel:`Configure...`, the bookmarks are defined in the `Bookmarks`
+tab. There are two ways of adding bookmarks:
 
 * *Using QGIS bookmarks*. Click :guilabel:`Add from QGIS bookmarks` and in
   the dialog that will appear, select the bookmarks to use from the ones
@@ -165,7 +163,7 @@ Charts
 This control allows the creation and display of charts based on the selected
 features of a layer.
 
-.. todo:: ADD FIGURE of example working
+.. figure:: img/chart_example.png
 
 The following properties can be configured for this control:
 
@@ -276,31 +274,42 @@ There are no configurable properties for this control.
 Geocoding
 ---------
 
-Adds geocoding functionality to locate geographic places by name.
+Adds a :guilabel:`Search placename...` field to locate geographic places by
+name. If the app uses the basic theme, the tool will be in the menu bar.
 
 .. figure:: img/geocoding.png
 
-   Geocoding tool
+   Geocoding tool in the menu
+
+Otherwise, if the app uses the tabbed theme, the search tool will be
+located in a tab.
+
+.. figure:: img/geocoding_tabbed.png
+
+   Geocoding tool in a tab
 
 There are no configurable properties for this control.
 
 Geolocation
 -----------
 
-Enable geolocation and shows the user current position on the map.
+Adds a button to enable geolocation and show the user's current position on
+the map.
 
-.. todo:: MORE DETAILS
-
-.. todo:: ADD FIGURE
+.. figure:: img/geolocation.png
 
 There are no configurable properties for this control.
 
 Help
 ----
 
-Adds a link on the menubar to a help page.
+Adds a :guilabel:`Help` button on the menu bar to a help page on how to use
+the Web App.
 
-.. todo:: ADD FIGURE
+The help page is generated automatically when the Web App is created,
+and will only contains information about the controls that are used in it.
+
+.. figure:: img/help_menu.png
 
 There are no configurable properties for this control.
 
@@ -322,7 +331,6 @@ Layers list
 
 Add a button that will open the list of layers in the map. 
 
-.. TODO::Update figure
 .. figure:: img/layerslist.png
 
    Layers list example
@@ -360,9 +368,6 @@ The following properties can be configured for this control:
    * - showZoomTo
      - Show Zoom To button, so the user can adjust the extent of the map
        based on the extent of an individual layer.
-   * - expandOnHover
-     - Automatically open the layer list when the mouse hovers over the
-       control's button.
    * - tipLabel
      - The tooltip to show when the mouse hovers over the layers list.
        Default is Layers.
@@ -370,9 +375,9 @@ The following properties can be configured for this control:
 Legend
 ------
 
-Adds a legend explaining the symbology used in the web app layers.
+Adds a button to show a legend explaining the map's symbology used in the web
+app layers.
 
-.. todo:: update figure
 .. figure:: img/legend.png
 
    Legend
@@ -380,13 +385,28 @@ Adds a legend explaining the symbology used in the web app layers.
 A legend entry will be added for all vector and WMS/WFS layers. Raster layers
 will not have an entry in the legend.
 
+The following properties can be configured for this control:
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Option
+     - Description
+   * - showExpandedOnStartup
+     - If enable shows the legend when the app is opened
+   * - size
+     - Sets the size of the symbols in the legend.
+
 There are no configurable properties for this control.
 
 Links
 -----
 
-Adds links to external sites to the navigation bar. Each link is defined
-with a name (shown in the navigation bar) and a URL.
+Adds links to external sites to the menu bar. Each link is defined
+with a name (shown in the navigation bar) and an URL.
 
 .. figure:: img/links_example.png
 
@@ -464,21 +484,31 @@ The following properties can be configured for this control:
      - The text to show when the coordinate cannot be computed. Default is
        ``&nbsp;`` or a blank.
    * - coordinateFormat
-     - OpenLayers string format. Default is ``ol.coordinate.createStringXY
-       (4)``. See `Open layers API <http://openlayers.org/en/v3.15.1/apidoc/ol.coordinate.html#.createStringXY>`_
-       for more details.
+     - Coordinate format. Default is ``Lat/Lon``, but can also be set
+       to ``MGRS``.
 
 North arrow
 -----------
 
-Add an arrow that indicates the north direction.
+Add an arrow button that indicates the north direction. The button can also be
+used to reset rotation.
 
-.. todo:: update Figure
 .. figure:: img/northarrow.png
 
    North arrow
 
-There are no configurable properties for this control.
+The following properties can be configured for this control:
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Option
+     - Description
+   * - autoHide
+     - north arrow button hides if rotation is ``0``
 
 .. _qgis.webappbuilder.controls.overview:
 
@@ -533,9 +563,9 @@ table), a warning will be shown before the web app is created.
 Query
 -----
 
-Adds query tools to perform selections in layers. Queries are expressed
-using the notation accepted by the `Filtrex <https://github.com/joewalnes/filtrex#expressions>`_
-library.
+Adds a query tools to perform selections in layers. The tools can be
+accessed by a Query button on the menu bar. Queries are expressed
+using the notation explained in the :ref:`search_filter_notation` section.
 
 .. figure:: img/query.png
 
@@ -545,11 +575,11 @@ The Query tools include the following options:
 
 * :guilabel:`Layer`: Layer to select from.
 * :guilabel:`Filter`: Where the user should put an valid expression.
-* :guilabel:`New Selection`: Will create a new selection a clear any
+* :guilabel:`New`: Will create a new selection and clear any
   previous selection on the layer.
-* :guilabel:`Add Selection`: Will add new features to already selected
+* :guilabel:`Add`: Will add new features to already selected
   features. Works as an *OR* operator.
-* :guilabel:`Refine Selection` Will only keep features that meet both
+* :guilabel:`Refine` Will only keep features that meet both
   previous selection and the new expression. Works as an *AND* operator.
 
 There are no configurable properties for this control.
@@ -603,31 +633,14 @@ The following properties can be configured for this control:
 Selection
 ---------
 
-Adds the ability to select features on the map in a few different ways. Two
-buttons are added to the web app: one to enable the selection mode and one
-to return to navigation mode.
-
-.. todo:: MORE DETAILS
+Adds the ability to select features on the map. Two buttons are added to the
+web app: one to enable the selection mode and one to return to navigation mode.
 
 .. figure:: img/selection.png
 
    Selection options in the app
 
-.. TODO: See if this is still valid
-   The following properties can be configured for this control:
-
-   .. list-table::
-      :header-rows: 1
-      :stub-columns: 1
-      :widths: 20 80
-      :class: non-responsive
-
-      * - Option
-        - Description
-      * - Select by polygon
-        - Adds an option for selecting via drawing a polygon on the map. Default is checked.
-      * - Select by rectangle
-        - Adds an option for selecting via drawing a rectangle on the map. Default is checked.
+There are no configurable properties for this control.
 
 .. _qgis.webappbuilder.controls.timeline:
 
@@ -655,22 +668,8 @@ options for this control:
 * :guilabel:`numInterval`. The number of intervals into which the full range
   of the slider is divided.
 
-
-3D View
--------
-
-Adds a button to toggle 3D mode. 
-
-.. todo:: MORE DETAILS
-
-.. todo:: ADD FIGURE
-
-There are no configurable properties for this control.
-
-
-
 WFS-T
-------
+-----
 
 An edit component is added that allows modifying WFS-T layers 
 
@@ -722,3 +721,69 @@ Adds a slider bar to control the zoom level.
    Zoom slider control
 
 There are no configurable properties for this control.
+
+.. TODO:: Document available filters
+
+.. _search_filter_notation:
+
+Search/filter notation
+----------------------
+
+Controls like Query, Attributes, Layers List ca use expression to filter or
+search features in a layer. Expression can use the following notation.
+
+Type in a filter expression to narrow your search to one or more attributes.
+
+Examples:
+
+::
+
+     population > 100000
+
+All features with a population greater than 100000
+
+::
+
+    sovereignt == "United Kingdom" and not (subregion like "Europe")
+
+All british colonies not in Europe
+
+Expressions may contain attribute names, strings, numbers, and operators.
+Attribute names may be surrounded by single quotes (') to reduce ambiguity.
+Strings must be surrounded by double quotes ("). Numbers and operators are
+unquoted.
+
+Supported operators are:
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Operator
+     - Description
+   * - a == a
+     - a exactly equals b
+   * - a != a
+     - a does not equal b
+   * - a < a
+     - a is less than b
+   * - a <= b
+     - a is less than or equal to b
+   * - a > b
+     - a is greater than b
+   * - a >= b
+     - a is greater than or equal to b
+   * - a like b
+     - b contains a (case insensitive)
+   * - a in (x,y,z)
+     - a is equal to one or more values in the list x,y,z
+   * - e and f
+     - Matches both expressions e and f
+   * - e or f
+     - Matches either expression e or f
+   * - not e
+     - Returns all results that do not match the expression e
+
+Any expression may be surrounded by parentheses for clarity (e.g. when combining ands and ors).
