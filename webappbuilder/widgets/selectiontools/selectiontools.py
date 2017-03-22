@@ -6,7 +6,9 @@ class SelectionTools(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.tools.append('''React.createElement(Select, {toggleGroup: 'navigation', map:map})''')
-        app.tools.append('''React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})''')
+        nav = '''React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})'''
+        if nav not in app.tools:
+            app.tools.append(nav)
 
         self.addReactComponent(app, "Select")
         self.addReactComponent(app, "Navigation")
