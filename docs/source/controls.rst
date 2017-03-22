@@ -29,6 +29,12 @@ The following properties can be configured for this control:
      - The content of the panel. Accepts HTML formatted text. Click
        :guilabel:`Edit` to open a text editor.
 
+.. note::
+
+   Being in HTML format, the use of special characters in the about panel
+   content must be handled accordingly using HTML code (e.g., quotation marks
+   should be replaced by ``&quot;``).
+
 Add layer
 ---------
 
@@ -155,7 +161,13 @@ In story panel mode, several options are enabled in the configuration tab:
 * :guilabel:`Show indicators` adds small dots to the panel to serve as
   reference for the relative position of each bookmark.
 * :guilabel:`Intro title` and :guilabel:`Intro description` allows adding a
-  first panel without spatial bookmark.
+  first panel without spatial bookmark. Both accept HTML formatted text.
+
+.. note::
+
+   Being in HTML format, the use of special characters in the bookmark's
+   description must be handled accordingly using HTML code (e.g., quotation
+   marks should be replaced by ``&quot;``).
 
 Charts
 ------
