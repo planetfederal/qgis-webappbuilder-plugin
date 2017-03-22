@@ -2,6 +2,7 @@ var baseLayers = [new ol.layer.Tile({
     type: 'base',
     title: 'CartoDB light',
     source: new ol.source.XYZ({
+        crossOrigin: 'anonymous',
         url: 'http://s.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
         attributions: [new ol.Attribution({ html: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
         })]
@@ -13,7 +14,9 @@ var baseLayers = [new ol.layer.Tile({
 var overlayLayers = [new ol.layer.Tile({
 	type: 'base-overlay',
 	title: 'Stamen toner labels',
-	source: new ol.source.Stamen({layer: 'toner-labels'}),
+	source: new ol.source.Stamen({
+	           crossOrigin: 'anonymous',
+	           layer: 'toner-labels'}),
     projection: 'EPSG:3857'
 })
 ];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
