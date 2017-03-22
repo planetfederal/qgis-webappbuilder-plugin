@@ -1,8 +1,9 @@
 var lyr_wms = new ol.layer.Tile({
                         opacity: 1.0,
                         timeInfo: null,
-                         
+
                         source: new ol.source.TileWMS(({
+                          crossOrigin:'anonymous',
                           url: "http://demo.mapserver.org/cgi-bin/wms?",
                           params: {"LAYERS": "continents" , "TILED": "true", "STYLES": ""},
                         })),
