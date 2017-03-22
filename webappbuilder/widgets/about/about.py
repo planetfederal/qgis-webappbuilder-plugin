@@ -10,7 +10,7 @@ class AboutPanel(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         theme = appdef["Settings"]["Theme"]
-        content = self._parameters["content"].replace('\n', '<br>').replace('\r', '')
+        content = self._parameters["content"].replace('\n', '<br>').replace('\r', '').replace("'", "&#39;")
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append('''React.createElement(Tab, {value:%i, label:'About'},
