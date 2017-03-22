@@ -20,6 +20,10 @@ class AboutPanel(WebAppWidget):
                                 )''' % (idx, content))
         else:
             app.mappanels.append('''React.createElement("div", {id: 'about-panel', className:'about-panel'},
+                                        React.createElement("a", {href:'#', id:'about-panel-closer',
+                                            className:'about-panel-closer', onClick:this._toggleAboutPanel.bind(this)},
+                                              "X"
+                                        ),
                                         React.createElement("div", {dangerouslySetInnerHTML:{__html: '%s'}})
                                     )''' %  content)
 
