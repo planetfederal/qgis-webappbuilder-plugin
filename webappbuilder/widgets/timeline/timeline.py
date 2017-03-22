@@ -15,8 +15,11 @@ class Timeline(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         timelineOptions = self.getTimelineOptions(appdef);
         app.mappanels.append('''React.createElement("div", {id: 'timeline'},
-                                    React.createElement(Playback, {map: map, minDate:%s, maxDate:%s})
-                                  )''' % (timelineOptions[0], timelineOptions[1]))
+                                    React.createElement(Playback, {map: map, minDate:%s, maxDate:%s,
+                                    interval:%s, numIntervals:%s, autoPlay:%s})
+                                  )''' % (timelineOptions[0], timelineOptions[1],
+                                          str(self._parameters["interval"]), str(self._parameters["numIntervals"]),
+                                          str(self._parameters["autoPlayFromStartup"]).lower()))
         self.addReactComponent(app, "Playback")
 
     def icon(self):
