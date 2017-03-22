@@ -36,7 +36,7 @@ var BasicApp = React.createClass({
     @POSTTARGETSET@
   },
   _toggle: function(el) {
-    if (el.style.display === 'block') {
+    if (el.style.display === 'block', || el.style.display === '') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
