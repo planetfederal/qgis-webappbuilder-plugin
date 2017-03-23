@@ -13,7 +13,8 @@ class ZoomControls(WebAppWidget):
                                     zoomInTipLabel: '%s',
                                     zoomOutTipLabel: '%s',
                                     delta: %s,
-                                    map: map})
+                                    map: map,
+                                    tooltipPosition: 'bottom-right'})
                                   )''' % (self._parameters["duration"], self._parameters["zoomInTipLabel"],
                                           self._parameters["zoomOutTipLabel"], self._parameters["delta"]))
         self.addReactComponent(app, "Zoom")

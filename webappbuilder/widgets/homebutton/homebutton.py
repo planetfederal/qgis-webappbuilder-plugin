@@ -6,7 +6,7 @@ class HomeButton(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.panels.append('''React.createElement("div", {id:'home-button'},
-                                    React.createElement(HomeButton, {map:map})
+                                    React.createElement(HomeButton, {tooltipPosition: 'bottom-right', map:map})
                                   )''')
         self.addReactComponent(app, "HomeButton")
 
