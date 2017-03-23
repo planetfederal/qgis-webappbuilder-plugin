@@ -11,7 +11,6 @@ from string import digits
 import math
 import codecs
 import uuid
-import mapboxgl
 import json
 
 exportedStyles = 0
