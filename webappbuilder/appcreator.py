@@ -6,6 +6,7 @@
 import os
 import re
 import codecs
+import traceback
 from pubsub import pub
 from appwriter import writeWebApp
 from PyQt4.QtCore import *
@@ -53,8 +54,7 @@ def createApp(appdef, folder, forPreview, progress):
 		pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 		writeWebApp(appdef, folder, forPreview, progress)
 	except Exception as ex:
-		self.endWriteWebAppListener(False, traceback.format_exc())
-
+		endWriteWebAppListener(False, traceback.format_exc())
 
 def checkSDKServerVersion():
 	path = os.path.join(os.path.dirname(__file__), "package.json")
