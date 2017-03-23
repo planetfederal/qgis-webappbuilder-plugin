@@ -50,8 +50,8 @@ def createApp(appdef, folder, forPreview, progress):
 	__appdef = appdef
 
 	viewer.shutdown()
+	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 	try:
-		pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 		writeWebApp(appdef, folder, forPreview, progress)
 	except Exception as ex:
 		endWriteWebAppListener(False, traceback.format_exc())

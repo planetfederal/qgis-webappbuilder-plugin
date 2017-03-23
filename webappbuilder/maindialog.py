@@ -470,8 +470,8 @@ class MainDialog(BASE, WIDGET):
                 return
         try:
             self.currentFolder = tempFolderInTempFolder("webappbuilder")
+            pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
             try:
-                pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
                 self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
             except:
                 QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
