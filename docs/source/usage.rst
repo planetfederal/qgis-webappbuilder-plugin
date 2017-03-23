@@ -235,6 +235,12 @@ queried using its GetFeatureInfo method.
 
    Popup editor for WMS layers
 
+.. note::
+
+   WFS or WMS layers behind authentication are not supported. If OWS
+   layers with authentication are added, the app creation may fail, or
+   these layers won't be visible.
+
 Handling projections
 ~~~~~~~~~~~~~~~~~~~~
 
