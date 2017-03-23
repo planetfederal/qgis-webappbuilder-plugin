@@ -69,7 +69,7 @@ def setup(options):
         inzipFolder = "sdk-gh-pages"
     else:
         sdkUrl = "https://github.com/boundlessgeo/sdk/archive/v%s-artefacts.zip" % options.plugin.sdkversion
-        package = str({"version": options.plugin.sdkversion})
+        package = json.dumps({"version": options.plugin.sdkversion})
         inzipFolder = "sdk-%s-artefacts" % options.plugin.sdkversion
     
     sdkPath = os.path.abspath("./webappbuilder/websdk")
