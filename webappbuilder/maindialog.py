@@ -453,6 +453,7 @@ class MainDialog(BASE, WIDGET):
             webbrowser.open_new(path)
         else:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
+            QApplication.restoreOverrideCursor()
             QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
                                  "Could not create web app.\nCheck the QGIS log for more details.")
 
