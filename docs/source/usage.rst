@@ -237,8 +237,8 @@ queried using its GetFeatureInfo method.
 
 .. note::
 
-   WFS or WMS layers behind authentication are not supported. If OWS
-   layers with authentication are added, the app creation may fail, or
+   WFS or WMS layers behind authentication are not supported yet. Currently, if
+   OWS layers with authentication are added, the app creation may fail, or
    these layers won't be visible.
 
 Handling projections
