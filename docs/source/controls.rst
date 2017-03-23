@@ -9,7 +9,8 @@ In this page, you can find the description of all the controls that can be
 About panel
 -----------
 
-Adds a translucent text panel over the map, usually for describing the app.
+Adds a translucent text panel over the map, usually for describing the app. A
+button allows to permanently close the panel.
 
 .. figure:: img/aboutpanel.png
 
