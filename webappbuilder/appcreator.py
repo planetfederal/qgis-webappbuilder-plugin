@@ -49,8 +49,12 @@ def createApp(appdef, folder, forPreview, progress):
 	__appdef = appdef
 
 	viewer.shutdown()
-	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
-	writeWebApp(appdef, folder, forPreview, progress)
+	try:
+		pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
+		writeWebApp(appdef, folder, forPreview, progress)
+	except Exception as ex:
+		self.endWriteWebAppListener(False, traceback.format_exc())
+)
 
 def checkSDKServerVersion():
 	path = os.path.join(os.path.dirname(__file__), "package.json")
