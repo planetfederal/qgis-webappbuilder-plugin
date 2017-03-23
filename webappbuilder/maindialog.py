@@ -469,13 +469,14 @@ class MainDialog(BASE, WIDGET):
                 return
         try:
             self.currentFolder = tempFolderInTempFolder("webappbuilder")
-            pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-            self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            try:
+                pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
+                self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            except:
+                QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+                self.endCreatePreviewListener(False, traceback.format_exc())
         except WrongValueException:
             pass
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            self.endCreatePreviewListener(False, traceback.format_exc())
 
     def endCreateAppListener(self, success, reason):
         from pubsub import pub
@@ -526,12 +527,13 @@ class MainDialog(BASE, WIDGET):
                     if ret == QMessageBox.No:
                         return
 
-                pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
-                self._run(lambda: createApp(appdef, folder, False, self.progress))
+                try:
+                    pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
+                    self._run(lambda: createApp(appdef, folder, False, self.progress))
+                except Exception as ex:
+                    self.endCreateAppListener(False, traceback.format_exc())
         except WrongValueException:
             pass
-        except Exception as ex:
-            self.endCreateAppListener(False, traceback.format_exc())
 
     def createAppDefinition(self):
         layers, groups = self.getLayersAndGroups()
