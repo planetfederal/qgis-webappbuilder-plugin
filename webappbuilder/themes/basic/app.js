@@ -36,7 +36,7 @@ var BasicApp = React.createClass({
     @POSTTARGETSET@
   },
   _toggle: function(el) {
-    if (el.style.display === 'block' || el.style.display === '') {
+    if (el.style.display === 'block') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
@@ -55,9 +55,9 @@ var BasicApp = React.createClass({
   _toggleEdit: function() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
-  _toggleAboutPanel: function(evt) {
+  _hideAboutPanel: function(evt) {
     evt.preventDefault();
-    this._toggle(document.getElementById('about-panel'));
+    document.getElementById('about-panel').style.display = 'none';
   },
   _toggleChartPanel: function(evt) {
     evt.preventDefault();
