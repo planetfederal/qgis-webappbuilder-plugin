@@ -506,7 +506,10 @@ class MainDialog(BASE, WIDGET):
                                      self.tr("Web app was correctly created and built."))
         elif reason:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
-            if 'Network error #5: Operation canceled' in reason:
+            if 'Request cancelled by user' in reason:
+                # do nothing
+                pass
+            elif 'Cannot post preview webapp: Network error #5: Operation canceled' in reason:
                 QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
                                 self.tr("Network error due to a timeout.\n"
                                 "Please configure a longer timeout going to:\n"
