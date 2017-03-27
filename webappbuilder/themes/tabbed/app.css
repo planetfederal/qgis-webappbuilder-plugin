@@ -59,6 +59,11 @@ canvas {
   top: 184px;
   margin-left: 20px;
 }
+#fullscreen-button {
+  top: 238px;
+  position: absolute;
+  margin-left: 20px;
+}
 #zoom-slider {
   position: absolute;
   width: 150px;

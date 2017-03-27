@@ -19,6 +19,11 @@ canvas {
   left: 2.5em;
   z-index: 1111;
 }
+#fullscreen-button {
+  top: 309px;
+  position: absolute;
+  margin-left: 20px;
+}
 #geolocation-control {
   position: absolute;
   top: 201px;
