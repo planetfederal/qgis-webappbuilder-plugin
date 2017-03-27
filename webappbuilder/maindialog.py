@@ -428,7 +428,7 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
-    def setButtonsEnabled(status, excludeList=None):
+    def setButtonsEnabled(self, status, excludeList=None):
         """Set enable status for all buttons in self.buttonBox escluding that
         in the excludeList.
         """
