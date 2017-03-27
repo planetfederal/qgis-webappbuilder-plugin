@@ -565,7 +565,7 @@ Printing layouts are designed using the QGIS Print Composer. The Web App
 Builder will take the existing print compositions from the current project,
 and make them available to users of the web app. The web app will generate
 maps in PDF format using the layout designs created in QGIS, and allowing the
-user to configure certain parameters, such as the extent of the map of the
+user to configure certain parameters, such as the extent of the map or the
 content of text labels.
 
 Most elements are supported, including legend, arrow, shape, label and

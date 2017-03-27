@@ -103,18 +103,13 @@
         "layerslist": {
             "Parameters": {
                 "allowFiltering": true, 
-                "allowReordering": false, 
+                "allowReordering": true, 
                 "downloadFormat": "GeoJSON", 
-                "showDownload": false, 
-                "showOpacity": false, 
-                "showZoomTo": false, 
+                "showDownload": true, 
+                "showOpacity": true, 
+                "showUpload": true, 
+                "showZoomTo": true, 
                 "tipLabel": "Layers"
-            }
-        }, 
-        "legend": {
-            "Parameters": {
-                "showExpandedOnStartup": false, 
-                "size": 20
             }
         }, 
         "loadingpanel": {

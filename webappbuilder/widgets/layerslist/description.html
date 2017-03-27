@@ -1,24 +1,35 @@
-<p>The layer list shows the layers in the application and allows managing them. Pass the mouse pointer over the layers list icon or click on it to display the layers list</p>
+<p>The layer list shows the layers in the application and allows managing them. Click the <b>Layers</b> button to
+  displays the layers list.</p>
 
 <img src="help_layerslist.png"/>
 
-<p>A check box is shown along the name of each layer, which allows to toggle its visibility<p>.
+<p>An eye icon is shown along the name of each layer, which allows toggling the layer's visibility.<p>
 
-<p>The opacity of the layer can be controlled using the opacity slider.</p>
+<p>The rendering order of layers can be modified by clicking-and-dragging the layer's names in the list.
+  Layers on top are rendered at the end and will have rendering priority.</p>
 
-<p>Rendering order of layers can be modified using the arrows to bring a given layer up or down the layers list. Layers on top are rendered at the end, and will have rendering priority.</p>
+<p>For vector layers, the <img display="inline" src="zoom_to_button.png"><b>Zoom to</b> button can also be available.
+  Clicking on it will cause the map extent to change to the minimum extent that covers all the features in the layer.</p>
 
-<p>For vector layers, a <i>Zoom to</i> button will be available. Clicking on it will cause the map extent to be changed to the minimum extent that covers all the features in the layer.</p>
+<p>Clicking the <img display="inline" src="other_options.png"><i>Other options</i> button shows extra options.</p>
 
-<p>A <i>download</i> button will also be available for vector layers, allowing to download the layer as a GeoJson file</p>
+<img src="other_options_list.png"/>
 
-<p>Rendering filters can be added to vector layers. Clicking on the filter icon will show the filter dialog</p>
+<p>The opacity of the layer can be controlled using the <b>Opacity</b> slider.</p>
+
+<p>A <b>Download layer</b> button can also be available for vector layers, allowing to download the layer in a
+  predefined file format</p>
+
+<p>Vector layers features can be filtered using expressions on their attributes. Clicking on the filter icon shows
+  the filter dialog</p>
 
 <img src="help_layerslist_filter.png"/>
 
-<p>To add a new filter, enter its expression in the text box and click the <i>Add</i> button.</p>
+<p>To add a new filter, enter an expression in the text box and click the <b>ADD</b> button. The Layer only
+  renders features in the map canvas that match the active filters.</p>
 
-<p>All active filters are listed below the text box. Click on the <i>Remove</i> link to remove a filter.</p>
+<p>All active filters are listed below the filter field. Click on the <b>Remove</b> button to remove a filter.</p>
 
-<p>Filters use the following syntax of the Filtrex library, as described <a href="https://github.com/joewalnes/filtrex#expressions">here.</a> Attribute names are used as variables. Attribute names are case-sensitive</p>
+<p>For information on the filter syntax, click the question mark icon next to the filter field.</p>
+
 
