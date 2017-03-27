@@ -55,7 +55,7 @@ class BasicApp extends React.Component {
     @POSTTARGETSET@
   }
   _toggle(el) {
-    if (el.style.display === 'block' || el.style.display === '') {
+    if (el.style.display === 'block') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
