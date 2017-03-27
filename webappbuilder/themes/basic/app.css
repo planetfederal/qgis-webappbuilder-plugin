@@ -198,4 +198,6 @@ html, body {
  right: 0px;
  max-width: 50%;
  z-index: 1111;
+ max-height: 400px;
+ overflow: auto;
 }
