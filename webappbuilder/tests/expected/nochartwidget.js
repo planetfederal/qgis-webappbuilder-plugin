@@ -86,7 +86,7 @@ var BasicApp = React.createClass({
 
   },
   _toggle: function(el) {
-    if (el.style.display === 'block' || el.style.display === '') {
+    if (el.style.display === 'block') {
       el.style.display = 'none';
     } else {
       el.style.display = 'block';
