@@ -89,7 +89,7 @@
         "attribution": {
             "Parameters": {}
         }, 
-        "edit": {
+        "fullscreen": {
             "Parameters": {}
         }, 
         "geocoding": {
@@ -100,30 +100,8 @@
                 "zoom": "Current zoom"
             }
         }, 
-        "layerslist": {
-            "Parameters": {
-                "allowFiltering": true, 
-                "allowReordering": false, 
-                "downloadFormat": "GeoJSON", 
-                "showDownload": false, 
-                "showOpacity": false, 
-                "showZoomTo": false, 
-                "tipLabel": "Layers"
-            }
-        }, 
-        "legend": {
-            "Parameters": {
-                "showExpandedOnStartup": false, 
-                "size": 20
-            }
-        }, 
         "loadingpanel": {
             "Parameters": {}
-        }, 
-        "northarrow": {
-            "Parameters": {
-                "autoHide": false
-            }
         }, 
         "scalebar": {
             "Parameters": {

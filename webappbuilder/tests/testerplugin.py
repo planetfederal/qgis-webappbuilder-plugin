@@ -54,9 +54,10 @@ def functionalTests():
         return test
 
     for w in widgets:
-        f = os.path.join(appdefFolder, "%s.appdef" % w)
-        if os.path.exists(f):
-            tests.append(_testWidget(w))
+        for i in ["", "2", "3"]:
+            f = os.path.join(appdefFolder, "%s%s.appdef" % (w, i))
+            if os.path.exists(f):
+                tests.append(_testWidget(w))
 
     unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
     unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())

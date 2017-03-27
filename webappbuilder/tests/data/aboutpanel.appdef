@@ -1,0 +1,46 @@
+{
+    "Base layers": [
+        "Stamen toner lite"
+    ], 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": false, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Raleigh downtown", 
+            "popup": "", 
+            "showInControls": false, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
+        "Title": "Raleigh City", 
+        "Use JSONP for WFS connections": true, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "aboutpanel": {
+            "Parameters": {
+                "content": "<h1>Raleigh City</h1>\n<p>Raleigh is the capital of the state of North Carolina, the seat of Wake County in the United States.</p>\n<p>Raleigh is known as the \"City of Oaks\" for its many oak trees, which line the streets in the heart of the city. The city covers a land area of 142.8 square miles (370 km2). The city of Raleigh is named after Sir Walter Raleigh, who established the lost Roanoke Colony in present-day Dare County.</p>"
+            }
+        }
+    }
+}

@@ -89,16 +89,59 @@
         "attribution": {
             "Parameters": {}
         }, 
-        "edit": {
-            "Parameters": {}
+        "bookmarks": {
+            "Parameters": {
+                "bookmarks": [
+                    [
+                        "Progress energy Center", 
+                        [
+                            -8754392.261750257, 
+                            4268923.205637849, 
+                            -8753737.183026182, 
+                            4269444.873622636
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "Nash Square", 
+                        [
+                            -8754789.103441559, 
+                            4269837.558571243, 
+                            -8754133.98940243, 
+                            4270359.2927755695
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "City Plaza", 
+                        [
+                            -8754269.43046801, 
+                            4269493.726206331, 
+                            -8753941.879080513, 
+                            4269754.571666754
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "Moore Square", 
+                        [
+                            -8754101.47176012, 
+                            4269784.978835358, 
+                            -8753446.328504678, 
+                            4270306.669642336
+                        ], 
+                        ""
+                    ]
+                ], 
+                "format": 0, 
+                "interval": 0, 
+                "introText": "This Webmap allow you to visit some of Raleigh most iconic parks.", 
+                "introTitle": "Raleigh Downtown Parks", 
+                "showIndicators": true
+            }
         }, 
         "geocoding": {
             "Parameters": {}
-        }, 
-        "geolocation": {
-            "Parameters": {
-                "zoom": "Current zoom"
-            }
         }, 
         "layerslist": {
             "Parameters": {
@@ -133,14 +176,6 @@
         }, 
         "selectiontools": {
             "Parameters": {}
-        }, 
-        "zoomcontrols": {
-            "Parameters": {
-                "delta": 1.2, 
-                "duration": 250, 
-                "zoomInTipLabel": "Zoom in", 
-                "zoomOutTipLabel": "Zoom out"
-            }
         }
     }
 }

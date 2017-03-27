@@ -11,8 +11,9 @@ class Query(WebAppWidget):
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append("<Tab value={%i} label='Query'><div id='query-panel' className='query-panel'>" % idx
-                              + "<QueryBuilder map={map} /></div></Tab>")
+            app.tabs.append('''React.createElement(Tab,{value:%i, label:"Query"},
+                                    React.createElement(QueryBuilder, {map: map})
+                                )''' % (idx))
         else:
             app.tools.append("React.createElement(Button, {label: 'Query', onTouchTap: this._toggleQuery.bind(this)})")
             app.mappanels.append('''React.createElement("div", {id: 'query-panel', className:'query-panel'},

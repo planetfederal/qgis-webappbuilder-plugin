@@ -34,7 +34,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Logo": "", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -56,21 +56,6 @@
         }, 
         "attribution": {
             "Parameters": {}
-        }, 
-        "charttool": {
-            "Parameters": {
-                "charts": {
-                    "building_catefory": {
-                        "categoryField": "DESCRIPTIO", 
-                        "displayMode": 2, 
-                        "layer": "Buildings", 
-                        "operation": 0, 
-                        "valueFields": [
-                            "DESCRIPTIO"
-                        ]
-                    }
-                }
-            }
         }, 
         "geocoding": {
             "Parameters": {}
@@ -103,22 +88,15 @@
         "loadingpanel": {
             "Parameters": {}
         }, 
-        "mouseposition": {
-            "Parameters": {
-                "coordinateFormat": "Lat/Lon", 
-                "projection": "EPSG:4326", 
-                "undefinedHTML": "&nbsp;"
-            }
-        }, 
         "northarrow": {
             "Parameters": {
                 "autoHide": false
             }
         }, 
-        "scalebar": {
+        "overviewmap": {
             "Parameters": {
-                "minWidth": 64, 
-                "units": "metric"
+                "Base layer": "Use main map base layer", 
+                "Collapsed": true
             }
         }, 
         "selectiontools": {

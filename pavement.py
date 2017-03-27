@@ -9,7 +9,6 @@ from paver.easy import *
 import zipfile
 import shutil
 import requests
-import zipfile
 import StringIO
 import json
 from collections import defaultdict
@@ -17,6 +16,7 @@ from collections import defaultdict
 options(
     plugin=Bunch(
         name='webappbuilder',
+        sdkversion="0.10.30",
         ext_libs=path('webappbuilder/ext-libs'),
         ext_src=path('webappbuilder/ext-src'),
         source_dir=path('webappbuilder'),
@@ -43,6 +43,7 @@ options(
 @task
 @cmdopts([
     ('clean', 'c', 'clean out dependencies first'),
+    ('master', 'm', 'Use master version of sdk instead of harcoded stable one')
 ])
 def setup(options):
     '''install dependencies'''
@@ -60,22 +61,32 @@ def setup(options):
             'dep' : req
         })
     
+    master = getattr(options, 'master', False)
+    if master:
+        sdkUrl = "https://github.com/boundlessgeo/sdk/archive/gh-pages.zip"
+        r = requests.get("https://raw.githubusercontent.com/boundlessgeo/sdk/master/package.json")
+        package = r.text
+        inzipFolder = "sdk-gh-pages"
+    else:
+        sdkUrl = "https://github.com/boundlessgeo/sdk/archive/v%s-artefacts.zip" % options.plugin.sdkversion
+        package = json.dumps({"version": options.plugin.sdkversion})
+        inzipFolder = "sdk-%s-artefacts" % options.plugin.sdkversion
+    
     sdkPath = os.path.abspath("./webappbuilder/websdk")
     if os.path.exists(sdkPath):
         shutil.rmtree(sdkPath)
-    r = requests.get("https://github.com/boundlessgeo/sdk/archive/gh-pages.zip", stream=True)
+    r = requests.get(sdkUrl, stream=True)
     z = zipfile.ZipFile(StringIO.StringIO(r.content))
     z.extractall(path=sdkPath)
-    path(os.path.join(sdkPath, "sdk-gh-pages", "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
+    path(os.path.join(sdkPath, inzipFolder, "dist", "js", "full-debug.js")).copy2("./webappbuilder/websdk_full/full-debug.js")
     dst = "./webappbuilder/css"
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    shutil.copytree(os.path.join(sdkPath,"sdk-gh-pages","dist","css"), dst)
+    shutil.copytree(os.path.join(sdkPath, inzipFolder, "dist", "css"), dst)
     shutil.rmtree(sdkPath)
-    r = requests.get("https://raw.githubusercontent.com/boundlessgeo/sdk/master/package.json")
     packageFile = options.plugin.source_dir / "package.json"
     with open(packageFile.abspath(), "w") as f:
-        f.write(r.text)
+        f.write(package)
 
     mapboxPath = os.path.abspath("./webappbuilder/mapboxgl")
     if os.path.exists(mapboxPath):

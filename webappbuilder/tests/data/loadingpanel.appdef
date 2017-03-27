@@ -16,6 +16,18 @@
             "allowSelection": false, 
             "clusterColor": "#3399CC", 
             "clusterDistance": 0, 
+            "layer": "U.S. 15 Minute Precipitation", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": false, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
             "layer": "Raleigh downtown", 
             "popup": "", 
             "showInControls": false, 
@@ -89,8 +101,56 @@
         "attribution": {
             "Parameters": {}
         }, 
-        "edit": {
-            "Parameters": {}
+        "bookmarks": {
+            "Parameters": {
+                "bookmarks": [
+                    [
+                        "Progress energy Center", 
+                        [
+                            -8754392.261750257, 
+                            4268923.205637849, 
+                            -8753737.183026182, 
+                            4269444.873622636
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "Nash Square", 
+                        [
+                            -8754789.103441559, 
+                            4269837.558571243, 
+                            -8754133.98940243, 
+                            4270359.2927755695
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "City Plaza", 
+                        [
+                            -8754269.43046801, 
+                            4269493.726206331, 
+                            -8753941.879080513, 
+                            4269754.571666754
+                        ], 
+                        ""
+                    ], 
+                    [
+                        "Moore Square", 
+                        [
+                            -8754101.47176012, 
+                            4269784.978835358, 
+                            -8753446.328504678, 
+                            4270306.669642336
+                        ], 
+                        ""
+                    ]
+                ], 
+                "format": 3, 
+                "interval": 0, 
+                "introText": "", 
+                "introTitle": "", 
+                "showIndicators": true
+            }
         }, 
         "geocoding": {
             "Parameters": {}

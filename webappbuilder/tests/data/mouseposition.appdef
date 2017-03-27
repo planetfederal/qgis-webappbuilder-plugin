@@ -34,7 +34,7 @@
         "App view CRS": "EPSG:3857", 
         "Extent": "Canvas extent", 
         "Group base layers": true, 
-        "Logo": "/home/alexandre/boundless/data/Raleigh/raleigh.png", 
+        "Logo": "", 
         "Max zoom level": "32", 
         "Min zoom level": "1", 
         "Minify JavaScript": false, 
@@ -103,9 +103,11 @@
         "loadingpanel": {
             "Parameters": {}
         }, 
-        "northarrow": {
+        "mouseposition": {
             "Parameters": {
-                "autoHide": false
+                "coordinateFormat": "Lat/Lon", 
+                "projection": "EPSG:4326", 
+                "undefinedHTML": "&nbsp;"
             }
         }, 
         "scalebar": {

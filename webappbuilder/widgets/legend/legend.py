@@ -17,8 +17,8 @@ class Legend(WebAppWidget):
             return str(self._parameters[name]).lower()
         self.writeLegendFiles(appdef, app, folder)
         app.panels.append('''React.createElement("div",{id: "legend"},
-                                React.createElement(QGISLegend, {map:map, legendBasePath:'./resources/legend/',showExpandedOnStartup:%s, legendData:legendData})
-                            )''' % (p("showExpandedOnStartup")))
+                                React.createElement(QGISLegend, {map:map, size:%i, legendBasePath:'./resources/legend/',showExpandedOnStartup:%s, legendData:legendData})
+                            )''' % ( self._parameters["size"], p("showExpandedOnStartup")))
         self.addReactComponent(app, "QGISLegend")
 
     def description(self):
@@ -70,18 +70,18 @@ class Legend(WebAppWidget):
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     appendSymbol("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath))
-        elif layer.providerType() == "wms":
-            source = layer.source()
-            print source
-            layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-            url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
-            styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
-            fullUrl = ("%s?LAYER=%s&STYLES=%s&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=%i&HEIGHT=%i"
-                       % (url, layerName, styles, size, size))
-            response = requests.get(fullUrl, stream=True)
-            symbolPath = os.path.join(legendFolder, "%i_0.png" % ilayer)
-            with open(symbolPath, 'wb') as f:
-                shutil.copyfileobj(response.raw, f)
-            del response
-            appendSymbol("", os.path.basename(symbolPath))
+        elif layer.type() == layer.RasterLayer:
+            if layer.providerType() == "wms":
+                source = layer.source()
+                layerName = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
+                url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
+                styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
+                fullUrl = ("%s?LAYER=%s&STYLES=%s&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=%i&HEIGHT=%i"
+                           % (url, layerName, styles, size, size))
+                response = requests.get(fullUrl, stream=True)
+                symbolPath = os.path.join(legendFolder, "%i_0.png" % ilayer)
+                with open(symbolPath, 'wb') as f:
+                    shutil.copyfileobj(response.raw, f)
+                del response
+                appendSymbol("", os.path.basename(symbolPath))
         return symbols

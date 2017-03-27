@@ -34,7 +34,7 @@
             "showInOverview": false, 
             "singleTile": false, 
             "timeInfo": null, 
-            "visible": true
+            "visible": false
         }, 
         {
             "allowSelection": true, 
@@ -89,21 +89,6 @@
         "attribution": {
             "Parameters": {}
         }, 
-        "charttool": {
-            "Parameters": {
-                "charts": {
-                    "building_catefory": {
-                        "categoryField": "DESCRIPTIO", 
-                        "displayMode": 2, 
-                        "layer": "Buildings", 
-                        "operation": 0, 
-                        "valueFields": [
-                            "DESCRIPTIO"
-                        ]
-                    }
-                }
-            }
-        }, 
         "geocoding": {
             "Parameters": {}
         }, 
@@ -126,19 +111,8 @@
                 "tipLabel": "Layers"
             }
         }, 
-        "legend": {
-            "Parameters": {
-                "showExpandedOnStartup": false, 
-                "size": 20
-            }
-        }, 
         "loadingpanel": {
             "Parameters": {}
-        }, 
-        "northarrow": {
-            "Parameters": {
-                "autoHide": false
-            }
         }, 
         "scalebar": {
             "Parameters": {

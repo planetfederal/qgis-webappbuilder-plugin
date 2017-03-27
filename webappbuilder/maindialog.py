@@ -470,6 +470,7 @@ class MainDialog(BASE, WIDGET):
             webbrowser.open_new(path)
         else:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
+            QApplication.restoreOverrideCursor()
             QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
                                  "Could not create web app.\nCheck the QGIS log for more details.")
 
@@ -487,12 +488,13 @@ class MainDialog(BASE, WIDGET):
         try:
             self.currentFolder = tempFolderInTempFolder("webappbuilder")
             pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-            self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            try:
+                self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            except:
+                QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
+                self.endCreatePreviewListener(False, traceback.format_exc())
         except WrongValueException:
             pass
-        except:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-            self.endCreatePreviewListener(False, traceback.format_exc())
 
     def endCreateAppListener(self, success, reason):
         self.onCreatingApp = False
@@ -559,13 +561,15 @@ class MainDialog(BASE, WIDGET):
                 self.createAppButtonText = self.buttonCreateOrStopApp.text()
                 self.buttonCreateOrStopApp.setText(self.tr("Stop"))
 
-                pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
-                self.onCreatingApp = True
-                self._run(lambda: createApp(appdef, folder, False, self.progress))
+                try:
+                    pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
+                    self.onCreatingApp = True
+                    self._run(lambda: createApp(appdef, folder, False, self.progress))
+                except Exception as ex:
+                    self.endCreateAppListener(False, traceback.format_exc())
+
         except WrongValueException:
             pass
-        except Exception as ex:
-            self.endCreateAppListener(False, traceback.format_exc())
 
     def createAppDefinition(self):
         layers, groups = self.getLayersAndGroups()

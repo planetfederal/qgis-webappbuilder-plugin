@@ -55,8 +55,9 @@ var BasicApp = React.createClass({
   _toggleEdit: function() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
-  _toggleAboutPanel: function() {
-    this._toggle(document.getElementById('about-panel'));
+  _hideAboutPanel: function(evt) {
+    evt.preventDefault();
+    document.getElementById('about-panel').style.display = 'none';
   },
   _toggleChartPanel: function(evt) {
     evt.preventDefault();

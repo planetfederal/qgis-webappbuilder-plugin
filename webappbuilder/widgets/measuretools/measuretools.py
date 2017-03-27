@@ -8,6 +8,11 @@ class MeasureTools(WebAppWidget):
         app.tools.append("React.createElement(Measure, {toggleGroup:'navigation', map:map})")
         self.addReactComponent(app, "Measure")
 
+        nav = '''React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})'''
+        if nav not in app.tools:
+            app.tools.append(nav)
+            self.addReactComponent(app, "Navigation")
+
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "measure-tool.png"))
 

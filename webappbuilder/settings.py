@@ -85,7 +85,6 @@ defaultAppSettings = {
 
 
 def initialize():
-    global currentCss
     global appSettings
     for w in webAppWidgets.values():
         w.resetParameters()

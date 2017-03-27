@@ -19,26 +19,26 @@ var defaultSelectionStroke = new ol.style.Stroke({
                     var textStyleCache_bakeries={}
                     var clusterStyleCache_bakeries={}
                     var style_bakeries = function(feature, resolution){
-                        
+
                         var value = "";
                         var style = [ new ol.style.Style({
                             image: new ol.style.RegularShape({points: 5, radius1: 11.4, radius2: 5.7, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(227,123,48,1.0)"}), angle: 0})
                         })
                         ];
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
                     var selectionStyle_bakeries = function(feature, resolution){
-                        
+
                         var value = "";
                         var style = [ new ol.style.Style({
                             image: new ol.style.RegularShape({points: 5, radius1: 11.4, radius2: 5.7, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: 0}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0})
                         })
                         ]
                         var allStyles = [];
-                        
+
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
@@ -48,7 +48,7 @@ var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true
 var lyr_bakeries = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-                     
+
                     style: style_bakeries,
                     selectedStyle: selectionStyle_bakeries,
                     title: "bakeries",
@@ -83,7 +83,7 @@ var BasicApp = React.createClass({
     };
   },
   componentDidMount: function() {
-    
+
   },
   _toggle: function(el) {
     if (el.style.display === 'block') {
@@ -105,8 +105,9 @@ var BasicApp = React.createClass({
   _toggleEdit: function() {
     this._toggle(document.getElementById('edit-tool-panel'));
   },
-  _toggleAboutPanel: function() {
-    this._toggle(document.getElementById('about-panel'));
+  _hideAboutPanel: function(evt) {
+    evt.preventDefault();
+    document.getElementById('about-panel').style.display = 'none';
   },
   _toggleChartPanel: function(evt) {
     evt.preventDefault();
@@ -125,7 +126,7 @@ React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: false})
                                   )
       )
-      
+
     );
   }
 });

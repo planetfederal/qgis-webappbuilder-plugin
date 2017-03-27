@@ -6,6 +6,7 @@
 import os
 import re
 import codecs
+import traceback
 from pubsub import pub
 from appwriter import writeWebApp, stopWritingWebApp
 from PyQt4.QtCore import *
@@ -53,7 +54,10 @@ def createApp(appdef, folder, forPreview, progress):
 
 	viewer.shutdown()
 	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
-	writeWebApp(appdef, folder, forPreview, progress)
+	try:
+		writeWebApp(appdef, folder, forPreview, progress)
+	except Exception as ex:
+		endWriteWebAppListener(False, traceback.format_exc())
 
 def checkSDKServerVersion():
 	path = os.path.join(os.path.dirname(__file__), "package.json")
@@ -93,7 +97,8 @@ def checkAppCanBeCreated(appdef):
 				source = layer.source()
 				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
 				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				if "access-control-allow-origin" not in r:
+				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+				if cors not in ["null", "*"]:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
 								" Popups might not work correctly for that layer."	% layer.name())
 
@@ -110,7 +115,8 @@ def checkAppCanBeCreated(appdef):
 								% layer.name())
 			else:
 				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				if "access-control-allow-origin" not in r:
+				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+				if cors not in ["null", "*"]:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests." % layer.name())
 
 		if layer.type() != layer.VectorLayer:

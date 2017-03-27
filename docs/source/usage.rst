@@ -200,14 +200,15 @@ options are available:
   
   * :guilabel:`No time info`. The layer will be rendered normally.
   * :guilabel:`Single time info for the whole layer`. The layer will be rendered
-    if the current date and time set by the Timeline control   falls between
+    if the current date and time set by the Timeline control falls between
     the two dates defined in the :guilabel:`From date` and :guilabel:`To
     date` boxes.
   * :guilabel:`Feature time info is stored in layer attribute`. Each feature has
     a different pair of to/from dates, and will only be rendered if the
     current time falls between them. The fields in which the dates are stored
     are selected using the :guilabel:`From date field` and :guilabel:`To date
-    field` dropdown menus.
+    field` dropdown menus. Fields type must be strings, and the values must
+    be dates in ISO 8601 format, that is, YYYY-MM-DD.
 
 * :guilabel:`Do not consume as tiled layer`. In certain cases, you might not
   want to use a tiling strategy for remote layers. If this option is selected,
@@ -233,6 +234,12 @@ queried using its GetFeatureInfo method.
 .. figure:: img/popupeditorwms.png
 
    Popup editor for WMS layers
+
+.. note::
+
+   WFS or WMS layers behind authentication are not supported yet. Currently, if
+   OWS layers with authentication are added, the app creation may fail, or
+   these layers won't be visible.
 
 Handling projections
 ~~~~~~~~~~~~~~~~~~~~

@@ -11,7 +11,6 @@ from string import digits
 import math
 import codecs
 import uuid
-import mapboxgl
 import json
 
 exportedStyles = 0
@@ -228,14 +227,14 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source})
-    
+
             if forPreview:
                 clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
                         };''' % {"n": layerName, "cs": clusterSource}
             return js
-        
+
     elif layer.type() == layer.RasterLayer:
         timeInfo = applayer.timeInfo if applayer.timeInfo is not None else "null"
         layerOpacity = layer.renderer().opacity()
@@ -249,6 +248,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                         timeInfo: %(timeInfo)s,
                         %(min)s %(max)s
                         source: new %(sourceClass)s(({
+                          crossOrigin: 'anonymous',
                           url: "%(url)s",
                           params: {"LAYERS": "%(layers)s" %(tiled)s, "STYLES": "%(styles)s"},
                         })),

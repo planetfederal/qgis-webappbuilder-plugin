@@ -74,7 +74,8 @@ class BasicApp extends React.Component {
   _toggleEdit() {
     this._toggle(document.getElementById('edit-tool-panel'));
   }
-  _toggleAboutPanel() {
+  _toggleAboutPanel(evt) {
+    evt.preventDefault();
     this._toggle(document.getElementById('about-panel'));
   }
   _toggleChartPanel(evt) {
