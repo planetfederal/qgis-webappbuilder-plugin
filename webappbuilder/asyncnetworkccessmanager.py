@@ -299,7 +299,7 @@ class AsyncNetworkAccessManager(object):
     @pyqtSlot()
     def abort(self):
         """
-        Handle request to cancell HTTP call
+        Handle request to cancel HTTP call
         """
         if (self.reply and self.reply.isRunning()):
             self.reply.abort()
