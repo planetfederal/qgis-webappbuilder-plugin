@@ -19,7 +19,7 @@ from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
 from qgiscommons.settings import setPluginSetting, pluginSetting
 
-widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
+widgets = ["aboutpanel", "attributestable", "attribution",
            "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",
