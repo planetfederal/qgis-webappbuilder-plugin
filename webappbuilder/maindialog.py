@@ -433,7 +433,7 @@ class MainDialog(BASE, WIDGET):
         in the excludeList.
         """
         for button in self.buttonBox.buttons():
-            if button in excludeList:
+            if excludeList and button in excludeList:
                 continue
             button.setEnabled(status)
 
