@@ -314,12 +314,14 @@ def writeJsx(appdef, folder, app, progress):
             return ",\n" + ",\n".join(array)
         else:
             return ""
+        
+    tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
     values = {"@IMPORTS@": "\n".join(app.imports),
               "@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
-                "@TOOLBAR@": ("," + ",\n".join(app.tools)) if app.tools else '',
+                "@TOOLBAR@": ("," + ",\n".join(tools)) if tools else '',
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
