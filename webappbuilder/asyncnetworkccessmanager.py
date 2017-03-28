@@ -37,6 +37,9 @@ DEFAULT_MAX_REDIRECTS = 4
 class RequestsException(Exception):
     pass
 
+class RequestsExceptionUserAbort(RequestsException):
+    pass
+
 class RequestsExceptionTimeout(RequestsException):
     pass
 
@@ -131,6 +134,7 @@ class AsyncNetworkAccessManager(object):
         self.authid = authid
         self.reply = None
         self.debug = debug
+        self.onAbort = False
         self.exception_class = exception_class
         self.http_call_result = Response({
             'status': 0,
@@ -185,6 +189,7 @@ class AsyncNetworkAccessManager(object):
             func = getattr(QgsNetworkAccessManager.instance(), method.lower())
         # Calling the server ...
         # Let's log the whole call for debugging purposes:
+        self.onAbort = False
         self.msg_log("Sending %s request to %s" % (method.upper(), req.url().toString()))
         headers = {str(h): str(req.rawHeader(h)) for h in req.rawHeaderList()}
         for k, v in list(headers.items()):
@@ -277,6 +282,12 @@ class AsyncNetworkAccessManager(object):
                 self.http_call_result.exception = RequestsExceptionTimeout(msg)
             elif err == QNetworkReply.ConnectionRefusedError:
                 self.http_call_result.exception = RequestsExceptionConnectionError(msg)
+            elif err == QNetworkReply.OperationCanceledError:
+                # request abort by calling ANAM.abort() => cancelling by the user
+                if self.onAbort:
+                    self.http_call_result.exception = RequestsExceptionUserAbort(msg)
+                else:
+                    self.http_call_result.exception = RequestsException(msg)
             else:
                 self.http_call_result.exception = RequestsException(msg)
         else:
@@ -295,3 +306,12 @@ class AsyncNetworkAccessManager(object):
                 self.msg_log("SSL Error: %s" % v)
         if self.disable_ssl_certificate_validation:
             reply.ignoreSslErrors()
+
+    @pyqtSlot()
+    def abort(self):
+        """
+        Handle request to cancel HTTP call
+        """
+        if (self.reply and self.reply.isRunning()):
+            self.onAbort = True
+            self.reply.abort()

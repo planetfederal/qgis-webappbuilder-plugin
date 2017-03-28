@@ -8,7 +8,7 @@ import re
 import codecs
 import traceback
 from pubsub import pub
-from appwriter import writeWebApp
+from appwriter import writeWebApp, stopWritingWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -41,6 +41,9 @@ def endWriteWebAppListener(success, reason):
 
 	# communicate end of function
 	pub.sendMessage(utils.topics.endFunction, success=success, reason=reason)
+
+def stopAppCreation():
+	stopWritingWebApp()
 
 def createApp(appdef, folder, forPreview, progress):
 	# save to global __appdef to patch a PyPubSub limitation that does not allow

@@ -22,9 +22,17 @@ from collections import OrderedDict
 import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
-from asyncnetworkccessmanager import AsyncNetworkAccessManager
+from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons.files import tempFilenameInTempFolder
+
+__anam = None # AsycnNetworkAccessmanager instance
+def stopWritingWebApp():
+    global __anam
+    if __anam:
+        __anam.abort()
+        del __anam
+        __anam = None
 
 def writeWebApp(appdef, folder, forPreview, progress):
     """WriteApp end is notifed using
@@ -134,7 +142,10 @@ def manageFinished(netManager, zipFileName, folder):
 
     # todo: check res code in case not authorization
     if not result.ok:
-        msg = "Cannot post preview webapp: {}".format(result.reason)
+        if isinstance(result.exception, RequestsExceptionUserAbort):
+            msg = "Request cancelled by user: {}".format(result.reason)
+        else:
+            msg = "Cannot post preview webapp: {}".format(result.reason)
         pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
         return
 
@@ -199,9 +210,13 @@ def appSDKification(folder, progress):
     # do http post
     progress.setText("Wait compilation")
 
-    anam = AsyncNetworkAccessManager(debug=True)
-    anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
-    anam.reply.finished.connect( lambda: manageFinished(anam, zipFileName, folder) )
+    global __anam
+    if __anam:
+        del __anam
+        __anam = None
+    __anam = AsyncNetworkAccessManager(debug=True)
+    __anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
+    __anam.reply.finished.connect( lambda: manageFinished(__anam, zipFileName, folder) )
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]
