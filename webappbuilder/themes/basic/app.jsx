@@ -10,6 +10,8 @@ import Button from 'boundless-sdk/components/Button';
 import enMessages from 'boundless-sdk/locale/en';
 import InfoPopup from 'boundless-sdk/components/InfoPopup';
 import MapPanel from 'boundless-sdk/components/MapPanel';
+import {ToolbarGroup} from 'material-ui/Toolbar';
+
 @IMPORTS@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
