@@ -30,9 +30,9 @@ def functionalTests():
     except:
         return []
 
-    def _createWebApp(n, checkApp=False):
+    def _createWebApp(n, checkApp=False, preview=True):
         global webAppFolder
-        webAppFolder = createAppFromTestAppdef(n, checkApp)
+        webAppFolder = createAppFromTestAppdef(n, checkApp, preview)
 
     def _test(n):
         test = Test("Verify '%s' tutorial" % n)
@@ -45,6 +45,7 @@ def functionalTests():
 
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
+"""
     def _testWidget(n):
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
@@ -119,7 +120,7 @@ def functionalTests():
     createEmpyAppTest = Test("Verify creating an app with no layers")
     createEmpyAppTest.addStep("Load project", iface.newProject)
     createEmpyAppTest.addStep("Open WAB", lambda: openWAB())
-    createEmpyAppTest.addStep("Create an app and check it is correctly created")
+    createEmpyAppTest.addStep("Create an app preview and check it is correctly created")
     createEmpyAppTest.setCleanup(closeWAB)
     tests.append(createEmpyAppTest)
 
@@ -127,16 +128,27 @@ def functionalTests():
     wrongEndpointTest.addStep("Load project", iface.newProject)
     wrongEndpointTest.addStep("Load project", _setWrongSdkEndpoint)
     wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
-    wrongEndpointTest.addStep("Try to create an app and check it complains of a wrong URL")
+    wrongEndpointTest.addStep("Try to create an app preview and check it complains of a wrong URL")
     wrongEndpointTest.setCleanup(_resetSdkEndpoint)
     tests.append(wrongEndpointTest)
 
     wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
     wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
-    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", True))
+    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", checkApp=True))
     wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
+"""
+    denyCompilationTest = Test("Verfiy deny compilation for BasicTestDesktop")
+    from boundlessconnect.tests.testerplugin import _startConectPlugin
+    denyCompilationTest.addStep("Open Connect plugin", _startConectPlugin())
+    denyCompilationTest.addStep('Login with role: BasicTestDesktop')
+    denyCompilationTest.addStep('Check that in the lower part of Connect plugin, BasicTestDesktop login name is displayed.')
+    denyCompilationTest.addStep("Load project", lambda: loadTestProject("nodata"))
+    wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
+    wrongEndpointTest.addStep("Try to create an app and check it complains of a permission denied in log messages")
+    createEmpyAppTest.setCleanup(closeWAB)
+    tests.append(denyCompilationTest)
 
     return tests
 
