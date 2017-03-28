@@ -21,8 +21,8 @@ Once started, the main dialog of the |current_plugin| looks like this:
 
    Web App Builder main dialog - Description tab
 
-At the bottom of the Web App Builder main dialog, there are six buttons that
-allow you to manage your app definitions, as shown below:
+At the bottom of the Web App Builder main dialog, there are six buttons
+allowing the user to manage your app definitions, as shown below:
 
 .. list-table::
    :header-rows: 1
@@ -45,31 +45,56 @@ allow you to manage your app definitions, as shown below:
    * - Close
      - Closes the dialog
 
+The following sections explain each tab in the Web App Builder dialog,
+its contents, and options.
+
+Generate a web app
+------------------
+
 To generate a web app, you must define its characteristics using the
 definitions available in each tab of the dialog and then press the
 :guilabel:`Preview` or :guilabel:`Create App` button.
 
+Preview
+~~~~~~~
+
+The :guilabel:`Preview` button creates the web app in a temporary
+folder and loads it on your default internet browser.
+
 .. note::
 
-   The :guilabel:`Preview` button will create the web app in a temporary
-   folder and open your default internet browser to load it. **This preview
-   web app is based on a precompiled version of Web SDK and is not ready for
-   production**, but only for preview and debugging purposes.
+   **This preview web app is based on a precompiled version of Web SDK and is
+   not ready for production**, but only for preview and debugging purposes.
 
-   The :guilabel:`Create App` button will create a fully functional web app
-   using *Boundless WebSDK* service. The web app is stored in a folder
-   specified by the user.
+Create App
+~~~~~~~~~~
 
-   *Boundless WebSDK* is offered as an online service to Boundless customers, so
-   you will need to be connected to the internet and use your Boundless Connect
-   credentials. You will be prompted to enter the credentials on the first time
-   that you use WebSDK in each QGIS session.
+The :guilabel:`Create App` button creates a fully functional web app
+using the *Boundless WebSDK* service.
 
-The following sections will explain each tab in the Web App Builder dialog,
-its contents, and options.
+The user is prompt for a folder to store the web app. After the folder is
+chosen, an uncompiled version of the web app is stored in it.
 
-Description
------------
+*Boundless WebSDK* is offered as an online service to Boundless customers, so
+you will need to be connected to the internet and use your Boundless Connect
+credentials (for more information `see <https://connect.boundlessgeo
+.com/docs/desktop/plugins/connect/usage.html#boundless-connect-panel>`_ ).
+
+You will be prompted to enter the credentials on the first time you use
+WebSDK in a QGIS session.
+
+During compilation, a progress bar shows the compilation status. At any time,
+the user can cancel the compilation by clicking :guilabel:`Stop`.
+
+.. figure:: img/stop_compilation.png
+
+When the compilation process is successfully finished, a dialog opens
+informing so, and the user can find the compiled Web App in the chosen folder.
+
+.. figure:: img/compilation_sucess.png
+
+Description tab
+---------------
 
 The elements in the :guilabel:`Description` tab control the basic structure
 of the app page.
@@ -96,8 +121,8 @@ There are two themes: *Basic* and *Tabbed*.
 
 .. _qgis.webappbuilder.usage.qgislayers:
 
-QGIS Layers
------------
+QGIS Layers tab
+---------------
 
 This tab you should select which layers from your existing QGIS project that
 you would like to add to your web app.
@@ -286,8 +311,8 @@ settings in the :ref:`qgis.webappbuilder.controls` page for more details.
    Base layers in a web app
 
 
-Controls
---------
+Controls tab
+------------
 
 The `Controls` tab allows you to select extra elements that you would like to
 add to your web app. These can be OpenLayers controls that act on the map
@@ -314,8 +339,8 @@ see the :ref:`qgis.webappbuilder.controls` page.
 
 .. _qgis.webappbuilder.usage.settings:
 
-Settings
---------
+Settings tab
+------------
 
 The `Settings` tab shows additional configuration for the application:
 
