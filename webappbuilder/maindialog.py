@@ -514,6 +514,9 @@ class MainDialog(BASE, WIDGET):
                                 self.tr("Network error due to a timeout.\n"
                                 "Please configure a longer timeout going to:\n"
                                 "Settings->Options->Network->Timeout for network requests (ms)."))
+            elif 'Permission denied' in reason:
+                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                                self.tr("Could not create web app.\nPermission denied with current Connect credentials"))
             else:
                 QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
                                 self.tr("Could not create web app.\nCheck the QGIS log for more details."))
