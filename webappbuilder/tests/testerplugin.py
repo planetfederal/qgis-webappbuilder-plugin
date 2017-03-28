@@ -45,7 +45,7 @@ def functionalTests():
 
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
-
+    """
     def _testWidget(n):
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
@@ -138,6 +138,17 @@ def functionalTests():
     wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
+    """
+    denyCompilationTest = Test("Verfiy deny compilation for BasicTestDesktop")
+    from boundlessconnect.tests.testerplugin import _startConectPlugin
+    denyCompilationTest.addStep("Open Connect plugin", _startConectPlugin())
+    denyCompilationTest.addStep('Login with role: BasicTestDesktop')
+    denyCompilationTest.addStep('Check that in the lower part of Connect plugin, BasicTestDesktop login name is displayed.')
+    denyCompilationTest.addStep("Load project", lambda: loadTestProject("nodata"))
+    wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
+    wrongEndpointTest.addStep("Try to create an app and check it complains of a permission denied in log messages")
+    createEmpyAppTest.setCleanup(closeWAB)
+    tests.append(denyCompilationTest)
 
     denyCompilationTest = Test("Verfiy deny compilation for BasicTestDesktop")
     from boundlessconnect.tests.testerplugin import _startConectPlugin
