@@ -6,6 +6,7 @@
 import os
 import re
 import codecs
+import tempfile
 from qgis.utils import iface
 from qgis.core import *
 from webappbuilder.appcreator import loadAppdef
@@ -19,7 +20,12 @@ from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
 from qgiscommons.settings import setPluginSetting, pluginSetting
 
-widgets = ["aboutpanel", "attributestable", "attribution",
+AUTHDB_MASTERPWD = 'password'
+AUTHM = None
+AUTHDBDIR = tempfile.mkdtemp(prefix='tmp-qgis_authdb',
+                             dir=tempfile.gettempdir())
+
+widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
            "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",
@@ -55,12 +61,12 @@ class SilentProgress():
     def setProgress(_, i):
         pass
 
-def createAppFromTestAppdef(appdefName, checkApp=False):
+def createAppFromTestAppdef(appdefName, checkApp=False, preview=True):
     appdef = testAppdef(appdefName)
     if checkApp:
         problems = checkAppCanBeCreated(appdef)
     folder = tempFolderInTempFolder("webappbuilder")
-    writeWebApp(appdef, folder, True, SilentProgress())
+    writeWebApp(appdef, folder, preview, SilentProgress())
     return folder
 
 def ignoreLayerID(text):
@@ -105,3 +111,29 @@ def _setWrongSdkEndpoint():
 def _resetSdkEndpoint():
     setPluginSetting("sdkendpoint", _sdkEndpoint)
     closeWAB()
+
+def initAuthManager():
+    """
+    Setup AuthManager instance.
+    heavily based on testqgsauthmanager.cpp.
+    """
+    global AUTHM
+    if not AUTHM:
+        AUTHM = QgsAuthManager.instance()
+        # check if QgsAuthManager has been already initialised... a side effect
+        # of the QgsAuthManager.init() is that AuthDbPath is set
+        if AUTHM.authenticationDbPath():
+            # already initilised => we are inside QGIS. Assumed that the
+            # actual qgis_auth.db has the same master pwd as AUTHDB_MASTERPWD
+            if AUTHM.masterPasswordIsSet():
+                msg = 'Auth master password not set from passed string'
+                assert AUTHM.masterPasswordSame(AUTHDB_MASTERPWD)
+            else:
+                msg = 'Master password could not be set'
+                assert AUTHM.setMasterPassword(AUTHDB_MASTERPWD, True), msg
+        else:
+            # outside qgis => setup env var before db init
+            os.environ['QGIS_AUTH_DB_DIR_PATH'] = AUTHDBDIR
+            msg = 'Master password could not be set'
+            assert AUTHM.setMasterPassword(AUTHDB_MASTERPWD, True), msg
+            AUTHM.init(AUTHDBDIR)
