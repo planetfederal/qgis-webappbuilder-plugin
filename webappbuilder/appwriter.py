@@ -25,6 +25,7 @@ from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons.files import tempFilenameInTempFolder
+from webbappwidget import WebAppWidget
 
 __anam = None # AsycnNetworkAccessmanager instance
 def stopWritingWebApp():
@@ -96,7 +97,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
     for w in widgets:
         w.write(appdef, dst, _app, progress)
 
-    writeCss(appdef, dst)
+    writeCss(appdef, dst, widgets)
 
     baseTarget = "_self" if appdef["Settings"]["Open hyperlinks in"] == 0 else "_blank"
     _app.scripts.append("<base target='%s'>" % baseTarget)
@@ -337,10 +338,28 @@ def writeJsx(appdef, folder, app, progress):
         f.write(jsx)
 
 
-def writeCss(appdef, folder):
-    dst = os.path.join(folder, "app.css")
+def writeCss(appdef, folder, widgets):
+    offset = 50
+    margin = 15
     src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
-    shutil.copy(src, dst)
+    dst = os.path.join(folder, "app.css")
+    with open(src) as f:
+        css = f.read()
+    left = offset
+    right = offset
+    widgets = sorted(appdef["Widgets"].values(), key=attrgetter('buttonIndex'))
+    for w in widgets:
+        if w.buttonArea == WebAppWidget.BUTTON_AREA_LEFT:
+            top = left
+            left += w.buttonHeight + margin
+        elif w.buttonArea == WebAppWidget.BUTTON_AREA_RIGHT:
+            top = right
+            right += w.buttonHeight + margin
+        else:
+            continue
+        css = css.replace(w.cssName + " {", w.cssName + "{\n\ttop:%ipx;" % top)
+    with open(dst, "w") as f:
+        f.write(css)
 
 def writeHtml(appdef, folder, app, progress, filename):
     layers = appdef["Layers"]

@@ -4,6 +4,11 @@ from PyQt4.QtGui import QIcon
 
 class ZoomControls(WebAppWidget):
 
+    buttonIndex = 1
+    buttonArea = WebAppWidget.BUTTON_AREA_LEFT
+    cssName = "zoom-buttons"
+    buttonHeight = 95
+    
     _parameters = {"duration": 250, "zoomInTipLabel": "Zoom in", "zoomOutTipLabel": "Zoom out", "delta": 1.2}
 
     def write(self, appdef, folder, app, progress):

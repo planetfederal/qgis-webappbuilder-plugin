@@ -12,6 +12,12 @@ import codecs
 
 class WebAppWidget(object):
 
+    BUTTON_AREA_NO_BUTTON, BUTTON_AREA_LEFT, BUTTON_AREA_RIGHT = 0,1,2
+    
+    buttonIndex = 100
+    buttonArea = BUTTON_AREA_NO_BUTTON
+    buttonHeight = 40
+    
     _parameters = {}
     order = 100
 

@@ -4,6 +4,10 @@ from PyQt4.QtGui import QIcon
 
 class Geolocation(WebAppWidget):
 
+    buttonIndex = 4
+    buttonArea = WebAppWidget.BUTTON_AREA_LEFT
+    cssName = "geolocation-control"
+    
     levels = ["Current zoom"]
     levels.extend((str(s) for s in range(1,25)))
     _parameters = {"zoom": ("Current zoom", tuple(levels))}

@@ -4,6 +4,10 @@ from PyQt4.QtGui import QIcon
 
 class HomeButton(WebAppWidget):
 
+    buttonIndex = 2
+    buttonArea = WebAppWidget.BUTTON_AREA_LEFT
+    cssName = "home-button"
+    
     def write(self, appdef, folder, app, progress):
         app.panels.append('''React.createElement("div", {id:'home-button'},
                                     React.createElement(HomeButton, {tooltipPosition: 'bottom-right', map:map})

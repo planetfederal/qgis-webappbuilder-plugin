@@ -10,6 +10,10 @@ import shutil
 
 class Legend(WebAppWidget):
 
+    buttonIndex = 2
+    buttonArea = WebAppWidget.BUTTON_AREA_RIGHT
+    cssName = "legend"
+    
     _parameters = {"showExpandedOnStartup": False, "size": 20}
 
     def write(self, appdef, folder, app, progress):

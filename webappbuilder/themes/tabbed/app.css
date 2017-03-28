@@ -51,16 +51,13 @@ canvas {
 }
 #geolocation-control {
   position: absolute;
-  top: 130px;
   margin-left: 20px;
 }
 #home-button {
   position: absolute;
-  top: 184px;
   margin-left: 20px;
 }
 #fullscreen-button {
-  top: 238px;
   position: absolute;
   margin-left: 20px;
 }
@@ -68,12 +65,10 @@ canvas {
   position: absolute;
   width: 150px;
   left: 100px;
-  top: 0px;
 }
 #zoom-buttons {
   margin-left: 20px;
   position: absolute;
-  top: 20px;
 }
 #rotate-button {
   top: 20px;

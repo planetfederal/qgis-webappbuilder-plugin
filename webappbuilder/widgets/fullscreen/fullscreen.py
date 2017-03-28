@@ -4,6 +4,10 @@ from PyQt4.QtGui import QIcon
 
 class FullScreen(WebAppWidget):
 
+    buttonIndex = 3
+    buttonArea = WebAppWidget.BUTTON_AREA_LEFT
+    cssName = "fullscreen-button"
+    
     def write(self, appdef, folder, app, progress):
         app.panels.append('''React.createElement("div", {id:'fullscreen-button'},
                                     React.createElement(Fullscreen, {map:map})

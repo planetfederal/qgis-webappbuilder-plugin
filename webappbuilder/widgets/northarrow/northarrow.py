@@ -4,6 +4,10 @@ from PyQt4.QtGui import QIcon
 
 class NorthArrow(WebAppWidget):
 
+    buttonIndex = 0
+    buttonArea = WebAppWidget.BUTTON_AREA_LEFT
+    cssName = "rotate-button"
+    
     _parameters = {"autoHide": False}
 
     def write(self, appdef, folder, app, progress):

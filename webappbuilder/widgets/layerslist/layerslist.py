@@ -4,6 +4,10 @@ from PyQt4.QtGui import QIcon
 
 class LayersList(WebAppWidget):
 
+    buttonIndex = 1
+    buttonArea = WebAppWidget.BUTTON_AREA_RIGHT
+    cssName = "layerlist"
+        
     _parameters = {"tipLabel": "Layers",
                     "showOpacity": False,
                     "showZoomTo": False,
