@@ -123,7 +123,6 @@ html, body {
   display: none;
   position: absolute;
   background: rgba(255,255,255,1);
-  padding-top: 30px;
   border: 1px solid #000000;
   bottom: 0px;
   left: 0;
@@ -160,26 +159,6 @@ html, body {
   right: 8px;
 }
 .about-closer-icon:hover {
-  color: #000000;
-  text-decoration: none;
-  opacity: 1;
-  filter: alpha(opacity=100);
-  cursor: pointer;
-}
-.chart-panel-closer {
-  font-size: 30px;
-  font-weight: bold;
-  line-height: 18px;
-  color: #000000;
-  text-shadow: 0 1px 0 #ffffff;
-  opacity: 0.8;
-  filter: alpha(opacity=80);
-  text-decoration: none;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-}
-.chart-panel-closer:hover {
   color: #000000;
   text-decoration: none;
   opacity: 1;
