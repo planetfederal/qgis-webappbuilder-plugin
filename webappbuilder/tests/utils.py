@@ -55,6 +55,12 @@ def closeWAB():
         if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
             dialog.close()
 
+def getWABdialog()
+    for dialog in iface.mainWindow().children():
+        if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
+            return dialog
+    return None
+
 class SilentProgress():
     def setText(_, text):
         pass
@@ -111,6 +117,15 @@ def _setWrongSdkEndpoint():
 def _resetSdkEndpoint():
     setPluginSetting("sdkendpoint", _sdkEndpoint)
     closeWAB()
+
+_networkTimeout = None
+def setNetworkTimeout(value=60000):
+    global _networkTimeout
+    _networkTimeout = pluginSetting("networkAndProxy/networkTimeout", namespace="Qgis")
+    setPluginSetting("networkAndProxy/networkTimeout", value, namespace="Qgis")
+
+def resetNetworkTimeout():
+    setPluginSetting("networkAndProxy/networkTimeout", _networkTimeout, namespace="Qgis")
 
 def initAuthManager():
     """
