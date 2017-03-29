@@ -12,7 +12,8 @@ import symbologytest
 import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
-                                       _resetSdkEndpoint, widgets)
+                                       _resetSdkEndpoint, widgets,
+                                       setNetworkTimeout, resetNetworkTimeout)
 from qgis.utils import iface
 
 try:
@@ -45,11 +46,7 @@ def functionalTests():
 
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
-<<<<<<< 15bc1a9e210292685ea999efd67764770030ab6c
     """
-=======
-
->>>>>>> rentroduces all previous tests
     def _testWidget(n):
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
@@ -142,18 +139,54 @@ def functionalTests():
     wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
+
+    denyCompilationTest = Test("Verfiy deny compilation for invalid Connect credentials")
+    denyCompilationTest.addStep("Reset project", iface.newProject)
+    from boundlessconnect.tests.testerplugin import _startConectPlugin
+    denyCompilationTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button.\n'
+                                'Check that Connect shows Warning message complaining about only open access permissions.'
+                                'Close error message by pressing "Yes" button.',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    denyCompilationTest.addStep("Open WAB", lambda: openWAB())
+    denyCompilationTest.addStep("Create an EMPTY app and check it complains of a permission denied")
+    denyCompilationTest.setCleanup(closeWAB)
+    tests.append(denyCompilationTest)
+
+    localTimeoutCompilationTest = Test("Verfiy compilation timeout due to local settings")
+    localTimeoutCompilationTest.addStep("Reset project", iface.newProject)
+    from boundlessconnect.tests.testerplugin import _startConectPlugin
+    localTimeoutCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    localTimeoutCompilationTest.addStep("Open WAB", lambda: openWAB())
+    localTimeoutCompilationTest.addStep("Setting timeout", lambda: setNetworkTimeout(value=3000))
+    localTimeoutCompilationTest.addStep("Create an EMPTY app and check it complains of network timeout", isVerifyStep=True)
+    localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
+    tests.append(localTimeoutCompilationTest)
+
+    successCompilationTest = Test("Verfiy successful compilation with EnterpriseTestDesktop")
+    successCompilationTest.addStep("Reset project", iface.newProject)
+    from boundlessconnect.tests.testerplugin import _startConectPlugin
+    successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    successCompilationTest.addStep("Open WAB", lambda: openWAB())
+    successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
+    successCompilationTest.setCleanup(closeWAB)
+    tests.append(successCompilationTest)
     """
 
-    denyCompilationTest = Test("Verfiy deny compilation for BasicTestDesktop")
+    stopCompilationTest = Test("Verfiy stop compilation with EnterpriseTestDesktop")
+    stopCompilationTest.addStep("Reset project", iface.newProject)
     from boundlessconnect.tests.testerplugin import _startConectPlugin
-    denyCompilationTest.addStep("Open Connect plugin", _startConectPlugin())
-    denyCompilationTest.addStep('Login with role: BasicTestDesktop')
-    denyCompilationTest.addStep('Check that in the lower part of Connect plugin, BasicTestDesktop login name is displayed.')
-    denyCompilationTest.addStep("Load project", lambda: loadTestProject("nodata"))
-    wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
-    wrongEndpointTest.addStep("Try to create an app and check it complains of a permission denied in log messages")
-    createEmpyAppTest.setCleanup(closeWAB)
-    tests.append(denyCompilationTest)
+    stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    stopCompilationTest.addStep("Open WAB", lambda: openWAB())
+    stopCompilationTest.addStep("Create an EMPTY app and start compilation")
+    stopCompilationTest.addStep("verify ")
+    stopCompilationTest.setCleanup(closeWAB)
+    tests.append(stopCompilationTest)
 
     return tests
 
