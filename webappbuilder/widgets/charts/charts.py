@@ -19,17 +19,13 @@ class ChartTool(WebAppWidget):
                 idx = len(app.tabs) + 1
                 app.tabs.append('''React.createElement(Tab,{value:%i, label:"Charts"},
                                         React.createElement("div", {id:"charts-tab"},
-                                            React.createElement(Chart, {combo:true, charts:charts})
+                                            React.createElement(Chart, {charts:charts})
                                         )
                                     )''' % idx)
             else:
-                app.tools.append('''React.createElement(Chart, {container:'chart-panel', charts:charts})''')
+                app.tools.append('''React.createElement(Button, {label: 'Charts', onTouchTap: this._toggleChartPanel.bind(this)})''')
                 app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
-                                                React.createElement("a", {href:'#', id:'chart-panel-closer',
-                                                                    className:'chart-panel-closer', onClick:this._toggleChartPanel.bind(this)},
-                                                                      "X"
-                                                                ),
-                                                React.createElement("div", {id: 'chart'})
+                                       React.createElement(Chart, {charts: charts, onClose: this._toggleChartPanel.bind(this)})
                                         )''' )
             charts = []
             for chartName, chart in self._parameters["charts"].iteritems():
