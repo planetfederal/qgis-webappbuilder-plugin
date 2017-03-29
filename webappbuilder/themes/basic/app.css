@@ -10,12 +10,12 @@ canvas {
 }
 #layerlist {
     position: absolute;
-    right: 0px;
+    right: 20px;
 }
 
 #legend {
     position: absolute;
-    right: 0px;
+    right: 20px;
 }
 
 #fullscreen-button {
