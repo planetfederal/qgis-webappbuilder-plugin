@@ -498,6 +498,7 @@ class MainDialog(BASE, WIDGET):
 
     def endCreateAppListener(self, success, reason):
         self.onCreatingApp = False
+        QApplication.restoreOverrideCursor()
 
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
