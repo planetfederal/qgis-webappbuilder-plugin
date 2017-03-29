@@ -49,6 +49,14 @@ canvas {
 .tabs > div > div:last-child > div{
   height: 100%;
 }
+#layerlist {
+    position: absolute;
+    right: 0px;
+}
+#legend {
+    position: absolute;
+    right: 0px;
+}
 #geolocation-control {
   position: absolute;
   margin-left: 20px;
@@ -71,8 +79,7 @@ canvas {
   position: absolute;
 }
 #rotate-button {
-  top: 20px;
-  right: 17px;
+  margin-left: 20px;
   position: absolute;
 }
 html, body {

@@ -315,7 +315,7 @@ def writeJsx(appdef, folder, app, progress):
             return ",\n" + ",\n".join(array)
         else:
             return ""
-        
+
     tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
     values = {"@IMPORTS@": "\n".join(app.imports),
               "@TABS@": join(app.tabs),
@@ -339,7 +339,7 @@ def writeJsx(appdef, folder, app, progress):
 
 
 def writeCss(appdef, folder, widgets):
-    offset = 50
+    offset = 80
     margin = 15
     src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
     dst = os.path.join(folder, "app.css")
