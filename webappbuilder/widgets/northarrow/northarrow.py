@@ -17,7 +17,7 @@ class NorthArrow(WebAppWidget):
                                     React.createElement(Rotate, {
                                     autoHide:%s,
                                     map: map,
-                                    tooltipPosition: 'bottom-left'})
+                                    tooltipPosition: 'bottom-right'})
                                   )''' % (p("autoHide")))
         self.addReactComponent(app, "Rotate")
 
