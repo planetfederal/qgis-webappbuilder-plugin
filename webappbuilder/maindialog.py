@@ -50,8 +50,8 @@ class MainDialog(BASE, WIDGET):
 
     items = {}
 
-    def __init__(self, appdef):
-        super(MainDialog, self).__init__()
+    def __init__(self, appdef, parent=None):
+        super(MainDialog, self).__init__(parent)
         self.setupUi(self)
 
         self.widgetButtons = {}
@@ -498,12 +498,15 @@ class MainDialog(BASE, WIDGET):
 
     def endCreateAppListener(self, success, reason):
         self.onCreatingApp = False
+
+        # reset button status and cursor
+        self.buttonCreateOrStopApp.setText(self.createAppButtonText)
         QApplication.restoreOverrideCursor()
 
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
         if success:
-            QMessageBox.information(iface.mainWindow(), self.tr("Web app"),
+            QMessageBox.information(self, self.tr("Web app"),
                                      self.tr("Web app was correctly created and built."))
         elif reason:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
@@ -511,19 +514,16 @@ class MainDialog(BASE, WIDGET):
                 # do nothing
                 pass
             elif 'Cannot post preview webapp: Network error #5: Operation canceled' in reason:
-                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                QMessageBox.critical(self, self.tr("Error creating web app"),
                                 self.tr("Network error due to a timeout.\n"
                                 "Please configure a longer timeout going to:\n"
                                 "Settings->Options->Network->Timeout for network requests (ms)."))
             elif 'Permission denied' in reason:
-                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                QMessageBox.critical(self, self.tr("Error creating web app"),
                                 self.tr("Could not create web app.\nPermission denied with current Connect credentials"))
             else:
-                QMessageBox.critical(iface.mainWindow(), self.tr("Error creating web app"),
+                QMessageBox.critical(self, self.tr("Error creating web app"),
                                 self.tr("Could not create web app.\nCheck the QGIS log for more details."))
-
-        # reset button status
-        self.buttonCreateOrStopApp.setText(self.createAppButtonText)
 
     def createOrStopApp(self):
         # check if app is compiling
