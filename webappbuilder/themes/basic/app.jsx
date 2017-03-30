@@ -79,7 +79,7 @@ class BasicApp extends React.Component {
   _hideAboutPanel: function(evt) {
     evt.preventDefault();
     document.getElementById('about-panel').style.display = 'none';
-  },
+  }
   _toggleChartPanel(evt) {
     evt.preventDefault();
     this._toggle(document.getElementById('chart-panel'));
