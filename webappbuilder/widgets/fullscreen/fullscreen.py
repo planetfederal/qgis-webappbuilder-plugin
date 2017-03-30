@@ -10,7 +10,7 @@ class FullScreen(WebAppWidget):
     
     def write(self, appdef, folder, app, progress):
         app.panels.append('''React.createElement("div", {id:'fullscreen-button'},
-                                    React.createElement(Fullscreen, {map:map})
+                                    React.createElement(Fullscreen, {tooltipPosition: 'bottom-right', map:map})
                                   )''')
         self.addReactComponent(app, "Fullscreen")
 
