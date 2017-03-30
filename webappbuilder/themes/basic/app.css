@@ -35,6 +35,7 @@ canvas {
   position: absolute;
   width: 150px;
   left: 100px;
+  top: 70px;
 }
 #zoom-buttons {
   margin-left: 20px;
