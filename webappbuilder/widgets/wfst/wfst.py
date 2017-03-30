@@ -19,5 +19,12 @@ class Wfst(WebAppWidget):
     def iconFile(self):
         return os.path.join(os.path.dirname(__file__), "edit.png")
 
+    def checkProblems(self, appdef, problems):
+        for applayer in appdef["Layers"]:
+            if applayer.layer.type() == applayer.layer.VectorLayer and applayer.layer.providerType().lower() == "wfs":
+                return
+
+        problems.append("WFS-T widget added but no WFS layers have been included.")
+
     def description(self):
         return "WFS-T"
