@@ -254,12 +254,14 @@ def writeJs(appdef, folder, app, progress):
         else:
             return ""
 
-    tools = ["React.createElement(ToolbarGroup, undefined, %s),\nReact.createElement(ToolbarGroup, undefined, React.createElement(ToolbarSeparator, {style: {backgroundColor: 'none'}}))" % t for t in app.tools]
+    tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
+    stools = "," + (",\nReact.createElement(ToolbarGroup, undefined, React.createElement("
+              "ToolbarSeparator, {style: {backgroundColor: 'none'}})),\n").join(tools) if tools else ''
     values = {"@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
-                "@TOOLBAR@": ("," + ",\n".join(tools)) if tools else '',
+                "@TOOLBAR@": stools,
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
@@ -317,13 +319,15 @@ def writeJsx(appdef, folder, app, progress):
         else:
             return ""
 
-    tools = ["React.createElement(ToolbarGroup, undefined, %s),\nReact.createElement(ToolbarGroup, undefined, React.createElement(ToolbarSeparator, {style: {backgroundColor: 'none'}}))" % t for t in app.tools]
+    tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
+    stools = "," + (",\nReact.createElement(ToolbarGroup, undefined, React.createElement("
+              "ToolbarSeparator, {style: {backgroundColor: 'none'}})),\n").join(tools) if tools else ''
     values = {"@IMPORTS@": "\n".join(app.imports),
               "@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
-                "@TOOLBAR@": ("," + ",\n".join(tools)) if tools else '',
+                "@TOOLBAR@": stools,
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
