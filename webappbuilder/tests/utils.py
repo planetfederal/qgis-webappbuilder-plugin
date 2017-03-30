@@ -18,6 +18,7 @@ from qgiscommons.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
+from PyQt4.QtCore import Qt
 from qgiscommons.settings import setPluginSetting, pluginSetting
 
 AUTHDB_MASTERPWD = 'password'
@@ -47,18 +48,32 @@ def testAppdef(name, process = True):
 
 def openWAB(appdef = None):
     initialize()
-    dlg = MainDialog(appdef)
+    dlg = MainDialog(appdef, parent=iface.mainWindow())
     dlg.open()
+    dlg.setWindowModality(Qt.NonModal)
+
+def hideWAB():
+    dlg = getWABDialog()
+    if dlg:
+        dlg.hide()
+
+def showWAB():
+    dlg = getWABDialog()
+    if dlg:
+        dlg.show()
 
 def closeWAB():
     for dialog in iface.mainWindow().children():
-        if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
+        if isinstance(dialog, QDialog) and dialog.objectName() == "WABMainDialog":
             dialog.close()
+            # necessary to delete Dialog instance to avoid inter test
+            # dependencies and GUI memory
+            dialog.deleteLater()
 
-def getWABdialog()
-    for dialog in iface.mainWindow().children():
-        if isinstance(dialog, QDialog) and dialog.objectName() == "WebAppBuilderDialog":
-            return dialog
+def getWABDialog():
+    for child in iface.mainWindow().children():
+        if isinstance(child, MainDialog) and child.objectName() == "WABMainDialog":
+            return child
     return None
 
 class SilentProgress():
