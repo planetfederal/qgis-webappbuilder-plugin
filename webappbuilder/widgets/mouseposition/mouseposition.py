@@ -5,6 +5,10 @@ import json
 
 class MousePosition(WebAppWidget):
 
+    buttonIndex = 0
+    buttonArea = WebAppWidget.BUTTON_AREA_RIGHT
+    cssName = "ol-mouse-position"
+
     _parameters = {"projection": "EPSG:4326",
                    "coordinateFormat": ("Lat/Lon", ("Lat/Lon", "MGRS")),
                    "undefinedHTML": "&nbsp;"}

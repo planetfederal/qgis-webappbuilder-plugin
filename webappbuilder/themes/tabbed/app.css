@@ -53,6 +53,8 @@ canvas {
     position: absolute;
     right: 20px;
 }
+.ol-mouse-position{
+}
 #legend {
     position: absolute;
     right: 20px;
