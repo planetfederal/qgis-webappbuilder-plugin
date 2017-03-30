@@ -498,7 +498,7 @@ class MainDialog(BASE, WIDGET):
 
     def endCreateAppListener(self, success, reason):
         self.onCreatingApp = False
-        
+
         # reset button status and cursor
         self.buttonCreateOrStopApp.setText(self.createAppButtonText)
         QApplication.restoreOverrideCursor()
