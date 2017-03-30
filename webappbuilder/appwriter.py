@@ -254,7 +254,7 @@ def writeJs(appdef, folder, app, progress):
         else:
             return ""
 
-    tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
+    tools = ["React.createElement(ToolbarGroup, undefined, %s),\nReact.createElement(ToolbarSeparator)" % t for t in app.tools]
     values = {"@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
@@ -317,7 +317,7 @@ def writeJsx(appdef, folder, app, progress):
         else:
             return ""
 
-    tools = ["React.createElement(ToolbarGroup, undefined, %s)" % t for t in app.tools]
+    tools = ["React.createElement(ToolbarGroup, undefined, %s),\nReact.createElement(ToolbarSeparator)" % t for t in app.tools]
     values = {"@IMPORTS@": "\n".join(app.imports),
               "@TABS@": join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
