@@ -3,6 +3,7 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+import unittest
 import webbrowser
 import os
 import settingstest
@@ -13,9 +14,12 @@ import layerstest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
                                        _resetSdkEndpoint, widgets,
-                                       setNetworkTimeout, resetNetworkTimeout)
+                                       setNetworkTimeout, resetNetworkTimeout,
+                                       getWABDialog, hideWAB)
 from qgis.utils import iface
-
+from PyQt4.QtTest import QTest
+from PyQt4.QtGui import QMessageBox
+from PyQt4.QtCore import Qt
 try:
     from qgis.core import QGis
 except ImportError:
@@ -23,8 +27,10 @@ except ImportError:
 
 webAppFolder = None
 
-
 def functionalTests():
+    # create TestCase instance to use Assert methods
+    tc = unittest.TestCase('__init__')
+
     try:
         from qgistester.test import Test
         from qgistester.utils import layerFromName
@@ -46,7 +52,7 @@ def functionalTests():
 
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
-    """
+
     def _testWidget(n):
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
@@ -74,8 +80,8 @@ def functionalTests():
     unsupportedSymbologyTest.addStep("Open WAB", openWAB)
     unsupportedSymbologyTest.addStep("Click on 'Preview'. Verify a warning about unsupported symbology is shown.\n"
                          "Verify it shows a warning.")
-    tests.append(unsupportedSymbologyTest)
     unsupportedSymbologyTest.setCleanup(closeWAB)
+    tests.append(unsupportedSymbologyTest)
 
     wrongLogoTest = Test("Verify warning for wrong logo file")
     wrongLogoTest.addStep("Load project", lambda: loadTestProject())
@@ -161,6 +167,7 @@ def functionalTests():
     localTimeoutCompilationTest.addStep("Open WAB", lambda: openWAB())
     localTimeoutCompilationTest.addStep("Setting timeout", lambda: setNetworkTimeout(value=3000))
     localTimeoutCompilationTest.addStep("Create an EMPTY app and check it complains of network timeout", isVerifyStep=True)
+    localTimeoutCompilationTest.addStep("Close WAB", closeWAB)
     localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
     tests.append(localTimeoutCompilationTest)
 
@@ -174,17 +181,30 @@ def functionalTests():
     successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
     successCompilationTest.setCleanup(closeWAB)
     tests.append(successCompilationTest)
-    """
 
-    stopCompilationTest = Test("Verfiy stop compilation with EnterpriseTestDesktop")
+
+    # test stopCompilationTest
+    def checkStartoStopButton(text=None):
+        dlg = getWABDialog()
+        print dlg
+        tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
+
+    def clickStopButton(after=5000):
+        QTest.qWait(after)
+        dlg = getWABDialog()
+        QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
+
+    stopCompilationTest = Test("Verfiy stop compilation with EnterpriseTestDesktop user")
     stopCompilationTest.addStep("Reset project", iface.newProject)
     from boundlessconnect.tests.testerplugin import _startConectPlugin
     stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                 'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
     stopCompilationTest.addStep("Open WAB", lambda: openWAB())
-    stopCompilationTest.addStep("Create an EMPTY app and start compilation")
-    stopCompilationTest.addStep("verify ")
+    stopCompilationTest.addStep("Create an EMPTY app and start compilation, then click on next step!")
+    stopCompilationTest.addStep("Verify if stop button is set", lambda: checkStartoStopButton(text='Stop') )
+    stopCompilationTest.addStep("Click stop", lambda: clickStopButton(after=1000) )
+    stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp') )
     stopCompilationTest.setCleanup(closeWAB)
     tests.append(stopCompilationTest)
 
