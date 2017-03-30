@@ -20,7 +20,7 @@ class WidgetsTest(unittest.TestCase):
     def testWidgetsCorrectlyLoaded(self):
         """Check that all widgets loaded"""
         for w in widgets:
-            self.assertTrue(w in webAppWidgets, 'Widget {} not loaded'.format(w))
+            self.assertTrue(w in webAppWidgets), 'Widget {} not loaded'.format(w)
 
     def testChartWidgetNotAdded(self):
         """Check that chart widget is not generated if it is not configured"""
