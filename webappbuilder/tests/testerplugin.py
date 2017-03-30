@@ -182,11 +182,9 @@ def functionalTests():
     successCompilationTest.setCleanup(closeWAB)
     tests.append(successCompilationTest)
 
-
     # test stopCompilationTest
     def checkStartoStopButton(text=None):
         dlg = getWABDialog()
-        print dlg
         tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
 
     def clickStopButton(after=5000):
