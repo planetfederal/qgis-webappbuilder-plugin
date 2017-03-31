@@ -28,5 +28,12 @@
      "default": "Ask",
      "options": ["Ask", "Open last configuration", "Open new configuration"],
      "group": "General"
+    },
+    {"name":"compileinserver",
+     "label": "Use SDK Service to compile app",
+     "description": "True if the generated JSX file should be compiled using the remote SDK service.",
+     "type": "bool",
+     "default": true,
+     "group": "General"
     }
 ]

@@ -506,8 +506,13 @@ class MainDialog(BASE, WIDGET):
         from pubsub import pub
         pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
         if success:
-            QMessageBox.information(self, self.tr("Web app"),
+            if pluginSetting("compileinserver"):
+                QMessageBox.information(self, self.tr("Web app"),
                                      self.tr("Web app was correctly created and built."))
+            else:
+                QMessageBox.information(self, self.tr("Web app"),
+                                     self.tr("Web app file were correctly created.\n"
+                                     "A web app can be built from them using Boundless WebSDK"))
         elif reason:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
             if 'Request cancelled by user' in reason:

@@ -25,6 +25,7 @@ from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons.files import tempFilenameInTempFolder
+from qgiscommons.settings import pluginSetting
 from webbappwidget import WebAppWidget
 
 __anam = None # AsycnNetworkAccessmanager instance
@@ -121,12 +122,15 @@ def writeWebApp(appdef, folder, forPreview, progress):
         app.scriptsbody.extend(['<script src="/loader.js"></script><script src="/build/app-debug.js"></script>'])
         writeHtml(appdef, dst, app, progress, "index.html")
 
-        # apply SDK compilation to the saved webapp
-        pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
-        try:
-            appSDKification(dst, progress)
-        except Exception as e:
-            pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+        if pluginSetting("compileinserver"):
+            # apply SDK compilation to the saved webapp
+            pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
+            try:
+                appSDKification(dst, progress)
+            except Exception as e:
+                pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
+        else:
+            pub.sendMessage(utils.topics.endWriteWebApp, success=True, reason=None)
 
 def endAppSDKificationListener(success, reason):
     from pubsub import pub
