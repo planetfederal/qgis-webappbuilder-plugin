@@ -76,7 +76,7 @@ defaultAppSettings = {
                 "Show popups on hover": False,
                 "App view CRS": "EPSG:3857",
                 "Use view CRS for WFS connections": True,
-                "Use JSONP for WFS connections": True,
+                "Use JSONP for WFS connections": False,
                 "Group base layers": True,
                 "Minify JavaScript": False,
                 "Add permalink functionality": True,
