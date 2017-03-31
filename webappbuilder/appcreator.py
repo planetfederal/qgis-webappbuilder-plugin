@@ -93,14 +93,13 @@ def checkAppCanBeCreated(appdef):
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
-			if applayer.popup != "":
-				source = layer.source()
-				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
-				r = run(lambda: requests.get(url, headers={"origin": "null"}))
-				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
-				if cors not in ["null", "*"]:
-					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
-								" Popups might not work correctly for that layer."	% layer.name())
+			source = layer.source()
+			url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
+			r = run(lambda: requests.get(url, headers={"origin": "null"}))
+			cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+			if cors not in ["null", "*"]:
+				problems.append("Server for layer %s is not allowed to accept cross-origin requests."
+							" Popups and printing might not work correctly for that layer."	% layer.name())
 
 	for applayer in layers:
 		layer = applayer.layer
