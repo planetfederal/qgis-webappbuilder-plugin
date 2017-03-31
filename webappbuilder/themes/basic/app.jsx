@@ -76,7 +76,7 @@ class BasicApp extends React.Component {
   _toggleEdit() {
     this._toggle(document.getElementById('edit-tool-panel'));
   }
-  _hideAboutPanel: function(evt) {
+  _hideAboutPanel(evt) {
     evt.preventDefault();
     document.getElementById('about-panel').style.display = 'none';
   }
