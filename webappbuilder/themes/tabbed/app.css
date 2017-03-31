@@ -130,3 +130,6 @@ body {
   height: 50px;
   z-index: 1001;
 }
+.ol-overviewmap {
+  bottom: 35px;
+}

@@ -12,6 +12,9 @@ canvas {
     position: absolute;
     right: 20px;
 }
+.ol-overviewmap {
+  bottom: 35px;
+}
 .ol-mouse-position{
 }
 #legend {
