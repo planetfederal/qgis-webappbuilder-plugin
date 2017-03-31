@@ -202,7 +202,7 @@ def functionalTests():
     stopCompilationTest.addStep("Create an EMPTY app and start compilation, then click on next step!")
     stopCompilationTest.addStep("Verify if stop button is set", lambda: checkStartoStopButton(text='Stop') )
     stopCompilationTest.addStep("Click stop", lambda: clickStopButton(after=1000) )
-    stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp') )
+    stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp (Beta)') )
     stopCompilationTest.setCleanup(closeWAB)
     tests.append(stopCompilationTest)
 
