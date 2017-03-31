@@ -135,6 +135,7 @@ class AsyncNetworkAccessManager(object):
         self.reply = None
         self.debug = debug
         self.onAbort = False
+        self.blockingMode = False
         self.exception_class = exception_class
         self.http_call_result = Response({
             'status': 0,
@@ -160,6 +161,8 @@ class AsyncNetworkAccessManager(object):
         redirections argument is ignored and is here only for httplib2 compatibility.
         """
         self.msg_log(u'http_call request: {0}'.format(url))
+
+        self.blockingMode = blocking
         req = QNetworkRequest()
         # Avoid double quoting form QUrl
         url = urllib.parse.unquote(url)
@@ -212,7 +215,7 @@ class AsyncNetworkAccessManager(object):
 
         # block if blocking mode otherwise return immediatly
         # it's up to the caller to manage listeners in case of no blocking mode
-        if not blocking:
+        if not self.blockingMode:
             return (None, None)
 
         self.el = QEventLoop()
@@ -221,17 +224,6 @@ class AsyncNetworkAccessManager(object):
         # Catch all exceptions (and clean up requests)
         try:
             self.el.exec_(QEventLoop.ExcludeUserInputEvents)
-            # Let's log the whole response for debugging purposes:
-            self.msg_log("Got response %s %s from %s" % \
-                        (self.http_call_result.status_code,
-                         self.http_call_result.status_message,
-                         req.url().toString()))
-            for k, v in list(self.http_call_result.headers.items()):
-                self.msg_log("%s: %s" % (k, v))
-            if len(self.http_call_result.text) < 1024:
-                self.msg_log("Payload :\n%s" % self.http_call_result.text)
-            else:
-                self.msg_log("Payload is > 1 KB ...")
         except Exception as e:
             raise e
         finally:
@@ -291,9 +283,25 @@ class AsyncNetworkAccessManager(object):
             else:
                 self.http_call_result.exception = RequestsException(msg)
         else:
+            msg = "Network success #{0}".format(self.reply.error())
+            self.http_call_result.reason = msg
+            self.msg_log(msg)
+
             ba = self.reply.readAll()
             self.http_call_result.text = bytes(ba)
             self.http_call_result.ok = True
+
+        # Let's log the whole response for debugging purposes:
+        self.msg_log("Got response %s %s from %s" % \
+                    (self.http_call_result.status_code,
+                     self.http_call_result.status_message,
+                     self.reply.url().toString()))
+        for k, v in list(self.http_call_result.headers.items()):
+            self.msg_log("%s: %s" % (k, v))
+        if len(self.http_call_result.text) < 1024:
+            self.msg_log("Payload :\n%s" % self.http_call_result.text)
+        else:
+            self.msg_log("Payload is > 1 KB ...")
 
     @pyqtSlot()
     def sslErrors(self, reply, ssl_errors):
