@@ -26,7 +26,7 @@ AUTHM = None
 AUTHDBDIR = tempfile.mkdtemp(prefix='tmp-qgis_authdb',
                              dir=tempfile.gettempdir())
 
-widgets = ["aboutpanel", "addlayer", "attributestable", "attribution",
+widgets = ["aboutpanel", "attributestable", "attribution",
            "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",

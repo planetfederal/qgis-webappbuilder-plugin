@@ -118,6 +118,7 @@ var BasicApp = React.createClass({
     return React.createElement("div", {id: 'content'},
       React.createElement(AppBar, toolbarOptions,
        React.createElement(ToolbarGroup, undefined, React.createElement(Select, {toggleGroup: 'navigation', map:map})),
+       React.createElement(ToolbarGroup, undefined, React.createElement(ToolbarSeparator, {style: {backgroundColor: 'none'}})),
     React.createElement(ToolbarGroup, undefined, React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true}))
       ),
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}
