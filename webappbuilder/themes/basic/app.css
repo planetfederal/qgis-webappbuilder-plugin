@@ -135,6 +135,10 @@ html, body {
   width: 100%;
   z-index: 101;
 }
+#bookmarks-panel {
+  position: absolute;
+  left: 25px;
+}
 .about-panel {
   display: block;
   position: absolute;
@@ -142,9 +146,9 @@ html, body {
   padding: 15px;
   border-radius: 5px;
   border: 1px solid #000000;
-  top: 100px;
-  left: 50px;
-  height: 500px;
+  top: 250px;
+  left: 75px;
+  height: 300px;
   width: 300px;
   min-width: 300px;
   z-index: 100;
