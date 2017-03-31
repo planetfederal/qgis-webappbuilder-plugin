@@ -203,14 +203,25 @@ def getCredentialsFromAuthDb(authcfg):
 
     return credentials
 
+__cachedToken = None
+def resetCachedToken():
+    global __cachedToken
+    __cachedToken = None
+
 def getToken():
     """
     Function to get a access token from endpoint sending "custom" basic auth.
     Parameters
 
-    The return value is a token string or Exception
+    The return value is a token string or Exception. This is cached and returned
+    every call or request again if cache is empty
     """
-    token = None
+    global __cachedToken
+    if __cachedToken:
+        return __cachedToken
+
+    # start with a clean cache
+    __cachedToken = None
 
     # get authcfg to point to saved credentials in QGIS Auth manager
     authcfg = getConnectAuthCfg()
@@ -244,11 +255,11 @@ def getToken():
     # parse token from resText
     resDict = json.loads(str(resText))
     try:
-        token = resDict["token"]
+        __cachedToken = resDict["token"]
     except:
         pass
 
-    if not token:
+    if not __cachedToken:
         raise Exception("Cannot get authentication token")
 
-    return token
+    return __cachedToken
