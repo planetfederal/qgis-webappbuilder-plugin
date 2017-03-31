@@ -7,7 +7,7 @@ import AppBar from 'material-ui/AppBar';
 import Button from 'boundless-sdk/components/Button';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';{
+import MenuItem from 'material-ui/MenuItem';
 import enMessages from 'boundless-sdk/locale/en';
 import InfoPopup from 'boundless-sdk/components/InfoPopup';
 import MapPanel from 'boundless-sdk/components/MapPanel';
