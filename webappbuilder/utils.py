@@ -25,7 +25,7 @@ import urllib.parse
 #wabCompilerUrl = "http://localhost:8080/package/"
 
 def wabCompilerUrl():
-    return urllib.parse.unquote(pluginSetting("sdkendpoint"))
+    return urllib.parse.unquote(pluginSetting("sdkendpoint") + "/package")
 
 def authUrl():
     return urllib.parse.unquote(pluginSetting("tokenendpoint"))

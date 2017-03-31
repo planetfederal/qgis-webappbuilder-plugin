@@ -61,7 +61,24 @@ def createApp(appdef, folder, forPreview, progress):
 
 def checkSDKServerVersion():
 	localVersion = utils.sdkVersion()
-	remoteVersion = localVersion #TODO: ask the server for its version
+	url = pluginSetting("sdkendpoint") + "/version"
+
+	try:
+		token = utils.getToken()
+	except Exception as e:
+		print e
+		return "Cannot check server SDK version."
+
+	headers = {}
+	headers["authorization"] = "Bearer {}".format(token)
+	nam = NetworkAccessManager()
+	try:
+		resp, text = nam.request(url, header=headers)
+		remoteVersion = json.loads(text)["boundless-sdk"]
+	except Exception as e:
+		print e
+		return "Cannot check server SDK version."
+
 	if localVersion != remoteVersion:
 		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
 	else:
