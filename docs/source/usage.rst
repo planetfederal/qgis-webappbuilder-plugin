@@ -93,6 +93,18 @@ informing so, and the user can find the compiled Web App in the chosen folder.
 
 .. figure:: img/compilation_sucess.png
 
+As an alternative, if you do not have access to the WebSDK service provided by
+Boundless, you can tell Web App Builder to just create the intermediate files, 
+and you can build them later manually with a local installation of WebSDK. 
+Usage of WebSDK is not described here. Please refer to the SDK documentation.
+
+To disable compilation of the web app files in the WebSDK servide, disable the 
+*UseSDK service to compile app*.
+
+Even if the WebSDK service is used, the source files (in .jsx format) will be 
+left in the specified folder, so advanced users can modify them later anb rebuild 
+them manually if needed.
+
 Description tab
 ---------------
 
