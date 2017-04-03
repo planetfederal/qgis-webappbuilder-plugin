@@ -211,6 +211,43 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source})
+            elif isinstance(layer.rendererV2(), QgsHeatmapRenderer):
+                renderer = layer.rendererV2()
+                hmRadius = renderer.radius()
+                colorRamp = renderer.colorRamp()
+                hmStart = colorRamp.color1().name()
+                hmEnd = colorRamp.color2().name()
+                hmRamp = "['" + hmStart + "', "
+                hmStops = colorRamp.stops()
+                for stop in hmStops:
+                    hmRamp += "'" + stop.color.name() + "', "
+                hmRamp += "'" + hmEnd + "']"
+                hmWeight = renderer.weightExpression()
+                hmWeightId = layer.fieldNameIndex(hmWeight)
+                hmWeightMax = layer.maximumValue(hmWeightId)
+                if hmWeight != "":
+                    weight = '''weight: function(feature){
+                            var weightField = '%(hmWeight)s';
+                            var featureWeight = feature.get(weightField);
+                            var maxWeight = %(hmWeightMax)d;
+                            var calibratedWeight = featureWeight/maxWeight;
+                            return calibratedWeight;
+                        },''' % {"hmWeight": hmWeight, "hmWeightMax": hmWeightMax}
+                else:
+                    weight = ""
+                js = '''var lyr_%(n)s = new ol.layer.Heatmap({
+                    source: new ol.source.Vector(%(source)s),
+                    %(min)s %(max)s
+                    radius: %(hmRadius)d * 2,
+                    gradient: %(hmRamp)s,
+                    blur: 15,
+                    shadow: 250,
+                    %(weight)s
+                    title: "%(n)s"
+                    });''' %  {"n": layerName, "source": source,
+                             "min": minResolution, "max": maxResolution,
+                             "hmRadius": hmRadius, "hmRamp": hmRamp,
+                             "weight": weight}
             else:
                 js= ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
