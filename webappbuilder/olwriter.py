@@ -174,6 +174,9 @@ def layerToJavascript(applayer, settings, title, forPreview):
             datasourceUri = QgsDataSourceURI(layer.source())
             url = datasourceUri.param("url") or layer.source().split("?")[0]
             typeName = datasourceUri.param("typename")
+            if not bool(typeName):
+                parsed = urlparse.urlparse(layer.source())
+                typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity,
