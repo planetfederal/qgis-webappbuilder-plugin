@@ -4,5 +4,6 @@ requests
 jsbeautifier
 beautifulsoup
 pypubsub==3.3
+jwt
 
 # test requirements

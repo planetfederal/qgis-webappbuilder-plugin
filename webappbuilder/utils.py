@@ -5,6 +5,8 @@
 #
 import os
 import re
+import jwt
+import time
 from qgis.core import *
 from qgis.gui import *
 import qgis.utils
@@ -203,10 +205,16 @@ def getCredentialsFromAuthDb(authcfg):
 
     return credentials
 
-__cachedToken = None
+__cachedToken = {
+    'token':None,
+    'expires_at': None
+}
 def resetCachedToken():
     global __cachedToken
-    __cachedToken = None
+    __cachedToken = {
+        'token':None,
+        'expires_at': None
+    }
 
 def getToken():
     """
@@ -217,11 +225,15 @@ def getToken():
     every call or request again if cache is empty
     """
     global __cachedToken
-    if __cachedToken:
-        return __cachedToken
+    if __cachedToken['token']:
+        # check if token is expired
+        if time.time() < time.gmtime(__cachedToken['expires_at']):
+            return __cachedToken['token']
+
+        QgsMessageLog.logMessage("Cached token expired, renewing it", level=QgsMessageLog.INFO)
 
     # start with a clean cache
-    __cachedToken = None
+    resetCachedToken()
 
     # get authcfg to point to saved credentials in QGIS Auth manager
     authcfg = getConnectAuthCfg()
@@ -255,11 +267,13 @@ def getToken():
     # parse token from resText
     resDict = json.loads(str(resText))
     try:
-        __cachedToken = resDict["token"]
-    except:
-        pass
+        __cachedToken['token'] = resDict['token']
+        __cachedToken['expires_at'] = jwt.decode(__cachedToken['token'], verify=False)['exp']
+        QgsMessageLog.logMessage("Cached token will expire at {}".format(time.asctime(time.gmtime(__cachedToken['expires_at']))), level=QgsMessageLog.INFO)
+    except Exception as ex:
+        raise ex
 
-    if not __cachedToken:
+    if not __cachedToken['token']:
         raise Exception("Cannot get authentication token")
 
-    return __cachedToken
+    return __cachedToken['token']
