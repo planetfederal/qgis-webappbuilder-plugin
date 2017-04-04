@@ -61,7 +61,8 @@ def createApp(appdef, folder, forPreview, progress):
 
 def checkSDKServerVersion():
 	localVersion = utils.sdkVersion()
-	url = pluginSetting("sdkendpoint") + "/version"
+	url = pluginSetting("sdkendpoint").rstrip('/')
+	url = os.path.dirname(url) + "/version"
 
 	try:
 		token = utils.getToken()
@@ -70,9 +71,10 @@ def checkSDKServerVersion():
 
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
+
 	nam = NetworkAccessManager()
 	try:
-		resp, text = nam.request(url, header=headers)
+		resp, text = nam.request(url, headers=headers)
 		remoteVersion = json.loads(text)["boundless-sdk"]
 	except Exception as e:
 		return str(e)
