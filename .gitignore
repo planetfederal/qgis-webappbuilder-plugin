@@ -13,3 +13,4 @@ ssh_config
 docs/build
 *.qgs~
 webappbuilder/tests/data/widgets.qgs.appdef
+docs/source/settingsconf.rst
