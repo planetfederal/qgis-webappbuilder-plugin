@@ -38,7 +38,7 @@ def stopWritingWebApp():
 
 # global var to count how many time PermissionDenied received => can be due to
 # token renewal
-__appSDKificationRound = 0
+__appSDKification_doAgain = False
 def writeWebApp(appdef, folder, forPreview, progress):
     """WriteApp end is notifed using
     pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
@@ -129,8 +129,8 @@ def writeWebApp(appdef, folder, forPreview, progress):
             # apply SDK compilation to the saved webapp
             pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
             try:
-                global __appSDKificationRound
-                __appSDKificationRound = 1
+                global __appSDKification_doAgain
+                __appSDKification_doAgain = False
                 appSDKification(dst, progress)
             except Exception as e:
                 pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
@@ -152,13 +152,11 @@ def manageFinished(netManager, zipFileName, folder, progress):
 
     # manage errors
     if not result.ok:
-        # manage 'Permission denied' due to token expiration
-        global __appSDKificationRound
-        if ('Permission denied' in result.reason) and (__appSDKificationRound <= 1):
-            QgsMessageLog.logMessage("Renew token in case of it is expired and retry", level=QgsMessageLog.WARNING)
-            utils.resetCachedToken()
+        # manage 'Host requires authentication' due to token expiration
+        global __appSDKification_doAgain
+        if (result.status_code == 401) and (not __appSDKification_doAgain):
             try:
-                __appSDKificationRound = 2
+                __appSDKification_doAgain = True
                 appSDKification(folder, progress)
                 return
             except Exception as e:
@@ -194,6 +192,10 @@ def appSDKification(folder, progress):
 
     progress.setText("Get Authorization token")
     try:
+        global __appSDKification_doAgain
+        if __appSDKification_doAgain:
+            QgsMessageLog.logMessage("Renew token in case of it is expired and retry", level=QgsMessageLog.WARNING)
+            utils.resetCachedToken()
         token = utils.getToken()
     except Exception as e:
         pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
