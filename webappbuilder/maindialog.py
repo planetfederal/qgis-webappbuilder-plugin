@@ -547,7 +547,7 @@ class MainDialog(BASE, WIDGET):
                     return
             errMessage = checkSDKServerVersion()
             if errMessage:
-                QMessageBox.warning(self, "Incompatible SDK version", errMessage,
+                QMessageBox.warning(self, "Problem checking SDK version", errMessage,
                                         QMessageBox.Close)
                 return
             if pluginSetting("compileinserver"):

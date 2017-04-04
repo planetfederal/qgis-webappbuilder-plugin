@@ -66,8 +66,7 @@ def checkSDKServerVersion():
 	try:
 		token = utils.getToken()
 	except Exception as e:
-		print e
-		return "Cannot check server SDK version."
+		return str(e)
 
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
@@ -76,8 +75,7 @@ def checkSDKServerVersion():
 		resp, text = nam.request(url, header=headers)
 		remoteVersion = json.loads(text)["boundless-sdk"]
 	except Exception as e:
-		print e
-		return "Cannot check server SDK version."
+		return str(e)
 
 	if localVersion != remoteVersion:
 		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
