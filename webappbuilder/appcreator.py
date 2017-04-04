@@ -61,7 +61,7 @@ def createApp(appdef, folder, forPreview, progress):
 
 def checkSDKServerVersion():
 	localVersion = utils.sdkVersion()
-	url = pluginSetting("sdkendpoint").rstrip('/')
+	url = utils.wabCompilerUrl().rstrip('/')
 	url = os.path.dirname(url) + "/version"
 
 	try:
