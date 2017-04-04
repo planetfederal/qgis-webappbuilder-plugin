@@ -263,3 +263,9 @@ def getToken():
         raise Exception("Cannot get authentication token")
 
     return __cachedToken
+
+def sdkVersion():
+    path = os.path.join(os.path.dirname(__file__), "package.json")
+    with open(path) as f:
+        package = json.load(f)
+    return package["version"]

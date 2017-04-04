@@ -60,10 +60,7 @@ def createApp(appdef, folder, forPreview, progress):
 		endWriteWebAppListener(False, traceback.format_exc())
 
 def checkSDKServerVersion():
-	path = os.path.join(os.path.dirname(__file__), "package.json")
-	with open(path) as f:
-		package = json.load(f)
-	localVersion = package["version"]
+	localVersion = utils.sdkVersion()
 	remoteVersion = localVersion #TODO: ask the server for its version
 	if localVersion != remoteVersion:
 		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)

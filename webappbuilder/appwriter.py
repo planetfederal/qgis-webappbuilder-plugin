@@ -407,7 +407,7 @@ def writeHtml(appdef, folder, app, progress, filename):
             app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
-              "@SDKVERSION@": plugins_metadata_parser["webappbuilder"].get("general","websdkversion"),
+              "@SDKVERSION@": utils.sdkVersion(),
               "@TITLE@": appdef["Settings"]["Title"],
               "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
               "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
