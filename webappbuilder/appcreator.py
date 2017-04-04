@@ -33,7 +33,7 @@ def endWriteWebAppListener(success, reason):
 	pub.unsubscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
 
 	if success:
-		from PyQt4.QtCore import *
+		from PyQt4.QtCore import QgsProject
 		projFile = QgsProject.instance().fileName()
 		if projFile:
 			appdefFile =  projFile + ".appdef"
