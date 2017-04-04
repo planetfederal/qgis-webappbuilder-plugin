@@ -550,14 +550,15 @@ class MainDialog(BASE, WIDGET):
                 QMessageBox.warning(self, "Incompatible SDK version", errMessage,
                                         QMessageBox.Close)
                 return
-            # check if able to login via connect credentials
-            try:
-                utils.getConnectAuthCfg()
-            except Exception as ex:
-                errMessage = str(ex)
-                QMessageBox.warning(self, "Need Connect credentials", errMessage,
-                                        QMessageBox.Close)
-                return
+            if pluginSetting("compileinserver"):
+                # check if able to login via connect credentials
+                try:
+                    utils.getConnectAuthCfg()
+                except Exception as ex:
+                    errMessage = str(ex)
+                    QMessageBox.warning(self, "Need Connect credentials", errMessage,
+                                            QMessageBox.Close)
+                    return
             # now ask where to store app
             folder = askForFolder(self, "Select folder to store app")
             if folder:
