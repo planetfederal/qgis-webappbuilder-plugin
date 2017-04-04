@@ -75,6 +75,19 @@ def checkSDKServerVersion():
 	nam = NetworkAccessManager()
 	try:
 		resp, text = nam.request(url, headers=headers)
+		# check if 401 => token expired
+		if resp.status_code == 401:
+			# renew token and try again
+			utils.resetCachedToken()
+			try:
+				token = utils.getToken()
+			except Exception as e:
+				return str(e)
+
+			# retry call
+			headers["authorization"] = "Bearer {}".format(token)
+			resp, text = nam.request(url, headers=headers)
+
 		remoteVersion = json.loads(text)["boundless-sdk"]
 	except Exception as e:
 		return str(e)
