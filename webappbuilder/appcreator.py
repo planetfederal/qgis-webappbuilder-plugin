@@ -12,8 +12,6 @@ from appwriter import writeWebApp, stopWritingWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from geoserver.catalog import Catalog, FailedRequestError
 from utils import *
 import utils
 import jsbeautifier
