@@ -36,18 +36,18 @@ The following properties can be configured for this control:
    content must be handled accordingly using HTML code (e.g., quotation marks
    should be replaced by ``&quot;``).
 
-Add layer
----------
+.. Add layer
+   ---------
 
-Adds a menu entry named *upload* that can be used by the web app user to add
-a layer to the map. Only vector layers can be added. Supported formats for
-layers are *GeoJSON*, *GPX* and *KML*.
+   Adds a menu entry named *upload* that can be used by the web app user to add
+   a layer to the map. Only vector layers can be added. Supported formats for
+   layers are *GeoJSON*, *GPX* and *KML*.
 
-.. figure:: img/upload.png
+   .. figure:: img/upload.png
 
-   About panel configuration  
+      About panel configuration
 
-There are no configurable properties for this control.
+   There are no configurable properties for this control.
 
 
 Attributes table
