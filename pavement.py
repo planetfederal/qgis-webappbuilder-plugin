@@ -16,7 +16,7 @@ from collections import defaultdict
 options(
     plugin=Bunch(
         name='webappbuilder',
-        sdkversion="0.10.30",
+        sdkversion="0.10.32",
         ext_libs=path('webappbuilder/ext-libs'),
         ext_src=path('webappbuilder/ext-src'),
         source_dir=path('webappbuilder'),
