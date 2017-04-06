@@ -716,7 +716,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
             if color is None:
                 global exportedStyles
                 exportedStyles += 1
-                qsize = QSize(int(props["distance_x"]), int(props["distance_y"]))
+                qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
                 img = sl.subSymbol().asImage(qsize)
                 symbolPath = os.path.join(stylesFolder, "pattern%i.png" % exportedStyles)
                 img.save(symbolPath)
