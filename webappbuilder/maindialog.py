@@ -545,12 +545,12 @@ class MainDialog(BASE, WIDGET):
                 dlg.exec_()
                 if not dlg.ok:
                     return
-            errMessage = checkSDKServerVersion()
-            if errMessage:
-                QMessageBox.warning(self, "Problem checking SDK version", errMessage,
-                                        QMessageBox.Close)
-                return
             if pluginSetting("compileinserver"):
+                errMessage = checkSDKServerVersion()
+                if errMessage:
+                    QMessageBox.warning(self, "Problem checking SDK version", errMessage,
+                                        QMessageBox.Close)
+                    return
                 # check if able to login via connect credentials
                 try:
                     utils.getConnectAuthCfg()
