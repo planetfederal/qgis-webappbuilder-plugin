@@ -233,7 +233,7 @@ def getToken():
         raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
 
     # prepare data for the token request
-    httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
+    httpAuth = base64.b64encode('{}:{}'.format(usr.strip(), pwd.strip())).decode("ascii")
     headers = {}
     headers["Authorization"] = "Basic {}".format(httpAuth)
     headers["Content-Type"] = "application/json"
