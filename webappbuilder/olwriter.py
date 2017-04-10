@@ -12,6 +12,7 @@ import math
 import codecs
 import uuid
 import json
+from webappbuilder.exp2js import compile_to_file
 
 exportedStyles = 0
 
@@ -480,7 +481,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             else:
                 cluster = ""
 
-            labels = getLabeling(layer)
+            labels = getLabeling(layer, folder, app)
             style = '''function(feature, resolution){
                         %(cluster)s
                         %(value)s
@@ -540,12 +541,22 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                  "selectionStyle": selectionStyle})
         progress.setProgress(int(ilayer*100.0/len(layers)))
 
-def getLabeling(layer):
+def getLabeling(layer, folder, app):
     if str(layer.customProperty("labeling/enabled")).lower() != "true":
         return ""
 
     labelField = layer.customProperty("labeling/fieldName")
-    labelText = 'feature.get("%s")' % labelField
+    if unicode(layer.customProperty(
+            "labeling/isExpression")).lower() == "true":
+        exprFilename = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
+        name = compile_to_file(labelField, "label_%s" % safeName(layer.name()),
+                               "OpenLayers3", exprFilename)
+        js = "%s(context)" % (name)
+        js = js.strip()
+        labelText = js
+        app.scripts.append('<script src="./resources/js/qgis2web_expressions.js"></script>')
+    else:
+        labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
 
     try:
         size = str(float(layer.customProperty("labeling/fontSize")) * 2)
@@ -578,22 +589,29 @@ def getLabeling(layer):
     textBaseline = textBaselines[quad / 3]
     textAlign = textAligns[quad % 3]
 
+    palyr = QgsPalLayerSettings()
+    palyr.readFromLayer(layer)
+    sv = palyr.scaleVisibility
     if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":
-        scaleToResolution = 3571.42
-        minResolution = float(layer.customProperty("labeling/scaleMin")) / scaleToResolution
-        maxResolution = float(layer.customProperty("labeling/scaleMax")) / scaleToResolution
-        resolution = '''
-            var minResolution = %(minResolution)s;
-            var maxResolution = %(maxResolution)s;
-            if (resolution > maxResolution || resolution < minResolution){
-                labelText = "";
-            } ''' % {"minResolution": minResolution, "maxResolution": maxResolution}
+        min = float(palyr.scaleMin)
+        max = float(palyr.scaleMax)
+        min = 1 / ((1 / min) * 39.37 * 90.7)
+        max = 1 / ((1 / max) * 39.37 * 90.7)
+        labelRes = " && resolution > %(min)d " % {"min": min}
+        labelRes += "&& resolution < %(max)d" % {"max": max}
     else:
-        resolution = ""
+        labelRes = ""
 
     s = '''
-        var labelText = %(label)s;
-        %(resolution)s
+        var context = {
+            feature: feature,
+            variables: {}
+        };
+        if (%(label)s !== null%(labelRes)s) {
+            var labelText = String(%(label)s);
+        } else {
+            var labelText = ""
+        }
         var key = value + "_" + labelText;
         if (!textStyleCache_%(layerName)s[key]){
             var text = new ol.style.Text({
@@ -612,7 +630,7 @@ def getLabeling(layer):
         }
         allStyles.push(textStyleCache_%(layerName)s[key]);
         ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
-                "size": size, "color": color, "label": labelText, "resolution": resolution,
+                "size": size, "color": color, "label": labelText, "labelRes": labelRes,
                 "layerName": safeName(layer.name()), "textAlign": textAlign,
                 "textBaseline": textBaseline}
 
