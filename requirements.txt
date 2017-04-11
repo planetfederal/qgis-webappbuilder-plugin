@@ -1,3 +1,4 @@
+future
 jsmin
 gsconfig
 requests
