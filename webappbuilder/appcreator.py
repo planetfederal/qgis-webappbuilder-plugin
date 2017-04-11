@@ -60,7 +60,7 @@ def createApp(appdef, folder, forPreview, progress):
 def checkSDKServerVersion():
 	localVersion = utils.sdkVersion()
 	url = utils.wabCompilerUrl().rstrip('/')
-	url = os.path.dirname(url) + "/version"
+	url = os.path.dirname(url) + "/version/"
 
 	try:
 		token = utils.getToken()
