@@ -4,7 +4,7 @@
 	 "description": "The URL of the WebSDK server",
 	 "type": "string",
      "#default": "http://localhost:8080/package/",
-     "default": "https://api.boundlessgeo.io/v1/websdk",
+     "default": "https://api.boundlessgeo.io/v1/websdk/package",
 	 "group": "General"
 	},
 	{"name":"tokenendpoint",
