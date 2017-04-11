@@ -46,7 +46,7 @@ def stopAppCreation():
 def createApp(appdef, folder, forPreview, progress):
 	# save to global __appdef to patch a PyPubSub limitation that does not allow
 	# to register a lambda function as listener (weak reference is unregistered
-	# as soon the lamda is out of scope)
+	# as soon the lambda is out of scope)
 	global __appdef
 	__appdef = appdef
 
@@ -61,8 +61,6 @@ def checkSDKServerVersion():
 	if not utils.checkEndpoint():
 		return "Provided endpoint does not seem to be a valid SDK service endpoint"
 	localVersion = utils.sdkVersion()
-	url = utils.wabCompilerUrl().rstrip('/')
-	url = os.path.dirname(url) + "/version/"
 
 	try:
 		token = utils.getToken()
@@ -74,7 +72,7 @@ def checkSDKServerVersion():
 
 	nam = NetworkAccessManager()
 	try:
-		resp, text = nam.request(url, headers=headers)
+		resp, text = nam.request(wabVersionUrl(), headers=headers)
 		# check if 401 => token expired
 		if resp.status_code == 401:
 			# renew token and try again
@@ -86,7 +84,7 @@ def checkSDKServerVersion():
 
 			# retry call
 			headers["authorization"] = "Bearer {}".format(token)
-			resp, text = nam.request(url, headers=headers)
+			resp, text = nam.request(wabVersionUrl(), headers=headers)
 
 		remoteVersion = json.loads(text)["boundless-sdk"]
 	except Exception as e:
