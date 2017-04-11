@@ -364,6 +364,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         if layer.type() != layer.VectorLayer:
             continue
         defs = ""#var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
+        context = ""
         try:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
@@ -469,6 +470,10 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 value = ("var value = '';")
                 style = template % (safeName(layer.name()), js, elsejs, safeName(layer.name()))
                 selectionStyle = template % (safeName(layer.name()), selectionJs, selectionElsejs, safeName(layer.name()))
+                context = '''var context = {
+                            feature: feature,
+                            variables: {}
+                        };'''
             else:
                 cannotWriteStyle = True
 
@@ -535,10 +540,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
             labels = getLabeling(layer, folder, app)
             style = '''function(feature, resolution){
-                        var context = {
-                            feature: feature,
-                            variables: {}
-                        };
+                        %(context)s
                         %(cluster)s
                         %(value)s
                         %(style)s
@@ -548,12 +550,9 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": style,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                            "labels":labels}
+                            "labels":labels, "context": context}
             selectionStyle = '''function(feature, resolution){
-                        var context = {
-                            feature: feature,
-                            variables: {}
-                        };
+                        %(context)s
                         %(value)s
                         %(style)s
                         var allStyles = [];
@@ -562,7 +561,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": selectionStyle,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                             "labels":labels}
+                             "labels":labels, "context": context}
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
@@ -611,7 +610,7 @@ def getLabeling(layer, folder, app):
         exprFilename = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
         name = compile_to_file(labelField, "label_%s" % safeName(layer.name()),
                                "OpenLayers3", exprFilename)
-        js = "%s(context)" % (name)
+        js = "%s(labelContext)" % (name)
         js = js.strip()
         labelText = js
         app.scripts.append('<script src="./resources/js/qgis2web_expressions.js"></script>')
@@ -663,6 +662,10 @@ def getLabeling(layer, folder, app):
         labelRes = ""
 
     s = '''
+        var labelContext = {
+            feature: feature,
+            variables: {}
+        };
         if (%(label)s !== null%(labelRes)s) {
             var labelText = String(%(label)s);
         } else {
