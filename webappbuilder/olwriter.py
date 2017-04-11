@@ -348,6 +348,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                       "ndG": nodata[1], "ndB": nodata[2]}
 
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
+    SELECTION_YELLOW = '"rgba(255, 204, 0, 1)"'
     global exportedStyles
     exportedStyles = 0
     stylesFolder = os.path.join(folder, "data", "styles")
@@ -370,7 +371,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 style = "var style = %s;" % getSymbolAsStyle(symbol, stylesFolder, layer, app.variables)
                 value = 'var value = "";'
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
-                                    stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')
+                                    stylesFolder, layer, app.variables, SELECTION_YELLOW)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
@@ -381,7 +382,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cats = []
                 for cat in renderer.categories():
                     cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(),
-                                stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')))
+                                stylesFolder, layer, app.variables, SELECTION_YELLOW)))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s()[value];'''  % (safeName(layer.name()))
@@ -392,7 +393,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 ranges = []
                 for ran in renderer.ranges():
                     symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables)
-                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables, '"rgba(255, 204, 0, 1)"')
+                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables, SELECTION_YELLOW)
                     ranges.append('[%f, %f,\n %s, %s]' % (ran.lowerValue(), ran.upperValue(),
                                                          symbolstyle, selectedSymbolStyle))
                 defs += ",\n".join(ranges) + "];};"
@@ -417,6 +418,57 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                                 }
                             }
                             ''' % {"v": varName}
+
+            elif isinstance(renderer, QgsRuleBasedRendererV2):
+                template = """
+                        function rules_%s(feature, value) {
+                            var context = {
+                                feature: feature,
+                                variables: {}
+                            };
+                            // Start of if blocks and style check logic
+                            %s
+                            else {
+                                return %s;
+                            }
+                        }
+                        var style = rules_%s(feature, value);
+                        """
+                elsejs = "[]"
+                selectionElsejs = "[]"
+                js = ""
+                selectionJs = ""
+                root_rule = renderer.rootRule()
+                rules = root_rule.children()
+                expFile = os.path.join(folder, "resources", "js",
+                                       "qgis2web_expressions.js")
+                ifelse = "if"
+                for count, rule in enumerate(rules):
+                    styleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables)
+                    selectionStyleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables, SELECTION_YELLOW)
+                    name = "".join((safeName(layer.name()), "rule", unicode(count)))
+                    exp = rule.filterExpression()
+                    if rule.isElse():
+                        elsejs = styleCode
+                        selectionElsejs = selectionStyleCode
+                        continue
+                    name = compile_to_file(exp, name, "OpenLayers3", expFile)
+                    js += """
+                    %s (%s(context)) {
+                      return %s;
+                    }
+                    """ % (ifelse, name, styleCode)
+                    js = js.strip()
+                    selectionJs += """
+                    %s (%s(context)) {
+                      return %s;
+                    }
+                    """ % (ifelse, name, selectionStyleCode)
+                    selectionJs = selectionJs.strip()
+                    ifelse = "else if"
+                value = ("var value = '';")
+                style = template % (safeName(layer.name()), js, elsejs, safeName(layer.name()))
+                selectionStyle = template % (safeName(layer.name()), selectionJs, selectionElsejs, safeName(layer.name()))
             else:
                 cannotWriteStyle = True
 
@@ -483,6 +535,10 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
             labels = getLabeling(layer, folder, app)
             style = '''function(feature, resolution){
+                        var context = {
+                            feature: feature,
+                            variables: {}
+                        };
                         %(cluster)s
                         %(value)s
                         %(style)s
@@ -494,6 +550,10 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             "value": value, "cluster": cluster,
                             "labels":labels}
             selectionStyle = '''function(feature, resolution){
+                        var context = {
+                            feature: feature,
+                            variables: {}
+                        };
                         %(value)s
                         %(style)s
                         var allStyles = [];
@@ -603,10 +663,6 @@ def getLabeling(layer, folder, app):
         labelRes = ""
 
     s = '''
-        var context = {
-            feature: feature,
-            variables: {}
-        };
         if (%(label)s !== null%(labelRes)s) {
             var labelText = String(%(label)s);
         } else {
