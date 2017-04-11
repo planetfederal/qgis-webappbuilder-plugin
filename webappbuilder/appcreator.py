@@ -58,6 +58,8 @@ def createApp(appdef, folder, forPreview, progress):
 		endWriteWebAppListener(False, traceback.format_exc())
 
 def checkSDKServerVersion():
+	if not utils.checkEndpoint():
+		return "Provided endpoint does not seem to be a valid SDK service endpoint"
 	localVersion = utils.sdkVersion()
 	url = utils.wabCompilerUrl().rstrip('/')
 	url = os.path.dirname(url) + "/version/"

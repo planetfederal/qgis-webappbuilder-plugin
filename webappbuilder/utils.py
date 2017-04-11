@@ -269,3 +269,6 @@ def sdkVersion():
     with open(path) as f:
         package = json.load(f)
     return package["version"]
+
+def checkEndpoint():
+    return True
