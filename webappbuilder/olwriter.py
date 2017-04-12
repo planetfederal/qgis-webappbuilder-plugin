@@ -669,7 +669,7 @@ def getLabeling(layer, folder, app):
         if (%(label)s !== null%(labelRes)s) {
             var labelText = String(%(label)s);
         } else {
-            var labelText = ""
+            var labelText = "";
         }
         var key = value + "_" + labelText;
         if (!textStyleCache_%(layerName)s[key]){
