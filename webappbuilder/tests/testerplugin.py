@@ -11,6 +11,7 @@ import widgetstest
 import appdefvaliditytest
 import symbologytest
 import layerstest
+import sdkservicetest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
                                        _resetSdkEndpoint, widgets,
@@ -20,6 +21,7 @@ from qgis.utils import iface
 from PyQt4.QtTest import QTest
 from PyQt4.QtGui import QMessageBox
 from PyQt4.QtCore import Qt
+
 try:
     from qgis.core import QGis
 except ImportError:
@@ -146,7 +148,7 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
 
-    denyCompilationTest = Test("Verfiy deny compilation for invalid Connect credentials")
+    denyCompilationTest = Test("Verify deny compilation for invalid Connect credentials")
     denyCompilationTest.addStep("Reset project", iface.newProject)
     from boundlessconnect.tests.testerplugin import _startConectPlugin
     denyCompilationTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button.\n'
@@ -192,7 +194,7 @@ def functionalTests():
         dlg = getWABDialog()
         QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
 
-    stopCompilationTest = Test("Verfiy stop compilation with EnterpriseTestDesktop user")
+    stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user")
     stopCompilationTest.addStep("Reset project", iface.newProject)
     from boundlessconnect.tests.testerplugin import _startConectPlugin
     stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
@@ -216,4 +218,5 @@ def unitTests():
     _tests.extend(appdefvaliditytest.suite())
     _tests.extend(symbologytest.suite())
     _tests.extend(layerstest.suite())
+    _tests.extend(sdkservicetest.suite())
     return _tests
