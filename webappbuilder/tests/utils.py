@@ -18,7 +18,7 @@ from qgiscommons.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, QSettings
 from qgiscommons.settings import setPluginSetting, pluginSetting
 
 AUTHDB_MASTERPWD = 'password'
@@ -136,11 +136,11 @@ def _resetSdkEndpoint():
 _networkTimeout = None
 def setNetworkTimeout(value=60000):
     global _networkTimeout
-    _networkTimeout = pluginSetting("networkAndProxy/networkTimeout", namespace="Qgis")
-    setPluginSetting("networkAndProxy/networkTimeout", value, namespace="Qgis")
+    _networkTimeout = QSettings().value("Qgis/networkAndProxy/networkTimeout")
+    QSettings().setValue("Qgis/networkAndProxy/networkTimeout", value)
 
 def resetNetworkTimeout():
-    setPluginSetting("networkAndProxy/networkTimeout", _networkTimeout, namespace="Qgis")
+    QSettings().setValue("Qgis/networkAndProxy/networkTimeout", _networkTimeout)
 
 def initAuthManager():
     """
