@@ -102,24 +102,26 @@ class RefreshDialog(QtGui.QDialog):
             itemInterval = QtGui.QTableWidgetItem("")
             itemInterval.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable)
             if layer.name() in self.layers:
-                itemInterval.setText(str(self.layers[layer.name()]))
+                value = str(self.layers[layer.name()])
                 itemLayer.setCheckState(QtCore.Qt.Checked)
             else:
-                itemInterval.setText("3000")
+                value = "3000"
                 itemLayer.setCheckState(QtCore.Qt.Unchecked)
-            self.table.setItem(i, 1, itemInterval)
+            lineEdit = QtGui.QLineEdit()
+            lineEdit.setText(value)
+            self.table.setCellWidget(i, 1, lineEdit)
 
     def okPressed(self):
         self.layers = {}
         for i in xrange(self.table.rowCount()):
             item = self.table.item(i, 0)
-            self.table.item(i, 1).setBackground(QtCore.Qt.white)
+            item.setBackground(QtCore.Qt.white)
             if item.checkState() == QtCore.Qt.Checked:
                 try:
-                    interval = int(self.table.item(i, 1).text())
+                    interval = int(self.table.cellWidget(i, 1).text())
                     self.layers[item.text()] = interval
                 except:
-                    self.table.item(i, 1).setBackground(QtCore.Qt.yellow)
+                    item.setBackground(QtCore.Qt.yellow)
                     return
         self.ok = True
         self.close()
