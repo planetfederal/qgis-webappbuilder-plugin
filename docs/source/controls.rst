@@ -144,7 +144,12 @@ bookmarks will be shown as menu entries in the navigation bar, under a
 
 .. figure:: img/bookmarks_menu.png
 
-   Bookmarks menu example
+   Bookmarks menu
+
+.. figure:: img/bookmarks_menu_expanded.png
+
+   Bookmarks menu expanded
+
 
 Otherwise, if the :guilabel:`Show as story panel` box is checked, a
 narrative map will be created, and a panel to browse across bookmarks will
@@ -423,7 +428,11 @@ with a name (shown in the navigation bar) and an URL.
 
 .. figure:: img/links_example.png
 
-   Links control example
+   Links menu
+
+.. figure:: img/links_example_expanded.png
+
+   Links menu example
 
 The following properties can be configured for this control:
 
@@ -458,15 +467,19 @@ There are no configurable properties for this control.
 Measure
 -------
 
-Adds menu entry with area and length measure tools to the web app.
+Adds menu entry with area and distance measure tools to the web app.
 
-.. figure:: img/measuretools.png
+.. figure:: img/measure_menu.png
 
    Measure Tools menu
 
+.. figure:: img/measure_menu_expanded.png
+
+   Measure Tools menu expanded
+
 .. figure:: img/measuretools2.png
 
-   Measure tools example
+   Measures examples
 
 There are no configurable properties for this control.
 
@@ -556,6 +569,10 @@ The following properties can be configured for this control:
 Print
 -----
 Adds printing capabilities to the web app.
+
+.. figure:: img/print_menu.png
+
+   Print menu
 
 .. figure:: img/print_example.png
 
@@ -684,7 +701,12 @@ options for this control:
 WFS-T
 -----
 
-An edit component is added that allows modifying WFS-T layers 
+An WFT-T menu is added that allows to create (draw) and to modify (select)
+WFS-T layers
+
+.. figure:: img/wfs-t_widget.png
+
+   wfs-t menu and controls
 
 There are no configurable properties for this control.
 
@@ -742,7 +764,7 @@ There are no configurable properties for this control.
 Search/filter notation
 ----------------------
 
-Controls like Query, Attributes, Layers List ca use expression to filter or
+Controls like Query, Attributes, Layers List can use expression to filter or
 search features in a layer. Expression can use the following notation.
 
 Type in a filter expression to narrow your search to one or more attributes.
