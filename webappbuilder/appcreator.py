@@ -153,7 +153,7 @@ def checkAppCanBeCreated(appdef):
 		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
 									QgsGraduatedSymbolRendererV2, QgsHeatmapRenderer, QgsRuleBasedRendererV2)):
 			problems.append("Symbology used by layer %s includes unsupported elements."
-							"Only single symbol, categorized and graduated renderers are supported."
+							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
 
