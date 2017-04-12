@@ -20,6 +20,7 @@ Documentation content:
    installation
    usage
    controls
+   wab_hosting
    wabandwebsdk
    baselayers
    settingsconf
