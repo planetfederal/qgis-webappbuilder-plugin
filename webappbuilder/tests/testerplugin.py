@@ -55,10 +55,11 @@ def functionalTests():
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
 
-    def _testWidget(n):
-        test = Test("Verify '%s' widget" % n)
+    def _testWidget(n, preview):
+        sPreview = "(Preview)" if preview else ""
+        test = Test("Verify '%s' widget %s" % (n, sPreview))
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
-        test.addStep("Creating web app", lambda: _createWebApp(n))
+        test.addStep("Creating web app", lambda: _createWebApp(n, preview=preview))
         test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
@@ -67,7 +68,8 @@ def functionalTests():
         for i in ["", "2", "3"]:
             f = os.path.join(appdefFolder, "%s%s.appdef" % (w, i))
             if os.path.exists(f):
-                tests.append(_testWidget(w))
+                for preview in [True, False]:
+                    tests.append(_testWidget(w, preview))
 
     unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
     unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())
@@ -93,17 +95,6 @@ def functionalTests():
     wrongLogoTest.setCleanup(closeWAB)
     tests.append(wrongLogoTest)
 
-    previewWithAllWidgetsTest = Test("Verify preview of an app with all widgets")
-    if QGis.QGIS_VERSION_INT < 21500:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers-2.14"))
-    else:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
-
-    appdef = testAppdef("allwidgets", False)
-    previewWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
-    previewWithAllWidgetsTest.addStep("Click on 'Preview' and verify app is correctly shown and it works.")
-    previewWithAllWidgetsTest.setCleanup(closeWAB)
-    tests.append(previewWithAllWidgetsTest)
 
     nodataTest = Test("Verify that NODATA values are transparent")
     nodataTest.addStep("Load project", lambda: loadTestProject("nodata"))
@@ -115,16 +106,7 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
 
-    createWithAllWidgetsTest = Test("Verify creating an app with all widgets")
-    if QGis.QGIS_VERSION_INT < 21500:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers-2.14"))
-    else:
-        previewWithAllWidgetsTest.addStep("Load project", lambda: loadTestProject("layers"))
-    appdef = testAppdef("allwidgets", False)
-    createWithAllWidgetsTest.addStep("Open WAB", lambda: openWAB(appdef))
-    createWithAllWidgetsTest.addStep("Click on 'create App' and verify app is correctly created.")
-    createWithAllWidgetsTest.setCleanup(closeWAB)
-    tests.append(previewWithAllWidgetsTest)
+
 
     createEmpyAppTest = Test("Verify creating an app with no layers")
     createEmpyAppTest.addStep("Load project", iface.newProject)
