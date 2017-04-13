@@ -12,6 +12,9 @@ import InfoPopup from 'boundless-sdk/components/InfoPopup';
 import MapPanel from 'boundless-sdk/components/MapPanel';
 import {ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 
+**********
+THIS IS A WRONG LINE TO CAUSE A COMPILATION ERROR
+**********
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -1153,7 +1156,7 @@ class BasicApp extends React.Component {
     };
   }
   componentDidMount() {
-    
+
   }
   _toggle(el) {
     if (el.style.display === 'block') {
@@ -1186,7 +1189,7 @@ class BasicApp extends React.Component {
   render() {
     var toolbarOptions = {style:{height: 71}, showMenuIconButton: false, title:"My Web App"};
     return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions 
+       React.createElement(AppBar, toolbarOptions
        ),
       React.createElement("div", {id: 'content'},
         React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: true}
@@ -1195,7 +1198,7 @@ React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: false})
                                   )
         )
-        
+
       )
     );
   }
