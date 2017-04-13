@@ -546,7 +546,9 @@ class MainDialog(BASE, WIDGET):
                 if not dlg.ok:
                     return
             if pluginSetting("compileinserver"):
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 errMessage = checkSDKServerVersion()
+                QApplication.restoreOverrideCursor()
                 if errMessage:
                     QMessageBox.warning(self, "Problem checking SDK version", errMessage,
                                         QMessageBox.Close)
