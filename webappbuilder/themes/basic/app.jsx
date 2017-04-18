@@ -10,6 +10,8 @@ import Button from 'boundless-sdk/components/Button';
 import enMessages from 'boundless-sdk/locale/en';
 import InfoPopup from 'boundless-sdk/components/InfoPopup';
 import MapPanel from 'boundless-sdk/components/MapPanel';
+import Header from 'boundless-sdk/components/Header';
+import LeftNav from 'boundless-sdk/components/LeftNav';
 import {ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 
 @IMPORTS@
