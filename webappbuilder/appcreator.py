@@ -70,7 +70,7 @@ def checkSDKServerVersion():
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
 
-	nam = NetworkAccessManager()
+	nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
 	try:
 		resp, text = nam.request(wabVersionUrl(), headers=headers)
 		# check if 401/403 => probably token expired

@@ -243,7 +243,7 @@ def getToken():
     headers["Content-Type"] = "application/json"
 
     # request token in synchronous way => block GUI
-    nam = NetworkAccessManager(debug=True)
+    nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
     try:
         res, resText = nam.request(authUrl(), method="GET", headers=headers)
     except Exception as e:
