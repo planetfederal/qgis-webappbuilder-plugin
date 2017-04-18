@@ -35,5 +35,12 @@
      "type": "bool",
      "default": true,
      "group": "General"
+    },
+    {"name":"logresponse",
+     "label": "Log SDK Service response",
+     "description": "Add the full response of the SDK Service to the QGIS log when there are issues. Useful for troubleshooting.",
+     "type": "bool",
+     "default": false,
+     "group": "General"
     }
 ]

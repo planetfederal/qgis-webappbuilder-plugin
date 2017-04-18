@@ -241,7 +241,7 @@ def appSDKification(folder, progress):
     if __anam:
         del __anam
         __anam = None
-    __anam = AsyncNetworkAccessManager(debug=True)
+    __anam = AsyncNetworkAccessManager(debug=pluginSetting("logresponse"))
     __anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
     __anam.reply.finished.connect( lambda: manageFinished(__anam, zipFileName, folder, progress) )
 
