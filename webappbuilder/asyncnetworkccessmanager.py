@@ -20,6 +20,7 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from builtins import object
+import re
 
 __author__ = 'Luigi Pirelli'
 __date__ = 'March 2016'
@@ -261,12 +262,22 @@ class AsyncNetworkAccessManager(object):
         self.http_call_result.status_code = httpStatus
         self.http_call_result.status = httpStatus
         self.http_call_result.status_message = httpStatusMessage
+        # get result
+        ba = self.reply.readAll()
+        self.http_call_result.text = bytes(ba)
+        # dump header
         for k, v in self.reply.rawHeaderPairs():
             self.http_call_result.headers[str(k)] = str(v)
             self.http_call_result.headers[str(k).lower()] = str(v)
         if err != QNetworkReply.NoError:
+            # check if errorString is empty, if so, then set err string as
+            # reply dump
+            if re.match('(.)*server replied: $', self.reply.errorString()):
+                errString = self.reply.errorString() + self.http_call_result.text
+            else:
+                errString = self.reply.errorString()
             msg = "Network error #{0}: {1}".format(
-                self.reply.error(), self.reply.errorString())
+                self.http_call_result.status_code, errString)
             self.http_call_result.reason = msg
             self.http_call_result.ok = False
             self.msg_log(msg)
@@ -287,8 +298,6 @@ class AsyncNetworkAccessManager(object):
             self.http_call_result.reason = msg
             self.msg_log(msg)
 
-            ba = self.reply.readAll()
-            self.http_call_result.text = bytes(ba)
             self.http_call_result.ok = True
 
         # Let's log the whole response for debugging purposes:
