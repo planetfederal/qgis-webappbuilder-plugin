@@ -41,7 +41,7 @@ class LayersList(WebAppWidget):
         if len(appdef["Layers"]) == 0:
             problems.append("Layer list widget added, but no layers have been included.")
 
-        if self._parameters["showTrue"] and "drawfeature" not in appdef["Widgets"]:
+        if self._parameters["showNew"] and "drawfeature" not in appdef["Widgets"]:
             problems.append("Layer list allows creating new layers, but DrawFeature component hasnt' been added")
 
     def description(self):
