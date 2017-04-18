@@ -168,7 +168,11 @@ def manageFinished(netManager, zipFileName, folder, progress):
         if isinstance(result.exception, RequestsExceptionUserAbort):
             msg = "Request cancelled by user: {}".format(result.reason)
         else:
-            msg = "Cannot post preview webapp: {}".format(result.reason)
+            try:
+                msg = "Cannot build webapp:\nError code: {}\nError message: {}".format(result.status_code,
+                                                                                result.status_message)
+            except:
+                msg = "Cannot build webapp: " + result.reason
         pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
         return
 

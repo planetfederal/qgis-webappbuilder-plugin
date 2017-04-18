@@ -213,7 +213,7 @@ class AsyncNetworkAccessManager(object):
         # Call
         self.reply.downloadProgress.connect(self.downloadProgress)
 
-        # block if blocking mode otherwise return immediatly
+        # block if blocking mode otherwise return immediately
         # it's up to the caller to manage listeners in case of no blocking mode
         if not self.blockingMode:
             return (None, None)
