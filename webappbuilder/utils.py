@@ -247,7 +247,7 @@ def getToken():
     try:
         res, resText = nam.request(authUrl(), method="GET", headers=headers)
     except Exception as e:
-        if nam.http_call_result.status_code == 403:
+        if nam.http_call_result.status_code in [401, 403]:
             raise Exception("Permission denied")
         else:
             raise e

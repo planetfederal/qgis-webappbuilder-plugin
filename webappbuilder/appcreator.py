@@ -73,8 +73,8 @@ def checkSDKServerVersion():
 	nam = NetworkAccessManager()
 	try:
 		resp, text = nam.request(wabVersionUrl(), headers=headers)
-		# check if 401 => token expired
-		if resp.status_code == 401:
+		# check if 401/403 => probably token expired
+		if resp.status_code in [401, 403]:
 			# renew token and try again
 			utils.resetCachedToken()
 			try:

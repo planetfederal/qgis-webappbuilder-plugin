@@ -156,7 +156,7 @@ def manageFinished(netManager, zipFileName, folder, progress):
     if not result.ok:
         # manage 'Host requires authentication' due to token expiration
         global __appSDKification_doAgain
-        if (result.status_code == 401) and (not __appSDKification_doAgain):
+        if (result.status_code in [401, 403]) and (not __appSDKification_doAgain):
             try:
                 __appSDKification_doAgain = True
                 appSDKification(folder, progress)
