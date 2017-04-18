@@ -27,11 +27,11 @@ AUTHDBDIR = tempfile.mkdtemp(prefix='tmp-qgis_authdb',
                              dir=tempfile.gettempdir())
 
 widgets = ["aboutpanel", "attributestable", "attribution",
-           "bookmarks", "charttool", "edit", "exportasimage", "fullscreen",
+           "bookmarks", "charttool", "exportasimage", "fullscreen",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",
            "northarrow", "overviewmap", "print", "query", "refresh", "scalebar",
-           "selectiontools", "timeline", "wfst", "zoomcontrols", "zoomslider"]
+           "selectiontools", "timeline", "drawfeature", "zoomcontrols", "zoomslider"]
 
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")

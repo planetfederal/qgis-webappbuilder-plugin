@@ -14,17 +14,21 @@ class AttributesTable(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.addReactComponent(app, "FeatureTable")
         pointZoom = int(self._parameters["Zoom level when zooming to point feature"][0])
+        allowEdit =  str("drawfeature" in appdef["Widgets"]).lower()
+
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append('''React.createElement(Tab,{value:%i, label:"Attributes table"},
-                                    React.createElement(FeatureTable, {ref:"table", pointZoom:%d, map: map})
-                                )''' % (idx, pointZoom))
+                                    React.createElement(FeatureTable, {allowEdit:%s, toggleGroup: 'navigation',
+                                                                    ref:"table", pointZoom:%d, map: map})
+                                )''' % (idx, allowEdit, pointZoom))
         else:
             app.tools.append("React.createElement(Button, {label: 'Table', onTouchTap: this._toggleTable.bind(this)})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
-                                          React.createElement(FeatureTable, {ref: 'table', pointZoom:%d, map: map})
-                                    )''' % (pointZoom))
+                                          React.createElement(FeatureTable, {allowEdit:%s, toggleGroup: 'navigation',
+                                                              ref: 'table', pointZoom:%d, map: map})
+                                    )''' % (allowEdit, pointZoom))
 
 
     def icon(self):

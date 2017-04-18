@@ -15,6 +15,7 @@ class LayersList(WebAppWidget):
                     "allowReordering": False,
                     "allowFiltering": True,
                     "showUpload": True,
+                    "showNew": True,
                     "downloadFormat": ("GeoJSON", ("GeoJSON", "KML", "GPX"))}
 
     def write(self, appdef, folder, app, progress):
@@ -39,6 +40,9 @@ class LayersList(WebAppWidget):
     def checkProblems(self, appdef, problems):
         if len(appdef["Layers"]) == 0:
             problems.append("Layer list widget added, but no layers have been included.")
+
+        if self._parameters["showTrue"] and "drawfeature" not in appdef["Widgets"]:
+            problems.append("Layer list allows creating new layers, but DrawFeature component hasnt' been added")
 
     def description(self):
         return "Layers list"
