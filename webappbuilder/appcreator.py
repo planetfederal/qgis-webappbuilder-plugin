@@ -22,6 +22,7 @@ import requests
 from settings import webAppWidgets
 import viewer
 import xml.etree.ElementTree as ET
+import importlib
 
 # need a global where to store parameters to be used in PyPubSub listener
 # because PyPubSub does not support persistence of lambda functions
@@ -105,6 +106,9 @@ def checkAppCanBeCreated(appdef):
 	for w in widgets:
 		w.checkProblems(appdef, problems)
 
+	themeModule = importlib.import_module("webappbuilder.themes." + appdef["Settings"]["Theme"])
+	themeModule.checkProblems(appdef, problems)
+
 	def getSize(lyr):
 		ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
 		return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
@@ -118,13 +122,17 @@ def checkAppCanBeCreated(appdef):
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
-			source = layer.source()
-			url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
-			r = run(lambda: requests.get(url, headers={"origin": "null"}))
-			cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
-			if cors not in ["null", "*"]:
-				problems.append("Server for layer %s is not allowed to accept cross-origin requests."
-							" Popups and printing might not work correctly for that layer."	% layer.name())
+			try:
+				source = layer.source()
+				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
+				r = run(lambda: requests.get(url, headers={"origin": "null"}))
+				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
+				if cors not in ["null", "*"]:
+					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
+								" Popups and printing might not work correctly for that layer."	% layer.name())
+			except:
+				QgsMessageLog.logMessage("Warning: cannot verify cross-origin configuration for layer '%s'."
+                            % layer.name(), level=QgsMessageLog.WARNING)
 
 	for applayer in layers:
 		layer = applayer.layer
