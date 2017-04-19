@@ -94,6 +94,10 @@ The following properties can be configured for this control:
      - If a single point feature is selected in the attributes table in the
        web app, and the Zoom to selected button is clicked, the map zoom will
        be set to this zoom level
+   * - pageSize
+     - Number of features per page
+   * - sortable
+     - Wether the table can be sorteed by the user or not 
 
 Attribution
 -----------
@@ -168,6 +172,7 @@ In story panel mode, several options are enabled in the configuration tab:
   reference for the relative position of each bookmark.
 * :guilabel:`Intro title` and :guilabel:`Intro description` allows adding a
   first panel without spatial bookmark. Both accept HTML formatted text.
+* :guilabel:`Width` sets the width of the bookmark slider.
 
 .. note::
 
@@ -238,32 +243,6 @@ The following properties can be configured for this control:
    need to add the :ref:`qgis.webappbuilder.controls.selection` control to
    the web app as well.
 
-Edit
-----
-
-The edit control allows users to add new layers and edit them by adding or
-modifying their features.
-
-It adds an *Edit* entry in the web app menu, which opens the edit panel.
-
-.. figure:: img/editpanel.png
-
-   Edit panel
-
-The edit panel includes several tools:
-
-* :guilabel:`New layer`: Will allow the creation of a new layer using
-  through the *Create empty layer* dialog.
-
-  .. figure:: img/edit-create-empty-layer.png
-
-     Create empty layer dialog
-
-* :guilabel:`Layer` combo box: Allows the user to choose which layer to edit.
-* :guilabel:`Enable edit mode` / :guilabel:`Disable edit mode`: Toggle edit
-  mode for the current selected layer.
-
-There are no configurable properties for this control.
 
 Export as image
 ---------------
@@ -306,7 +285,21 @@ located in a tab.
 
    Geocoding tool in a tab
 
-There are no configurable properties for this control.
+The following properties can be configured:
+
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Option
+     - Description
+   * - maxResults:
+     - Maximum number of results to display
+   * - zoom
+     - zoom level to zoom to when moving to a selected result.
 
 Geolocation
 -----------
@@ -389,6 +382,14 @@ The following properties can be configured for this control:
    * - tipLabel
      - The tooltip to show when the mouse hovers over the layers list.
        Default is Layers.
+   * - showNew
+     - Show option to add a new layer
+   * - includeLegend
+     - Include legend for WMS layers
+   * - allowStyling
+     - allow users to modify the style of a layer
+   * - showTable
+     - Show option to open attributes table 
 
 Legend
 ------
@@ -481,7 +482,18 @@ Adds menu entry with area and distance measure tools to the web app.
 
    Measures examples
 
-There are no configurable properties for this control.
+The following properties can be configured for this control:
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Option
+     - Description
+   * - geodesic
+     - Measurements are geodesic
 
 Mouse Position
 --------------
@@ -698,18 +710,6 @@ options for this control:
 * :guilabel:`numInterval`. The number of intervals into which the full range
   of the slider is divided.
 
-WFS-T
------
-
-An WFT-T menu is added that allows to create (draw) and to modify (select)
-WFS-T layers
-
-.. figure:: img/wfs-t_widget.png
-
-   wfs-t menu and controls
-
-There are no configurable properties for this control.
-
 
 Zoom
 ----
@@ -755,7 +755,18 @@ Adds a slider bar to control the zoom level.
 
    Zoom slider control
 
-There are no configurable properties for this control.
+The following properties can be configured for this control:
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
+   :class: non-responsive
+
+   * - Option
+     - Description
+   * - refreshRate
+     - Refresh rate in ms for handling changes from the slider.
 
 .. TODO:: Document available filters
 
