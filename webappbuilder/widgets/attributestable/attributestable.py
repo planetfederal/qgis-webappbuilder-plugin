@@ -7,28 +7,33 @@ class AttributesTable(WebAppWidget):
 
     zoomLevels = list((str(i) for i in xrange(1,33)))
 
-    _parameters = {"Zoom level when zooming to point feature": ("16", zoomLevels)}
+    _parameters = {"Zoom level when zooming to point feature": ("16", zoomLevels),
+                   "pageSize": 20,
+                   "sortable": True}
 
     order = 2
 
     def write(self, appdef, folder, app, progress):
         self.addReactComponent(app, "FeatureTable")
         pointZoom = int(self._parameters["Zoom level when zooming to point feature"][0])
+        pageSize = int(self._parameters["pageSize"][0])
         allowEdit =  str("drawfeature" in appdef["Widgets"]).lower()
-
+        sortable =  str(self._parameters["sortable"]).lower()
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
             app.tabs.append('''React.createElement(Tab,{value:%i, label:"Attributes table"},
                                     React.createElement(FeatureTable, {allowEdit:%s, toggleGroup: 'navigation',
-                                                                    ref:"table", pointZoom:%d, map: map})
-                                )''' % (idx, allowEdit, pointZoom))
+                                                                    ref:"table", pointZoom:%d, map: map,
+                                                                    sortable:%s, pageSize:%s})
+                                )''' % (idx, allowEdit, pointZoom, sortable, pageSize))
         else:
             app.tools.append("React.createElement(Button, {label: 'Table', onTouchTap: this._toggleTable.bind(this)})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
                                           React.createElement(FeatureTable, {allowEdit:%s, toggleGroup: 'navigation',
-                                                              ref: 'table', pointZoom:%d, map: map})
-                                    )''' % (allowEdit, pointZoom))
+                                                              ref: 'table', pointZoom:%d, map: map,
+                                                              sortable:%s, pageSize:%s})
+                                    )''' % (allowEdit, pointZoom, sortable, pageSize))
 
 
     def icon(self):

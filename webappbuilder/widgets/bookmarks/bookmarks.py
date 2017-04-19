@@ -15,7 +15,8 @@ class Bookmarks(WebAppWidget):
                   "interval": 3,
                   "introText": "",
                   "introTitle": "",
-                  "showIndicators": True}
+                  "showIndicators": True,
+                  "width": "400px"}
 
     def write(self, appdef, folder, app, progress):
         params = self._parameters
@@ -27,15 +28,18 @@ class Bookmarks(WebAppWidget):
             if params["format"] != SHOW_BOOKMARKS_IN_MENU:
                 app.mappanels.append('''React.createElement("div", {id: 'bookmarks-panel'},
                                         React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
-                                            animatePanZoom:%s, menu: false, map: map, bookmarks: bookmarks %s})
+                                            animatePanZoom:%s, menu: false, map: map, bookmarks: bookmarks,
+                                            width:'%s' %s})
                                       )''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                             str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
+                                             str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), params["width"],
+                                             autoPlayjs))
 
             else:
                 app.tools.append('''React.createElement(Bookmarks, {introTitle:'%s', introDescription:'%s', dots:%s,
-                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks %s})
+                                            animatePanZoom:%s, menu: true, map: map, bookmarks: bookmarks, width:'%s' %s})
                                       ''' % (params["introTitle"], introText, str(params["showIndicators"]).lower(),
-                                             str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), autoPlayjs))
+                                             str(params["format"] == SHOW_BOOKMARKS_IN_PANEL_PAN).lower(), params["width"],
+                                             autoPlayjs))
             def extentInViewCrs(b):
                 rect = QgsRectangle(b[0], b[1], b[2], b[3])
                 viewCrs = QgsCoordinateReferenceSystem(appdef["Settings"]["App view CRS"])

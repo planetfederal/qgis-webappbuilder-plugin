@@ -14,7 +14,10 @@ class LayersList(WebAppWidget):
                     "showDownload": False,
                     "allowReordering": False,
                     "allowFiltering": True,
+                    "allowStyling": True,
                     "showUpload": True,
+                    "showTable": True,
+                    "includeLegend": True,
                     "showNew": True,
                     "downloadFormat": ("GeoJSON", ("GeoJSON", "KML", "GPX"))}
 
@@ -25,10 +28,12 @@ class LayersList(WebAppWidget):
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
                                         showGroupContent:true, showZoomTo:%s, allowReordering:%s,
                                         allowFiltering:%s, tipLabel:'%s',
-                                        downloadFormat:'%s', showUpload:%s, map:map}))'''
+                                        downloadFormat:'%s', showUpload:%s, map:map,
+                                        includeLegend:%s, allowStyling:%s, showTable:%s}))'''
                             % (p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
-                               self._parameters["downloadFormat"][0], p("showUpload")))
+                               self._parameters["downloadFormat"][0], p("showUpload"),
+                                p("includeLegend"), p("allowStyling"), p("showTable")))
         self.addReactComponent(app, "LayerList")
 
     def icon(self):

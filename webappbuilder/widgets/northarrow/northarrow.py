@@ -7,8 +7,9 @@ class NorthArrow(WebAppWidget):
     buttonIndex = 0
     buttonArea = WebAppWidget.BUTTON_AREA_LEFT
     cssName = "rotate-button"
-    
-    _parameters = {"autoHide": False}
+
+    _parameters = {"autoHide": False,
+                   "duration": 250}
 
     def write(self, appdef, folder, app, progress):
         def p(name):
@@ -16,9 +17,10 @@ class NorthArrow(WebAppWidget):
         app.panels.append('''React.createElement("div", {id:'rotate-button'},
                                     React.createElement(Rotate, {
                                     autoHide:%s,
+                                    duration:%s,
                                     map: map,
                                     tooltipPosition: 'bottom-right'})
-                                  )''' % (p("autoHide")))
+                                  )''' % (p("autoHide"), self._parameters["duration"]))
         self.addReactComponent(app, "Rotate")
 
     def icon(self):
