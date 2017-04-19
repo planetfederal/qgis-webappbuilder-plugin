@@ -6,5 +6,4 @@ def checkProblems(appdef, problems):
         if w in appdef["Widgets"].keys():
             return
 
-    print "problem"
     problems.append("Tabbed them is used, but no component that requires the tab panel is used.")
