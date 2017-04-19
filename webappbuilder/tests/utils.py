@@ -31,7 +31,8 @@ widgets = ["aboutpanel", "attributestable", "attribution",
            "geocoding", "geolocation", "help", "homebutton", "layerslist",
            "legend", "links", "loadingpanel", "measuretools", "mouseposition",
            "northarrow", "overviewmap", "print", "query", "refresh", "scalebar",
-           "selectiontools", "timeline", "drawfeature", "zoomcontrols", "zoomslider"]
+           "selectiontools", "timeline", "drawfeature", "zoomcontrols", "zoomslider",
+           "zoomtolatlon"]
 
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
