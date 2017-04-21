@@ -4,7 +4,7 @@ var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true
 var lyr_points = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-                     
+
                     style: style_points,
                     selectedStyle: selectionStyle_points,
                     title: "points",
@@ -12,7 +12,9 @@ var lyr_points = new ol.layer.Vector({
                     filters: [],
                     timeInfo: null,
                     isSelectable: true,
-                    popupInfo: ""
+                    popupInfo: "",
+                    attributes: ["n"],
+                    geometryType: "Polygon"
                 });
 points_geojson_callback = function(geojson) {
                               lyr_points.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));

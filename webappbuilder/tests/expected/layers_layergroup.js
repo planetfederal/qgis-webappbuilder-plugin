@@ -4,7 +4,7 @@ var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true
 var lyr_groupped = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-                     
+
                     style: style_groupped,
                     selectedStyle: selectionStyle_groupped,
                     title: "groupped",
@@ -13,6 +13,8 @@ var lyr_groupped = new ol.layer.Vector({
                     timeInfo: null,
                     isSelectable: true,
                     popupInfo: ""
+                    attributes: ["n"],
+                    geometryType: "Point"
                 });
 groupped_geojson_callback = function(geojson) {
                               lyr_groupped.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
@@ -20,7 +22,7 @@ groupped_geojson_callback = function(geojson) {
 var lyr_groupped2 = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-                     
+
                     style: style_groupped2,
                     selectedStyle: selectionStyle_groupped2,
                     title: "groupped2",
@@ -29,6 +31,8 @@ var lyr_groupped2 = new ol.layer.Vector({
                     timeInfo: null,
                     isSelectable: true,
                     popupInfo: ""
+                    attributes: ["n"],
+                    geometryType: "Point"
                 });
 groupped2_geojson_callback = function(geojson) {
                               lyr_groupped2.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));

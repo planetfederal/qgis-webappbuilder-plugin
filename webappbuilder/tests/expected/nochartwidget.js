@@ -56,7 +56,9 @@ var lyr_bakeries = new ol.layer.Vector({
                     filters: [],
                     timeInfo: null,
                     isSelectable: true,
-                    popupInfo: ""
+                    popupInfo: "",
+                    attributes: ["Y", "X", "Name", "Address", "Telephone", "Website", "Text"],
+                    geometryType: "Point"
                 });
 bakeries_geojson_callback = function(geojson) {
                               lyr_bakeries.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));

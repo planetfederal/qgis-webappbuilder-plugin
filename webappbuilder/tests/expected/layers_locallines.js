@@ -4,7 +4,7 @@ var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true
 var lyr_lines = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-                     
+
                     style: style_lines,
                     selectedStyle: selectionStyle_lines,
                     title: "lines",
@@ -12,7 +12,9 @@ var lyr_lines = new ol.layer.Vector({
                     filters: [],
                     timeInfo: null,
                     isSelectable: true,
-                    popupInfo: ""
+                    popupInfo: "",
+                    attributes: ["n"],
+                    geometryType: "Line"
                 });
 lines_geojson_callback = function(geojson) {
                               lyr_lines.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
