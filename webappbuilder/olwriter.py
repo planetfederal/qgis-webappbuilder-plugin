@@ -136,6 +136,9 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
     return wfsSource + vectorLayer
 
 
+def _geomType(geometryType):
+    types = {QGis.Point: "Point", QGis.Line: "Line", QGis.Polygon: "Polygon"}
+    return types.get(geometryType, "Point")
 
 def layerToJavascript(applayer, settings, title, forPreview):
     viewCrs = settings["App view CRS"]
@@ -164,6 +167,8 @@ def layerToJavascript(applayer, settings, title, forPreview):
     popup = applayer.popup.replace('\n', ' ').replace('\r', '').replace('"',"'")
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
+        geometryType = _geomType(layer.geometryType())
+        attributes = [f.name() for f in layer.pendingFields()]
         try:
             timeInfo = ('{start:%s,end:%s}' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
                                 if applayer.timeInfo is not None else "null")
@@ -205,13 +210,15 @@ def layerToJavascript(applayer, settings, title, forPreview):
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
-                    popupInfo: "%(popup)s"
+                    popupInfo: "%(popup)s",
+                    attributes: %(attributes)s,
+                    geometryType: "%(geometryType)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution, "dist": str(applayer.clusterDistance),
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
-                 "source": source})
+                 "source": source, "attributes": json.dumps(attributes), "geometryType":geometryType})
             elif isinstance(layer.rendererV2(), QgsHeatmapRenderer):
                 renderer = layer.rendererV2()
                 hmRadius = renderer.radius()
@@ -261,13 +268,16 @@ def layerToJavascript(applayer, settings, title, forPreview):
                     filters: [],
                     timeInfo: %(timeInfo)s,
                     isSelectable: %(selectable)s,
-                    popupInfo: "%(popup)s"
+                    popupInfo: "%(popup)s",
+                    attributes: %(attributes)s,
+                    geometryType: "%(geometryType)s"
                 });''' %
                 {"opacity": layerOpacity, "name": title, "n":layerName,
                  "min": minResolution, "max": maxResolution,
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
-                 "source": source})
+                 "source": source, "attributes": json.dumps(attributes),
+                 "geometryType":geometryType})
 
             if forPreview:
                 clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
