@@ -14,7 +14,7 @@ var lyr_points = new ol.layer.Vector({
                     isSelectable: true,
                     popupInfo: "",
                     attributes: ["n"],
-                    geometryType: "Polygon"
+                    geometryType: "Point"
                 });
 points_geojson_callback = function(geojson) {
                               lyr_points.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));

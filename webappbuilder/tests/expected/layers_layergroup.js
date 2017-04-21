@@ -12,7 +12,7 @@ var lyr_groupped = new ol.layer.Vector({
                     filters: [],
                     timeInfo: null,
                     isSelectable: true,
-                    popupInfo: ""
+                    popupInfo: "",
                     attributes: ["n"],
                     geometryType: "Point"
                 });
@@ -30,7 +30,7 @@ var lyr_groupped2 = new ol.layer.Vector({
                     filters: [],
                     timeInfo: null,
                     isSelectable: true,
-                    popupInfo: ""
+                    popupInfo: "",
                     attributes: ["n"],
                     geometryType: "Point"
                 });
