@@ -1,3 +1,5 @@
+.. _hosting_wab:
+
 Hosting a WAB app
 =================
 

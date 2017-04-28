@@ -105,6 +105,12 @@ Even if the WebSDK service is used, the source files (in .jsx format) will be
 left in the specified folder, so advanced users can modify them later anb rebuild 
 them manually if needed.
 
+.. note::
+
+   To fully work, the created app must be served using a web server like Apache,
+   IIS, or any other. Otherwise, some layers will not show up correctly.
+   Check :ref:`hosting_wab` for some hosting suggestions.
+
 Description tab
 ---------------
 
