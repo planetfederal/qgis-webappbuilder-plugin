@@ -182,6 +182,8 @@ class MainDialog(BASE, WIDGET):
 
     def saveComplete(self):
         folder = askForFolder(self, "Select folder to store app")
+        layersFolder = os.path.join(folder, "layers")
+        os.makedirs(layersFolder)
         if folder:
             appdef = self.createAppDefinition()
             consolidate(folder, appdef)
