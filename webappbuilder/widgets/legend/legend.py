@@ -78,6 +78,12 @@ class Legend(WebAppWidget):
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     appendSymbol("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath))
+            elif isinstance(renderer, QgsRuleBasedRendererV2):
+                for isymbol, rule in enumerate(renderer.rootRule().children()):
+                    img = rule.symbol().asImage(qsize)
+                    symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
+                    img.save(symbolPath)
+                    appendSymbol(rule.label(), os.path.basename(symbolPath))
         elif layer.type() == layer.RasterLayer:
             if layer.providerType() == "wms":
                 source = layer.source()
