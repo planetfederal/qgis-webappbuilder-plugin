@@ -37,6 +37,15 @@ from exceptions import WrongValueException
 from PyQt4 import uic
 from qgiscommons.files import tempFolderInTempFolder
 
+consolidateInstalled = True
+try:
+    from qconsolidate.consolidatethread import ConsolidateThread
+except:
+    consolidateInstalled = False
+
+from consolidate import consolidate
+
+
 # Adding so that our UI files can find resources_rc.py
 sys.path.append(os.path.dirname(__file__))
 
@@ -69,6 +78,11 @@ class MainDialog(BASE, WIDGET):
         self.buttonSave = QPushButton(self.tr("Save"))
         self.buttonSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
 
+        if consolidateInstalled:
+            self.buttonSaveComplete = QPushButton(self.tr("Save complete project"))
+            self.buttonSaveComplete.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+            self.buttonSaveComplete.clicked.connect(self.saveComplete)
+
         self.buttonPreview = QPushButton("Preview")
         self.buttonPreview.setIcon(icon("preview.gif"))
 
@@ -84,6 +98,8 @@ class MainDialog(BASE, WIDGET):
 
         self.buttonBox.addButton(self.buttonOpen, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonSave, QDialogButtonBox.ActionRole)
+        if consolidateInstalled:
+            self.buttonBox.addButton(self.buttonSaveComplete, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonPreview, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonCreateOrStopApp, QDialogButtonBox.ActionRole)
 
@@ -163,6 +179,12 @@ class MainDialog(BASE, WIDGET):
                 self.loadAppdef(appdef)
                 self.tabPanel.setCurrentIndex(0)
 
+
+    def saveComplete(self):
+        folder = askForFolder(self, "Select folder to store app")
+        if folder:
+            appdef = self.createAppDefinition()
+            consolidate(folder, appdef)
 
     def saveAppdef(self):
         appdefFile = askForFiles(self, "Select app definition file", True,
