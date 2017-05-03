@@ -9,6 +9,7 @@ import unittest
 import sys
 import shutil
 import os
+import re
 from webappbuilder import utils
 from pubsub import pub
 from PyQt4.QtCore import QEventLoop
@@ -34,7 +35,8 @@ def endAppSDKificationListener(success, reason):
     pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
     _loop.exit()
     global _correctResponse
-    _correctResponse = not success and "400" in reason
+    found = re.search(r'Network error #(40)(\d){1}:', reason)
+    _correctResponse = (not success) and (found is not None)
 
 
 class SdkServiceTest(unittest.TestCase):
