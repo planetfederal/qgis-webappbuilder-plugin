@@ -123,35 +123,41 @@ function fnc_clamp(values, context) {
 
 
 function fnc_scale_linear(values, context) {
-    return false;
+    return values[3] + ((values[4] - values[3]) * (values[2]-values[0]) / (values[2]- values[1]));
 };
 
 function fnc_scale_exp(values, context) {
-    return false;
+    var minp = values[1];
+    var maxp = values[2];
+
+    var minv = Math.pow(values[3], 1/values[5]);
+    var maxv = Math.pow(values[4], 1/values[5]);
+    var scale = (maxv-minv) / (maxp-minp);
+    return Math.pw(maxv + scale*(values[0]-minp), values[5]);
 };
 
 function fnc_floor(values, context) {
-    return false;
+    return Math.floor(values[0]);
 };
 
 function fnc_ceil(values, context) {
-    return false;
+    return Math.ceil(values[0]);
 };
 
 function fnc_pi(values, context) {
-    return false;
+    return Math.PI;
 };
 
 function fnc_to_int(values, context) {
-    return false;
+    return parseInt(values[0]);
 };
 
 function fnc_to_real(values, context) {
-    return false;
+    return parseFloat(values[0]);
 };
 
 function fnc_to_string(values, context) {
-    return false;
+    return String(values[0]);
 };
 
 function fnc_to_datetime(values, context) {
@@ -171,11 +177,21 @@ function fnc_to_interval(values, context) {
 };
 
 function fnc_coalesce(values, context) {
-    return false;
+    for (var i = 0; i < values.length; i++) {
+        if (values[i] !== null){
+            return values[i];
+        }
+    }
+    return null;
 };
 
 function fnc_if(values, context) {
-    return false;
+    if (values[0]){
+        return values[1];
+    }
+    else{
+        return values[2];
+    }
 };
 
 function fnc_aggregate(values, context) {
@@ -263,7 +279,7 @@ function fnc_regexp_match(values, context) {
 };
 
 function fnc_now(values, context) {
-    return false;
+    return new Date().toISOString();
 };
 
 function fnc_age(values, context) {
@@ -307,23 +323,67 @@ function fnc_lower(values, context) {
 };
 
 function fnc_upper(values, context) {
-    return false;
+    return values[0].toLowerCase();
 };
 
 function fnc_title(values, context) {
-    return false;
+    return values[0].split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ')
 };
 
 function fnc_trim(values, context) {
-    return false;
+    return values[0].trim();
 };
 
 function fnc_levenshtein(values, context) {
-    return false;
+    var a = this, b = values[0] + "", m = [], i, j, min = Math.min;
+
+    if (!(a && b)) return (b || a).length;
+
+    for (i = 0; i <= b.length; m[i] = [i++]);
+    for (j = 0; j <= a.length; m[0][j] = j++);
+
+    for (i = 1; i <= b.length; i++) {
+        for (j = 1; j <= a.length; j++) {
+            m[i][j] = b.charAt(i - 1) == a.charAt(j - 1)
+                ? m[i - 1][j - 1]
+                : m[i][j] = min(
+                    m[i - 1][j - 1] + 1,
+                    min(m[i][j - 1] + 1, m[i - 1 ][j] + 1))
+        }
+    }
+
+    return m[b.length][a.length];
 };
 
+var indexMap = function(list) {
+  var map = {}
+  list.forEach(function(each, i) {
+    map[each] = map[each] || []
+    map[each].push(i)
+  })
+  return map
+}
+
 function fnc_longest_common_substring(values, context) {
-    return false;
+    var result = {startString1:0, startString2:0, length:0}
+      var indexMapBefore = indexMap(values[0])
+      var previousOverlap = []
+      values[1].forEach(function(eachAfter, indexAfter) {
+        var overlapLength
+        var overlap = []
+        var indexesBefore = indexMapBefore[eachAfter] || []
+        indexesBefore.forEach(function(indexBefore) {
+          overlapLength = ((indexBefore && previousOverlap[indexBefore-1]) || 0) + 1;
+          if (overlapLength > result.length) {
+            result.length = overlapLength;
+            result.startString1 = indexBefore - overlapLength + 1;
+            result.startString2 = indexAfter - overlapLength + 1;
+          }
+          overlap[indexBefore] = overlapLength
+        })
+        previousOverlap = overlap
+      })
+      return result
 };
 
 function fnc_hamming_distance(values, context) {
@@ -335,59 +395,67 @@ function fnc_soundex(values, context) {
 };
 
 function fnc_char(values, context) {
-    return false;
+    return String.fromCharCode(values[0]);
 };
 
 function fnc_wordwrap(values, context) {
-    return false;
+    var re = new RegExp("([\\w\\s]{" + (values[1] - 2) + ",}?\\w)\\s?\\b", "g")
+    return values[0].replace(re,"$1\n")
 };
 
 function fnc_length(values, context) {
-    return false;
+    return values[0].length;
 };
 
 function fnc_replace(values, context) {
-    return false;
+    return values[0].replace(values[1], values[2]);
 };
 
 function fnc_regexp_replace(values, context) {
-    return false;
+    var re = new RegExp(values[1])
+    return values[0].replace(re, values[2])
 };
 
 function fnc_regexp_substr(values, context) {
-    return false;
+    return values[0].match(values[1])[1];
 };
 
 function fnc_substr(values, context) {
-    return false;
+    return values[0].substring(values[1], values[2] + values[1]);
 };
 
 function fnc_concat(values, context) {
-    return false;
+    s = ""
+    for (var i = 0; i < values.length; i++) {
+        if (values[i] !== null){
+            s += values[i];
+        }
+    }
+    return s
 };
 
 function fnc_strpos(values, context) {
-    return false;
+    return values[0].indeOf(values[1]);
 };
 
 function fnc_left(values, context) {
-    return false;
+    return values[0].substring(0, values[1]);
 };
 
 function fnc_right(values, context) {
-    return false;
+    return values[0].substring(values[0].length - values[1], values[0].length);
 };
 
 function fnc_rpad(values, context) {
-    return false;
+    return values[0] + Array(values[1]-values[0].length+1).join(values[2]);
 };
 
 function fnc_lpad(values, context) {
-    return false;
+    return Array(values[1]-values[0].length+1).join(values[2])+values[0];
 };
 
 function fnc_format(values, context) {
-    return false;
+    return false
 };
 
 function fnc_format_number(values, context) {
@@ -451,19 +519,19 @@ function fnc_set_color_part(values, context) {
 };
 
 function fnc_area(values, context) {
-    return false;
+    return values[0].getArea()
 };
 
 function fnc_perimeter(values, context) {
-    return false;
+    return new ol.geom.LineString(values[0].getCoordinates()).getLength()
 };
 
 function fnc_x(values, context) {
-    return false;
+    return ol.extent.getCenter(values[0].getExtent())[0];
 };
 
 function fnc_y(values, context) {
-    return false;
+    return ol.extent.getCenter(values[0].getExtent())[1];
 };
 
 function fnc_z(values, context) {
@@ -475,15 +543,16 @@ function fnc_m(values, context) {
 };
 
 function fnc_point_n(values, context) {
-    return false;
+    return values[0].getCoordinates()[values[1]]
 };
 
 function fnc_start_point(values, context) {
-    return false;
+    return values[0].getCoordinates()[0]
 };
 
 function fnc_end_point(values, context) {
-    return false;
+    coords = values[0].getCoordinates()
+    return coords[coords.length - 1]
 };
 
 function fnc_nodes_to_points(values, context) {
@@ -511,19 +580,19 @@ function fnc_make_polygon(values, context) {
 };
 
 function fnc_x_min(values, context) {
-    return false;
+    return ol.extent.getBottomLeft(values[0].getExtent())[0]
 };
 
 function fnc_x_max(values, context) {
-    return false;
+    return ol.extent.getTopRight(values[0].getExtent())[0]
 };
 
 function fnc_y_min(values, context) {
-    return false;
+    return ol.extent.getBottomLeft(values[0].getExtent())[1]
 };
 
 function fnc_y_max(values, context) {
-    return false;
+    return ol.extent.getTopRight(values[0].getExtent())[1]
 };
 
 function fnc_geom_from_wkt(values, context) {
@@ -615,7 +684,7 @@ function fnc_bounds(values, context) {
 };
 
 function fnc_num_points(values, context) {
-    return false;
+    return values[0].getCoordinates().length
 };
 
 function fnc_num_interior_rings(values, context) {
@@ -677,6 +746,11 @@ function fnc_geom_to_wkt(values, context) {
 function fnc_geometry(values, context) {
     return false;
 };
+
+function fnc__geometry(values, context) {
+    return context.feature.getGeometry();
+};
+
 
 function fnc_transform(values, context) {
     return false;

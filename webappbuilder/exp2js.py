@@ -181,12 +181,14 @@ def handle_literal(node):
 def handle_function(node, mapLib):
     fnIndex = node.fnIndex()
     func = QgsExpression.Functions()[fnIndex]
-    args = node.args().list()
-    retFunc = (func.name())
     retArgs = []
-    for arg in args:
-        retArgs.append(walkExpression(arg, mapLib))
-    retArgs = ",".join(retArgs)
+    retFunc = (func.name().replace("$", "_"))
+    args = node.args()
+    if args is not None:
+        args = args.list()
+        for arg in args:
+            retArgs.append(walkExpression(arg, mapLib))
+            retArgs = ",".join(retArgs)
     return "fnc_%s([%s], context)" % (retFunc, retArgs)
 
 
@@ -197,63 +199,6 @@ def handle_columnRef(node, mapLib):
         return "feature.properties['%s'] " % node.name()
     else:
         return "feature.get('%s') " % node.name()
-
-
-def render_examples():
-    lines = [
-        """var feature = {
-            COLA: 1,
-            COLB: 2,
-            WAT: 'Hello World'
-        };""",
-        """var context = {
-            feature: feature,
-            variables: {}
-        };"""
-    ]
-
-    def render_call(name):
-        callstr = "var result = {0}(context);".format(name)
-        callstr += "\nconsole.log(result);"
-        return callstr
-
-    def render_example(exp):
-        data, name, dump = exp2func(exp, mapLib="Leaflet")
-        lines.append(data)
-        lines.append(render_call(name))
-
-    import os
-    if not os.path.exists("examples"):
-        os.mkdir("examples")
-
-    with open("examples\qgsfunctions.js", "w") as f:
-        # Write out the functions first.
-        funcs = gen_func_stubs()
-        f.write(funcs)
-
-    with open("examples\qgsexpression.js", "w") as f:
-        exp = "(1 + 1) * 3 + 5"
-        render_example(exp)
-        exp = "NOT @myvar = format('some string %1 %2', 'Hello', 'World')"
-        render_example(exp)
-        exp = """
-        CASE
-            WHEN to_int(123.52) = @myvar THEN to_real(123)
-            WHEN (1 + 2) = 3 THEN 2
-            ELSE to_int(1)
-        END
-            OR (2 * 2) + 5 = 4"""
-        render_example(exp)
-        exp = """
-        CASE
-            WHEN "COLA" = 1 THEN 1
-            WHEN (1 + 2) = 3 THEN 2
-            ELSE 3
-        END
-        """
-        render_example(exp)
-        f.writelines("\n\n".join(lines))
-
 
 def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
     """
@@ -268,5 +213,3 @@ def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
 
     return name
 
-if __name__ == "__main__":
-    render_examples()
