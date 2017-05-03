@@ -1,4 +1,4 @@
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsMessageLog
 import re, json
 
 whenfunctions = []
