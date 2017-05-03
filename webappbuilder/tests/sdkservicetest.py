@@ -34,7 +34,7 @@ def endAppSDKificationListener(success, reason):
     pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
     _loop.exit()
     global _correctResponse
-    _correctResponse = not success and "500" in reason
+    _correctResponse = not success and "400" in reason
 
 
 class SdkServiceTest(unittest.TestCase):
