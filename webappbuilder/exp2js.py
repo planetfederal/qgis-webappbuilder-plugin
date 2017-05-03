@@ -46,7 +46,10 @@ def exp2func(expstr, name=None, mapLib=None):
     global whenfunctions
     whenfunctions = []
     exp = QgsExpression(expstr)
-    js = walkExpression(exp.rootNode(), mapLib=mapLib)
+    if expstr:
+        js = walkExpression(exp.rootNode(), mapLib=mapLib)
+    else:
+        js = "true"
     if name is None:
         import random
         import string
