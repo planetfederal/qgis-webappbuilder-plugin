@@ -165,7 +165,7 @@ def checkAppCanBeCreated(appdef):
 							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
-		if not isinstance(renderer, QgsRuleBasedRendererV2):
+		if isinstance(renderer, QgsRuleBasedRendererV2):
 			rules = renderer.rootRule().children()
 			for	rule in rules:
 				expr = rule.filterExpression()
