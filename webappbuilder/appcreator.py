@@ -23,6 +23,7 @@ from settings import webAppWidgets
 import viewer
 import xml.etree.ElementTree as ET
 import importlib
+from exp2js import is_expression_supported
 
 # need a global where to store parameters to be used in PyPubSub listener
 # because PyPubSub does not support persistence of lambda functions
@@ -164,6 +165,22 @@ def checkAppCanBeCreated(appdef):
 							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
+		if not isinstance(renderer, QgsRuleBasedRendererV2):
+			rules = renderer.rootRule().children()
+			for	rule in rules:
+				expr = rule.filterExpression()
+				unsupported = is_expression_supported(expr)
+				if unsupported:
+					problems.append("The expression '%s' has unsupported functions: %s"
+								% (expr, ", ".join(unsupported)))
+			
+		if str(layer.customProperty("labeling/enabled")).lower() == "true":
+			if unicode(layer.customProperty("labeling/isExpression")).lower() == "true":
+				expr = layer.customProperty("labeling/fieldName")
+				unsupported = is_expression_supported(expr)
+				if unsupported:
+					problems.append("The expression '%s' has unsupported functions: %s"
+								% (expr, ", ".join(unsupported)))
 
 
 	#TODO: check that layers using time attributes are not published using WMS

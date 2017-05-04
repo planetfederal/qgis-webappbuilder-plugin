@@ -492,21 +492,22 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
         visibility += "\nfor (var i=0;i<baseLayers.length;i++){baseLayers[i].setVisible(false);}\n"
         visibility += "baseLayers[0].setVisible(true);"
 
-    layersList = []
+    layersList_ = []
     usedGroups = []
     for appLayer in layers:
         layer = appLayer.layer
         if layer.id() in groupedLayers:
             groupName = groupedLayers[layer.id()]
             if groupName not in usedGroups:
-                layersList.append("group_" + safeName(groupName))
+                layersList_.append("group_" + safeName(groupName))
                 usedGroups.append(groupName)
         else:
-            layersList.append("lyr_" + safeName(layer.name()))
+            layersList_.append("lyr_" + safeName(layer.name()))
 
 
 
-    layersList = "var layersList = [%s];" % (",".join([layer for layer in layersList]))
+    layersList = "var layersList = [%s];" % (",".join([layer for layer in layersList_]))
+    layersMap = "var layersMap  = {%s};" % (",".join(["'%s':%s" % (layer, layer) for layer in layersList_]))
     groupBaseLayers = appdef["Settings"]["Group base layers"]
 
     if baseJs:
@@ -527,6 +528,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     app.variables.append(groupVars)
     app.variables.append(visibility)
     app.variables.append(layersList)
+    app.variables.append(layersMap)
 
 
 def bounds(useCanvas, layers, crsid):

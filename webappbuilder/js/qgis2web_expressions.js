@@ -214,24 +214,69 @@ function fnc_count_missing(values, context) {
     return false;
 };
 
+function getFieldValues(layer, feature, value){
+    features = layer.getSource().getFeatures();
+    attrs = layer.get('attributes');
+    attr = attrs[0];
+    for (i = 0; i < attrs.length; i++){
+        if (feature.get(attrs[i]) == value){
+            attr = attrs[i];
+        }
+    } 
+    values = [];
+    for (i = 0; i < features.length; i++){
+        v = features[i].get(attr);
+        values.push(v);
+    }
+    return values;
+}
 function fnc_minimum(values, context) {
     return false;
 };
 
 function fnc_maximum(values, context) {
-    return false;
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    return Math.max.apply(null, numbers);
+};
+
+function fnc_maximum(values, context) {
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    return Math.min.apply(null, numbers);
 };
 
 function fnc_sum(values, context) {
-    return false;
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    var total = 0, i;
+    for (i = 0; i < numbers.length; i += 1) {
+        total += numbers[i];
+    }
+    return total;
 };
 
 function fnc_mean(values, context) {
-    return false;
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    var total = 0, i;
+    for (i = 0; i < numbers.length; i += 1) {
+        total += numbers[i];
+    }
+    return total / numbers.length;
 };
 
 function fnc_median(values, context) {
-    return false;
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    var median = 0, numsLen = numbers.length;
+    numbers.sort();
+    if (numsLen % 2 === 0) {
+        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+    } else { 
+        median = numbers[(numsLen - 1) / 2];
+    }
+    return median;
 };
 
 function fnc_stdev(values, context) {
@@ -239,7 +284,10 @@ function fnc_stdev(values, context) {
 };
 
 function fnc_range(values, context) {
-    return false;
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    numbers.sort();
+    return [numbers[0], numbers[numbers.length - 1]];
 };
 
 function fnc_minority(values, context) {
@@ -459,7 +507,7 @@ function fnc_format(values, context) {
 };
 
 function fnc_format_number(values, context) {
-    return false;
+    return values[0].toFixed(values[1]);
 };
 
 function fnc_format_date(values, context) {

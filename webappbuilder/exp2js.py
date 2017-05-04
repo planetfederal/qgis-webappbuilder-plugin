@@ -1,5 +1,6 @@
 from qgis.core import QgsExpression, QgsMessageLog
 import re, json
+import os
 
 whenfunctions = []
 
@@ -12,24 +13,6 @@ binary_ops = [
 ]
 
 unary_ops = ["!", "-"]
-
-def gen_func_stubs():
-    """
-    Generate function stubs for QGIS functions.
-    """
-    funcs = QgsExpression.Functions()
-    functions = []
-    temp = """function %s(values, context) {
-    return false;
-};
-"""
-    for func in funcs:
-        name = func.name()
-        if name.startswith("$"):
-            continue
-        newfunc = temp % ("fnc_" + name)
-        functions.append(newfunc)
-    return "\n".join(functions)
 
 
 def compile(expstr, name=None, mapLib=None):
@@ -196,12 +179,7 @@ def handle_function(node, mapLib):
 
 
 def handle_columnRef(node, mapLib):
-    if mapLib is None:
-        return "feature['%s'] " % node.name()
-    if mapLib == "Leaflet":
-        return "feature.properties['%s'] " % node.name()
-    else:
-        return "feature.get('%s') " % node.name()
+    return "feature.get('%s') " % node.name()
 
 def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
     """
@@ -216,3 +194,24 @@ def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
 
     return name
 
+
+def is_expression_supported(expr):
+    path = os.path.join(os.path.dirname(__file__), "js", "qgis2web_expressions.js")
+    with open(path) as f:
+        lines = f.readlines()
+    used = [str(e) for e in re.findall("[a-zA-Z]*?\(", expr)]
+    print used
+    unsupported = []
+    for i, line in enumerate(lines):
+        print line
+        for func in used:
+            if func in line:
+                if "return false" in lines[i + 1]:
+                    unsupported.append(func[:-1]) 
+                break
+
+    return unsupported
+
+    
+        
+    

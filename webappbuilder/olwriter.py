@@ -432,18 +432,20 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 template = """
-                        function rules_%s(feature, value) {
+                        function rules_%(n)s(feature, value) {
                             var context = {
                                 feature: feature,
-                                variables: {}
+                                variables: {},
+                                layer: 'lyr_%(n)s' 
+                                
                             };
                             // Start of if blocks and style check logic
-                            %s
+                            %(js)s
                             else {
-                                return %s;
+                                return %(elsejs)s;
                             }
                         }
-                        var style = rules_%s(feature, value);
+                        var style = rules_%(n)s(feature, value);
                         """
                 elsejs = "[]"
                 selectionElsejs = "[]"
@@ -478,12 +480,13 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                     selectionJs = selectionJs.strip()
                     ifelse = "else if"
                 value = ("var value = '';")
-                style = template % (safeName(layer.name()), js, elsejs, safeName(layer.name()))
-                selectionStyle = template % (safeName(layer.name()), selectionJs, selectionElsejs, safeName(layer.name()))
+                style = template % {"n":safeName(layer.name()), "js":js, "elsejs":elsejs}
+                selectionStyle = template % {"n":safeName(layer.name()), "js":selectionJs, "elsejs":selectionElsejs}
                 context = '''var context = {
                             feature: feature,
-                            variables: {}
-                        };'''
+                            variables: {},
+                            layer: 'lyr_%s'
+                        };''' % safeName(layer.name())
             else:
                 cannotWriteStyle = True
 
@@ -674,7 +677,8 @@ def getLabeling(layer, folder, app):
     s = '''
         var labelContext = {
             feature: feature,
-            variables: {}
+            variables: {},
+            layer: 'lyr_%(layerName)s'
         };
         if (%(label)s !== null%(labelRes)s) {
             var labelText = String(%(label)s);
