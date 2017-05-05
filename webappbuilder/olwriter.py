@@ -761,11 +761,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 line_width = props["width"]
             else:
                 line_width = props["line_width"]
+            mapunits = props["line_width_unit"] == "MapUnit"
             if 'penstyle' in props:
                 line_style = props["penstyle"]
             else:
                 line_style = props["line_style"]
-            style = "stroke: %s" % (getStrokeStyle(strokeColor, line_style != "solid", line_width))
+            style = "stroke: %s" % (getStrokeStyle(strokeColor, line_style, line_width, mapunits))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             if props["style"] == "no":
                 fillAlpha = 0
@@ -933,15 +934,19 @@ def getIcon(path, size, rotation):
             })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path),
                      "rad": math.radians(rotation)}
 
-def getStrokeStyle(color, style, width, units="pixel"):
+def getStrokeStyle(color, style, width, mapunits=False):
     dash = "null" 
     if style == "no":
         width = 0
     else:
-        width  = float(width) * SIZE_FACTOR
+        if mapunits:
+            width = "getMapUnits(%d)" % float(width)
+        else:
+            width  = str(float(width) * SIZE_FACTOR)
+        print style
         if style != "solid":
             dash = "[6]"
-    return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
+    return "new ol.style.Stroke({color: %s, lineDash: %s, width: %s})" % (color, dash, width)
 
 def getFillStyle(color):
     return "new ol.style.Fill({color: %s})" % color
