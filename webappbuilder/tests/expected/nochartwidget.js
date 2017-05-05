@@ -66,6 +66,7 @@ bakeries_geojson_callback = function(geojson) {
 
 lyr_bakeries.setVisible(true);
 var layersList = [lyr_bakeries];
+var layersMap = ["lyr_bakeries": lyr_bakeries];
 var view = new ol.View({ maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
 var originalExtent = [256354.556143, 6247253.046488, 266261.287425, 6257016.770510];
 
