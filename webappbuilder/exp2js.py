@@ -199,11 +199,10 @@ def is_expression_supported(expr):
     path = os.path.join(os.path.dirname(__file__), "js", "qgis2web_expressions.js")
     with open(path) as f:
         lines = f.readlines()
-    used = [str(e) for e in re.findall("[a-zA-Z]*?\(", expr)]
+    used = [str(e) for e in re.findall("[a-zA-Z]{2,}?\(", expr)]
     print used
     unsupported = []
     for i, line in enumerate(lines):
-        print line
         for func in used:
             if func in line:
                 if "return false" in lines[i + 1]:
