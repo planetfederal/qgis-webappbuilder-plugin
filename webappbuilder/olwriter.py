@@ -436,14 +436,16 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             var context = {
                                 feature: feature,
                                 variables: {},
-                                layer: 'lyr_%(n)s' 
-                                
+                                layer: 'lyr_%(n)s'   
                             };
+                            ruleStyles = []; 
                             // Start of if blocks and style check logic
+                            matchFound = false;
                             %(js)s
-                            else {
-                                return %(elsejs)s;
+                            if (!matchFound) {
+                                ruleStyles = %(elsejs)s;
                             }
+                            return ruleStyles;
                         }
                         var style = rules_%(n)s(feature, value);
                         """
@@ -455,7 +457,6 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 rules = root_rule.children()
                 expFile = os.path.join(folder, "resources", "js",
                                        "qgis2web_expressions.js")
-                ifelse = "if"
                 for count, rule in enumerate(rules):
                     styleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables)
                     selectionStyleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables, SELECTION_YELLOW)
@@ -467,18 +468,19 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         continue
                     name = compile_to_file(exp, name, "OpenLayers3", expFile)
                     js += """
-                    %s (%s(context)) {
-                      return %s;
+                    if (%s(context)) {
+                      ruleStyles.push.apply(ruleStyles, %s);
+                      matchFound = true;
                     }
-                    """ % (ifelse, name, styleCode)
+                    """ % (name, styleCode)
                     js = js.strip()
                     selectionJs += """
-                    %s (%s(context)) {
-                      return %s;
+                    if (%s(context)) {
+                      ruleStyles.push.apply(ruleStyles, %s);
+                      matchFound = true;
                     }
-                    """ % (ifelse, name, selectionStyleCode)
+                    """ % (name, selectionStyleCode)
                     selectionJs = selectionJs.strip()
-                    ifelse = "else if"
                 value = ("var value = '';")
                 style = template % {"n":safeName(layer.name()), "js":js, "elsejs":elsejs}
                 selectionStyle = template % {"n":safeName(layer.name()), "js":selectionJs, "elsejs":selectionElsejs}
@@ -788,7 +790,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 borderWidth = props["outline_width"]
             style = ('''stroke: %s,
                         fill: %s''' %
-                    (getStrokeStyle(borderColor, borderStyle != "solid", borderWidth),
+                    (getStrokeStyle(borderColor, borderStyle, borderWidth),
                      getFillStyle(fillColor)))
         elif isinstance(sl, QgsGradientFillSymbolLayerV2):
             style = ('''fill: new ol.style.Fill({
@@ -903,19 +905,19 @@ def getShape(props, alpha, color_):
 
 def getCircle(color, size, outlineColor, outlineWidth):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
-                (str(size), getStrokeStyle(outlineColor, False, outlineWidth),
+                (str(size), getStrokeStyle(outlineColor, "solid", outlineWidth),
                  getFillStyle(color)))
 
 def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth, angle = 0):
     if radius2 is None:
         return ("new ol.style.RegularShape({points: %s, radius: %s, stroke: %s, fill: %s, angle: %s})" %
                 (str(points), str(radius1),
-                 getStrokeStyle(outlineColor, False, outlineWidth),
+                 getStrokeStyle(outlineColor, "solid", outlineWidth),
                  getFillStyle(color), str(angle)))
     else:
         return ("new ol.style.RegularShape({points: %s, radius1: %s, radius2: %s, stroke: %s, fill: %s, angle: %s})" %
                 (str(points), str(radius1), str(radius2),
-                 getStrokeStyle(outlineColor, False, outlineWidth),
+                 getStrokeStyle(outlineColor, "solid", outlineWidth),
                  getFillStyle(color), angle))
 
 def getIcon(path, size, rotation):
@@ -931,9 +933,14 @@ def getIcon(path, size, rotation):
             })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path),
                      "rad": math.radians(rotation)}
 
-def getStrokeStyle(color, dashed, width):
-    width  = float(width) * SIZE_FACTOR
-    dash = "[6]" if dashed else "null"
+def getStrokeStyle(color, style, width, units="pixel"):
+    dash = "null" 
+    if style == "no":
+        width = 0
+    else:
+        width  = float(width) * SIZE_FACTOR
+        if style != "solid":
+            dash = "[6]"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %d})" % (color, dash, width)
 
 def getFillStyle(color):
