@@ -1,3 +1,8 @@
+#===============================================================================
+# This code belong to the gis2js library, by Nathan Woodrow
+# https://github.com/NathanW2/qgs2js
+#===============================================================================
+
 from qgis.core import QgsExpression, QgsMessageLog
 import re, json
 import os
