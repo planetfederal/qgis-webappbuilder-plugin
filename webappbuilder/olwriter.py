@@ -876,9 +876,10 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
         else:
             style = ""
         styles.append('''new ol.style.Style({
-                            %s
+                            %s,
+                            zIndex: %i
                         })
-                        ''' % style)
+                        ''' % (style, sl.renderingPass()))
     return "[ %s]" % ",".join(styles)
 
 def getShape(props, alpha, color_):
