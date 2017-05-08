@@ -130,65 +130,64 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
 
-    denyCompilationTest = Test("Verify deny compilation for invalid Connect credentials")
-    denyCompilationTest.addStep("Reset project", iface.newProject)
-    from boundlessconnect.tests.testerplugin import _startConectPlugin
-    denyCompilationTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button.\n'
+    try:
+        from boundlessconnect.tests.testerplugin import _startConectPlugin
+        denyCompilationTest = Test("Verify deny compilation for invalid Connect credentials")
+        denyCompilationTest.addStep("Reset project", iface.newProject)
+        denyCompilationTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button.\n'
                                 'Check that Connect shows Warning message complaining about only open access permissions.'
                                 'Close error message by pressing "Yes" button.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    denyCompilationTest.addStep("Open WAB", lambda: openWAB())
-    denyCompilationTest.addStep("Create an EMPTY app and check it complains of a permission denied")
-    denyCompilationTest.setCleanup(closeWAB)
-    tests.append(denyCompilationTest)
-
-    localTimeoutCompilationTest = Test("Verfiy compilation timeout due to local settings")
-    localTimeoutCompilationTest.addStep("Reset project", iface.newProject)
-    from boundlessconnect.tests.testerplugin import _startConectPlugin
-    localTimeoutCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
-                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    localTimeoutCompilationTest.addStep("Open WAB", lambda: openWAB())
-    localTimeoutCompilationTest.addStep("Setting timeout", lambda: setNetworkTimeout(value=3000))
-    localTimeoutCompilationTest.addStep("Create an EMPTY app and check it complains of network timeout", isVerifyStep=True)
-    localTimeoutCompilationTest.addStep("Close WAB", closeWAB)
-    localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
-    tests.append(localTimeoutCompilationTest)
-
-    successCompilationTest = Test("Verfiy successful compilation with EnterpriseTestDesktop")
-    successCompilationTest.addStep("Reset project", iface.newProject)
-    from boundlessconnect.tests.testerplugin import _startConectPlugin
-    successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
-                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    successCompilationTest.addStep("Open WAB", lambda: openWAB())
-    successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
-    successCompilationTest.setCleanup(closeWAB)
-    tests.append(successCompilationTest)
-
-    # test stopCompilationTest
-    def checkStartoStopButton(text=None):
-        dlg = getWABDialog()
-        tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
-
-    def clickStopButton(after=5000):
-        QTest.qWait(after)
-        dlg = getWABDialog()
-        QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
-
-    stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user")
-    stopCompilationTest.addStep("Reset project", iface.newProject)
-    from boundlessconnect.tests.testerplugin import _startConectPlugin
-    stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
-                                'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    stopCompilationTest.addStep("Open WAB", lambda: openWAB())
-    stopCompilationTest.addStep("Create an EMPTY app and start compilation, then click on next step!")
-    stopCompilationTest.addStep("Verify if stop button is set", lambda: checkStartoStopButton(text='Stop') )
-    stopCompilationTest.addStep("Click stop", lambda: clickStopButton(after=1000) )
-    stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp (Beta)') )
-    stopCompilationTest.setCleanup(closeWAB)
-    tests.append(stopCompilationTest)
+        denyCompilationTest.addStep("Open WAB", lambda: openWAB())
+        denyCompilationTest.addStep("Create an EMPTY app and check it complains of a permission denied")
+        denyCompilationTest.setCleanup(closeWAB)
+        tests.append(denyCompilationTest)
+        localTimeoutCompilationTest = Test("Verfiy compilation timeout due to local settings")
+        localTimeoutCompilationTest.addStep("Reset project", iface.newProject)
+        localTimeoutCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                    'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                            prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+        localTimeoutCompilationTest.addStep("Open WAB", lambda: openWAB())
+        localTimeoutCompilationTest.addStep("Setting timeout", lambda: setNetworkTimeout(value=3000))
+        localTimeoutCompilationTest.addStep("Create an EMPTY app and check it complains of network timeout", isVerifyStep=True)
+        localTimeoutCompilationTest.addStep("Close WAB", closeWAB)
+        localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
+        tests.append(localTimeoutCompilationTest)
+    
+        successCompilationTest = Test("Verfiy successful compilation with EnterpriseTestDesktop")
+        successCompilationTest.addStep("Reset project", iface.newProject)
+        successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                    'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                            prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+        successCompilationTest.addStep("Open WAB", lambda: openWAB())
+        successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
+        successCompilationTest.setCleanup(closeWAB)
+        tests.append(successCompilationTest)
+    
+        # test stopCompilationTest
+        def checkStartoStopButton(text=None):
+            dlg = getWABDialog()
+            tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
+    
+        def clickStopButton(after=5000):
+            QTest.qWait(after)
+            dlg = getWABDialog()
+            QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
+    
+        stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user")
+        stopCompilationTest.addStep("Reset project", iface.newProject)
+        stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                    'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
+                            prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+        stopCompilationTest.addStep("Open WAB", lambda: openWAB())
+        stopCompilationTest.addStep("Create an EMPTY app and start compilation, then click on next step!")
+        stopCompilationTest.addStep("Verify if stop button is set", lambda: checkStartoStopButton(text='Stop') )
+        stopCompilationTest.addStep("Click stop", lambda: clickStopButton(after=1000) )
+        stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp (Beta)') )
+        stopCompilationTest.setCleanup(closeWAB)
+        tests.append(stopCompilationTest)
+    except ImportError:
+        pass
 
     return tests
 
