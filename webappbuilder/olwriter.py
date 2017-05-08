@@ -701,7 +701,7 @@ def getLabeling(layer, folder, app):
                   offsetX: %(offsetX)s,
                   offsetY: %(offsetY)s %(halo)s
                 });
-            textStyleCache_%(layerName)s[key] = new ol.style.Style({"text": text});
+            textStyleCache_%(layerName)s[key] = new ol.style.Style({zIndex: 1000, text: text});
         }
         allStyles.push(textStyleCache_%(layerName)s[key]);
         ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
