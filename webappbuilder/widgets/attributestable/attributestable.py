@@ -16,7 +16,7 @@ class AttributesTable(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         self.addReactComponent(app, "FeatureTable")
         pointZoom = int(self._parameters["Zoom level when zooming to point feature"][0])
-        pageSize = int(self._parameters["pageSize"][0])
+        pageSize = int(self._parameters["pageSize"])
         allowEdit =  str("drawfeature" in appdef["Widgets"]).lower()
         sortable =  str(self._parameters["sortable"]).lower()
         theme = appdef["Settings"]["Theme"]
