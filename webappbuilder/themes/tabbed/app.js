@@ -33,10 +33,24 @@ var TabbedApp = React.createClass({
     };
   },
   getInitialState: function() {
-    return {value: 1};
+    return {leftNavOpen: true};
   },
   componentDidMount: function() {
     @POSTTARGETSET@
+  },
+  leftNavClose: function(value) {
+    this.setState({
+      leftNavOpen: false
+    }, function() {
+      map.updateSize();
+    });
+  },
+  leftNavOpen: function(value) {
+    this.setState({
+      leftNavOpen: true
+    }, function() {
+      map.updateSize();
+    });
   },
   _toggle: function(el) {
     if (el.style.display === 'block') {
@@ -51,23 +65,14 @@ var TabbedApp = React.createClass({
   _toggleWFST: function() {
     this._toggle(document.getElementById('wfst'));
   },
-  handleChange: function(value) {
-    if (value === parseInt(value, 10)) {
-      this.setState({
-        value: value,
-      });
-    }
-  },
   render: function() {
-    var toolbarOptions = @TOOLBAROPTIONS@;
+    var toolbarOptions = Object.assign({onLeftIconTouchTap: this.leftNavOpen}, @TOOLBAROPTIONS@);
     return React.createElement("div", {id: 'content'},
-      React.createElement(AppBar, toolbarOptions @TOOLBAR@
+      React.createElement(Header, toolbarOptions @TOOLBAR@
       ),
       React.createElement("div", {className: 'row container'},
         React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
-          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange}
-            @TABS@
-          )
+          React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose})
         ),
         React.createElement("div", {className: 'col maps'},
           React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
