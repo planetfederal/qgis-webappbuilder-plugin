@@ -33,10 +33,6 @@ canvas {
   top: 71px;
   left: 40%;
 }
-#layerlist {
-    position: absolute;
-    right: 20px;
-}
 .ol-mouse-position{
 }
 #legend {
