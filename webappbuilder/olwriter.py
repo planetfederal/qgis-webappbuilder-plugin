@@ -789,9 +789,19 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 borderWidth = props["width_border"]
             else:
                 borderWidth = props["outline_width"]
-            style = ('''stroke: %s,
+            x, y = sl.offset().x(), sl.offset().y()
+            print x,y
+            if x or y:
+                offset = '''geometry: function(feature){
+                                geom = feature.getGeometry().clone()
+                                geom.translate(%s, %s);
+                                return geom;
+                            },''' % (str(x), str(y))
+            else:
+                offset = ""
+            style = ('''%s stroke: %s,
                         fill: %s''' %
-                    (getStrokeStyle(borderColor, borderStyle, borderWidth),
+                    (offset, getStrokeStyle(borderColor, borderStyle, borderWidth),
                      getFillStyle(fillColor)))
         elif isinstance(sl, QgsGradientFillSymbolLayerV2):
             style = ('''fill: new ol.style.Fill({
@@ -939,6 +949,7 @@ def getStrokeStyle(color, style, width, mapunits=False):
     dash = "null" 
     if style == "no":
         width = 0
+        color = '"rgba(0,0,0,0.0)"'
     else:
         if mapunits:
             width = "getMapUnits(%d)" % float(width)
