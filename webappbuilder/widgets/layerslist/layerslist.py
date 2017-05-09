@@ -28,12 +28,12 @@ class LayersList(WebAppWidget):
         theme = appdef["Settings"]["Theme"]
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:'%s', onActive: this.layerListOpen},
+            app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:'%s', onActive: this.layerListOpen.bind(this)},
                                  React.createElement("div",{id: "layerlist"},
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
                                         addLayer: {
                                           open: this.state.addLayerOpen,
-                                          onRequestClose:this.layerListClose
+                                          onRequestClose:this.layerListClose.bind(this)
                                         },
                                         inlineDialogs: true,
                                         icon: React.createElement(Button, {buttonType: "Flat", label: "ADD"}),
