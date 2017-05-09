@@ -78,18 +78,13 @@ var TabbedApp = React.createClass({
   render: function() {
     var toolbarOptions = Object.assign({onLeftIconTouchTap: this.leftNavOpen}, @TOOLBAROPTIONS@);
     return React.createElement("div", {id: 'content'},
-      React.createElement(Header, toolbarOptions @TOOLBAR@
-      ),
-      React.createElement("div", {className: 'row container'},
-        React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
-          React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose})
-        ),
-        React.createElement("div", {className: 'col maps'},
-          React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
-            @MAPPANELS@
-          )
-          @PANELS@
+      React.createElement(Header, toolbarOptions @TOOLBAR@),
+      React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose}),
+      React.createElement("div", {className: 'map', style: {left: this.state.leftNavOpen ? 360 : 0, width: this.state.leftNavOpen ? 'calc(100% - 360px)' : '100%'}},
+        React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
+          @MAPPANELS@
         )
+        @PANELS@
       )
     );
   }
