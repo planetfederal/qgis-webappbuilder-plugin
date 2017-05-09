@@ -194,25 +194,6 @@ function fnc_if(values, context) {
     }
 };
 
-function fnc_aggregate(values, context) {
-    return false;
-};
-
-function fnc_relation_aggregate(values, context) {
-    return false;
-};
-
-function fnc_count(values, context) {
-    return false;
-};
-
-function fnc_count_distinct(values, context) {
-    return false;
-};
-
-function fnc_count_missing(values, context) {
-    return false;
-};
 
 function getFieldValues(layer, feature, value){
     features = layer.getSource().getFeatures();
@@ -230,7 +211,27 @@ function getFieldValues(layer, feature, value){
     }
     return values;
 }
-function fnc_minimum(values, context) {
+
+function fnc_relation_aggregate(values, context) {
+    return false;
+};
+
+function fnc_count(values, context) {
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    return numbers.length();
+};
+
+function fnc_count_distinct(values, context) {
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    var len = numbers.filter(function(val, i, arr) { 
+        return arr.indexOf(val) === i;
+    }).length;
+    return len;
+};
+
+function fnc_count_missing(values, context) {
     return false;
 };
 
@@ -240,7 +241,7 @@ function fnc_maximum(values, context) {
     return Math.max.apply(null, numbers);
 };
 
-function fnc_maximum(values, context) {
+function fnc_minimum(values, context) {
     layer = layersMap[context.layer];
     numbers = getFieldValues(layer, context.feature, values[0]);
     return Math.min.apply(null, numbers);
@@ -256,14 +257,17 @@ function fnc_sum(values, context) {
     return total;
 };
 
-function fnc_mean(values, context) {
-    layer = layersMap[context.layer];
-    numbers = getFieldValues(layer, context.feature, values[0]);
+function average(numbers){
     var total = 0, i;
     for (i = 0; i < numbers.length; i += 1) {
         total += numbers[i];
     }
     return total / numbers.length;
+}
+function fnc_mean(values, context) {
+    layer = layersMap[context.layer];
+    numbers = getFieldValues(layer, context.feature, values[0]);
+    return average(numbers);
 };
 
 function fnc_median(values, context) {
@@ -280,7 +284,19 @@ function fnc_median(values, context) {
 };
 
 function fnc_stdev(values, context) {
-    return false;
+    var layer = layersMap[context.layer];
+    var numbers = getFieldValues(layer, context.feature, values[0]);
+    var avg = average(numbers);
+  
+    var squareDiffs = numbers.map(function(value){
+        var diff = value - avg;
+        var sqrDiff = diff * diff;
+        return sqrDiff;
+    });
+  
+    var avgSquareDiff = average(squareDiffs);
+    var stdDev = Math.sqrt(avgSquareDiff);
+    return stdDev;
 };
 
 function fnc_range(values, context) {
@@ -320,6 +336,41 @@ function fnc_max_length(values, context) {
 
 function fnc_concatenate(values, context) {
     return false;
+};
+
+function fnc_aggregate(values, context) {
+    var newContext = {
+        feature: context.feature,
+        variables: {},
+        layer: values[0] 
+    };
+    if (values[0] == "count"){
+        return fnc_count([values[1]], newContext);
+    }
+    else if (values[0] == "count_distinct"){
+        return fnc_count_distinct([values[1]], newContext);
+    }
+    else if (values[0] == "min"){
+        return fnc_minimum([values[1]], newContext);
+    }
+    else if (values[0] == "max"){
+        return fnc_maximum([values[1]], newContext);
+    }
+    else if (values[0] == "sum"){
+        return fnc_sum([values[1]], newContext);
+    }
+    else if (values[0] == "mean"){
+        return fnc_mean([values[1]], newContext);
+    }
+    else if (values[0] == "median"){
+        return fnc_median([values[1]], newContext);
+    }
+    else if (values[0] == "sdtdev"){
+        return fnc_sdtdev([values[1]], newContext);
+    }
+    else if (values[0] == "range"){
+        return fnc_range([values[1]], newContext);
+    }
 };
 
 function fnc_regexp_match(values, context) {
@@ -503,7 +554,12 @@ function fnc_lpad(values, context) {
 };
 
 function fnc_format(values, context) {
-    return false
+    var s = values[0];
+    for (var i = 1; i < values.length; i++) {
+      s = s.replace("%" + String(i), values[i]);
+    }
+    return s;
+    
 };
 
 function fnc_format_number(values, context) {
