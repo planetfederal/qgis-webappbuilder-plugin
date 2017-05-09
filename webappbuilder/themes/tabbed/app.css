@@ -27,11 +27,11 @@ canvas {
   bottom: 0px;
 }
 .maps {
-  height: calc(100% - 71px);
-  width: 60%;
   position: absolute;
-  top: 71px;
-  left: 40%;
+  left: 360px;
+  top: 64px;
+  height: calc(100% - 64px);
+  width: calc(100% - 360px);
 }
 .ol-mouse-position{
 }
