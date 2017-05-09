@@ -17,7 +17,7 @@ class ChartTool(WebAppWidget):
         if charts:
             if theme == "tabbed":
                 idx = len(app.tabs) + 1
-                app.tabs.append('''React.createElement(Tab,{key:%, value:%i, label:"Charts"},
+                app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:"Charts"},
                                         React.createElement("div", {id:"charts-tab"},
                                             React.createElement(Chart, {charts:charts})
                                         )
