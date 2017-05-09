@@ -766,7 +766,24 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 line_style = props["penstyle"]
             else:
                 line_style = props["line_style"]
-            style = "stroke: %s" % (getStrokeStyle(strokeColor, line_style, line_width, mapunits))
+            offsetValue = sl.offset()
+            if offsetValue:
+                offset = '''geometry: function(feature){
+                              var start = feature.getGeometry().getFirstCoordinate();
+                              var end = feature.getGeometry().getLastCoordinate();
+                              var dx = end[0] - start[0];
+                              var dy = end[1] - start[1];
+                              var rotation = Math.atan2(dy, dx);
+                              offset = %s;
+                              x = Math.sin(rotation) * offset;
+                              y = Math.cos(rotation) * offset;
+                              geom = feature.getGeometry().clone()
+                              geom.translate(x, y);
+                              return geom;
+                            },''' % (str(offsetValue))
+            else:
+                offset = ""
+            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, line_style, line_width, mapunits))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             if props["style"] == "no":
                 fillAlpha = 0
@@ -790,13 +807,12 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
             else:
                 borderWidth = props["outline_width"]
             x, y = sl.offset().x(), sl.offset().y()
-            print x,y
             if x or y:
                 offset = '''geometry: function(feature){
                                 geom = feature.getGeometry().clone()
                                 geom.translate(%s, %s);
                                 return geom;
-                            },''' % (str(x), str(y))
+                            },\n''' % (str(x), str(y))
             else:
                 offset = ""
             style = ('''%s stroke: %s,
