@@ -33,7 +33,7 @@ var TabbedApp = React.createClass({
     };
   },
   getInitialState: function() {
-    return {leftNavOpen: true};
+    return {leftNavOpen: true, addLayerOpen: false};
   },
   componentDidMount: function() {
     @POSTTARGETSET@
@@ -50,6 +50,16 @@ var TabbedApp = React.createClass({
       leftNavOpen: true
     }, function() {
       map.updateSize();
+    });
+  },
+  layerListOpen: function(value) {
+    this.setState({
+      addLayerOpen: true
+    });
+  },
+  layerListClose: function(value) {
+    this.setState({
+      addLayerOpen: false
     });
   },
   _toggle: function(el) {
