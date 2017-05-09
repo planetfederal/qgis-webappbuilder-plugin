@@ -263,7 +263,7 @@ def writeJs(appdef, folder, app, progress):
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
         logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
 
-    toolbarOptions = '{style: {height: 71}, showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
+    toolbarOptions = '{showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
                                                                                       appdef["Settings"]["Title"], logoOption)
 
     variables ="\n".join(app.variables)
@@ -326,7 +326,7 @@ def writeJsx(appdef, folder, app, progress):
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
         logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
 
-    toolbarOptions = '{style:{height: 71}, showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
+    toolbarOptions = '{showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
                                                                                      appdef["Settings"]["Title"], logoOption)
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
