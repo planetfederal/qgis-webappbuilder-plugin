@@ -16,7 +16,7 @@ class Geocoding(WebAppWidget):
         zoom = int(self._parameters["zoom"])
         if theme == "tabbed":
             idx = len(app.tabs) + 1
-            app.tabs.append('''React.createElement(Tab,{value:%i, label:"Geocoding"},
+            app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:"Geocoding"},
                                     React.createElement("div", {id:"geocoding-tab"},
                                         React.createElement(Geocoding, {maxResults:%i})
                                     ),
@@ -24,7 +24,7 @@ class Geocoding(WebAppWidget):
                                         React.createElement(GeocodingResults, {map:map,
                                         zoom:%i})
                                     )
-                                )''' % (idx, maxResults, zoom))
+                                )''' % (idx, idx, maxResults, zoom))
         else:
             app.mappanels.append('''React.createElement("div", {id:'geocoding-results', className:'geocoding-results-panel'},
                                     React.createElement(GeocodingResults, {map:map, zoom:%i})

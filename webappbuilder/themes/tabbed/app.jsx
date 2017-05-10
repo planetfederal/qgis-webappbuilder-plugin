@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import AppBar from 'material-ui/AppBar';
+import Header from '@boundlessgeo/sdk/components/Header';
 import Button from '@boundlessgeo/sdk/components/Button';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {Tab} from 'material-ui/Tabs';
+import LeftNav from '@boundlessgeo/sdk/components/LeftNav';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import enMessages from '@boundlessgeo/sdk/locale/en';
@@ -55,11 +56,36 @@ class TabbedApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 1
+      leftNavOpen: true,
+      addLayerOpen: false
     };
   }
   componentDidMount() {
     @POSTTARGETSET@
+  }
+  leftNavClose(value) {
+    this.setState({
+      leftNavOpen: false
+    }, function() {
+      map.updateSize();
+    });
+  }
+  leftNavOpen(value) {
+    this.setState({
+      leftNavOpen: true
+    }, function() {
+      map.updateSize();
+    });
+  }
+  layerListOpen(value) {
+    this.setState({
+      addLayerOpen: true
+    });
+  }
+  layerListClose(value) {
+    this.setState({
+      addLayerOpen: false
+    });
   }
   _toggle(el) {
     if (el.style.display === 'block') {
@@ -74,23 +100,14 @@ class TabbedApp extends React.Component {
   _toggleWFST() {
     this._toggle(document.getElementById('wfst'));
   }
-  handleChange(value) {
-    if (value === parseInt(value, 10)) {
-      this.setState({
-        value: value,
-      });
-    }
-  }
   render() {
-    var toolbarOptions = @TOOLBAROPTIONS@;
+    var toolbarOptions = Object.assign({onLeftIconTouchTap: this.leftNavOpen.bind(this)}, @TOOLBAROPTIONS@);
     return React.createElement("div", {id: 'content'},
-      React.createElement(AppBar, toolbarOptions @TOOLBAR@
+      React.createElement(Header, toolbarOptions @TOOLBAR@
       ),
       React.createElement("div", {className: 'row container'},
         React.createElement("div", {className: 'col tabs', id: 'tabs-panel'},
-          React.createElement(Tabs, {value: this.state.value, onChange: this.handleChange.bind(this)}
-            @TABS@
-          )
+          React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose.bind(this)})
         ),
         React.createElement("div", {className: 'col maps'},
           React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: @PERMALINK@}

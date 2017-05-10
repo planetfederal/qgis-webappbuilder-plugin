@@ -17,11 +17,11 @@ class ChartTool(WebAppWidget):
         if charts:
             if theme == "tabbed":
                 idx = len(app.tabs) + 1
-                app.tabs.append('''React.createElement(Tab,{value:%i, label:"Charts"},
+                app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:"Charts"},
                                         React.createElement("div", {id:"charts-tab"},
                                             React.createElement(Chart, {charts:charts})
                                         )
-                                    )''' % idx)
+                                    )''' % (idx, idx))
             else:
                 app.tools.append('''React.createElement(Button, {label: 'Charts', onTouchTap: this._toggleChartPanel.bind(this)})''')
                 app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},

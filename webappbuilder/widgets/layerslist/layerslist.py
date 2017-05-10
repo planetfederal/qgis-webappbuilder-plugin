@@ -22,9 +22,31 @@ class LayersList(WebAppWidget):
                     "downloadFormat": ("GeoJSON", ("GeoJSON", "KML", "GPX"))}
 
     def write(self, appdef, folder, app, progress):
+        self.addReactComponent(app, "LayerList")
         def p(name):
             return str(self._parameters[name]).lower()
-        app.panels.append('''React.createElement("div",{id: "layerlist"},
+        theme = appdef["Settings"]["Theme"]
+        if theme == "tabbed":
+            idx = len(app.tabs) + 1
+            app.tabs.append('''React.createElement(Tab,{key:%i, value:%i, label:'%s', onActive: this.layerListOpen.bind(this)},
+                                 React.createElement("div",{id: "layerlist"},
+                                    React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
+                                        addLayer: {
+                                          open: this.state.addLayerOpen,
+                                          onRequestClose:this.layerListClose.bind(this)
+                                        },
+                                        inlineDialogs: true,
+                                        icon: React.createElement(Button, {buttonType: "Flat", label: "ADD"}),
+                                        showGroupContent:true, showZoomTo:%s, allowReordering:%s,
+                                        allowFiltering:%s,
+                                        downloadFormat:'%s', showUpload:%s, map:map,
+                                        includeLegend:%s, allowStyling:%s, showTable:%s})))'''
+                            % (idx, idx, p("tipLabel"), p("showOpacity"),p("showDownload"), p("showZoomTo"),
+                               p("allowReordering"), p("allowFiltering"),
+                               self._parameters["downloadFormat"][0], p("showUpload"),
+                                p("includeLegend"), p("allowStyling"), p("showTable")))
+        else:
+            app.panels.append('''React.createElement("div",{id: "layerlist"},
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
                                         showGroupContent:true, showZoomTo:%s, allowReordering:%s,
                                         allowFiltering:%s, tipLabel:'%s',
@@ -34,7 +56,6 @@ class LayersList(WebAppWidget):
                                p("allowReordering"), p("allowFiltering"), p("tipLabel"),
                                self._parameters["downloadFormat"][0], p("showUpload"),
                                 p("includeLegend"), p("allowStyling"), p("showTable")))
-        self.addReactComponent(app, "LayerList")
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "layer-list.png"))
