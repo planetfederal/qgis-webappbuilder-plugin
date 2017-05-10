@@ -230,6 +230,23 @@ The following properties can be configured for this control:
    need to add the :ref:`qgis.webappbuilder.controls.selection` control to
    the web app as well.
 
+Draw features
+-------------
+
+Adds an option to the menu bar to draw new features. It can be used to add new
+features (polygons, points and lines) to existing vector layers and WFS-T layers
+provided with the App, and vector layers added by the final user.
+
+.. figure:: img/draw_features.png
+
+   Draw features tool
+
+This control also enables Edit and Delete buttons in the attribute table,
+allowing the user to edit features' attributes and delete features.
+
+.. figure:: img/edit_attributes.png
+
+   Edit and Delete buttons in attribute table
 
 Export as image
 ---------------
