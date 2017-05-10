@@ -151,6 +151,7 @@ html, body {
   height: 50%;
   width: 100%;
   z-index: 101;
+  background-color: white;
 }
 .chart-panel{
   display: none;
