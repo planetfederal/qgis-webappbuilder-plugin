@@ -23,6 +23,10 @@ var map = new ol.Map({
   controls: [@OL3CONTROLS@]
 });
 
+function getMapUnits(size) {
+    return size / map.getView().getResolution();
+};
+
 var TabbedApp = React.createClass({
   childContextTypes: {
     muiTheme: React.PropTypes.object

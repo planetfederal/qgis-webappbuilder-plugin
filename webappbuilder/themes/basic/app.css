@@ -12,6 +12,11 @@ canvas {
     position: absolute;
     right: 20px;
 }
+.layerlistbutton {
+    position: absolute !important;
+    right: 0px;
+    top: 0px;
+  }
 .ol-overviewmap {
   bottom: 35px;
 }

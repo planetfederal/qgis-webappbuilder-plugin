@@ -6,7 +6,9 @@ class DrawFeature(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.tools.append('''React.createElement(DrawFeature, {toggleGroup: 'navigation', map: map})''')
-        app.panels.append('''React.createElement(EditPopup, {toggleGroup: 'navigation', map: map})''')
+        app.panels.append('''React.createElement("div", {id: 'editpopup', className: 'ol-popup'},,
+                                React.createElement(EditPopup, {toggleGroup: 'navigation', map: map})
+                            )''')
         self.addReactComponent(app, "DrawFeature")
         self.addReactComponent(app, "EditPopup")
 
