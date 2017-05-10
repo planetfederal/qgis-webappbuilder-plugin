@@ -9,14 +9,21 @@ canvas {
   height: 100%;
 }
 #layerlist {
-    position: absolute;
-    right: 20px;
+  position: absolute;
+  right: 20px;
 }
 .layerlistbutton {
-    position: absolute !important;
-    right: 0px;
-    top: 0px;
-  }
+  position: absolute !important;
+  right: 0px;
+  top: 0px;
+}
+.layer-tree-panel {
+  margin-right: 38px;
+  border: 1px solid #cccccc;
+}
+.layer-list-header {
+  padding: 8px;
+}
 .ol-overviewmap {
   bottom: 35px;
 }
