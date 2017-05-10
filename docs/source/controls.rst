@@ -36,19 +36,6 @@ The following properties can be configured for this control:
    content must be handled accordingly using HTML code (e.g., quotation marks
    should be replaced by ``&quot;``).
 
-.. Add layer
-   ---------
-
-   Adds a menu entry named *upload* that can be used by the web app user to add
-   a layer to the map. Only vector layers can be added. Supported formats for
-   layers are *GeoJSON*, *GPX* and *KML*.
-
-   .. figure:: img/upload.png
-
-      About panel configuration
-
-   There are no configurable properties for this control.
-
 
 Attributes table
 ----------------
@@ -356,6 +343,26 @@ The following properties can be configured for this control:
 
    * - Option
      - Description
+   * - ShowNew
+     - Adds a New Layer button in the layer lists which allows the user to
+       add new layers to the app. The user can either Upload a local file or
+       Create new layer.
+
+       * The **Upload a local file** option only allows to upload vector
+         layers. Supported formats for layers are *GeoJSON*, *GPX* and *KML*.
+
+       .. figure:: img/upload.png
+
+          Upload local file dialog
+
+       * The **Create new layer** option allow to choose the geometry type
+         and a comma-separated list of attributes. Note: To add new features to
+         the layer, the ref:`qgis.webappbuilder.controls.drawFeatures`
+         control must be enabled.
+
+       .. figure:: img/create_new_layer.png
+
+          Create new layer dialog
    * - allowFiltering
      - Allows the user to set filters for conditional rendering. A filter
        button is added to each vector layer entry in the layers list, which
@@ -365,8 +372,8 @@ The following properties can be configured for this control:
 
           Layer filters example
 
-       Layer filters are added as filter expressions, using the notation
-       accepted by the `Filtrex <https://github.com/joewalnes/filtrex#expressions>`_ library.
+       Layer filters are added as filter expressions, using the
+       expressions described in :ref:`search_filter_notation`.
    * - allowReordering
      - Allows the user to change the rendering order of layers.
    * - showDownload
@@ -767,8 +774,6 @@ The following properties can be configured for this control:
      - Description
    * - refreshRate
      - Refresh rate in ms for handling changes from the slider.
-
-.. TODO:: Document available filters
 
 .. _search_filter_notation:
 
