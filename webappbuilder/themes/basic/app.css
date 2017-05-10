@@ -97,6 +97,22 @@ html, body {
   position: absolute;
   top: 71px;
 }
+#map:-webkit-full-screen {
+  top: 0px !important;
+  height: 100% !important;
+}
+#map:-moz-full-screen {
+  top: 0px !important;
+  height: 100% !important;
+}
+#map:-ms-fullscreen {
+  top: 0px !important;
+  height: 100% !important;
+}
+#map:fullscreen {
+  top: 0px !important;
+  height: 100% !important;
+}
 #content {
   width: 100%;
   height: 100%;
