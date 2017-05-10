@@ -7,38 +7,6 @@ canvas {
   position: fixed;
   bottom: 0px;
 }
-.maps {
-  height: calc(100% - 71px);
-  width: 60%;
-  position: absolute;
-  top: 71px;
-  left: 40%;
-}
-.tabs {
-  height: calc(100% - 71px);
-  width: 40%;
-  position: absolute;
-  top: 71px;
-  left: 0px;
-}
-.tabs > div {
-  height: 100%;
-}
-.tabs > div > div:last-child {
-  height: calc(100% - 50px);
-}
-.tabs > div > div:last-child > div{
-  height: 100%;
-}
-#layerlist {
-    position: absolute;
-    right: 20px;
-}
-.layerlistbutton {
-    position: absolute !important;
-    right: 0px;
-    top: 0px;
-}
 .ol-mouse-position{
 }
 #legend {
