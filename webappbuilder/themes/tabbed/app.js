@@ -23,8 +23,12 @@ var map = new ol.Map({
   controls: [@OL3CONTROLS@]
 });
 
-function getMapUnits(size) {
+function pixelsFromMapUnits(size) {
     return size / map.getView().getResolution();
+};
+
+function pixelsFromMm(size) {
+    return 96 / 25.4 * size;
 };
 
 var TabbedApp = React.createClass({

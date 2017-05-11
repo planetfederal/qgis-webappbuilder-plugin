@@ -13,6 +13,7 @@ import codecs
 import uuid
 import json
 from webappbuilder.exp2js import compile_to_file
+from PyQt4.QtCore import QSize
 
 exportedStyles = 0
 
@@ -357,6 +358,16 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                       "id": layer.id(), "ndR": nodata[0],
                                       "ndG": nodata[1], "ndB": nodata[2]}
 
+def resolveParameterValue(v, folder, name):
+    expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
+    try:
+        v = float(v)
+        return v
+    except:
+        name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
+        name = compile_to_file(v, name, "OpenLayers3", expFile)
+        return "%s(context)" % name
+    
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     SELECTION_YELLOW = '"rgba(255, 204, 0, 1)"'
     global exportedStyles
@@ -374,26 +385,30 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         if layer.type() != layer.VectorLayer:
             continue
         defs = ""#var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
-        context = ""
+        context = '''var context = {
+            feature: feature,
+            variables: {},
+            layer: 'lyr_%s'
+        };''' % safeName(layer.name())
         try:
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = %s;" % getSymbolAsStyle(symbol, stylesFolder, layer, app.variables)
+                style = "var style = %s;" % getSymbolAsStyle(symbol, folder, layer, app.variables)
                 value = 'var value = "";'
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
-                                    stylesFolder, layer, app.variables, SELECTION_YELLOW)
+                                    folder, layer, app.variables, SELECTION_YELLOW)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), stylesFolder, layer, app.variables)))
+                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), folder, layer, app.variables)))
                 defs +=  ",\n".join(cats) + "};};"
                 defs += "var categoriesSelected_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
                     cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(),
-                                stylesFolder, layer, app.variables, SELECTION_YELLOW)))
+                                folder, layer, app.variables, SELECTION_YELLOW)))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s()[value];'''  % (safeName(layer.name()))
@@ -403,8 +418,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 defs += "var %s = function(){ return [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables)
-                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), stylesFolder, layer, app.variables, SELECTION_YELLOW)
+                    symbolstyle = getSymbolAsStyle(ran.symbol(), folder, layer, app.variables)
+                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), folder, layer, app.variables, SELECTION_YELLOW)
                     ranges.append('[%f, %f,\n %s, %s]' % (ran.lowerValue(), ran.upperValue(),
                                                          symbolstyle, selectedSymbolStyle))
                 defs += ",\n".join(ranges) + "];};"
@@ -432,12 +447,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 template = """
-                        function rules_%(n)s(feature, value) {
-                            var context = {
-                                feature: feature,
-                                variables: {},
-                                layer: 'lyr_%(n)s'   
-                            };
+                        function rules_%(n)s(value) {
                             ruleStyles = []; 
                             // Start of if blocks and style check logic
                             matchFound = false;
@@ -447,7 +457,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             }
                             return ruleStyles;
                         }
-                        var style = rules_%(n)s(feature, value);
+                        var style = rules_%(n)s(value);
                         """
                 elsejs = "[]"
                 selectionElsejs = "[]"
@@ -458,8 +468,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 expFile = os.path.join(folder, "resources", "js",
                                        "qgis2web_expressions.js")
                 for count, rule in enumerate(rules):
-                    styleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables)
-                    selectionStyleCode = getSymbolAsStyle(rule.symbol(), stylesFolder, layer, app.variables, SELECTION_YELLOW)
+                    styleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app.variables)
+                    selectionStyleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app.variables, SELECTION_YELLOW)
                     name = "".join((safeName(layer.name()), "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -484,11 +494,6 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 value = ("var value = '';")
                 style = template % {"n":safeName(layer.name()), "js":js, "elsejs":elsejs}
                 selectionStyle = template % {"n":safeName(layer.name()), "js":selectionJs, "elsejs":selectionElsejs}
-                context = '''var context = {
-                            feature: feature,
-                            variables: {},
-                            layer: 'lyr_%s'
-                        };''' % safeName(layer.name())
             else:
                 cannotWriteStyle = True
 
@@ -633,7 +638,11 @@ def getLabeling(layer, folder, app):
         labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
 
     try:
-        size = str(float(layer.customProperty("labeling/fontSize")) * 2)
+        size = float(layer.customProperty("labeling/fontSize"))
+        if layer.customProperty("labeling/fontSizeInMapUnits").lower() == "true":
+            size = "pixelsFromMapUnits(%s)" % str(size)
+        else:
+            size = str(size * 2)
     except:
         size = 1
 
@@ -641,7 +650,7 @@ def getLabeling(layer, folder, app):
         rHalo = str(layer.customProperty("labeling/bufferColorR"))
         gHalo = str(layer.customProperty("labeling/bufferColorG"))
         bHalo = str(layer.customProperty("labeling/bufferColorB"))
-        strokeWidth = str(float(layer.customProperty("labeling/bufferSize")) * SIZE_FACTOR)
+        strokeWidth = str(layer.customProperty("labeling/bufferSize"))
         halo = ''',
                   stroke: new ol.style.Stroke({
                     color: "rgba(%s, %s, %s, 255)",
@@ -671,8 +680,8 @@ def getLabeling(layer, folder, app):
         max = float(palyr.scaleMax)
         min = 1 / ((1 / min) * 39.37 * 90.7)
         max = 1 / ((1 / max) * 39.37 * 90.7)
-        labelRes = " && resolution > %(min)d " % {"min": min}
-        labelRes += "&& resolution < %(max)d" % {"max": max}
+        labelRes = " && resolution > %s " % str(min)
+        labelRes += "&& resolution < %s" % str(max)
     else:
         labelRes = ""
 
@@ -687,10 +696,12 @@ def getLabeling(layer, folder, app):
         } else {
             var labelText = "";
         }
-        var key = value + "_" + labelText;
+        var key = value + "_" + labelText + "_" + String(resolution);
         if (!textStyleCache_%(layerName)s[key]){
+            var size = %(size)s;
+            var font = String(size) + 'px Calibri,sans-serif'
             var text = new ol.style.Text({
-                  font: '%(size)spx Calibri,sans-serif',
+                  font: font,
                   text: labelText,
                   fill: new ol.style.Fill({
                     color: "%(color)s"
@@ -711,9 +722,6 @@ def getLabeling(layer, folder, app):
 
     return s
 
-
-SIZE_FACTOR = 3.8
-
 def getRGBAColor(color, alpha):
     try:
         r,g,b,a = color.split(",")
@@ -726,29 +734,28 @@ def getRGBAColor(color, alpha):
     return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
 
-def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
+def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
     styles = []
     alpha = symbol.alpha()
+    stylesFolder = os.path.join(folder, "data", "styles")
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
+        def property(n):
+            return resolveParameterValue(props[n], folder, n)
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             style = "image: %s" % getShape(props, alpha, color)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
-            if color is None:
-                svgColor = getRGBAColor(props["color"], alpha)
-            else:
-                svgColor = color
-            with codecs.open(sl.path(), encoding="utf-8") as f:
-                svg = "".join(f.readlines())
-            svg = re.sub(r'\"param\(outline\).*?\"', svgColor, svg)
-            svg = re.sub(r'\"param\(fill\).*?\"', svgColor, svg)
+            sl2 = sl.clone()
+            sl2.setSize(100)
+            newSymbol = QgsMarkerSymbolV2()
+            newSymbol.appendSymbolLayer(sl2)
+            newSymbol.deleteSymbolLayer(0)
+            img = newSymbol.asImage(QSize(100, 100))
             filename, ext = os.path.splitext(os.path.basename(sl.path()))
-            filename = filename + ''.join(c for c in svgColor if c in digits) + ext
-            path = os.path.join(stylesFolder, filename)
-            with codecs.open(path, "w", "utf-8") as f:
-                f.write(svg)
-            style = "image: %s" % getIcon(path, sl.size(), sl.angle())
+            path = os.path.join(stylesFolder, filename + ".png")
+            img.save(path)
+            style = "image: %s" % getIcon(path, sl.size(), sl.sizeUnit())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
             if color is None:
                 if 'color' in props:
@@ -757,15 +764,15 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                     strokeColor = getRGBAColor(props["line_color"], alpha)
             else:
                 strokeColor = color
-            if 'width' in props:
-                line_width = props["width"]
+            if "width_dd_useexpr" in props and int(props["width_dd_useexpr"]) and int(props["width_dd_active"]):
+                lineWidth = property("width_dd_expression")
             else:
-                line_width = props["line_width"]
-            mapunits = props["line_width_unit"] == "MapUnit"
+                lineWidth = property("line_width")
+            lineWidthUnits = props["line_width_unit"] 
             if 'penstyle' in props:
-                line_style = props["penstyle"]
+                lineStyle = props["penstyle"]
             else:
-                line_style = props["line_style"]
+                lineStyle = props["line_style"]
             offsetValue = sl.offset()
             if offsetValue:
                 offset = '''geometry: function(feature){
@@ -783,7 +790,8 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                             },''' % (str(offsetValue))
             else:
                 offset = ""
-            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, line_style, line_width, mapunits))
+            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, lineStyle, 
+                                                              lineWidth, lineWidthUnits))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             if props["style"] == "no":
                 fillAlpha = 0
@@ -802,10 +810,13 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 borderStyle = props["style_border"]
             else:
                 borderStyle = props["outline_style"]
-            if 'width_border' in props:
-                borderWidth = props["width_border"]
+            
+            if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"]) 
+                    and int(props["width_border_dd_active"])):
+                borderWidth = property("width_border_dd_expression")
             else:
-                borderWidth = props["outline_width"]
+                borderWidth = property("outline_width")
+            borderWidthUnits = props["outline_width_unit"]
             x, y = sl.offset().x(), sl.offset().y()
             if x or y:
                 offset = '''geometry: function(feature){
@@ -817,7 +828,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
                 offset = ""
             style = ('''%s stroke: %s,
                         fill: %s''' %
-                    (offset, getStrokeStyle(borderColor, borderStyle, borderWidth),
+                    (offset, getStrokeStyle(borderColor, borderStyle, borderWidth, borderWidthUnits),
                      getFillStyle(fillColor)))
         elif isinstance(sl, QgsGradientFillSymbolLayerV2):
             style = ('''fill: new ol.style.Fill({
@@ -909,7 +920,7 @@ def getSymbolAsStyle(symbol, stylesFolder, layer, variables, color = None):
     return "[ %s]" % ",".join(styles)
 
 def getShape(props, alpha, color_):
-    size = float(props["size"]) * SIZE_FACTOR / 2
+    size = props["size"]
     color =  color_ or getRGBAColor(props["color"], alpha)
     outlineColor = color_ or getRGBAColor(props["outline_color"], alpha)
     outlineWidth = float(props["outline_width"])
@@ -948,30 +959,32 @@ def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth,
                  getStrokeStyle(outlineColor, "solid", outlineWidth),
                  getFillStyle(color), angle))
 
-def getIcon(path, size, rotation):
-    size  = float(size) * 0.005
+def getIcon(path, size, units):
+    size = getMeasure(size, units);
     return '''new ol.style.Icon({
-                  scale: %(s)f,
+                  scale: %(s)s / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
                   src: "%(path)s",
-                  rotation: %(rad)f
-            })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path),
-                     "rad": math.radians(rotation)}
+            })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path)}
 
-def getStrokeStyle(color, style, width, mapunits=False):
+def getMeasure(value, units):
+    if units == "MapUnit" or units == 1:
+        return "pixelsFromMapUnits(%s)" % str(value)
+    elif units == "MM" or units == 0:
+        return "pixelsFromMm(%s)" % str(value)
+    else:
+        return value
+    
+def getStrokeStyle(color, style, width, units="MM"):
     dash = "null" 
     if style == "no":
-        width = 0
+        width = "0"
         color = '"rgba(0,0,0,0.0)"'
     else:
-        if mapunits:
-            width = "getMapUnits(%d)" % float(width)
-        else:
-            width  = str(float(width) * SIZE_FACTOR)
-        print style
+        width = getMeasure(width, units)
         if style != "solid":
             dash = "[6]"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %s})" % (color, dash, width)
