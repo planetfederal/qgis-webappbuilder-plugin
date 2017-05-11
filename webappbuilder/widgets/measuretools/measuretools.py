@@ -8,7 +8,7 @@ class MeasureTools(WebAppWidget):
 
     def write(self, appdef, folder, app, progress):
         app.tools.append("React.createElement(Measure, {toggleGroup:'navigation', map:map, geodesic:%s})"
-                         % str(self.parameters["geodesic"]).lower())
+                         % str(self._parameters["geodesic"]).lower())
         self.addReactComponent(app, "Measure")
 
         nav = '''React.createElement(Navigation, {toggleGroup: 'navigation', secondary: true})'''
