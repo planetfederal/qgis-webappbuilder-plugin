@@ -127,7 +127,7 @@ appear visually.
 
 There are two themes: *Basic* and *Tabbed*.
 
-.. figure:: img/basic_theme_example.png
+.. figure:: img/exampleapp.png
 
    Basic theme example
 

@@ -255,7 +255,7 @@ Adds an option to export the current map view to an image file.
 
 .. figure:: img/export.png
 
-   Export as image menu
+   Export as image button in menus
 
 There are no configurable properties for this control.
 
@@ -453,7 +453,7 @@ with a name (shown in the navigation bar) and an URL.
 
 .. figure:: img/links_example.png
 
-   Links menu
+   Links button in menus
 
 .. figure:: img/links_example_expanded.png
 
@@ -641,12 +641,13 @@ The Query tools include the following options:
 
 * :guilabel:`Layer`: Layer to select from.
 * :guilabel:`Filter`: Where the user should put an valid expression.
-* :guilabel:`New`: Will create a new selection and clear any
+* :guilabel:`New`: creates a new selection and clear any
   previous selection on the layer.
-* :guilabel:`Add`: Will add new features to already selected
+* :guilabel:`Add`: Adds new features to already selected
   features. Works as an *OR* operator.
-* :guilabel:`Refine` Will only keep features that meet both
+* :guilabel:`Refine`: Only keeps features that meet both
   previous selection and the new expression. Works as an *AND* operator.
+* :guilabel:`Clear`: Clear current selection.
 
 There are no configurable properties for this control.
 
@@ -705,6 +706,9 @@ web app: one to enable the selection mode and one to return to navigation mode.
 .. figure:: img/selection.png
 
    Selection options in the app
+
+Under the select button, two options are available. One to Select with
+rectangle, and another to Clear the current slection.
 
 There are no configurable properties for this control.
 

@@ -48,7 +48,7 @@ Known limitations
   are the supported ones:
 
   * :guilabel:`Single Symbol`
-  * :guilabel:`Categorized`,
+  * :guilabel:`Categorized`
   * :guilabel:`Graduated`
   * :guilabel:`Rule-based`
   * :guilabel:`heatmap`
