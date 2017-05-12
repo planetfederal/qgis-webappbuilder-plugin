@@ -23,4 +23,7 @@ Documentation content:
    wab_hosting
    wabandwebsdk
    baselayers
+   troubleshooting
    settingsconf
+
+.. _connect_portal: https:
