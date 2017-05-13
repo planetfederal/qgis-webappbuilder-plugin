@@ -638,13 +638,21 @@ def getLabeling(layer, folder, app):
         labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
 
     try:
-        size = float(layer.customProperty("labeling/fontSize"))
+        useExpr = True
+        ddSize = layer.customProperty("labeling/dataDefined/Size", None)
+        if ddSize is not None:
+            active, isExpr, expr = ddSize.split("~~")[:2]
+            useExpr = active == "1" and isExpr == "1"
+        if useExpr:
+            size = resolveParameterValue(expr, folder, "fontsize")
+        else:
+            size = float(layer.customProperty("labeling/fontSize"))
         if layer.customProperty("labeling/fontSizeInMapUnits").lower() == "true":
             size = "pixelsFromMapUnits(%s)" % str(size)
         else:
-            size = str(size * 2)
+            size = str(size)
     except:
-        size = 1
+        size = "10"
 
     if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":
         rHalo = str(layer.customProperty("labeling/bufferColorR"))
@@ -744,7 +752,7 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
         def property(n):
             return resolveParameterValue(props[n], folder, n)
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
-            style = "image: %s" % getShape(props, alpha, color)
+            style = "image: %s" % getShape(props, alpha, folder, color)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             sl2 = sl.clone()
             sl2.setSize(100)
@@ -755,7 +763,11 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
             filename, ext = os.path.splitext(os.path.basename(sl.path()))
             path = os.path.join(stylesFolder, filename + ".png")
             img.save(path)
-            style = "image: %s" % getIcon(path, sl.size(), sl.sizeUnit())
+            if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
+                size = property("size_dd_expression")
+            else:
+                size = sl.size()
+            style = "image: %s" % getIcon(path, size, sl.sizeUnit())
         elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
             if color is None:
                 if 'color' in props:
@@ -912,21 +924,28 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
                  '''
         else:
             style = ""
+        if style:
+            style + ",\nzIndex: %i" % sl.renderingPass()
         styles.append('''new ol.style.Style({
-                            %s,
-                            zIndex: %i
+                            %s
                         })
-                        ''' % (style, sl.renderingPass()))
+                        ''' % style)
     return "[ %s]" % ",".join(styles)
 
-def getShape(props, alpha, color_):
-    size = props["size"]
+def getShape(props, alpha, folder, color_):
+    if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
+        size = resolveParameterValue(props["size_dd_expression"], folder, "size_dd_expression")
+    else:
+        size = str(props["size"])
+    units = props["size_unit"]
+    size = getMeasure(size, units)
+    halfSize = getMeasure(size  + "/ 2.0", units)
     color =  color_ or getRGBAColor(props["color"], alpha)
     outlineColor = color_ or getRGBAColor(props["outline_color"], alpha)
     outlineWidth = float(props["outline_width"])
     shape = props["name"]
     if "star" in shape.lower():
-        return getRegularShape(color, 5,  size, size / 2.0, outlineColor, outlineWidth)
+        return getRegularShape(color, 5,  size, halfSize, outlineColor, outlineWidth)
     elif "triangle" in shape.lower():
         return getRegularShape(color, 3,  size, None, outlineColor, outlineWidth)
     elif "diamond" == shape.lower():
