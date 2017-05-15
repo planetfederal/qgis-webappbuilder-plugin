@@ -262,6 +262,9 @@ class TreeGroupItem(QTreeWidgetItem):
         self.showContentItem = QTreeWidgetItem(self)
         self.showContentItem.setCheckState(0, Qt.Checked)
         self.showContentItem.setText(0, "Show group content in layers list")
+        self.isGroupExpandedItem = QTreeWidgetItem(self)
+        self.isGroupExpandedItem.setCheckState(0, Qt.Checked)
+        self.isGroupExpandedItem.setText(0, "Show group content at startup")
         self.layers = layers
         self.name = name
         self.setText(0, name)
@@ -278,3 +281,9 @@ class TreeGroupItem(QTreeWidgetItem):
 
     def setShowContent(self, showContent):
         return self.showContentItem.setCheckState(0, Qt.Checked if showContent else Qt.Unchecked)
+    
+    def isGroupExpanded(self):
+        return self.isGroupExpandedItem.checkState(0) == Qt.Checked
+
+    def setIsGroupExpanded(self, isGroupExpanded):
+        return self.isGroupExpandedItem.setCheckState(0, Qt.Checked if isGroupExpanded else Qt.Unchecked)

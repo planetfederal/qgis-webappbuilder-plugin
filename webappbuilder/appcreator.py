@@ -281,6 +281,7 @@ def processAppdef(appdef):
 			groupLayers.append(findProjectLayerByName(layer))
 		newGroups[groupName]["layers"] = groupLayers
 		newGroups[groupName]["showContent"] = group["showContent"]
+		newGroups[groupName]["isGroupExpanded"] = group.get("isGroupExpanded", True)
 	appdef["Groups"] = newGroups
 
 warningIcon = os.path.join(os.path.dirname(__file__), "icons", "warning.png")

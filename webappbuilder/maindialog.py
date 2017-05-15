@@ -226,6 +226,7 @@ class MainDialog(BASE, WIDGET):
                 else:
                     try:
                         item.setShowContent(appdef["Groups"][item.text(0)]["showContent"])
+                        item.setIsGroupExpanded(appdef["Groups"][item.text(0)]["isGroupExpanded"])
                     except:
                         pass
                     for j in xrange(item.childCount()):
@@ -691,6 +692,7 @@ class MainDialog(BASE, WIDGET):
                         groupLayers.append(subitem.layer)
                 if groupLayers:
                     groups[item.name] = {"showContent": item.showContent(),
+                                         "isGroupExpanded": item.isGroupExpanded(),
                                          "layers": groupLayers[::-1]}
 
         return layers[::-1], groups

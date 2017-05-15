@@ -449,15 +449,17 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
 
     baseLayer = '''var baseLayers = [%s];''' % ",".join(baseJs)
 
-    baseLayer += '''var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
-                    'base-group', 'title': 'Base maps', layers: baseLayers});'''
+    baseLayer += '''var baseLayersGroup = new ol.layer.Group({showContent: true,
+                    'isGroupExpanded': false, 'type': 'base-group', 
+                    'title': 'Base maps', layers: baseLayers});'''
 
     if overlaysJs:
         overlayLayer = '''var overlayLayers = [%s];''' % ",".join(overlaysJs)
     else:
         overlayLayer = "var overlayLayers = [];"
 
-    overlayLayer += '''var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});'''
+    overlayLayer += '''var overlaysGroup = new ol.layer.Group({showContent: true, 
+                        'isGroupExpanded': false, 'title': 'Overlays', layers: overlayLayers});'''
 
     if "overviewmap" in widgets:
         overviewMapBaseLayerName = widgets["overviewmap"].parameters()["Base layer"]
@@ -480,9 +482,10 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
         groupVars +=  ('''var %s = new ol.layer.Group({
                                 layers: [%s],
                                 showContent: %s,
+                                isGroupExpanded: %s,
                                 title: "%s"});\n''' %
                 ("group_" + safeName(group), ",".join(["lyr_" + safeName(layer.name()) for layer in groupLayers]),
-                str(groupDef["showContent"]).lower(), group))
+                str(groupDef["showContent"]).lower(), str(groupDef["isGroupExpanded"]).lower(), group))
         for layer in groupLayers:
             groupedLayers[layer.id()] = safeName(group)
 
