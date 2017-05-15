@@ -43,7 +43,7 @@ class Refresh(WebAppWidget):
         if dlg.ok:
             self._parameters["layers"] = dlg.layers
 
-    def checkProblems(self, appdef, problems):
+    def checkProblems(self, appdef, problems, forPreview):
 
         layers = self._parameters["layers"]
         if len(layers) == 0:

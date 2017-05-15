@@ -503,7 +503,7 @@ class MainDialog(BASE, WIDGET):
             appdef = self.createAppDefinition()
         except WrongValueException:
             return
-        problems = checkAppCanBeCreated(appdef)
+        problems = checkAppCanBeCreated(appdef, True)
         if problems:
             dlg = AppDefProblemsDialog(problems)
             dlg.exec_()

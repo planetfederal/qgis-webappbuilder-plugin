@@ -34,7 +34,7 @@ class Legend(WebAppWidget):
     def iconFile(self):
         return os.path.join(os.path.dirname(__file__), "legend.png")
 
-    def checkProblems(self, appdef, problems):
+    def checkProblems(self, appdef, problems, forPreview):
         if len(appdef["Layers"]) == 0:
             problems.append("Legend widget added, but no layers have been included.")
 

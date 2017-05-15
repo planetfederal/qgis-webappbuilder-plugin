@@ -80,7 +80,7 @@ class WebAppWidget(object):
         return [os.path.join(basePath,o) for o in os.listdir(basePath)
                 if o.startswith("help") and o.endswith(".png")]
 
-    def checkProblems(self, appdef, problems):
+    def checkProblems(self, appdef, problems, forPreview):
         pass
 
     def copyToResources(self, name, folder):

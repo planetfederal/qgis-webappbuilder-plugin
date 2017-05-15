@@ -97,7 +97,7 @@ def checkSDKServerVersion():
 	else:
 		return None
 
-def checkAppCanBeCreated(appdef):
+def checkAppCanBeCreated(appdef, forPreview=False):
 	##viewCrs = appdef["Settings"]["App view CRS"]
 	jsonp = appdef["Settings"]["Use JSONP for WFS connections"]
 	problems = []
@@ -105,7 +105,7 @@ def checkAppCanBeCreated(appdef):
 
 	widgets = appdef["Widgets"].values()
 	for w in widgets:
-		w.checkProblems(appdef, problems)
+		w.checkProblems(appdef, problems, forPreview)
 
 	themeModule = importlib.import_module("webappbuilder.themes." + appdef["Settings"]["Theme"])
 	themeModule.checkProblems(appdef, problems)
