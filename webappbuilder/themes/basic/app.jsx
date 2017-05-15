@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import ol from 'openlayers';
 import {IntlProvider} from 'react-intl';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import AppBar from 'material-ui/AppBar';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Button from '@boundlessgeo/sdk/components/Button';
+import Header from '@boundlessgeo/sdk/components/Header';
 import enMessages from '@boundlessgeo/sdk/locale/en';
 import InfoPopup from '@boundlessgeo/sdk/components/InfoPopup';
 import MapPanel from '@boundlessgeo/sdk/components/MapPanel';
@@ -87,8 +87,7 @@ class BasicApp extends React.Component {
   render() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("article", null,
-       React.createElement(AppBar, toolbarOptions @TOOLBAR@
-       ),
+      React.createElement(Header, toolbarOptions @TOOLBAR@),
       React.createElement("div", {id: 'content'},
         React.createElement(MapPanel, {id: 'map', map: map, extent: originalExtent, useHistory: @PERMALINK@}
           @MAPPANELS@
