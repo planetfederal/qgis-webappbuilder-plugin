@@ -9,20 +9,23 @@ var baseLayers = [new ol.layer.Tile({
     }),
     projection: 'EPSG:3857'
 })
-];var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
-                    'base-group', 'title': 'Base maps', layers: baseLayers});
+];var baseLayersGroup = new ol.layer.Group({showContent: true,
+                    'isGroupExpanded': false, 'type': 'base-group', 
+                    'title': 'Base maps', layers: baseLayers});
 var overlayLayers = [new ol.layer.Tile({
-	type: 'base-overlay',
-	title: 'Stamen toner labels',
-	source: new ol.source.Stamen({
-	           crossOrigin: 'anonymous',
-	           layer: 'toner-labels'}),
+    type: 'base-overlay',
+    title: 'Stamen toner labels',
+    source: new ol.source.Stamen({
+                       crossOrigin:'anonymous',
+                       layer: 'toner-labels'}),
     projection: 'EPSG:3857'
 })
-];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
+];var overlaysGroup = new ol.layer.Group({showContent: true, 
+                        'isGroupExpanded': false, 'title': 'Overlays', layers: overlayLayers});
 
 
 
 for (var i=0;i<baseLayers.length;i++){baseLayers[i].setVisible(false);}
 baseLayers[0].setVisible(true);
 var layersList = [];layersList.unshift(baseLayersGroup);layersList.push(overlaysGroup);
+var layersMap  = {};

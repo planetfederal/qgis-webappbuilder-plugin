@@ -1,10 +1,12 @@
-var baseLayers = [];var baseLayersGroup = new ol.layer.Group({showContent: true,'type':
-                    'base-group', 'title': 'Base maps', layers: baseLayers});
-var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true, 'title': 'Overlays', layers: overlayLayers});
+var baseLayers = [];var baseLayersGroup = new ol.layer.Group({showContent: true,
+                    'isGroupExpanded': false, 'type': 'base-group', 
+                    'title': 'Base maps', layers: baseLayers});
+var overlayLayers = [];var overlaysGroup = new ol.layer.Group({showContent: true, 
+                        'isGroupExpanded': false, 'title': 'Overlays', layers: overlayLayers});
 var lyr_groupped = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-
+                     
                     style: style_groupped,
                     selectedStyle: selectionStyle_groupped,
                     title: "groupped",
@@ -22,7 +24,7 @@ groupped_geojson_callback = function(geojson) {
 var lyr_groupped2 = new ol.layer.Vector({
                     opacity: 1.0,
                     source: new ol.source.Vector(),
-
+                     
                     style: style_groupped2,
                     selectedStyle: selectionStyle_groupped2,
                     title: "groupped2",
@@ -40,6 +42,7 @@ groupped2_geojson_callback = function(geojson) {
 var group_group1 = new ol.layer.Group({
                                 layers: [lyr_groupped,lyr_groupped2],
                                 showContent: true,
+                                isGroupExpanded: true,
                                 title: "group1"});
 
 lyr_groupped.setVisible(true);
