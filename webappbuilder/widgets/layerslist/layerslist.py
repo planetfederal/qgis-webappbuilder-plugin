@@ -37,7 +37,7 @@ class LayersList(WebAppWidget):
                                         },
                                         inlineDialogs: true,
                                         icon: React.createElement(Button, {buttonType: "Flat", label: "ADD"}),
-                                        showGroupContent:true, showZoomTo:%s, allowReordering:%s,
+                                        showZoomTo:%s, allowReordering:%s,
                                         allowFiltering:%s,
                                         downloadFormat:'%s', showUpload:%s, map:map,
                                         includeLegend:%s, allowStyling:%s, showTable:%s})))'''
@@ -48,7 +48,7 @@ class LayersList(WebAppWidget):
         else:
             app.panels.append('''React.createElement("div",{id: "layerlist"},
                                     React.createElement(LayerList, {showOpacity:%s, showDownload:%s,
-                                        showGroupContent:true, showZoomTo:%s, allowReordering:%s,
+                                        showZoomTo:%s, allowReordering:%s,
                                         allowFiltering:%s, tipLabel:'%s',
                                         downloadFormat:'%s', showUpload:%s, map:map,
                                         includeLegend:%s, allowStyling:%s, showTable:%s}))'''
