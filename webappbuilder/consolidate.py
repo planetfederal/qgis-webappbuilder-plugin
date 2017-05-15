@@ -15,6 +15,8 @@ def consolidate(folder, appdef):
     if os.path.exists(tmpFolder):
         shutil.rmtree(tmpFolder)
     os.mkdir(tmpFolder)
+    layersFolder = os.path.join(tmpFolder, "layers")
+    os.mkdir(layersFolder)
     # copy project file
     projectFile = QgsProject.instance().fileName()
     f = QFile(projectFile)
