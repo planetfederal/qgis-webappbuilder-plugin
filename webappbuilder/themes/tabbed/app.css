@@ -47,7 +47,7 @@ html, body {
 body {
   font-family: 'Roboto', sans-serif;
 }
-#map {
+.map {
   position: absolute;
   top: 64px;
   height: calc(100% - 64px);
