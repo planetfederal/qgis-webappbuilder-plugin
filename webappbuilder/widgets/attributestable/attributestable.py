@@ -28,7 +28,7 @@ class AttributesTable(WebAppWidget):
                                                                     sortable:%s, pageSize:%s})
                                 )''' % (idx, idx, allowEdit, pointZoom, sortable, pageSize))
         else:
-            app.tools.append("React.createElement(Button, {label: 'Table', onTouchTap: this._toggleTable.bind(this)})")
+            app.tools.append("React.createElement(Button, {buttonType: 'Icon', iconClassName: 'headerIcons ms ms-table', tooltip: 'Table', onTouchTap: this._toggleTable.bind(this)})")
             app.panels.append(''' React.createElement("div", {id: 'table-panel', className: 'attributes-table'},
                                           React.createElement(FeatureTable, {allowEdit:%s, toggleGroup: 'navigation',
                                                               ref: 'table', pointZoom:%d, map: map,
