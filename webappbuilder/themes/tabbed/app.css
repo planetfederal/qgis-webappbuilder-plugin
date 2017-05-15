@@ -49,6 +49,7 @@ body {
 }
 .map {
   position: absolute;
+  top: 64px;
   height: calc(100% - 64px);
 }
 #edit-tool-panel {
