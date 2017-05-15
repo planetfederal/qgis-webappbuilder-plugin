@@ -358,12 +358,15 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                       "id": layer.id(), "ndR": nodata[0],
                                       "ndG": nodata[1], "ndB": nodata[2]}
 
-def resolveParameterValue(v, folder, name):
+def resolveParameterValue(v, folder, name, app):
     expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
     try:
         v = float(v)
         return v
     except:
+        qgis2web = '<script src="./resources/js/qgis2web_expressions.js"></script>'
+        if qgis2web not in app.scripts:
+            app.scripts.append(qgis2web)
         name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
         name = compile_to_file(v, name, "OpenLayers3", expFile)
         return "%s(context)" % name
@@ -394,21 +397,21 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             renderer = layer.rendererV2()
             if isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
-                style = "var style = %s;" % getSymbolAsStyle(symbol, folder, layer, app.variables)
+                style = "var style = %s;" % getSymbolAsStyle(symbol, folder, layer, app)
                 value = 'var value = "";'
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
-                                    folder, layer, app.variables, SELECTION_YELLOW)
+                                    folder, layer, app, SELECTION_YELLOW)
             elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
                 defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
-                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), folder, layer, app.variables)))
+                    cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(), folder, layer, app)))
                 defs +=  ",\n".join(cats) + "};};"
                 defs += "var categoriesSelected_%s = {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
                     cats.append('"%s": %s' % (cat.value(), getSymbolAsStyle(cat.symbol(),
-                                folder, layer, app.variables, SELECTION_YELLOW)))
+                                folder, layer, app, SELECTION_YELLOW)))
                 defs +=  ",\n".join(cats) + "};"
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s()[value];'''  % (safeName(layer.name()))
@@ -418,8 +421,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 defs += "var %s = function(){ return [" % varName
                 ranges = []
                 for ran in renderer.ranges():
-                    symbolstyle = getSymbolAsStyle(ran.symbol(), folder, layer, app.variables)
-                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), folder, layer, app.variables, SELECTION_YELLOW)
+                    symbolstyle = getSymbolAsStyle(ran.symbol(), folder, layer, app)
+                    selectedSymbolStyle = getSymbolAsStyle(ran.symbol(), folder, layer, app, SELECTION_YELLOW)
                     ranges.append('[%f, %f,\n %s, %s]' % (ran.lowerValue(), ran.upperValue(),
                                                          symbolstyle, selectedSymbolStyle))
                 defs += ",\n".join(ranges) + "];};"
@@ -468,8 +471,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 expFile = os.path.join(folder, "resources", "js",
                                        "qgis2web_expressions.js")
                 for count, rule in enumerate(rules):
-                    styleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app.variables)
-                    selectionStyleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app.variables, SELECTION_YELLOW)
+                    styleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app)
+                    selectionStyleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app, SELECTION_YELLOW)
                     name = "".join((safeName(layer.name()), "rule", unicode(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
@@ -644,7 +647,7 @@ def getLabeling(layer, folder, app):
             active, isExpr, expr = ddSize.split("~~")[:2]
             useExpr = active == "1" and isExpr == "1"
         if useExpr:
-            size = resolveParameterValue(expr, folder, "fontsize")
+            size = resolveParameterValue(expr, folder, "fontsize", app)
         else:
             size = float(layer.customProperty("labeling/fontSize"))
         if layer.customProperty("labeling/fontSizeInMapUnits").lower() == "true":
@@ -742,7 +745,7 @@ def getRGBAColor(color, alpha):
     return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
 
-def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
+def getSymbolAsStyle(symbol, folder, layer, app, color = None):
     styles = []
     alpha = symbol.alpha()
     stylesFolder = os.path.join(folder, "data", "styles")
@@ -750,9 +753,9 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         def property(n):
-            return resolveParameterValue(props[n], folder, n)
+            return resolveParameterValue(props[n], folder, n, app)
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
-            style = "image: %s" % getShape(props, alpha, folder, color)
+            style = "image: %s" % getShape(props, alpha, folder, color, app)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             sl2 = sl.clone()
             sl2.setSize(100)
@@ -863,7 +866,7 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
                 img = sl.subSymbol().asImage(qsize)
                 symbolPath = os.path.join(stylesFolder, "pattern%i.png" % exportedStyles)
                 img.save(symbolPath)
-                variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
+                app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
                     var patternImg_%(p)i = new Image();
                     patternImg_%(p)i.src = './data/styles/pattern%(p)i.png';
                     patternImg_%(p)i.onload = function(){
@@ -903,7 +906,7 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
                 with codecs.open(path, "w", "utf-8") as f:
                     f.write(svg)
 
-                variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
+                app.variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
                         var patternImg_%(p)i = new Image();
                         patternImg_%(p)i.src = './data/styles/%(filename)s';
                         patternImg_%(p)i.onload = function(){
@@ -932,9 +935,9 @@ def getSymbolAsStyle(symbol, folder, layer, variables, color = None):
                         ''' % style)
     return "[ %s]" % ",".join(styles)
 
-def getShape(props, alpha, folder, color_):
+def getShape(props, alpha, folder, color_, app):
     if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
-        size = resolveParameterValue(props["size_dd_expression"], folder, "size_dd_expression")
+        size = resolveParameterValue(props["size_dd_expression"], folder, "size_dd_expression", app)
     else:
         size = str(props["size"])
     units = props["size_unit"]
@@ -986,6 +989,7 @@ def getIcon(path, size, units):
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
+                  size:[100,100],
                   src: "%(path)s",
             })''' % {"s": size, "path": "./data/styles/" + os.path.basename(path)}
 
