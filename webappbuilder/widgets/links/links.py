@@ -107,7 +107,7 @@ class LinksDialog(QtGui.QDialog):
             dlg = NewLinkDialog(name, url, self)
             dlg.exec_()
             if dlg.ok:
-                self.links[name] = url
+                self.links[dlg.name] = dlg.url
                 self.setTableContent()
 
 
