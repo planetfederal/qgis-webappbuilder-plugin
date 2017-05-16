@@ -746,6 +746,8 @@ def getRGBAColor(color, alpha):
 
 
 def getSymbolAsStyle(symbol, folder, layer, app, color = None):
+    if symbol is None:
+        return "[]"
     styles = []
     alpha = symbol.alpha()
     stylesFolder = os.path.join(folder, "data", "styles")
