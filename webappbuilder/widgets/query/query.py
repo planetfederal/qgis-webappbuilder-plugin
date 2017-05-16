@@ -15,7 +15,7 @@ class Query(WebAppWidget):
                                     React.createElement(QueryBuilder, {map: map})
                                 )''' % (idx, idx))
         else:
-            app.tools.append("React.createElement(Button, {label: 'Query', onTouchTap: this._toggleQuery.bind(this)})")
+            app.tools.append("React.createElement(Button, {buttonType: 'Icon', iconClassName: 'headerIcons fa fa-filter', tooltip: 'Query', onTouchTap: this._toggleQuery.bind(this)})")
             app.mappanels.append('''React.createElement("div", {id: 'query-panel', className:'query-panel'},
                                           React.createElement(QueryBuilder, {map: map})
                                         )''')

@@ -74,8 +74,7 @@ var BasicApp = React.createClass({
   render: function() {
     var toolbarOptions = @TOOLBAROPTIONS@;
     return React.createElement("div", {id: 'content'},
-      React.createElement(AppBar, toolbarOptions @TOOLBAR@
-      ),
+      React.createElement(Header, toolbarOptions @TOOLBAR@),
       React.createElement(MapPanel, {useHistory: @PERMALINK@, extent: originalExtent, id: 'map', map: map}
         @MAPPANELS@
       )
