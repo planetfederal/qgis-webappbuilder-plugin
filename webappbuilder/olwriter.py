@@ -370,7 +370,7 @@ def resolveParameterValue(v, folder, name, app):
         name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
         name = compile_to_file(v, name, "OpenLayers3", expFile)
         return "%s(context)" % name
-    
+
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     SELECTION_YELLOW = '"rgba(255, 204, 0, 1)"'
     global exportedStyles
@@ -451,7 +451,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 template = """
                         function rules_%(n)s(value) {
-                            ruleStyles = []; 
+                            ruleStyles = [];
                             // Start of if blocks and style check logic
                             matchFound = false;
                             %(js)s
@@ -758,6 +758,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
             style = "image: %s" % getShape(props, alpha, folder, color, app)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             sl2 = sl.clone()
+            sl2.setSizeUnits(QgsSymbolV2.Pixel)
             sl2.setSize(100)
             newSymbol = QgsMarkerSymbolV2()
             newSymbol.appendSymbolLayer(sl2)
@@ -783,7 +784,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                 lineWidth = property("width_dd_expression")
             else:
                 lineWidth = property("line_width")
-            lineWidthUnits = props["line_width_unit"] 
+            lineWidthUnits = props["line_width_unit"]
             if 'penstyle' in props:
                 lineStyle = props["penstyle"]
             else:
@@ -805,7 +806,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                             },''' % (str(offsetValue))
             else:
                 offset = ""
-            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, lineStyle, 
+            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, lineStyle,
                                                               lineWidth, lineWidthUnits))
         elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
             if props["style"] == "no":
@@ -825,8 +826,8 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                 borderStyle = props["style_border"]
             else:
                 borderStyle = props["outline_style"]
-            
-            if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"]) 
+
+            if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"])
                     and int(props["width_border_dd_active"])):
                 borderWidth = property("width_border_dd_expression")
             else:
@@ -1000,9 +1001,9 @@ def getMeasure(value, units):
         return "pixelsFromMm(%s)" % str(value)
     else:
         return value
-    
+
 def getStrokeStyle(color, style, width, units="MM"):
-    dash = "null" 
+    dash = "null"
     if style == "no":
         width = "0"
         color = '"rgba(0,0,0,0.0)"'
