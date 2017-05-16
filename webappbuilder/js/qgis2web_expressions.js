@@ -87,7 +87,7 @@ function fnc_log(values, context) {
 };
 
 function fnc_round(values, context) {
-    return false;
+    return Math.floor(values[0])
 };
 
 function fnc_rand(values, context) {
@@ -203,7 +203,7 @@ function getFieldValues(layer, feature, value){
         if (feature.get(attrs[i]) == value){
             attr = attrs[i];
         }
-    } 
+    }
     values = [];
     for (i = 0; i < features.length; i++){
         v = features[i].get(attr);
@@ -225,7 +225,7 @@ function fnc_count(values, context) {
 function fnc_count_distinct(values, context) {
     layer = layersMap[context.layer];
     numbers = getFieldValues(layer, context.feature, values[0]);
-    var len = numbers.filter(function(val, i, arr) { 
+    var len = numbers.filter(function(val, i, arr) {
         return arr.indexOf(val) === i;
     }).length;
     return len;
@@ -277,7 +277,7 @@ function fnc_median(values, context) {
     numbers.sort();
     if (numsLen % 2 === 0) {
         median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
-    } else { 
+    } else {
         median = numbers[(numsLen - 1) / 2];
     }
     return median;
@@ -287,13 +287,13 @@ function fnc_stdev(values, context) {
     var layer = layersMap[context.layer];
     var numbers = getFieldValues(layer, context.feature, values[0]);
     var avg = average(numbers);
-  
+
     var squareDiffs = numbers.map(function(value){
         var diff = value - avg;
         var sqrDiff = diff * diff;
         return sqrDiff;
     });
-  
+
     var avgSquareDiff = average(squareDiffs);
     var stdDev = Math.sqrt(avgSquareDiff);
     return stdDev;
@@ -342,7 +342,7 @@ function fnc_aggregate(values, context) {
     var newContext = {
         feature: context.feature,
         variables: {},
-        layer: values[0] 
+        layer: values[0]
     };
     if (values[0] == "count"){
         return fnc_count([values[1]], newContext);
@@ -559,7 +559,7 @@ function fnc_format(values, context) {
       s = s.replace("%" + String(i), values[i]);
     }
     return s;
-    
+
 };
 
 function fnc_format_number(values, context) {

@@ -179,7 +179,7 @@ def handle_function(node, mapLib):
         args = args.list()
         for arg in args:
             retArgs.append(walkExpression(arg, mapLib))
-            retArgs = ",".join(retArgs)
+        retArgs = ",".join(retArgs)
     return "fnc_%s([%s], context)" % (retFunc, retArgs)
 
 
@@ -211,11 +211,10 @@ def is_expression_supported(expr):
         for func in used:
             if func in line:
                 if "return false" in lines[i + 1]:
-                    unsupported.append(func[:-1]) 
+                    unsupported.append(func[:-1])
                 break
 
     return unsupported
 
-    
-        
-    
+
+

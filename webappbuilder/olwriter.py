@@ -758,7 +758,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
             style = "image: %s" % getShape(props, alpha, folder, color, app)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             sl2 = sl.clone()
-            sl2.setSizeUnits(QgsSymbolV2.Pixel)
+            sl2.setSizeUnit(QgsSymbolV2.Pixel)
             sl2.setSize(100)
             newSymbol = QgsMarkerSymbolV2()
             newSymbol.appendSymbolLayer(sl2)
@@ -880,7 +880,8 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                       lyr_%(layer)s.changed()
                     };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
                 style = 'fill: patternFill_%i' % exportedStyles
-            else:'''
+            else:
+                style = '''
                  fill: defaultSelectionFill,
                  stroke: defaultSelectionStroke
                  '''
@@ -929,7 +930,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
         else:
             style = ""
         if style:
-            style + ",\nzIndex: %i" % sl.renderingPass()
+            style = style + ",\nzIndex: %i" % sl.renderingPass()
         styles.append('''new ol.style.Style({
                             %s
                         })
@@ -942,28 +943,28 @@ def getShape(props, alpha, folder, color_, app):
     else:
         size = str(props["size"])
     units = props["size_unit"]
-    size = getMeasure(size, units)
-    halfSize = getMeasure(size  + "/ 2.0", units)
+    fullSize = getMeasure(size + "/ 2.0", units)
+    halfSize = getMeasure(size + "/ 4.0", units)
     color =  color_ or getRGBAColor(props["color"], alpha)
     outlineColor = color_ or getRGBAColor(props["outline_color"], alpha)
     outlineWidth = float(props["outline_width"])
     shape = props["name"]
     if "star" in shape.lower():
-        return getRegularShape(color, 5,  size, halfSize, outlineColor, outlineWidth)
+        return getRegularShape(color, 5,  fullSize, halfSize, outlineColor, outlineWidth)
     elif "triangle" in shape.lower():
-        return getRegularShape(color, 3,  size, None, outlineColor, outlineWidth)
+        return getRegularShape(color, 3,  fullSize, None, outlineColor, outlineWidth)
     elif "diamond" == shape.lower():
-        return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth)
+        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth)
     elif "pentagon" == shape.lower():
-        return getRegularShape(color, 5,  size, None, outlineColor, outlineWidth)
+        return getRegularShape(color, 5,  fullSize, None, outlineColor, outlineWidth)
     elif "rectangle" == shape.lower():
-        return getRegularShape(color, 4,  size, None, outlineColor, outlineWidth, 3.14159 / 4.0)
+        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth, 3.14159 / 4.0)
     elif "cross" == shape.lower():
-        return getRegularShape(color, 4,  size, 0, outlineColor, outlineWidth)
+        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth)
     elif "cross2" == shape.lower():
-        return getRegularShape(color, 4,  size, 0, outlineColor, outlineWidth, 3.14159 / 4.0)
+        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth, 3.14159 / 4.0)
     else:
-        return getCircle(color, size, outlineColor, outlineWidth)
+        return getCircle(color, fullSize, outlineColor, outlineWidth)
 
 def getCircle(color, size, outlineColor, outlineWidth):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
