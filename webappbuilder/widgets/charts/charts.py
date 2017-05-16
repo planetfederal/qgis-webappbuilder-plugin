@@ -23,7 +23,7 @@ class ChartTool(WebAppWidget):
                                         )
                                     )''' % (idx, idx))
             else:
-                app.tools.append('''React.createElement(Button, {label: 'Charts', onTouchTap: this._toggleChartPanel.bind(this)})''')
+                app.tools.append('''React.createElement(Button, {buttonType: 'Icon', iconClassName: 'headerIcons ms ms-bar-chart', tooltip: 'Charts', onTouchTap: this._toggleChartPanel.bind(this)})''')
                 app.panels.append('''React.createElement("div", {id: 'chart-panel', className: 'chart-panel'},
                                        React.createElement(Chart, {charts: charts, onClose: this._toggleChartPanel.bind(this)})
                                         )''' )
