@@ -11,7 +11,7 @@ class Links(WebAppWidget):
         items = []
         for name, url in links.iteritems():
             items.append('React.createElement(MenuItem, {primaryText: "%s", href:"%s"})' % (name, url))
-        app.tools.append('''React.createElement(IconMenu, {iconButtonElement: React.createElement(Button, {label: "Links"})},
+        app.tools.append('''React.createElement(IconMenu, {anchorOrigin: {horizontal: 'right', vertical: 'bottom'}, targetOrigin: {horizontal: 'right', vertical: 'top'}, iconButtonElement: React.createElement(Button, {buttonType: 'Icon', iconClassName: "headerIcons ms ms-link", tooltip: "Links"})},
                                         %s
                                     )''' % ",\n".join(items))
 
