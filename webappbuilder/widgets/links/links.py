@@ -191,6 +191,8 @@ class NewLinkDialog(QtGui.QDialog):
             return
         else:
             self.urlBox.setStyleSheet("QLineEdit{background: white}")
+        if self.url.startswith("http://") or self.url.startswith("https://"):
+            self.url = "http://" + self.url
         self.ok = True
         self.close()
 
