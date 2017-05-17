@@ -649,7 +649,7 @@ def getLabeling(layer, folder, app):
         labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
 
     try:
-        useExpr = True
+        useExpr = False
         ddSize = layer.customProperty("labeling/dataDefined/Size", None)
         if ddSize is not None:
             active, isExpr, expr = ddSize.split("~~")[:2]
@@ -658,10 +658,10 @@ def getLabeling(layer, folder, app):
             size = resolveParameterValue(expr, folder, "fontsize", app)
         else:
             size = float(layer.customProperty("labeling/fontSize"))
-        if layer.customProperty("labeling/fontSizeInMapUnits").lower() == "true":
-            size = "pixelsFromMapUnits(%s)" % str(size)
+        if str(layer.customProperty("labeling/fontSizeInMapUnits").lower()) == "true":
+            size = "pixelsFromMapUnits(%s * 2)" % str(size)
         else:
-            size = str(size)
+            size = str(size) + " * 2"
     except:
         size = "10"
 
