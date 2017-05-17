@@ -40,7 +40,7 @@ def stopWritingWebApp():
 # token renewal
 __appSDKification_doAgain = False
 def writeWebApp(appdef, folder, forPreview, progress):
-    """WriteApp end is notifed using
+    """WriteApp end is notified using
     pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
     """
     progress.setText("Copying resources files")
@@ -405,8 +405,8 @@ def writeHtml(appdef, folder, app, progress, filename):
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
-            app.scripts.append('<script src="./resources/js/proj4.js"></script>')
-            app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
+        app.scripts.append('<script src="./resources/js/proj4.js"></script>')
+        app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % viewEpsg)
 
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
               "@SDKVERSION@": utils.sdkVersion(),
@@ -444,7 +444,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     baseLayer = '''var baseLayers = [%s];''' % ",".join(baseJs)
 
     baseLayer += '''var baseLayersGroup = new ol.layer.Group({showContent: true,
-                    'isGroupExpanded': false, 'type': 'base-group', 
+                    'isGroupExpanded': false, 'type': 'base-group',
                     'title': 'Base maps', layers: baseLayers});'''
 
     if overlaysJs:
@@ -452,7 +452,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     else:
         overlayLayer = "var overlayLayers = [];"
 
-    overlayLayer += '''var overlaysGroup = new ol.layer.Group({showContent: true, 
+    overlayLayer += '''var overlaysGroup = new ol.layer.Group({showContent: true,
                         'isGroupExpanded': false, 'title': 'Overlays', layers: overlayLayers});'''
 
     if "overviewmap" in widgets:
