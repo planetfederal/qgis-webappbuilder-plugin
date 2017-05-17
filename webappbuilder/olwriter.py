@@ -395,7 +395,15 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         };''' % safeName(layer.name())
         try:
             renderer = layer.rendererV2()
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
+            if isinstance(renderer, QgsNullSymbolRenderer):
+                value = ("var value = '';")
+                selectionStyle = '''var style = [
+                                   new ol.style.Style({})
+                                 ];'''
+                style = '''var style = [
+                                   new ol.style.Style({})
+                                 ];'''
+            elif isinstance(renderer, QgsSingleSymbolRendererV2):
                 symbol = renderer.symbol()
                 style = "var style = %s;" % getSymbolAsStyle(symbol, folder, layer, app)
                 value = 'var value = "";'

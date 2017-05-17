@@ -159,7 +159,7 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 		if layer.type() != layer.VectorLayer:
 			continue
 		renderer = applayer.layer.rendererV2()
-		if not isinstance(renderer, (QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
+		if not isinstance(renderer, (QgsNullSymbolRenderer, QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
 									QgsGraduatedSymbolRendererV2, QgsHeatmapRenderer, QgsRuleBasedRendererV2)):
 			problems.append("Symbology used by layer %s includes unsupported elements."
 							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
@@ -173,7 +173,7 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 				if unsupported:
 					problems.append("The expression '%s' has unsupported functions: %s"
 								% (expr, ", ".join(unsupported)))
-			
+
 		if str(layer.customProperty("labeling/enabled")).lower() == "true":
 			if unicode(layer.customProperty("labeling/isExpression")).lower() == "true":
 				expr = layer.customProperty("labeling/fieldName")
