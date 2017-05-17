@@ -157,6 +157,8 @@ def layerToJavascript(applayer, settings, title, forPreview):
         layerCrs = layer.crs().authid()
     if scaleVisibility and layer.hasScaleBasedVisibility():
         scaleToResolution = 3571.42
+        if "4326" in settings["App view CRS"]:
+            scaleToResolution = scaleToResolution * 111325
         minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale() / scaleToResolution)
         maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale() / scaleToResolution)
     else:
