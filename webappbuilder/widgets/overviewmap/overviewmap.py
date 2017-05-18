@@ -17,7 +17,7 @@ class OverviewMap(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         layers = appdef["Layers"]
         collapsed = str(self._parameters["Collapsed"]).lower()
-        overviewLayers = ",".join(["lyr_%s" % safeName(layer.layer.name())
+        overviewLayers = ",".join(["lyr_%s_overview" % safeName(layer.layer.name())
                         for layer in layers if layer.showInOverview])
         app.posttarget.append("map.addControl(new ol.control.OverviewMap({collapsed: %s, layers: [overviewMapBaseLayer, %s]}));"
                         % (collapsed, overviewLayers))

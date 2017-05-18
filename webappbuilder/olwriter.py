@@ -19,7 +19,7 @@ exportedStyles = 0
 
 def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  layerCrs, viewCrs, layerOpacity, isSelectable,
-                 timeInfo, popup, jsonp, useStrategy):
+                 timeInfo, popup, jsonp, useStrategy, showInOverview):
 
     layerName = safeName(layer.name())
     layerId = layer.id()
@@ -117,6 +117,18 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                  "min": min,"max": max, "dist": str(clusterDistance),
                  "selectable": str(isSelectable).lower(), "timeInfo": timeInfo,
                  "id": layerId, "popup": popup, "wfsInfo": wfsInfo})
+        if showInOverview:
+            vectorLayer += ('''\nvar lyr_%(layerName)s_overview = new ol.layer.Vector({
+                                opacity: %(opacity)s,
+                                source: cluster_%(layerName)s, %(min)s %(max)s
+                                style: style_%(layerName)s,
+                                selectedStyle: selectionStyle_%(layerName)s,
+                                id: "%(id)s",
+                                wfsInfo: %(wfsInfo)s
+                                filters: [],
+                            });''' %
+                            {"opacity": layerOpacity, "title": title, "layerName":layerName,
+                             "min": min,"max": max, "id": layerId, "wfsInfo": wfsInfo})
     else:
         vectorLayer = ('''var lyr_%(layerName)s = new ol.layer.Vector({
                             opacity: %(opacity)s,
@@ -134,6 +146,18 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                         {"opacity": layerOpacity, "title": title, "layerName":layerName,
                          "min": min, "max": max, "selectable": str(isSelectable).lower(),
                          "timeInfo": timeInfo, "id": layerId, "popup": popup, "wfsInfo": wfsInfo})
+        if showInOverview:
+            vectorLayer += ('''\nvar lyr_%(layerName)s_overview = new ol.layer.Vector({
+                                opacity: %(opacity)s,
+                                source: wfsSource_%(layerName)s, %(min)s %(max)s
+                                style: style_%(layerName)s,
+                                title: %(title)s,
+                                id: "%(id)s",
+                                wfsInfo: %(wfsInfo)s
+                                filters: [],
+                            });''' %
+                            {"opacity": layerOpacity, "title": title, "layerName":layerName,
+                             "min": min, "max": max, "id": layerId, "wfsInfo": wfsInfo})
     return wfsSource + vectorLayer
 
 
@@ -188,8 +212,8 @@ def layerToJavascript(applayer, settings, title, forPreview):
                 typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
-                                layerCrs, viewCrs, layerOpacity,
-                                applayer.allowSelection, timeInfo, popup, jsonp, useStrategy)
+                                layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
+                                timeInfo, popup, jsonp, useStrategy, applayer.showInOverview)
         else:
             if forPreview:
                 source = ""
@@ -222,6 +246,11 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source, "attributes": json.dumps(attributes), "geometryType":geometryType})
+                if applayer.showInOverview:
+                    js += ('''\nvar lyr_%(n)s_overview = new ol.layer.Vector({
+                    source: cluster_%(n)s, %(min)s %(max)s
+                    style: style_%(n)s});''' %  {"n":layerName,"min":
+                            minResolution, "max": maxResolution, "source": source})
             elif isinstance(layer.rendererV2(), QgsHeatmapRenderer):
                 renderer = layer.rendererV2()
                 hmRadius = renderer.radius()
@@ -259,6 +288,20 @@ def layerToJavascript(applayer, settings, title, forPreview):
                              "min": minResolution, "max": maxResolution,
                              "hmRadius": hmRadius, "hmRamp": hmRamp,
                              "weight": weight}
+                if applayer.showInOverview:
+                    js += '''\nvar lyr_%(n)s_overview = new ol.layer.Heatmap({
+                    source: new ol.source.Vector(%(source)s),
+                    %(min)s %(max)s
+                    radius: %(hmRadius)d * 2,
+                    gradient: %(hmRamp)s,
+                    blur: 15,
+                    shadow: 250,
+                    %(weight)s
+                    title: "%(n)s"
+                    });''' %  {"n": layerName, "source": source,
+                             "min": minResolution, "max": maxResolution,
+                             "hmRadius": hmRadius, "hmRamp": hmRamp,
+                             "weight": weight}
             else:
                 js= ('''var lyr_%(n)s = new ol.layer.Vector({
                     opacity: %(opacity)s,
@@ -281,12 +324,21 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source, "attributes": json.dumps(attributes),
                  "geometryType":geometryType})
+                if applayer.showInOverview:
+                    js += ('''\nvar lyr_%(n)s_overview = new ol.layer.Vector({
+                    source: new ol.source.Vector(%(source)s),
+                    %(min)s %(max)s
+                    style: style_%(n)s});''' %  {"n":layerName,"min":
+                            minResolution, "max": maxResolution, "source": source})
 
             if forPreview:
                 clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
+                overview = ("lyr_%(n)s_overview%(cs)s.setSource(lyr_%(n)s%(cs)s.getSource());"
+                            % {"n": layerName, "cs": clusterSource} if applayer.showInOverview else "")
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
-                        };''' % {"n": layerName, "cs": clusterSource}
+                              %(overview)s
+                        };''' % {"n": layerName, "cs": clusterSource, "overview": overview}
             return js
 
     elif layer.type() == layer.RasterLayer:
