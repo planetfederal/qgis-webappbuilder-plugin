@@ -205,3 +205,9 @@ html, body {
  max-width: 50%;
  z-index: 1111;
 }
+.sdk-playback {
+  top: 0px;
+  margin-top: 10px !important;
+  margin-bottom: 0px !important;
+  bottom: auto !important;
+}
