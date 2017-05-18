@@ -153,7 +153,7 @@ def functionalTests():
         localTimeoutCompilationTest.addStep("Close WAB", closeWAB)
         localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
         tests.append(localTimeoutCompilationTest)
-    
+
         successCompilationTest = Test("Verfiy successful compilation with EnterpriseTestDesktop")
         successCompilationTest.addStep("Reset project", iface.newProject)
         successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
@@ -163,17 +163,17 @@ def functionalTests():
         successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
         successCompilationTest.setCleanup(closeWAB)
         tests.append(successCompilationTest)
-    
+
         # test stopCompilationTest
         def checkStartoStopButton(text=None):
             dlg = getWABDialog()
             tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
-    
+
         def clickStopButton(after=5000):
             QTest.qWait(after)
             dlg = getWABDialog()
             QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
-    
+
         stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user")
         stopCompilationTest.addStep("Reset project", iface.newProject)
         stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
@@ -197,7 +197,6 @@ def unitTests():
     _tests.extend(settingstest.suite())
     _tests.extend(widgetstest.suite())
     _tests.extend(appdefvaliditytest.suite())
-    _tests.extend(symbologytest.suite())
     _tests.extend(layerstest.suite())
     _tests.extend(sdkservicetest.suite())
     return _tests

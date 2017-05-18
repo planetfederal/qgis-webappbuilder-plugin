@@ -22,13 +22,6 @@ class WidgetsTest(unittest.TestCase):
         for w in widgets:
             self.assertTrue(w in webAppWidgets), 'Widget {} not loaded'.format(w)
 
-    def testChartWidgetNotAdded(self):
-        """Check that chart widget is not generated if it is not configured"""
-        folder = createAppFromTestAppdef("chartwidget")
-        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "nochartwidget.js", True))
-
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(WidgetsTest, 'test'))
