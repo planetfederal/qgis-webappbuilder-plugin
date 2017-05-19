@@ -483,7 +483,7 @@ Loading panel
 
 Displays a loading indicator while remote layers are being retrieved.
 
-.. figure:: img/loading_panel.png
+.. figure:: img/loading_panel.gif
 
    Loading indicator
 
