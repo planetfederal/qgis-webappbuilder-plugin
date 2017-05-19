@@ -372,12 +372,14 @@ def writeCss(appdef, folder, widgets):
         css = f.read()
     left = offset
     right = offset
+    theme = appdef["Settings"]["Theme"]
     widgets = sorted(appdef["Widgets"].values(), key=attrgetter('buttonIndex'))
     for w in widgets:
-        if w.buttonArea == WebAppWidget.BUTTON_AREA_LEFT:
+        buttonArea = w.buttonAreaForTheme(theme)
+        if buttonArea == WebAppWidget.BUTTON_AREA_LEFT:
             top = left
             left += w.buttonHeight + margin
-        elif w.buttonArea == WebAppWidget.BUTTON_AREA_RIGHT:
+        elif buttonArea == WebAppWidget.BUTTON_AREA_RIGHT:
             top = right
             right += w.buttonHeight + margin
         else:

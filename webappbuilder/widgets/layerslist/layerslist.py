@@ -5,8 +5,13 @@ from PyQt4.QtGui import QIcon
 class LayersList(WebAppWidget):
 
     buttonIndex = 1
-    buttonArea = WebAppWidget.BUTTON_AREA_RIGHT
     cssName = "layerlist"
+
+    def buttonAreaForTheme(self, theme):
+        if theme == "tabbed":
+            return WebAppWidget.BUTTON_AREA_NO_BUTTON
+        else:
+            return WebAppWidget.BUTTON_AREA_RIGHT
 
     _parameters = {"tipLabel": "Layers",
                     "showOpacity": False,

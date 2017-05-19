@@ -1,6 +1,6 @@
 def checkProblems(appdef, problems):
     widgetsInTab = ["aboutpanel", "attributestable", "bookmarks", "charttool",
-           "geocoding"]
+           "geocoding", "layerslist"]
 
     for w in widgetsInTab:
         if w in appdef["Widgets"].keys():

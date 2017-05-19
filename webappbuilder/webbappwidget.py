@@ -13,17 +13,20 @@ import codecs
 class WebAppWidget(object):
 
     BUTTON_AREA_NO_BUTTON, BUTTON_AREA_LEFT, BUTTON_AREA_RIGHT = 0,1,2
-    
+
     buttonIndex = 100
     buttonArea = BUTTON_AREA_NO_BUTTON
     buttonHeight = 40
-    
+
     _parameters = {}
     order = 100
 
     def __init__(self):
         import copy
         self.defaultParameters = copy.deepcopy(self._parameters)
+
+    def buttonAreaForTheme(self, theme):
+        return self.buttonArea
 
     def icon(self):
         return QIcon(os.path.join(os.path.dirname(__file__), "icons", "puzzle.png"))
