@@ -24,24 +24,6 @@ class LayersTest(unittest.TestCase):
         else:
             utils.loadTestProject("layers")
 
-    def testLocalPointsLayer(self):
-        """Check that point layers processed correctly"""
-        folder = createAppFromTestAppdef("localpoints")
-        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpoints.js"))
-
-    def testLocalLinesLayer(self):
-        """Check that line layers processed correctly"""
-        folder = createAppFromTestAppdef("locallines")
-        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_locallines.js"))
-
-    def testLocalPolygonsLayer(self):
-        """Check that polygon layers processed correctly"""
-        folder = createAppFromTestAppdef("localpolygons")
-        appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_localpolygons.js"))
-
     def testLocalRasterLayer(self):
         """Check that raster layers processed correctly"""
         folder = createAppFromTestAppdef("localraster")
@@ -53,15 +35,6 @@ class LayersTest(unittest.TestCase):
         folder = createAppFromTestAppdef("layerwms")
         appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
         self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wms.js"))
-
-    #def testWFSLayer(self):
-    #    """Check that WFS layers processed correctly"""
-    #    folder = createAppFromTestAppdef("layerwfs")
-    #    appFile = os.path.join(folder, "webapp", "app_prebuilt.js")
-    #    if QGis.QGIS_VERSION_INT < 21500:
-    #        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs_2.14.js"))
-    #    else:
-    #        self.assertTrue(compareWithExpectedOutputFile(appFile, "layers_wfs.js"))
 
     def testLayerGroup(self):
         """Check that groups of layers processed correctly"""

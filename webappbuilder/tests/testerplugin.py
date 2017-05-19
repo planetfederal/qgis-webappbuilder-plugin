@@ -9,7 +9,6 @@ import os
 import settingstest
 import widgetstest
 import appdefvaliditytest
-import symbologytest
 import layerstest
 import sdkservicetest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
