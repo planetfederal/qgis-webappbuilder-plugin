@@ -1,22 +1,3 @@
-// Aggregates
-
-// Color
-
-// Conditionals
-
-// Conversions
-
-// Custom
-
-// Date and Time
-
-// Fields and Values
-
-// Fuzzy Matching
-
-// General
-
-// Geometry
 function fnc_azimuth(values, context) {
     return false;
 };
@@ -507,7 +488,12 @@ function fnc_length(values, context) {
 };
 
 function fnc_replace(values, context) {
-    return values[0].replace(values[1], values[2]);
+    try{
+        return values[0].replace(values[1], values[2]);
+    }catch(e){
+        return "";
+    }
+
 };
 
 function fnc_regexp_replace(values, context) {

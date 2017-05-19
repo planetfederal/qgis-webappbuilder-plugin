@@ -3,7 +3,7 @@
 # https://github.com/NathanW2/qgs2js
 #===============================================================================
 
-from qgis.core import QgsExpression, QgsMessageLog
+from qgis.core import QgsExpression
 import re, json
 import os
 
@@ -79,13 +79,11 @@ def walkExpression(node, mapLib):
 def handle_condition(node, mapLib):
     global condtioncounts
     subexps = re.findall("WHEN(\s+.*?\s+)THEN(\s+.*?\s+)", node.dump())
-    QgsMessageLog.logMessage(subexps, "qgis2web", level=QgsMessageLog.INFO)
     count = 1;
     js = ""
     for sub in subexps:
         when = sub[0].strip()
         then = sub[1].strip()
-        QgsMessageLog.logMessage(then, "qgis2web", level=QgsMessageLog.INFO)
         whenpart =  QgsExpression(when)
         thenpart = QgsExpression(then)
         whenjs = walkExpression(whenpart.rootNode(), mapLib)
@@ -166,6 +164,9 @@ def handle_literal(node):
     if isinstance(val, basestring):
         quote = "'"
         val = val.replace("\n", "\\n")
+    elif val is None:
+        val = "null"
+
     return "%s%s%s" % (quote, unicode(val), quote)
 
 

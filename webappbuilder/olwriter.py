@@ -542,19 +542,27 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         selectionElsejs = selectionStyleCode
                         continue
                     name = compile_to_file(exp, name, "OpenLayers3", expFile)
+                    if rule.dependsOnScale():
+                        scaleToResolution = 3571.42
+                        if "4326" in settings["App view CRS"]:
+                            scaleToResolution *= 111325
+                        scaleDependency = " && resolution > %s " % str(rule.scaleMinDenom() / scaleToResolution)
+                        scaleDependency += "&& resolution < %s" % str(rule.scaleMaxDenom() / scaleToResolution)
+                    else:
+                        scaleDependency = ""
                     js += """
-                    if (%s(context)) {
+                    if (%s(context)%s) {
                       ruleStyles.push.apply(ruleStyles, %s);
                       matchFound = true;
                     }
-                    """ % (name, styleCode)
+                    """ % (name, scaleDependency, styleCode)
                     js = js.strip()
                     selectionJs += """
-                    if (%s(context)) {
+                    if (%s(context)%s) {
                       ruleStyles.push.apply(ruleStyles, %s);
                       matchFound = true;
                     }
-                    """ % (name, selectionStyleCode)
+                    """ % (name, scaleDependency, selectionStyleCode)
                     selectionJs = selectionJs.strip()
                 value = ("var value = '';")
                 style = template % {"n":safeName(layer.name()), "js":js, "elsejs":elsejs}
@@ -623,7 +631,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             else:
                 cluster = ""
 
-            labels = getLabeling(layer, folder, app)
+            labels = getLabeling(layer, folder, app, settings)
             style = '''function(feature, resolution){
                         %(context)s
                         %(cluster)s
@@ -685,7 +693,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                  "selectionStyle": selectionStyle})
         progress.setProgress(int(ilayer*100.0/len(layers)))
 
-def getLabeling(layer, folder, app):
+def getLabeling(layer, folder, app, settings):
     if str(layer.customProperty("labeling/enabled")).lower() != "true":
         return ""
 
@@ -747,14 +755,14 @@ def getLabeling(layer, folder, app):
 
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(layer)
-    sv = palyr.scaleVisibility
     if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":
-        min = float(palyr.scaleMin)
-        max = float(palyr.scaleMax)
-        min = 1 / ((1 / min) * 39.37 * 90.7)
-        max = 1 / ((1 / max) * 39.37 * 90.7)
-        labelRes = " && resolution > %s " % str(min)
-        labelRes += "&& resolution < %s" % str(max)
+        scaleMin = float(palyr.scaleMin)
+        scaleMax = float(palyr.scaleMax)
+        scaleToResolution = 3571.42
+        if "4326" in settings["App view CRS"]:
+            scaleToResolution = scaleToResolution * 111325
+        labelRes = " && resolution > %s " % str(scaleMin / scaleToResolution)
+        labelRes += "&& resolution < %s" % str(scaleMax / scaleToResolution)
     else:
         labelRes = ""
 
@@ -808,6 +816,7 @@ def getRGBAColor(color, alpha):
 
 
 def getSymbolAsStyle(symbol, folder, layer, app, color = None):
+    global exportedStyles
     if symbol is None:
         return "[]"
     styles = []
@@ -925,15 +934,14 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
 
         elif isinstance(sl, QgsPointPatternFillSymbolLayer):
             if color is None:
-                global exportedStyles
                 exportedStyles += 1
                 qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
                 img = sl.subSymbol().asImage(qsize)
-                symbolPath = os.path.join(stylesFolder, "pattern%i.png" % exportedStyles)
+                symbolPath = os.path.join(stylesFolder, "pointPattern_%i.png" % exportedStyles)
                 img.save(symbolPath)
                 app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
                     var patternImg_%(p)i = new Image();
-                    patternImg_%(p)i.src = './data/styles/pattern%(p)i.png';
+                    patternImg_%(p)i.src = './data/styles/pointPattern_%(p)i.png';
                     patternImg_%(p)i.onload = function(){
                       var canvas = document.createElement('canvas');
                       var context = canvas.getContext('2d');
@@ -951,7 +959,6 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                  '''
         elif isinstance(sl, QgsSVGFillSymbolLayer):
             if color is None:
-                global exportedStyles
                 exportedStyles += 1
                 def qcolorToRgba(c):
                     return ",".join([str(c.red()), str(c.green()), str(c.blue()), str(c.alpha())])
@@ -964,14 +971,15 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                     svg = "".join(f.readlines())
                 svg = re.sub(r'\"param\(outline\).*?\"', borderColor, svg)
                 svg = re.sub(r'\"param\(fill\).*?\"', fillColor, svg)
-                width = props["width"]
+                width = float(props["width"])
+                if props["pattern_width_unit"] == "MM":
+                    width *= (96 / 25.4)
                 svg = re.sub(r'width=\".*?px\"', r'width="%spx"' % str(width), svg)
                 svg = re.sub(r'height=\".*?px\"', r'height="%spx"' % str(width), svg)
                 filename = "patternFill_%s.svg" % exportedStyles
                 path = os.path.join(stylesFolder, filename)
                 with codecs.open(path, "w", "utf-8") as f:
                     f.write(svg)
-
                 app.variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
                         var patternImg_%(p)i = new Image();
                         patternImg_%(p)i.src = './data/styles/%(filename)s';
