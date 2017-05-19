@@ -383,6 +383,9 @@ def writeCss(appdef, folder, widgets):
         else:
             continue
         css = css.replace(w.cssName + " {", w.cssName + "{\n\ttop:%ipx;" % top)
+    qcolor = iface.mapCanvas().canvasColor()
+    color = "rgb(%i, %i, %i)" % (qcolor.red(), qcolor.green(), qcolor.blue())
+    css = css.replace("canvas {", "canvas {\nbackground-color: %s" % color)
     with open(dst, "w") as f:
         f.write(css)
 
