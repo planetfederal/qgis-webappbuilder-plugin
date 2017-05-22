@@ -369,48 +369,47 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                 "id": layer.id(), "layerClass": layerClass,
                                 "sourceClass": sourceClass, "tiled": tiled,
                                 "popup": popup, "crs": layer.crs().authid()}
-        else:
-            if layer.providerType().lower() == "gdal":
-                provider = layer.dataProvider()
-                transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
-                extent = transform.transform(provider.extent())
-                sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
-                                        extent.xMaximum(), extent.yMaximum())
+        elif layer.providerType().lower() == "gdal":
+            provider = layer.dataProvider()
+            transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
+            extent = transform.transform(provider.extent())
+            sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
+                                    extent.xMaximum(), extent.yMaximum())
 
-                nodata = [0, 0, 0]
-                return '''var src_%(n)s = new ol.source.ImageStatic({
-                                url: "./data/%(n)s.png",
-                                projection: "%(crs)s",
-                                alwaysInRange: true,
-                                imageSize: [%(col)d, %(row)d],
-                                imageExtent: %(extent)s
-                          });
+            nodata = [0, 0, 0]
+            return '''var src_%(n)s = new ol.source.ImageStatic({
+                            url: "./data/%(n)s.png",
+                            projection: "%(crs)s",
+                            alwaysInRange: true,
+                            imageSize: [%(col)d, %(row)d],
+                            imageExtent: %(extent)s
+                      });
 
-                          var raster_%(n)s = new ol.source.Raster({
-                                sources: [src_%(n)s],
-                                operation: function(pixels, data) {
-                                    var pixel = pixels[0];
-                                    if (pixel[0] === %(ndR)d && pixel[1] === %(ndG)d && pixel[2] === %(ndB)d) {
-                                        pixel[3] = 0;
-                                    }
-                                    return pixel;
-                                  }
-                          });
+                      var raster_%(n)s = new ol.source.Raster({
+                            sources: [src_%(n)s],
+                            operation: function(pixels, data) {
+                                var pixel = pixels[0];
+                                if (pixel[0] === %(ndR)d && pixel[1] === %(ndG)d && pixel[2] === %(ndB)d) {
+                                    pixel[3] = 0;
+                                }
+                                return pixel;
+                              }
+                      });
 
-                          var lyr_%(n)s = new ol.layer.Image({
-                                opacity: %(opacity)s,
-                                %(min)s %(max)s
-                                title: %(name)s,
-                                id: "%(id)s",
-                                timeInfo: %(timeInfo)s,
-                                source: raster_%(n)s
-                            });''' % {"opacity": layerOpacity, "n": layerName,
-                                      "extent": sExtent, "col": provider.xSize(),
-                                      "min": minResolution, "max": maxResolution,
-                                      "name": title, "row": provider.ySize(),
-                                      "crs": viewCrs, "timeInfo": timeInfo,
-                                      "id": layer.id(), "ndR": nodata[0],
-                                      "ndG": nodata[1], "ndB": nodata[2]}
+                      var lyr_%(n)s = new ol.layer.Image({
+                            opacity: %(opacity)s,
+                            %(min)s %(max)s
+                            title: %(name)s,
+                            id: "%(id)s",
+                            timeInfo: %(timeInfo)s,
+                            source: raster_%(n)s
+                        });''' % {"opacity": layerOpacity, "n": layerName,
+                                  "extent": sExtent, "col": provider.xSize(),
+                                  "min": minResolution, "max": maxResolution,
+                                  "name": title, "row": provider.ySize(),
+                                  "crs": viewCrs, "timeInfo": timeInfo,
+                                  "id": layer.id(), "ndR": nodata[0],
+                                  "ndG": nodata[1], "ndB": nodata[2]}
 
 def resolveParameterValue(v, folder, name, app):
     expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
@@ -766,6 +765,10 @@ def getLabeling(layer, folder, app, settings):
     else:
         labelRes = ""
 
+    fontWeight = "bold" if str(layer.customProperty("labeling/fontBold")).lower() == "true" else "normal"
+    fontStyle = "italic" if str(layer.customProperty("labeling/fontItalic")).lower() == "true" else "normal"
+    font = layer.customProperty("labeling/fontFamily")
+
     s = '''
         var labelContext = {
             feature: feature,
@@ -780,7 +783,7 @@ def getLabeling(layer, folder, app, settings):
         var key = value + "_" + labelText + "_" + String(resolution);
         if (!textStyleCache_%(layerName)s[key]){
             var size = %(size)s;
-            var font = String(size) + 'px Calibri,sans-serif'
+            var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
             var text = new ol.style.Text({
                   font: font,
                   text: labelText,
@@ -799,7 +802,8 @@ def getLabeling(layer, folder, app, settings):
         ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
                 "size": size, "color": color, "label": labelText, "labelRes": labelRes,
                 "layerName": safeName(layer.name()), "textAlign": textAlign,
-                "textBaseline": textBaseline}
+                "textBaseline": textBaseline, "font": font, "fontWeight": fontWeight,
+                "fontStyle": fontStyle}
 
     return s
 
