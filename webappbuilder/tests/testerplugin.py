@@ -70,6 +70,24 @@ def functionalTests():
                 for preview in [True, False]:
                     tests.append(_testWidget(w, preview))
 
+    def _openComparison(n):
+        webbrowser.open_new("file:///" + webAppFolder.replace("\\","/")
+                            + "/webapp/index_debug.html")
+        webbrowser.open_new("file:///" + os.path.dirname(__file__).replace("\\","/")
+                            + "/expected/apps/%s/index_debug.html" % n)
+
+
+    def _comparisonTest(n):
+        test = Test("Symbology test '%s'" % n)
+        test.addStep("Setting up project", lambda: loadTestProject(n))
+        test.addStep("Creating web app", lambda: _createWebApp(n))
+        test.addStep("Verify web app in browser", prestep=lambda: _openComparison(n))
+        return test
+
+    comparisonTests = ["points", "points2"]
+    for t in comparisonTests:
+        tests.append(_comparisonTest(t))
+
     unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
     unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())
     unconfiguredBookmarksTest.addStep("Open WAB", lambda: openWAB())
