@@ -364,15 +364,17 @@ def writeJsx(appdef, folder, app, progress):
 
 
 def writeCss(appdef, folder, widgets):
-    offset = 80
+    offset = 20
     margin = 15
-    src = os.path.join(os.path.dirname(__file__), "themes", appdef["Settings"]["Theme"], "app.css")
+    theme = appdef["Settings"]["Theme"]
+    if theme == 'basic':
+      offset = 84
+    src = os.path.join(os.path.dirname(__file__), "themes", theme, "app.css")
     dst = os.path.join(folder, "app.css")
     with open(src) as f:
         css = f.read()
     left = offset
     right = offset
-    theme = appdef["Settings"]["Theme"]
     widgets = sorted(appdef["Widgets"].values(), key=attrgetter('buttonIndex'))
     for w in widgets:
         buttonArea = w.buttonAreaForTheme(theme)
