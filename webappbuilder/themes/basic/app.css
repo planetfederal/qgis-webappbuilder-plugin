@@ -72,9 +72,7 @@ canvas {
   z-index: 1111;
 }
 #geocoding {
-  margin-left: 10px;
-  margin-top: 12px;
-  margin-right: 5px;
+  display: inline;
 }
 html, body {
   height: 100%;
