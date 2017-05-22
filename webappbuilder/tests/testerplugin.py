@@ -71,10 +71,10 @@ def functionalTests():
                     tests.append(_testWidget(w, preview))
 
     def _openComparison(n):
-        webbrowser.open_new("file:///" + webAppFolder.replace("\\","/")
-                            + "/webapp/index_debug.html")
         webbrowser.open_new("file:///" + os.path.dirname(__file__).replace("\\","/")
                             + "/expected/apps/%s/index_debug.html" % n)
+        webbrowser.open_new("file:///" + webAppFolder.replace("\\","/")
+                            + "/webapp/index_debug.html")
 
 
     def _comparisonTest(n):
