@@ -46,7 +46,7 @@ var map = new ol.Map({
 });
 
 function pixelsFromMapUnits(size) {
-    return size / map.getView().getResolution();
+    return size / map.getView().getResolution() * unitsConversion;
 };
 
 function pixelsFromMm(size) {

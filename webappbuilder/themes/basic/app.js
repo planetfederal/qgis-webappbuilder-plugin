@@ -24,13 +24,13 @@ var map = new ol.Map({
 });
 
 function pixelsFromMapUnits(size) {
-    return size / map.getView().getResolution();
+    return size / map.getView().getResolution() * unitsConversion;
 };
 
 function pixelsFromMm(size) {
     return 96 / 25.4 * size;
 };
- 
+
 var BasicApp = React.createClass({
   childContextTypes: {
     muiTheme: React.PropTypes.object
