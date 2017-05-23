@@ -18,6 +18,7 @@ from webappbuilder.settings import initialize
 from qgiscommons.files import removeTempFolder
 
 from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
+import utils
 
 class WebAppBuilderPlugin:
 
@@ -80,6 +81,8 @@ class WebAppBuilderPlugin:
                 elif pluginSetting("askreload") == "Open last configuration":
                     appdef = loadAppdef(appdefFile)
         initialize()
+        # reset credential token in case related credentials are changed
+        utils.resetCachedToken()
         try:
             dlg = MainDialog(appdef)
             dlg.exec_()
