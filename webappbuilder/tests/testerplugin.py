@@ -213,6 +213,5 @@ def unitTests():
     _tests.extend(settingstest.suite())
     _tests.extend(widgetstest.suite())
     _tests.extend(appdefvaliditytest.suite())
-    _tests.extend(layerstest.suite())
     _tests.extend(sdkservicetest.suite())
     return _tests
