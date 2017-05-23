@@ -46,6 +46,8 @@ var map = new ol.Map({
   controls: [@OL3CONTROLS@]
 });
 
+@AFTERMAP@
+
 function pixelsFromMapUnits(size) {
     return size / map.getView().getResolution() * unitsConversion;
 };
