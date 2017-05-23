@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--App created using the Boundless Web App Builder version 0.99-->
+<!--WebSDK version: 1.0.0-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Web App</title>
+  <link rel="stylesheet" type="text/css" href="resources/css/ol.css">
+  <link rel="stylesheet" href="./resources/css/components.min.css">
+  <link rel="stylesheet" type="text/css" href="app.css">
+  <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.en,Object.assign"></script>
+  <script src="./resources/js/qgis2web_expressions.js"></script>
+<base target='_blank'>
+
+</head>
+<body>
+  <div id='main'></div>
+  <!-- This script adds the Roboto font to our project. For more detail go to this site:  http://www.google.com/fonts#UsePlace:use/Collection:Roboto:400,300,500 -->
+  <script>
+    var WebFontConfig = {
+      google: { families: [ 'Roboto:400,300,500:latin' ] }
+    };
+    (function() {
+      var wf = document.createElement('script');
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
+    })();
+  </script>
+  <script src="full-debug.js"></script>
+<script src="./resources/js/settextpathstyle.js"></script>
+<script src="app_prebuilt.js"></script>
+<script src="./data/lyr_ocupacao_agueda.js"></script>
+<script src="./data/lyr_linhasdegua.js"></script>
+<script src="./data/lyr_espacos_verdes_agueda.js"></script>
+<script src="./data/lyr_agueda_waterways.js"></script>
+<script src="./data/lyr_caminho_de_ferro.js"></script>
+<script src="./data/lyr_estradas_agueda.js"></script>
+<script src="./data/lyr_agueda_edificios.js"></script>
+<script src="./data/lyr_agueda_points.js"></script>
+
+</body>
+</html>

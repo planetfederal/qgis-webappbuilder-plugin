@@ -76,7 +76,6 @@ def functionalTests():
         webbrowser.open_new("file:///" + webAppFolder.replace("\\","/")
                             + "/webapp/index_debug.html")
 
-
     def _comparisonTest(n):
         test = Test("Symbology test '%s'" % n)
         test.addStep("Setting up project", lambda: loadTestProject(n))
@@ -84,7 +83,7 @@ def functionalTests():
         test.addStep("Verify web app in browser", prestep=lambda: _openComparison(n))
         return test
 
-    comparisonTests = ["points", "points2"]
+    comparisonTests = ["points", "points2", "osm"]
     for t in comparisonTests:
         tests.append(_comparisonTest(t))
 
