@@ -171,7 +171,6 @@ def layerToJavascript(applayer, settings, title, forPreview):
     useStrategy = not applayer.singleTile
     scaleVisibility = settings["Use layer scale dependent visibility"]
     useViewCrs = settings["Use view CRS for WFS connections"]
-    workspace = safeName(settings["Title"])
     layer = applayer.layer
 
     title = '"%s"' % unicode(title) if title is not None else "null"
@@ -438,6 +437,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
 
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
+        usesTextLinePath = False
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer:
             continue
@@ -631,7 +631,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             else:
                 cluster = ""
 
-            labels = getLabeling(layer, folder, app, settings)
+            labels, usesTextLinePath = getLabeling(layer, folder, app, settings)
+            _labels = "" if usesTextLinePath else labels
             style = '''function(feature, resolution){
                         %(context)s
                         %(cluster)s
@@ -643,7 +644,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": style,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                            "labels":labels, "context": context}
+                            "labels":_labels, "context": context}
             selectionStyle = '''function(feature, resolution){
                         %(context)s
                         %(value)s
@@ -654,7 +655,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                         return allStyles;
                     }''' % {"style": selectionStyle,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
-                             "labels":labels, "context": context}
+                             "labels":_labels, "context": context}
         except Exception, e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             cannotWriteStyle = True
@@ -691,11 +692,13 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                     var selectionStyle_%(name)s = %(selectionStyle)s;''' %
                 {"defs":defs, "name":safeName(layer.name()), "style":style,
                  "selectionStyle": selectionStyle})
+            if usesTextLinePath:
+                app.aftermap.append(labels)
         progress.setProgress(int(ilayer*100.0/len(layers)))
 
 def getLabeling(layer, folder, app, settings):
     if str(layer.customProperty("labeling/enabled")).lower() != "true":
-        return ""
+        return "", False
 
     labelField = layer.customProperty("labeling/fieldName")
     if unicode(layer.customProperty(
@@ -735,7 +738,7 @@ def getLabeling(layer, folder, app, settings):
         halo = ''',
                   stroke: new ol.style.Stroke({
                     color: "rgba(%s, %s, %s, 255)",
-                    width: %s
+                    width: %s * 2
                   })''' % (rHalo, gHalo, bHalo, strokeWidth)
     else:
         halo = ""
@@ -756,57 +759,99 @@ def getLabeling(layer, folder, app, settings):
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(layer)
     if str(layer.customProperty("labeling/scaleVisibility")).lower() == "true":
-        scaleMin = float(palyr.scaleMin)
-        scaleMax = float(palyr.scaleMax)
         scaleToResolution = 3571.42
         if "4326" in settings["App view CRS"]:
             scaleToResolution = scaleToResolution * 111325
-        labelRes = " && resolution > %s " % str(scaleMin / scaleToResolution)
-        labelRes += "&& resolution < %s" % str(scaleMax / scaleToResolution)
+        scaleMin = float(palyr.scaleMin) / scaleToResolution
+        scaleMax = float(palyr.scaleMax) / scaleToResolution
+        labelRes = " && resolution > %s " % str(scaleMin)
+        labelRes += "&& resolution < %s" % str(scaleMax)
     else:
+        scaleMin = None
+        scaleMax = None
         labelRes = ""
 
     fontWeight = "bold" if str(layer.customProperty("labeling/fontBold")).lower() == "true" else "normal"
     fontStyle = "italic" if str(layer.customProperty("labeling/fontItalic")).lower() == "true" else "normal"
     font = layer.customProperty("labeling/fontFamily")
 
-    s = '''
-        var labelContext = {
-            feature: feature,
-            variables: {},
-            layer: 'lyr_%(layerName)s'
-        };
-        if (%(label)s !== null%(labelRes)s) {
-            var labelText = String(%(label)s);
-        } else {
-            var labelText = "";
-        }
-        var key = value + "_" + labelText + "_" + String(resolution);
-        if (!textStyleCache_%(layerName)s[key]){
-            var size = %(size)s;
-            var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
-            var text = new ol.style.Text({
-                  font: font,
-                  text: labelText,
-                  fill: new ol.style.Fill({
-                    color: "%(color)s"
-                  }),
-                  textBaseline: "%(textBaseline)s",
-                  textAlign: "%(textAlign)s",
-                  rotation: %(rotation)s,
-                  offsetX: %(offsetX)s,
-                  offsetY: %(offsetY)s %(halo)s
-                });
-            textStyleCache_%(layerName)s[key] = new ol.style.Style({zIndex: 1000, text: text});
-        }
-        allStyles.push(textStyleCache_%(layerName)s[key]);
-        ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
-                "size": size, "color": color, "label": labelText, "labelRes": labelRes,
-                "layerName": safeName(layer.name()), "textAlign": textAlign,
-                "textBaseline": textBaseline, "font": font, "fontWeight": fontWeight,
-                "fontStyle": fontStyle}
+    if str(layer.customProperty("labeling/placement")) in ["2", "3"] and layer.geometryType() == QGis.Line:
+        s = '''function setTextPathStyle_%(layerName)s(){
+                lyr_%(layerName)s.setTextPathStyle(function (feature){
+                    var labelContext = {
+                          feature: feature,
+                          variables: {},
+                          layer: 'lyr_$(layerName)s'
+                      };
+                    var labelText = String(%(label)s);
+                    if (labelText == null || labelText == "") {
+                        var labelText = " ";
+                    }
+                    var size = %(size)s;
+                    var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
+                    return [ new ol.style.Style({
+                        text: new ol.style.TextPath({
+                            font: font,
+                            text: labelText,
+                            fill: new ol.style.Fill({
+                                color: "%(color)s"
+                            }),
+                            textBaseline: "%(textBaseline)s",
+                            textAlign: "%(textAlign)s",
+                            rotation: %(rotation)s,
+                            offsetX: %(offsetX)s,
+                            offsetY: %(offsetY)s %(halo)s
+                        }),
+                      })];
+                },
+                0);
+              }
+              setTextPathStyle_%(layerName)s();''' % {"halo": halo, "offsetX": offsetX,
+                    "offsetY": offsetY, "rotation": rotation,
+                    "size": size, "color": color, "label": labelText, "labelRes": labelRes,
+                    "layerName": safeName(layer.name()), "textAlign": textAlign,
+                    "textBaseline": textBaseline, "font": font, "fontWeight": fontWeight,
+                    "fontStyle": fontStyle, "scaleMin": scaleMin, "scaleMax": scaleMax}
+        followLines = True
+    else:
+        s = '''
+            var labelContext = {
+                feature: feature,
+                variables: {},
+                layer: 'lyr_%(layerName)s'
+            };
+            if (%(label)s !== null%(labelRes)s) {
+                var labelText = String(%(label)s);
+            } else {
+                var labelText = " ";
+            }
+            var key = value + "_" + labelText + "_" + String(resolution);
+            if (!textStyleCache_%(layerName)s[key]){
+                var size = %(size)s;
+                var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
+                var text = new ol.style.Text({
+                      font: font,
+                      text: labelText,
+                      fill: new ol.style.Fill({
+                        color: "%(color)s"
+                      }),
+                      textBaseline: "%(textBaseline)s",
+                      textAlign: "%(textAlign)s",
+                      rotation: %(rotation)s,
+                      offsetX: %(offsetX)s,
+                      offsetY: %(offsetY)s %(halo)s
+                    });
+                textStyleCache_%(layerName)s[key] = new ol.style.Style({zIndex: 1000, text: text});
+            }
+            allStyles.push(textStyleCache_%(layerName)s[key]);
+            ''' % {"halo": halo, "offsetX": offsetX, "offsetY": offsetY, "rotation": rotation,
+                    "size": size, "color": color, "label": labelText, "labelRes": labelRes,
+                    "layerName": safeName(layer.name()), "textAlign": textAlign,
+                    "textBaseline": textBaseline, "font": font, "fontWeight": fontWeight,
+                    "fontStyle": fontStyle}
+        followLines = False
 
-    return s
+    return s, followLines
 
 def getRGBAColor(color, alpha):
     try:

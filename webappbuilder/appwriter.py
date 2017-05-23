@@ -61,6 +61,8 @@ def writeWebApp(appdef, folder, forPreview, progress):
                 os.path.join(dst, "resources", "js", "qgis2web_expressions.js"))
     shutil.copy(os.path.join(os.path.dirname(__file__), "js", "mgrs.js"),
                 os.path.join(dst, "resources", "js", "mgrs.js"))
+    shutil.copy(os.path.join(os.path.dirname(__file__), "js", "settextpathstyle.js"),
+                os.path.join(dst, "resources", "js", "settextpathstyle.js"))
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
     cssDstFolder = os.path.join(dst, "resources","css")
     shutil.copytree(cssFolder, cssDstFolder)
@@ -81,12 +83,14 @@ def writeWebApp(appdef, folder, forPreview, progress):
         scriptsbody = []
         posttarget = []
         imports = []
+        aftermap = []
         def newInstance(self):
             _app = App()
             _app.tabs = list(self.tabs)
             _app.ol3controls = list(self.ol3controls)
             _app.tools = list(self.tools)
             _app.panels = list(self.panels)
+            _app.aftermap = list(self.aftermap)
             _app.mappanels = list(self.mappanels)
             _app.variables = list(self.variables)
             _app.scripts = list(self.scripts)
@@ -112,6 +116,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
         app = _app.newInstance()
         writeJs(appdef, dst, app, progress)
         app.scriptsbody.extend(['<script src="full-debug.js"></script>',
+                                '<script src="./resources/js/settextpathstyle.js"></script>',
                                 '<script src="app_prebuilt.js"></script>'])
         for layer in appdef["Layers"]:
             if layer.layer.type() == layer.layer.VectorLayer:
@@ -124,7 +129,9 @@ def writeWebApp(appdef, folder, forPreview, progress):
         writeJsx(appdef, dst, app, progress)
 
         app = _app.newInstance()
-        app.scriptsbody.extend(['<script src="/loader.js"></script><script src="/build/app-debug.js"></script>'])
+        app.scriptsbody.extend(['<script src="/loader.js"></script>',
+                                '<script src="/build/app-debug.js"></script>',
+                                '<script src="./resources/js/settextpathstyle.js"></script>'])
         writeHtml(appdef, dst, app, progress, "index.html")
 
         if pluginSetting("compileinserver"):
@@ -295,6 +302,7 @@ def writeJs(appdef, folder, app, progress):
                 "@TOOLBAR@": join(app.tools),
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
+                "@AFTERMAP@": "\n".join(app.aftermap),
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
                 "@PERMALINK@": permalink}
 
@@ -358,6 +366,7 @@ def writeJsx(appdef, folder, app, progress):
                 "@TOOLBAR@": join(app.tools),
                 "@TOOLBAROPTIONS@": toolbarOptions,
                 "@VARIABLES@": variables,
+                "@AFTERMAP@": "\n".join(app.aftermap),
                 "@POSTTARGETSET@": "\n".join(app.posttarget),
                 "@PERMALINK@": permalink}
 
@@ -376,7 +385,7 @@ def writeCss(appdef, folder, widgets):
     margin = 15
     theme = appdef["Settings"]["Theme"]
     if theme == 'basic':
-      offset = 84
+        offset = 84
     src = os.path.join(os.path.dirname(__file__), "themes", theme, "app.css")
     dst = os.path.join(folder, "app.css")
     with open(src) as f:
