@@ -276,3 +276,23 @@ def sdkVersion():
 
 def checkEndpoint():
     return True
+
+def isPermissionDenied(message=None):
+	'''Check message if it contain NetworkAccessManager excetpion related to
+	a permission denied.
+	'''
+	# TODO: better management of error code parsing delegating to utils or
+	#       some NetworkAccessManager static method
+	if not message:
+		return False
+
+	pattern = re.match(r'(.*)Network error #(\d+3)(.*)', message)
+	if not pattern:
+		return False
+
+	try:
+		errorCode = pattern.group(2)
+		if errorCode in ['401', '403']:
+			return True
+	except:
+		return False

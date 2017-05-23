@@ -75,8 +75,12 @@ def checkSDKServerVersion():
 	nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
 	try:
 		resp, text = nam.request(wabVersionUrl(), headers=headers)
+	except Exception as e:
 		# check if 401/403 => probably token expired
-		if resp.status_code in [401, 403]:
+		permissionDenied = utils.isPermissionDenied( str(e) )
+		if not permissionDenied:
+			return str(e)
+		else:
 			# renew token and try again
 			utils.resetCachedToken()
 			try:
@@ -86,12 +90,17 @@ def checkSDKServerVersion():
 
 			# retry call
 			headers["authorization"] = "Bearer {}".format(token)
-			resp, text = nam.request(wabVersionUrl(), headers=headers)
+			try:
+				resp, text = nam.request(wabVersionUrl(), headers=headers)
+			except Exception as e:
+				# check if 401/403 => probably token expired
+				permissionDenied = utils.isPermissionDenied( str(e) )
+				if not permissionDenied:
+					return str(e)
+				else:
+					return "Permission denied"
 
-		remoteVersion = json.loads(text)["boundless-sdk"]
-	except Exception as e:
-		return str(e)
-
+	remoteVersion = json.loads(text)["boundless-sdk"]
 	if localVersion != remoteVersion:
 		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
 	else:
