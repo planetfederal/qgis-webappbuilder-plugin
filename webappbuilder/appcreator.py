@@ -168,8 +168,13 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 		if layer.type() != layer.VectorLayer:
 			continue
 		renderer = applayer.layer.rendererV2()
-		if not isinstance(renderer, (QgsNullSymbolRenderer, QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
-									QgsGraduatedSymbolRendererV2, QgsHeatmapRenderer, QgsRuleBasedRendererV2)):
+		allowed = [QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
+					QgsGraduatedSymbolRendererV2, QgsHeatmapRenderer, QgsRuleBasedRendererV2]
+		try:
+			allowed.append(QgsNullSymbolRenderer)
+		except:
+			pass
+		if not isinstance(renderer, tuple(allowed)):
 			problems.append("Symbology used by layer %s includes unsupported elements."
 							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
 						"This layer will not be correctly styled in the web app."

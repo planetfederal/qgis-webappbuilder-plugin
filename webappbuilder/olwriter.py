@@ -449,7 +449,11 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         };''' % safeName(layer.name())
         try:
             renderer = layer.rendererV2()
-            if isinstance(renderer, QgsNullSymbolRenderer):
+            try:
+                isNull = isinstance(renderer, QgsNullSymbolRenderer)
+            except:
+                isNull = False
+            if isNull:
                 value = ("var value = '';")
                 selectionStyle = '''var style = [
                                    new ol.style.Style({})
