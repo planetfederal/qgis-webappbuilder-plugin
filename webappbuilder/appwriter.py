@@ -276,10 +276,9 @@ def writeJs(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
+        logoOption = ', logo: "logo%s"' % ext
 
-    toolbarOptions = '{showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
-                                                                                      appdef["Settings"]["Title"], logoOption)
+    toolbarOptions = '{title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     variables ="\n".join(app.variables)
 
@@ -337,10 +336,9 @@ def writeJsx(appdef, folder, app, progress):
     if logoImg:
         ext = os.path.splitext(logoImg)[1]
         shutil.copyfile(logoImg, os.path.join(folder, "logo" + ext))
-        logoOption = ', iconElementLeft: React.createElement("img", {className:"pull-left", style:{margin:"5px",height:"50px"}, src:"logo%s"})' % ext
+        logoOption = ', logo:"logo%s"' % ext
 
-    toolbarOptions = '{showMenuIconButton: %s, title:"%s"%s}' % (str(bool(logoImg)).lower(),
-                                                                                     appdef["Settings"]["Title"], logoOption)
+    toolbarOptions = '{title:"%s"%s}' % (appdef["Settings"]["Title"], logoOption)
 
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: %s})
