@@ -1,0 +1,59 @@
+{
+    "Base layers": [], 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "polygons", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": false, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "polygons_cant_select", 
+            "popup": "<table class=\"popup-table\"><tr><th>Attribute</th><th>Value</th><tr><td>n</td><td style=\"text-align:right\">[n]</td></tr></table>", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": true, 
+        "Theme": "basic", 
+        "Title": "Polygons", 
+        "Use JSONP for WFS connections": false, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "aboutpanel": {
+            "Parameters": {
+                "content": "You should be able to select the rectangles on the left, but not those on the right. Hovering over the polygons in the right should show a popup"
+            }
+        }, 
+        "selectiontools": {
+            "Parameters": {}
+        }
+    }
+}
