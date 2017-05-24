@@ -787,10 +787,15 @@ def getLabeling(layer, folder, app, settings):
                           variables: {},
                           layer: 'lyr_$(layerName)s'
                       };
-                    var labelText = String(%(label)s);
-                    if (labelText == null || labelText == "") {
+                    if (%(label)s !== null%(labelRes)s) {
+                        var labelText = String(%(label)s);
+                    } else {
                         var labelText = " ";
                     }
+                    if (labelText == ""){
+                        labelText = " ";
+                    }
+                    labelText = String(labelText);
                     var size = %(size)s;
                     var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
                     return [ new ol.style.Style({
@@ -827,7 +832,7 @@ def getLabeling(layer, folder, app, settings):
             if (%(label)s !== null%(labelRes)s) {
                 var labelText = String(%(label)s);
             } else {
-                var labelText = " ";
+                var labelText = "";
             }
             var key = value + "_" + labelText + "_" + String(resolution);
             if (!textStyleCache_%(layerName)s[key]){
