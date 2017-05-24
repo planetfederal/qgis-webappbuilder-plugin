@@ -563,19 +563,12 @@ class MainDialog(BASE, WIDGET):
         try:
             appdef = self.createAppDefinition()
             problems = checkAppCanBeCreated(appdef)
-            if problems:
-                dlg = AppDefProblemsDialog(problems)
-                dlg.exec_()
-                if not dlg.ok:
-                    return
             if pluginSetting("compileinserver"):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 errMessage = checkSDKServerVersion()
                 QApplication.restoreOverrideCursor()
                 if errMessage:
-                    QMessageBox.warning(self, "Problem checking SDK version", errMessage,
-                                        QMessageBox.Close)
-                    return
+                    problems.append(errMessage)
                 # check if able to login via connect credentials
                 try:
                     utils.getConnectAuthCfg()
@@ -583,6 +576,11 @@ class MainDialog(BASE, WIDGET):
                     errMessage = str(ex)
                     QMessageBox.warning(self, "Need Connect credentials", errMessage,
                                             QMessageBox.Close)
+                    return
+            if problems:
+                dlg = AppDefProblemsDialog(problems)
+                dlg.exec_()
+                if not dlg.ok:
                     return
             # now ask where to store app
             folder = askForFolder(self, "Select folder to store app")
