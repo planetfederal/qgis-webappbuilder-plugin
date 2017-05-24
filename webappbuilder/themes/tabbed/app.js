@@ -43,7 +43,7 @@ var TabbedApp = React.createClass({
     };
   },
   getInitialState: function() {
-    return {leftNavOpen: true, addLayerOpen: false};
+    return {leftNavOpen: false, addLayerOpen: false};
   },
   componentDidMount: function() {
     @POSTTARGETSET@
@@ -86,15 +86,22 @@ var TabbedApp = React.createClass({
     this._toggle(document.getElementById('wfst'));
   },
   render: function() {
-    var toolbarOptions = Object.assign({onLeftIconTouchTap: this.leftNavOpen}, @TOOLBAROPTIONS@);
+    var leftNavWidth = 360;
+    var toolbarOptions = Object.assign({
+      style: {left: this.state.leftNavOpen ? leftNavWidth : 0, width: this.state.leftNavOpen ? 'calc(100% - ' + leftNavWidth + 'px)' : '100%'},
+      showLeftIcon: !this.state.leftNavOpen,
+      onLeftIconTouchTap: this.leftNavOpen
+    }, @TOOLBAROPTIONS@);
     return React.createElement("div", {id: 'content'},
-      React.createElement(Header, toolbarOptions @TOOLBAR@),
       React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose}),
-      React.createElement("div", {className: 'map', style: {left: this.state.leftNavOpen ? 360 : 0, width: this.state.leftNavOpen ? 'calc(100% - 360px)' : '100%'}},
-        React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
-          @MAPPANELS@
+      React.createElement("div", undefined,
+        React.createElement(Header, toolbarOptions @TOOLBAR@),
+        React.createElement("div", {className: 'map', style: {left: this.state.leftNavOpen ? leftNavWidth : 0, width: this.state.leftNavOpen ? 'calc(100% - ' + leftNavWidth + 'px)' : '100%'}},
+          React.createElement(MapPanel, {id: 'map', useHistory: @PERMALINK@, extent: originalExtent, map: map}
+            @MAPPANELS@
+          )
+          @PANELS@
         )
-        @PANELS@
       )
     );
   }
