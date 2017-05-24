@@ -33,8 +33,6 @@ docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver set
 docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/$PLUGIN_NAME /root/.qgis2/python/plugins/$PLUGIN_NAME"
 
 # run the tests
-docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.layerstest.run_tests"
-docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.symbologytest.run_tests"
 docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.widgetstest.run_tests"
 docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.settingstest.run_tests"
 docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh webappbuilder.tests.appdefvaliditytest.run_tests"
