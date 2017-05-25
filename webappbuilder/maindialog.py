@@ -548,7 +548,7 @@ class MainDialog(BASE, WIDGET):
                                 "Settings->Options->Network->Timeout for network requests (ms)."))
             elif 'Permission denied' in reason:
                 QMessageBox.critical(self, self.tr("Error creating web app"),
-                                self.tr("Could not create web app.\nPermission denied with current Connect credentials"))
+                                self.tr("Permission denied with current Connect credentials"))
             else:
                 QMessageBox.critical(self, self.tr("Error creating web app"),
                                 self.tr("Could not create web app.\nCheck the QGIS log for more details."))

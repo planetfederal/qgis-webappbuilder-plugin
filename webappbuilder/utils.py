@@ -248,7 +248,7 @@ def getToken():
         res, resText = nam.request(authUrl(), method="GET", headers=headers)
     except Exception as e:
         if nam.http_call_result.status_code in [401, 403]:
-            raise Exception("Permission denied")
+            raise Exception("Permission denied with current Connect credentials")
         else:
             raise e
 
