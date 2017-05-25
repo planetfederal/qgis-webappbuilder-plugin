@@ -96,7 +96,7 @@ def checkSDKServerVersion():
 				if not permissionDenied:
 					raise e
 				else:
-					raise("Error checking SDK version: Permission denied")
+					raise Exception("Error checking SDK version: Permission denied")
 
 	remoteVersion = json.loads(text)["boundless-sdk"]
 	if localVersion != remoteVersion:
