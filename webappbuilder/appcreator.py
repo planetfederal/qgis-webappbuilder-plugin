@@ -25,6 +25,9 @@ import xml.etree.ElementTree as ET
 import importlib
 from exp2js import is_expression_supported
 
+class VersionMismatchError(Exception):
+	pass
+
 # need a global where to store parameters to be used in PyPubSub listener
 # because PyPubSub does not support persistence of lambda functions
 __appdef = None
@@ -64,10 +67,8 @@ def checkSDKServerVersion():
 		return "Provided endpoint does not seem to be a valid SDK service endpoint"
 	localVersion = utils.sdkVersion()
 
-	try:
-		token = utils.getToken()
-	except Exception as e:
-		return str(e)
+	token = utils.getToken()
+
 
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
@@ -79,14 +80,11 @@ def checkSDKServerVersion():
 		# check if 401/403 => probably token expired
 		permissionDenied = utils.isPermissionDenied( str(e) )
 		if not permissionDenied:
-			return str(e)
+			raise e
 		else:
 			# renew token and try again
 			utils.resetCachedToken()
-			try:
-				token = utils.getToken()
-			except Exception as e:
-				return str(e)
+			token = utils.getToken()
 
 			# retry call
 			headers["authorization"] = "Bearer {}".format(token)
@@ -96,15 +94,14 @@ def checkSDKServerVersion():
 				# check if 401/403 => probably token expired
 				permissionDenied = utils.isPermissionDenied( str(e) )
 				if not permissionDenied:
-					return str(e)
+					raise e
 				else:
-					return "Permission denied"
+					raise("Error checking SDK version: Permission denied")
 
 	remoteVersion = json.loads(text)["boundless-sdk"]
 	if localVersion != remoteVersion:
-		return "The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion)
-	else:
-		return None
+		raise VersionMismatchError("The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion))
+
 
 def checkAppCanBeCreated(appdef, forPreview=False):
 	##viewCrs = appdef["Settings"]["App view CRS"]

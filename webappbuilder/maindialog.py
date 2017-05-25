@@ -22,7 +22,7 @@ from appcreator import (
     saveAppdef,
     checkAppCanBeCreated,
     checkSDKServerVersion,
-)
+, VersionMismatchError)
 import settings
 from types import MethodType
 import webbrowser
@@ -565,10 +565,18 @@ class MainDialog(BASE, WIDGET):
             problems = checkAppCanBeCreated(appdef)
             if pluginSetting("compileinserver"):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                errMessage = checkSDKServerVersion()
+                try:
+                    checkSDKServerVersion()
+                except VersionMismatchError, e:
+                    problems.append(str(e))
+                except Exception, e:
+                    QApplication.restoreOverrideCursor()
+                    QMessageBox.warning(self, "Problem checking SDK version", str(e),
+                                        QMessageBox.Close)
+                    return
+
                 QApplication.restoreOverrideCursor()
-                if errMessage:
-                    problems.append(errMessage)
+
                 # check if able to login via connect credentials
                 try:
                     utils.getConnectAuthCfg()
