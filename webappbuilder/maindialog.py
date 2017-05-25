@@ -22,7 +22,7 @@ from appcreator import (
     saveAppdef,
     checkAppCanBeCreated,
     checkSDKServerVersion,
-, VersionMismatchError)
+    VersionMismatchError)
 import settings
 from types import MethodType
 import webbrowser
