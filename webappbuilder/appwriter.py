@@ -182,7 +182,7 @@ def manageFinished(netManager, zipFileName, folder, progress):
     with open(zipFileName, 'wb') as newZipContent:
         newZipContent.write( result.text )
 
-    # unzip new content as new compiled web appdef
+    # unzip new content as new compiled web app
     try:
         with zipfile.ZipFile(zipFileName, 'r') as zf:
             zf.extractall(folder)

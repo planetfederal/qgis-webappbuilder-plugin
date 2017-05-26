@@ -119,8 +119,6 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
 
-
-
     createEmpyAppTest = Test("Verify creating an app with no layers")
     createEmpyAppTest.addStep("Load project", iface.newProject)
     createEmpyAppTest.addStep("Open WAB", lambda: openWAB())

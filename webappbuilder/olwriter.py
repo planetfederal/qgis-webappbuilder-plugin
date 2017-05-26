@@ -751,14 +751,25 @@ def getLabeling(layer, folder, app, settings):
     g = layer.customProperty("labeling/textColorG")
     b = layer.customProperty("labeling/textColorB")
     color = "rgba(%s, %s, %s, 255)" % (r,g,b)
-    rotation = str(math.radians(-1 * float(layer.customProperty("labeling/angleOffset"))))
-    offsetX = layer.customProperty("labeling/xOffset")
-    offsetY = layer.customProperty("labeling/yOffset")
+    try:
+        rotation = str(math.radians(-1 * float(layer.customProperty("labeling/angleOffset"))))
+    except:
+        rotation = 0
+    try:
+        offsetX = float(layer.customProperty("labeling/xOffset"))
+        offsetY = float(layer.customProperty("labeling/yOffset"))
+    except:
+        offsetX = 0
+        offsetY = 0
     textBaselines = ["bottom", "middle", "top"]
     textAligns = ["end", "center", "start"]
-    quad = int(layer.customProperty("labeling/quadOffset"))
-    textBaseline = textBaselines[quad / 3]
-    textAlign = textAligns[quad % 3]
+    try:
+        quad = int(layer.customProperty("labeling/quadOffset"))
+        textBaseline = textBaselines[quad / 3]
+        textAlign = textAligns[quad % 3]
+    except:
+        textBaseline = "middle"
+        textAlign = "center"
 
     palyr = QgsPalLayerSettings()
     palyr.readFromLayer(layer)

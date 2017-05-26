@@ -185,6 +185,9 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 					problems.append("The expression '%s' has unsupported functions: %s"
 								% (expr, ", ".join(unsupported)))
 
+		if layer.hasLabelsEnabled():
+			problems.append("Layer %s uses old-style labeling. Labels might not be correctly rendered in the web app."
+						% layer.name())
 		if str(layer.customProperty("labeling/enabled")).lower() == "true":
 			if unicode(layer.customProperty("labeling/isExpression")).lower() == "true":
 				expr = layer.customProperty("labeling/fieldName")
