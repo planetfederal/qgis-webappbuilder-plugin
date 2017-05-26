@@ -87,7 +87,7 @@ class MainDialog(BASE, WIDGET):
         self.buttonPreview.setIcon(icon("preview.gif"))
 
         self.onCreatingApp = False
-        self.buttonCreateOrStopApp = QPushButton(self.tr("CreateApp (Beta)"))
+        self.buttonCreateOrStopApp = QPushButton(self.tr("CreateApp"))
         self.buttonCreateOrStopApp.setIcon(icon("export.png"))
 
         self.buttonHelp = self.buttonBox.button(QDialogButtonBox.Help)
