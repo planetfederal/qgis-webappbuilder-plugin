@@ -53,11 +53,10 @@ def functionalTests():
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
 
 
-    def _testWidget(n, preview):
-        sPreview = "(Preview)" if preview else ""
-        test = Test("Verify '%s' widget %s" % (n, sPreview))
+    def _testWidget(n):
+        test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
-        test.addStep("Creating web app", lambda: _createWebApp(n, preview=preview))
+        test.addStep("Creating web app", lambda: _createWebApp(n, preview=True))
         test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
@@ -66,8 +65,7 @@ def functionalTests():
         for i in ["", "2", "3"]:
             f = os.path.join(appdefFolder, "%s%s.appdef" % (w, i))
             if os.path.exists(f):
-                for preview in [True, False]:
-                    tests.append(_testWidget(w, preview))
+                tests.append(_testWidget(w))
 
     def _openComparison(n):
         webbrowser.open_new("file:///" + os.path.dirname(__file__).replace("\\","/")
