@@ -1,0 +1,1 @@
+polygon_geojson_callback({"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"fid":1,"text":"polygon label with halo"},"geometry":{"type":"Polygon","coordinates":[[[4.40,4.54],[4.67,4.65],[5.05,4.61],[5.17,4.45],[5.01,4.27],[4.46,4.29],[4.40,4.54]]]}}]});

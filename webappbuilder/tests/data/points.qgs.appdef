@@ -1,0 +1,50 @@
+{
+    "Base layers": [], 
+    "Groups": {}, 
+    "Layers": [
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "points", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "labels", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "basic", 
+        "Title": "My Web App", 
+        "Use JSONP for WFS connections": false, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {}
+}

@@ -721,17 +721,18 @@ def getLabeling(layer, folder, app, settings):
         useExpr = False
         ddSize = layer.customProperty("labeling/dataDefined/Size", None)
         if ddSize is not None:
-            active, isExpr, expr = ddSize.split("~~")[:2]
+            active, isExpr, expr = ddSize.split("~~")[:3]
             useExpr = active == "1" and isExpr == "1"
         if useExpr:
             size = resolveParameterValue(expr, folder, "fontsize", app)
         else:
             size = float(layer.customProperty("labeling/fontSize"))
-        if str(layer.customProperty("labeling/fontSizeInMapUnits").lower()) == "true":
+        if str(layer.customProperty("labeling/fontSizeInMapUnits")).lower() == "true":
             size = "pixelsFromMapUnits(%s * 2)" % str(size)
         else:
             size = str(size) + " * 2"
     except:
+        raise
         size = "10"
 
     if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":

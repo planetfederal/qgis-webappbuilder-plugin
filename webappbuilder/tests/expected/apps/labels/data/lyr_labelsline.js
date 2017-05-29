@@ -1,0 +1,1 @@
+labelsline_geojson_callback({"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"fid":1,"text":"normal line label"},"geometry":{"type":"LineString","coordinates":[[4.00,5.35],[4.81,5.21],[5.31,5.35],[5.96,5.17],[5.96,5.17]]}}]});
