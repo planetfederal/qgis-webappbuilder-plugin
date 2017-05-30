@@ -178,7 +178,7 @@ def functionalTests():
         # test stopCompilationTest
         def checkStartoStopButton(text=None):
             dlg = getWABDialog()
-            tc.assertEqual(dlg.buttonCreateOrStopApp.text(), text)
+            tc.assertIn(dlg.buttonCreateOrStopApp.text(), text)
 
         def clickStopButton(after=5000):
             QTest.qWait(after)
@@ -194,7 +194,7 @@ def functionalTests():
         stopCompilationTest.addStep("Create an EMPTY app and start compilation, then click on next step!")
         stopCompilationTest.addStep("Verify if stop button is set", lambda: checkStartoStopButton(text='Stop') )
         stopCompilationTest.addStep("Click stop", lambda: clickStopButton(after=1000) )
-        stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp (Beta)') )
+        stopCompilationTest.addStep("Verify if StartApp button is set", lambda: checkStartoStopButton(text='CreateApp') )
         stopCompilationTest.setCleanup(closeWAB)
         tests.append(stopCompilationTest)
     except ImportError:
