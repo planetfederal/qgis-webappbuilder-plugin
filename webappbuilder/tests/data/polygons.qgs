@@ -59,7 +59,7 @@
   <projectlayers>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>polygons20170524084645695</id>
-      <datasource>D:/github/suite-app-builder/webappbuilder/tests/data/polygons.shp</datasource>
+      <datasource>./polygons.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -693,7 +693,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>polygons_cant_select20170524084620499</id>
-      <datasource>D:/github/suite-app-builder/webappbuilder/tests/data/polygons_cant_select.shp</datasource>
+      <datasource>./polygons_cant_select.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
