@@ -12,7 +12,7 @@ Common problems
 Previewed app is empty
 ......................
 
-You are probably using either a layer symbology renderer or a Symbol layer
+You may be using a layer symbology renderer or a Symbol layer
 type that is not supported. Check for warning when you click preview, and
 see :ref:`limitations` for a list of supported renderers and symbols.
 
@@ -29,6 +29,12 @@ Some layers are not rendering well
 If some layers are styled with a blue outline, this means you are using a QGIS
 expression that is not supported by WAB. See :ref:`supported_functions`.
 
+Raster layers are now showing in preview
+........................................
+
+Raster layers will not be visible if you open the previewed web app directly
+from the file system. Instead, the Web App must be served using a web server
+like Apache, IIS, or any other.
 
 WAB complains that a layer might be too big
 ...........................................
@@ -36,6 +42,25 @@ WAB complains that a layer might be too big
 If WAB warns you that a layer might be too big for being loaded directly from
 a file, you can try to simplify its geometries or subset the layer data.
 Otherwise, you will have to serve the layer using web services.
+
+Legends are not showing in the print output
+...........................................
+
+For the print widget to work properly, the Web App must be served using a
+web server like Apache or IIS.
+
+Layer list widget is not working properly
+.........................................
+
+We have identified a couple of issues using Internet Explorer and EDGE, we
+suggest you try using the Web App in other browsers like Mozilla Firefox or
+Google Chrome.
+
+There was an error loading tiles
+................................
+
+To work, OGC layers much be served using Geoserver with CORS/JSONP enabled.
+Currently, other web map servers are not supported.
 
 .. _limitations:
 
@@ -65,6 +90,7 @@ Known limitations
 
 * Rasters *NoData* values will not be be transparent in most browsers.
   Currently, Mozilla Firefox is the exception.
+* Raster layer cannot be previewed if the App is not server using a web server.
 * Only horizontal labeling is supported.
 * Not all vector data-defined properties are supported. Also, using fields
   directly in it is not supported. This is the list of currently supported
@@ -82,6 +108,8 @@ Known limitations
 * Not all style effects are supported.
 * Web App will become slow or not work well with large local layer files. You
   should use web services for publishing those layers.
+* OGC service layers that are not served by geoserver with CORS/JSONP enable
+  will not render properly.
 
 Asking for help
 ---------------
