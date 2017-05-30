@@ -63,6 +63,8 @@ Known limitations
   * :guilabel:`Gradient Fill`
   * :guilabel:`Point Pattern Fill`
 
+* Rasters *NoData* values will not be be transparent in most browsers.
+  Currently, Mozilla Firefox is the exception.
 * Only horizontal labeling is supported.
 * Not all vector data-defined properties are supported. Also, using fields
   directly in it is not supported. This is the list of currently supported
