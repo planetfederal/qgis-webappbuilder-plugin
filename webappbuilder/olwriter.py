@@ -732,7 +732,6 @@ def getLabeling(layer, folder, app, settings):
         else:
             size = str(size) + " * 2"
     except:
-        raise
         size = "10"
 
     if str(layer.customProperty("labeling/bufferDraw")).lower() == "true":
