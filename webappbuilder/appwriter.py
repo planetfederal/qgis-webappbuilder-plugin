@@ -61,8 +61,6 @@ def writeWebApp(appdef, folder, forPreview, progress):
                 os.path.join(dst, "resources", "js", "qgis2web_expressions.js"))
     shutil.copy(os.path.join(os.path.dirname(__file__), "js", "mgrs.js"),
                 os.path.join(dst, "resources", "js", "mgrs.js"))
-    shutil.copy(os.path.join(os.path.dirname(__file__), "js", "settextpathstyle.js"),
-                os.path.join(dst, "resources", "js", "settextpathstyle.js"))
     cssFolder = os.path.join(os.path.dirname(__file__), "css")
     cssDstFolder = os.path.join(dst, "resources","css")
     shutil.copytree(cssFolder, cssDstFolder)
@@ -116,7 +114,6 @@ def writeWebApp(appdef, folder, forPreview, progress):
         app = _app.newInstance()
         writeJs(appdef, dst, app, progress)
         app.scriptsbody.extend(['<script src="full-debug.js"></script>',
-                                '<script src="./resources/js/settextpathstyle.js"></script>',
                                 '<script src="app_prebuilt.js"></script>'])
         for layer in appdef["Layers"]:
             if layer.layer.type() == layer.layer.VectorLayer:
@@ -130,8 +127,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
 
         app = _app.newInstance()
         app.scriptsbody.extend(['<script src="/loader.js"></script>',
-                                '<script src="/build/app-debug.js"></script>',
-                                '<script src="./resources/js/settextpathstyle.js"></script>'])
+                                '<script src="/build/app-debug.js"></script>'])
         writeHtml(appdef, dst, app, progress, "index.html")
 
         if pluginSetting("compileinserver"):
