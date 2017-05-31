@@ -823,8 +823,7 @@ def getLabeling(layer, folder, app, settings):
                             offsetY: %(offsetY)s %(halo)s
                         }),
                       })];
-                },
-                0);
+                });
               }
               setTextPathStyle_%(layerName)s();''' % {"halo": halo, "offsetX": offsetX,
                     "offsetY": offsetY, "rotation": rotation,
