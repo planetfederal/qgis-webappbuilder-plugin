@@ -317,6 +317,7 @@ def writeJs(appdef, folder, app, progress):
 def writeJsx(appdef, folder, app, progress):
     layers = appdef["Layers"]
     viewCrs = appdef["Settings"]["App view CRS"]
+    crs = QgsCoordinateReferenceSystem(viewCrs)
     mapbounds = bounds(appdef["Settings"]["Extent"] == "Canvas extent", layers, viewCrs)
     mapextent = "extent: %s," % mapbounds if appdef["Settings"]["Restrict to extent"] else ""
     maxZoom = int(appdef["Settings"]["Max zoom level"])
@@ -339,6 +340,13 @@ def writeJsx(appdef, folder, app, progress):
     app.mappanels.append('''React.createElement("div", {id: 'popup', className: 'ol-popup'},
                                     React.createElement(InfoPopup, {toggleGroup: 'navigation', map: map, hover: %s})
                                   )''' % str(appdef["Settings"]["Show popups on hover"]).lower())
+
+    canvas = iface.mapCanvas()
+    canvasCrs = canvas.mapSettings().destinationCrs()
+    conversionNumerator = 111325.0 if canvasCrs.mapUnits() == QGis.Degrees else 1
+    conversionDenominator = 111325.0 if crs.mapUnits() == QGis.Degrees else 1
+    conversion = conversionNumerator / conversionDenominator
+    app.variables.append("var unitsConversion = %s;" % str(conversion))
 
     variables ="\n".join(app.variables)
     try:
