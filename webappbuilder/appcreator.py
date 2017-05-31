@@ -14,8 +14,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from utils import *
 import utils
-import jsbeautifier
-from jsmin import jsmin
 from json.encoder import JSONEncoder
 import json
 import requests

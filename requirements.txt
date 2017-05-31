@@ -1,9 +1,5 @@
 future
-jsmin
-gsconfig
 requests
-jsbeautifier
-beautifulsoup
 pypubsub==3.3
 
 # test requirements

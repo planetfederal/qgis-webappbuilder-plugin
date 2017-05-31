@@ -19,7 +19,6 @@ import utils
 from settings import *
 from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
-import jsbeautifier
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
@@ -304,11 +303,6 @@ def writeJs(appdef, folder, app, progress):
     template = os.path.join(os.path.dirname(__file__), "themes",
                             appdef["Settings"]["Theme"], "app.js")
     js = replaceInTemplate(template, values)
-    try:
-        pass
-        #js = jsbeautifier.beautify(js)
-    except:
-        pass #jsbeautifier gives some random errors sometimes due to imports
 
     jsFilepath = os.path.join(folder, "app_prebuilt.js")
     with codecs.open(jsFilepath, "w", encoding="utf-8") as f:
@@ -349,10 +343,6 @@ def writeJsx(appdef, folder, app, progress):
     app.variables.append("var unitsConversion = %s;" % str(conversion))
 
     variables ="\n".join(app.variables)
-    try:
-        variables = jsbeautifier.beautify(variables)
-    except:
-        pass #jsbeautifier gives some random errors sometimes due to imports
 
     def join(array):
         if array:
@@ -445,14 +435,8 @@ def writeHtml(appdef, folder, app, progress, filename):
     html = replaceInTemplate(template, values)
 
     indexFilepath = os.path.join(folder, filename)
-    try:
-        from bs4 import BeautifulSoup as bs
-        soup=bs(html)
-        pretty=soup.prettify(formatter='html')
-    except:
-        pretty = html
     with codecs.open(indexFilepath, "w", encoding="utf-8") as f:
-        f.write(pretty)
+        f.write(html)
 
 def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     base = appdef["Base layers"]
