@@ -116,7 +116,7 @@ Known limitations
 * Not all style effects are supported.
 * Web App will become slow or not work well with large local layer files. You
   should use web services for publishing those layers.
-* OGC service layers that are not served by geoserver with CORS/JSONP enable
+* OGC service layers that are not served by geoserver with CORS/JSONP enabled
   will not render properly.
 * SVG Fills doesn't work in Internet Explorer.
 
