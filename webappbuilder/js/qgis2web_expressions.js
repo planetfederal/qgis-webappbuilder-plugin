@@ -407,7 +407,7 @@ function fnc_upper(values, context) {
 };
 
 function fnc_title(values, context) {
-    return values[0].split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ')
+    return values[0].split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
 function fnc_trim(values, context) {
