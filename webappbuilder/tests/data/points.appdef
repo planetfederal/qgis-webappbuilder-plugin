@@ -29,7 +29,7 @@
     ],
     "Settings": {
         "Add permalink functionality": true,
-        "App view CRS": "EPSG:3857",
+        "App view CRS": "EPSG:4326",
         "Extent": "Canvas extent",
         "Group base layers": true,
         "Logo": "",
