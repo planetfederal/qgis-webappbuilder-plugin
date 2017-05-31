@@ -517,9 +517,9 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             elif isinstance(renderer, QgsRuleBasedRendererV2):
                 template = """
                         function rules_%(n)s(value) {
-                            ruleStyles = [];
+                            var ruleStyles = [];
                             // Start of if blocks and style check logic
-                            matchFound = false;
+                            var matchFound = false;
                             %(js)s
                             if (!matchFound) {
                                 ruleStyles = %(elsejs)s;
@@ -939,10 +939,10 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                               var dx = end[0] - start[0];
                               var dy = end[1] - start[1];
                               var rotation = Math.atan2(dy, dx);
-                              offset = %s;
-                              x = Math.sin(rotation) * offset;
-                              y = Math.cos(rotation) * offset;
-                              geom = feature.getGeometry().clone()
+                              var offset = %s;
+                              var x = Math.sin(rotation) * offset;
+                              var y = Math.cos(rotation) * offset;
+                              var geom = feature.getGeometry().clone()
                               geom.translate(x, y);
                               return geom;
                             },''' % (str(offsetValue))
@@ -978,7 +978,7 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
             x, y = sl.offset().x(), sl.offset().y()
             if x or y:
                 offset = '''geometry: function(feature){
-                                geom = feature.getGeometry().clone()
+                                var geom = feature.getGeometry().clone()
                                 geom.translate(%s, %s);
                                 return geom;
                             },\n''' % (str(x), str(y))
