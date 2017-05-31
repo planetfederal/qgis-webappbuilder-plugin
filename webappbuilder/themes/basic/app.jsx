@@ -197,7 +197,7 @@ function drawTextPath (e)
                 ctx.strokeStyle = st.getStroke() ? (st.getStroke().getColor()||"#fff") : "#fff";
                 ctx.fillStyle = st.getFill() ? st.getFill().getColor()||"#000" : "#000";
                 // Draw textpath
-                ctx.textPath(st.getText()||f.get("name"), path);
+                textPath(ctx, st.getText()||f.get("name"), path);
             }
         }
     }
