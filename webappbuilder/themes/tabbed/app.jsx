@@ -261,7 +261,7 @@ class TabbedApp extends React.Component {
       onLeftIconTouchTap: this.leftNavOpen.bind(this)
     }, @TOOLBAROPTIONS@);
     return React.createElement("div", {id: 'content'},
-      React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose.bind(this}),
+      React.createElement(LeftNav, {tabList: [@TABS@], open: this.state.leftNavOpen, onRequestClose: this.leftNavClose.bind(this)}),
       React.createElement("div", undefined,
         React.createElement(Header, toolbarOptions @TOOLBAR@),
         React.createElement("div", {className: 'map', style: {left: this.state.leftNavOpen ? leftNavWidth : 0, width: this.state.leftNavOpen ? 'calc(100% - ' + leftNavWidth + 'px)' : '100%'}},
