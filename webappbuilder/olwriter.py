@@ -792,7 +792,7 @@ def getLabeling(layer, folder, app, settings):
 
     if str(layer.customProperty("labeling/placement")) in ["2", "3"] and layer.geometryType() == QGis.Line:
         s = '''function setTextPathStyle_%(layerName)s(){
-                lyr_%(layerName)s.setTextPathStyle(function (feature){
+                setTextPathStyle(lyr_%(layerName)s, function (feature){
                     var labelContext = {
                           feature: feature,
                           variables: {},
@@ -810,7 +810,7 @@ def getLabeling(layer, folder, app, settings):
                     var size = %(size)s;
                     var font = '%(fontStyle)s %(fontWeight)s ' + String(size) + 'px "%(font)s",sans-serif'
                     return [ new ol.style.Style({
-                        text: new ol.style.TextPath({
+                        text: new ol.style.Text({
                             font: font,
                             text: labelText,
                             fill: new ol.style.Fill({
