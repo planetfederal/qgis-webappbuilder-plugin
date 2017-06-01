@@ -3797,7 +3797,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Line" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>linhas_de_água20140529224009280</id>
-      <datasource>./linhas de água.shp</datasource>
+      <datasource>./linhas de agua.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
