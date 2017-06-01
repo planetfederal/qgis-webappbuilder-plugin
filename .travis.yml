@@ -49,4 +49,6 @@ after_success:
         scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
         export GIT_REV=$(git rev-parse --short HEAD)
         ssh qgisrepoguest "${UPDATER} update --dev --role desktop-qgis-plugin-dev --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"
+        # Debug output: check the zip contents
+        unzip -l ${PLUGIN_NAME}.zip
     fi
