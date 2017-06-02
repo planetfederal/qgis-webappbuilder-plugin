@@ -268,13 +268,13 @@ def _make_zip(zipFile, options):
     for root, dirs, files in os.walk(src_dir):
         for f in filter_excludes(root, files):
             relpath = os.path.relpath(root)
-            zipFile.write(path(root) / f, path(relpath) / f)
+            zipFile.write(path(root) / f, (path(relpath) / f).decode('utf-8'))
         filter_excludes(root, dirs)
 
     for root, dirs, files in os.walk(options.sphinx.builddir):
         for f in files:
             relpath = os.path.join(options.plugin.name, "docs", os.path.relpath(root, options.sphinx.builddir))
-            zipFile.write(path(root) / f, path(relpath) / f)
+            zipFile.write(path(root) / f, (path(relpath) / f).decode('utf-8'))
 
 def create_settings_docs(options):
     settings_file = path(options.plugin.name) / "settings.json"
