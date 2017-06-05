@@ -14,6 +14,7 @@ import uuid
 import json
 from webappbuilder.exp2js import compile_to_file
 from PyQt4.QtCore import QSize
+from PyQt4.QtGui import QColor
 
 exportedStyles = 0
 
@@ -894,12 +895,16 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
     for i in xrange(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
+        exportedStyles += 1
         def property(n):
             return resolveParameterValue(props[n], folder, n, app)
         if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
             style = "image: %s" % getShape(props, alpha, folder, color, app)
         elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
             sl2 = sl.clone()
+            if color is not None:
+                sl2.setFillColor(QColor(255, 204, 0))
+                sl2.setOutlineColor(QColor(255, 204, 0))
             sl2.setSizeUnit(QgsSymbolV2.Pixel)
             sl2.setSize(100)
             newSymbol = QgsMarkerSymbolV2()
@@ -1003,7 +1008,6 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
 
         elif isinstance(sl, QgsPointPatternFillSymbolLayer):
             if color is None:
-                exportedStyles += 1
                 qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
                 img = sl.subSymbol().asImage(qsize)
                 symbolPath = os.path.join(stylesFolder, "pointPattern_%i.png" % exportedStyles)
@@ -1027,47 +1031,35 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
                  stroke: defaultSelectionStroke
                  '''
         elif isinstance(sl, QgsSVGFillSymbolLayer):
-            if color is None:
-                exportedStyles += 1
-                def qcolorToRgba(c):
-                    return ",".join([str(c.red()), str(c.green()), str(c.blue()), str(c.alpha())])
-                if color is None:
-                    fillColor = getRGBAColor(qcolorToRgba(sl.svgFillColor()), alpha)
-                else:
-                    fillColor = color
-                borderColor = getRGBAColor(qcolorToRgba(sl.svgOutlineColor()), alpha)
-                with codecs.open(sl.svgFilePath(), encoding="utf-8") as f:
-                    svg = "".join(f.readlines())
-                svg = re.sub(r'\"param\(outline\).*?\"', borderColor, svg)
-                svg = re.sub(r'\"param\(fill\).*?\"', fillColor, svg)
-                width = float(props["width"])
-                if props["pattern_width_unit"] == "MM":
-                    width *= (96 / 25.4)
-                svg = re.sub(r'width=\".*?px\"', r'width="%spx"' % str(width), svg)
-                svg = re.sub(r'height=\".*?px\"', r'height="%spx"' % str(width), svg)
-                filename = "patternFill_%s.svg" % exportedStyles
-                path = os.path.join(stylesFolder, filename)
-                with codecs.open(path, "w", "utf-8") as f:
-                    f.write(svg)
-                app.variables.append('''var patternFill_%(p)s = new ol.style.Fill({});
-                        var patternImg_%(p)i = new Image();
-                        patternImg_%(p)i.src = './data/styles/%(filename)s';
-                        patternImg_%(p)i.onload = function(){
-                          var canvas = document.createElement('canvas');
-                          var context = canvas.getContext('2d');
-                          var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
-                          patternFill_%(p)i = new ol.style.Fill({
-                                color: pattern
-                              });
-                          lyr_%(layer)s.changed()
-                        };''' % ({"layer": safeName(layer.name()), "p": exportedStyles,
-                                  "filename": filename}))
-                style = 'fill: patternFill_%i' % exportedStyles
+            sl2 = QgsSvgMarkerSymbolLayerV2()
+            sl2.setPath(sl.svgFilePath())
+            if color is not None:
+                sl2.setFillColor(QColor(255, 204, 0))
+                sl2.setOutlineColor(QColor(255, 204, 0))
             else:
-                style = '''
-                 fill: defaultSelectionFill,
-                 stroke: defaultSelectionStroke
-                 '''
+                sl2.setFillColor(sl.svgFillColor())
+                sl2.setOutlineColor(sl.svgOutlineColor())
+            sl2.setSizeUnit(QgsSymbolV2.Pixel)
+            sl2.setSize(sl.patternWidth())
+            newSymbol = QgsMarkerSymbolV2()
+            newSymbol.appendSymbolLayer(sl2)
+            newSymbol.deleteSymbolLayer(0)
+            img = newSymbol.asImage(QSize(sl.patternWidth(), sl.patternWidth()))
+            path = os.path.join(stylesFolder, "patternFill_%i.png" % exportedStyles)
+            img.save(path)
+            app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
+                    var patternImg_%(p)i = new Image();
+                    patternImg_%(p)i.src = './data/styles/patternFill_%(p)i.png';
+                    patternImg_%(p)i.onload = function(){
+                      var canvas = document.createElement('canvas');
+                      var context = canvas.getContext('2d');
+                      var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
+                      patternFill_%(p)i = new ol.style.Fill({
+                            color: pattern
+                          });
+                      lyr_%(layer)s.changed()
+                    };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
+            style = 'fill: patternFill_%i' % exportedStyles
         else:
             style = ""
         if style:
