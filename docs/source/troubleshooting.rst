@@ -62,14 +62,6 @@ There was an error loading tiles
 To work, OGC layers much be served using Geoserver with CORS/JSONP enabled.
 Currently, other web map servers are not supported.
 
-The web app in crashing Internet Explorer
-.........................................
-
-We have identified a couple of issues using Internet Explorer and EDGE. Using
-a symbol with SVG fills will cause Internet Explorer to crash. Try using the
-Web App in other browsers like Mozilla Firefox or Google Chrome, or remove
-the SVG fill symbol from the layer.
-
 .. _limitations:
 
 Known limitations
@@ -118,7 +110,6 @@ Known limitations
   should use web services for publishing those layers.
 * OGC service layers that are not served by geoserver with CORS/JSONP enabled
   will not render properly.
-* SVG Fills doesn't work in Internet Explorer.
 
 Asking for help
 ---------------
