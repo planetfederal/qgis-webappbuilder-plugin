@@ -166,7 +166,7 @@ def _geomType(geometryType):
     types = {QGis.Point: "Point", QGis.Line: "Line", QGis.Polygon: "Polygon"}
     return types.get(geometryType, "Point")
 
-def layerToJavascript(applayer, settings, title, forPreview):
+def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
     useStrategy = not applayer.singleTile
@@ -214,7 +214,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
-                                timeInfo, popup, jsonp, useStrategy, applayer.showInOverview)
+                                timeInfo, popup, jsonp, useStrategy, showInOverview)
         else:
             if forPreview:
                 source = ""
@@ -247,7 +247,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "selectable": str(applayer.allowSelection).lower(),
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source, "attributes": json.dumps(attributes), "geometryType":geometryType})
-                if applayer.showInOverview:
+                if showInOverview:
                     js += ('''\nvar lyr_%(n)s_overview = new ol.layer.Vector({
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s});''' %  {"n":layerName,"min":
@@ -289,7 +289,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                              "min": minResolution, "max": maxResolution,
                              "hmRadius": hmRadius, "hmRamp": hmRamp,
                              "weight": weight}
-                if applayer.showInOverview:
+                if showInOverview:
                     js += '''\nvar lyr_%(n)s_overview = new ol.layer.Heatmap({
                     source: new ol.source.Vector(%(source)s),
                     %(min)s %(max)s
@@ -325,7 +325,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                  "timeInfo": timeInfo, "id": layer.id(), "popup": popup,
                  "source": source, "attributes": json.dumps(attributes),
                  "geometryType":geometryType})
-                if applayer.showInOverview:
+                if showInOverview:
                     js += ('''\nvar lyr_%(n)s_overview = new ol.layer.Vector({
                     source: new ol.source.Vector(%(source)s),
                     %(min)s %(max)s
@@ -335,7 +335,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
             if forPreview:
                 clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
                 overview = ("lyr_%(n)s_overview%(cs)s.setSource(lyr_%(n)s%(cs)s.getSource());"
-                            % {"n": layerName, "cs": clusterSource} if applayer.showInOverview else "")
+                            % {"n": layerName, "cs": clusterSource} if showInOverview else "")
                 js += '''\n%(n)s_geojson_callback = function(geojson) {
                               lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
                               %(overview)s
@@ -350,7 +350,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
             layers = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
             url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
             styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
-            return '''var lyr_%(n)s = new %(layerClass)s({
+            js = '''var lyr_%(n)s = new %(layerClass)s({
                         opacity: %(opacity)s,
                         timeInfo: %(timeInfo)s,
                         %(min)s %(max)s
@@ -370,6 +370,21 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                 "id": layer.id(), "layerClass": layerClass,
                                 "sourceClass": sourceClass, "tiled": tiled,
                                 "popup": popup, "crs": layer.crs().authid()}
+            if showInOverview:
+                js += '''\nvar lyr_%(n)s_overview = new %(layerClass)s({
+                        opacity: %(opacity)s,
+                        %(min)s %(max)s
+                        source: lyr_%(n)s.getSource(),
+                        title: %(name)s,
+                        id: "%(id)s",
+                        projection: "%(crs)s"
+                      });''' % {"opacity": layerOpacity, "layerClass": layerClass,
+                                "n": layerName, "name": title,
+                                "min": minResolution, "max": maxResolution,
+                                "id": layer.id(), "crs": layer.crs().authid()}
+            
+            return js
+                
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
@@ -378,7 +393,7 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                     extent.xMaximum(), extent.yMaximum())
 
             nodata = [0, 0, 0]
-            return '''var src_%(n)s = new ol.source.ImageStatic({
+            js = '''var src_%(n)s = new ol.source.ImageStatic({
                             url: "./data/%(n)s.png",
                             projection: "%(crs)s",
                             alwaysInRange: true,
@@ -411,6 +426,18 @@ def layerToJavascript(applayer, settings, title, forPreview):
                                   "crs": viewCrs, "timeInfo": timeInfo,
                                   "id": layer.id(), "ndR": nodata[0],
                                   "ndG": nodata[1], "ndB": nodata[2]}
+            if showInOverview:
+                js += '''\nvar lyr_%(n)s_overview = new ol.layer.Image({
+                            opacity: %(opacity)s,
+                            %(min)s %(max)s
+                            title: %(name)s,
+                            id: "%(id)s",
+                            source: raster_%(n)s
+                        });''' % {"opacity": layerOpacity, "n": layerName,
+                                  "min": minResolution, "max": maxResolution,
+                                  "name": title, "id": layer.id()}
+                        
+            return js
 
 def resolveParameterValue(v, folder, name, app):
     expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
