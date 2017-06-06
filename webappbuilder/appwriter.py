@@ -476,7 +476,8 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     progress.setText("Writing layer definitions")
     for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
-        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, forPreview))
+        showInOverview = "overviewmap" in widgets and layer.showInOverview
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, forPreview, showInOverview))
         progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""
