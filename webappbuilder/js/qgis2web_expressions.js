@@ -818,7 +818,10 @@ function fnc_convex_hull(values, context) {
 };
 
 function fnc_difference(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var geom2 = geojsonFromGeometry(values[1]);
+    var diff =  turf.difference(geom, geom2);
+    return geometryFromGeojson(diff);
 };
 
 function fnc_distance(values, context) {
@@ -827,7 +830,7 @@ function fnc_distance(values, context) {
 
 function fnc_intersection(values, context) {
     var geom = geojsonFromGeometry(values[0]);
-    var geom = geojsonFromGeometry(values[1]);
+    var geom2 = geojsonFromGeometry(values[1]);
     var intersect =  turf.intersect(geom, geom2);
     return geometryFromGeojson(intersect);
 };
