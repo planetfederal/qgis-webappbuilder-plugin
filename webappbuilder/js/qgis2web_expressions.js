@@ -1,3 +1,19 @@
+function geojsonFromGeometry(geom){
+    return new ol.format.GeoJSON().writeGeometryObject(geom,
+                        {featureProjection: map.getView().getProjection().getCode(),
+                        dataProjection: "EPSG:4326"});
+
+};
+
+function geometryFromGeojson(geoj) {
+    if (geoj === undefined){
+        return undefined;
+    }
+    return new ol.format.GeoJSON().readFeature(geoj, 
+                        {featureProjection: map.getView().getProjection().getCode(),
+                        dataProjection: "EPSG:4326"}).getGeometry();
+};
+
 function fnc_azimuth(values, context) {
     return false;
 };
@@ -90,18 +106,6 @@ function fnc_min(values, context) {
 function fnc_clamp(values, context) {
     return false;
 };
-
-// Operators
-
-// Record
-
-// String
-
-// TimeManager
-
-// Variables
-
-
 
 function fnc_scale_linear(values, context) {
     return values[3] + ((values[4] - values[3]) * (values[2]-values[0]) / (values[2]- values[1]));
@@ -706,7 +710,7 @@ function fnc_disjoint(values, context) {
 };
 
 function fnc_intersects(values, context) {
-    return false;
+    return fnc_intersection(values, context) != undefined;
 };
 
 function fnc_touches(values, context) {
@@ -734,15 +738,21 @@ function fnc_translate(values, context) {
 };
 
 function fnc_buffer(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var centroid =  turf.buffer(geom, values[1] / 1000.0, "kilometers");
+    return geometryFromGeojson(centroid);
 };
 
 function fnc_centroid(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var centroid =  turf.centroid(geom);
+    return geometryFromGeojson(centroid);
 };
 
 function fnc_point_on_surface(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var pt =  turf.pointOnSurface(geom);
+    return geometryFromGeojson(pt);
 };
 
 function fnc_reverse(values, context) {
@@ -802,7 +812,9 @@ function fnc_is_closed(values, context) {
 };
 
 function fnc_convex_hull(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var convex =  turf.convex(geom);
+    return geometryFromGeojson(convex);
 };
 
 function fnc_difference(values, context) {
@@ -814,7 +826,10 @@ function fnc_distance(values, context) {
 };
 
 function fnc_intersection(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var geom = geojsonFromGeometry(values[1]);
+    var intersect =  turf.intersect(geom, geom2);
+    return geometryFromGeojson(intersect);
 };
 
 function fnc_sym_difference(values, context) {

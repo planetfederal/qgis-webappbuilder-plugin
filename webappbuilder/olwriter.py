@@ -741,7 +741,6 @@ def getLabeling(layer, folder, app, settings):
         js = "%s(labelContext)" % (name)
         js = js.strip()
         labelText = js
-        app.scripts.append('<script src="./resources/js/qgis2web_expressions.js"></script>')
     else:
         labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
 

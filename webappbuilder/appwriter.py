@@ -414,10 +414,9 @@ def writeHtml(appdef, folder, app, progress, filename):
             if not useViewCrs and epsg not in ["3857", "4326"]:
                 app.scripts.append('<script src="./resources/js/proj4.js"></script>')
                 app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-        if layer.type() == layer.VectorLayer and isinstance(layer.rendererV2(), QgsRuleBasedRendererV2):
-            expressionsImport = '<script src="./resources/js/qgis2web_expressions.js"></script>'
-            if expressionsImport not in app.scripts:
-                app.scripts.insert(0, expressionsImport)
+                
+    app.scripts.append('<script src="https://npmcdn.com/@turf/turf@4.4.0/turf.min.js"></script>')
+    app.scripts.append('<script src="./resources/js/qgis2web_expressions.js"></script>')
 
     viewEpsg = viewCrs.split(":")[-1]
     if viewEpsg not in ["3857", "4326"]:
