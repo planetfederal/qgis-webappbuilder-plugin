@@ -909,7 +909,7 @@ def getRGBAColor(color, alpha):
 def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, zIndex=0):
     global exportedStyles
     if symbol is None:
-        return "[]"
+        return []
     styles = []
     alpha = symbol.alpha()
     stylesFolder = os.path.join(folder, "data", "styles")
@@ -947,6 +947,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 style = "image: %s" % getShape(props, alpha, folder, color, app)
             elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
                 sl2 = sl.clone()
+                selected = ""
                 if color is not None:
                     sl2.setFillColor(QColor(255, 204, 0))
                     sl2.setOutlineColor(QColor(255, 204, 0))
@@ -957,6 +958,8 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 newSymbol.deleteSymbolLayer(0)
                 img = newSymbol.asImage(QSize(100, 100))
                 filename, ext = os.path.splitext(os.path.basename(sl.path()))
+                if color is not None:
+                    filename = filename + "_selected"
                 path = os.path.join(stylesFolder, filename + ".png")
                 img.save(path)
                 if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
@@ -1104,11 +1107,8 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             else:
                 style = ""
             if style:
-                if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2):
-                    zIndex += i 
-                else:
-                    zIndex += sl.renderingPass()
-                style = style + ",\nzIndex: %i" % zIndex
+                level = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else sl.renderingPass()
+                style = style + ",\nzIndex: %i" % (zIndex + level)
                 if geometry is not None:
                     style = geometry + style
             styles.append('''new ol.style.Style({
@@ -1117,9 +1117,12 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                             ''' % style)
     return styles
    
-def getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None):
-    styles = _getSymbolAsStyle(symbol, folder, layer, app, color, geometry)
-    return "[ %s]" % ",".join(styles)
+def getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, zIndex=0):
+    styles = _getSymbolAsStyle(symbol, folder, layer, app, color, geometry, zIndex)
+    if styles:
+        return "[ %s]" % ",".join(styles)
+    else:
+        return "[]"
 
 def getShape(props, alpha, folder, color_, app):
     if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
