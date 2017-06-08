@@ -439,15 +439,12 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
                         
             return js
 
-def resolveParameterValue(v, folder, name, app):
+def resolveParameterValue(v, folder, name):
     expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
     try:
         v = float(v)
         return v
     except:
-        qgis2web = '<script src="./resources/js/qgis2web_expressions.js"></script>'
-        if qgis2web not in app.scripts:
-            app.scripts.append(qgis2web)
         name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
         name = compile_to_file(v, name, "OpenLayers3", expFile)
         return "%s(context)" % name
@@ -460,8 +457,6 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     QDir().mkpath(stylesFolder)
     progress.setText("Writing layer styles")
     progress.setProgress(0)
-    qgisLayers = [lay.layer for lay in layers]
-    #mapbox = mapboxgl.toMapbox(qgisLayers, stylesFolder)
 
     for ilayer, appLayer in enumerate(layers):
         cannotWriteStyle = False
@@ -469,7 +464,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
         layer = appLayer.layer
         if layer.type() != layer.VectorLayer:
             continue
-        defs = ""#var mapboxStyle = %s;\n" % json.dumps(mapbox, indent=4, sort_keys=True)
+        defs = ""
         context = '''var context = {
             feature: feature,
             variables: {},
@@ -751,7 +746,7 @@ def getLabeling(layer, folder, app, settings):
             active, isExpr, expr = ddSize.split("~~")[:3]
             useExpr = active == "1" and isExpr == "1"
         if useExpr:
-            size = resolveParameterValue(expr, folder, "fontsize", app)
+            size = resolveParameterValue(expr, folder, "fontsize")
         else:
             size = float(layer.customProperty("labeling/fontSize"))
         if str(layer.customProperty("labeling/fontSizeInMapUnits")).lower() == "true":
@@ -911,7 +906,7 @@ def getRGBAColor(color, alpha):
     return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
 
-def getSymbolAsStyle(symbol, folder, layer, app, color = None):
+def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, zIndex=0):
     global exportedStyles
     if symbol is None:
         return "[]"
@@ -923,182 +918,194 @@ def getSymbolAsStyle(symbol, folder, layer, app, color = None):
         props = sl.properties()
         exportedStyles += 1
         def property(n):
-            return resolveParameterValue(props[n], folder, n, app)
-        if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
-            style = "image: %s" % getShape(props, alpha, folder, color, app)
-        elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
-            sl2 = sl.clone()
-            if color is not None:
-                sl2.setFillColor(QColor(255, 204, 0))
-                sl2.setOutlineColor(QColor(255, 204, 0))
-            sl2.setSizeUnit(QgsSymbolV2.Pixel)
-            sl2.setSize(100)
-            newSymbol = QgsMarkerSymbolV2()
-            newSymbol.appendSymbolLayer(sl2)
-            newSymbol.deleteSymbolLayer(0)
-            img = newSymbol.asImage(QSize(100, 100))
-            filename, ext = os.path.splitext(os.path.basename(sl.path()))
-            path = os.path.join(stylesFolder, filename + ".png")
-            img.save(path)
-            if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
-                size = property("size_dd_expression")
-            else:
-                size = sl.size()
-            style = "image: %s" % getIcon(path, size, sl.sizeUnit())
-        elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
-            if color is None:
-                if 'color' in props:
-                    strokeColor = getRGBAColor(props["color"], alpha)
+            return resolveParameterValue(props[n], folder, n)
+        if isinstance(sl, QgsGeometryGeneratorSymbolLayerV2):
+            expr = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
+            geom = 'geometry: %s,\n' % expr
+            zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
+            styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
+        else:
+            if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
+                style = "image: %s" % getShape(props, alpha, folder, color, app)
+            elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+                sl2 = sl.clone()
+                if color is not None:
+                    sl2.setFillColor(QColor(255, 204, 0))
+                    sl2.setOutlineColor(QColor(255, 204, 0))
+                sl2.setSizeUnit(QgsSymbolV2.Pixel)
+                sl2.setSize(100)
+                newSymbol = QgsMarkerSymbolV2()
+                newSymbol.appendSymbolLayer(sl2)
+                newSymbol.deleteSymbolLayer(0)
+                img = newSymbol.asImage(QSize(100, 100))
+                filename, ext = os.path.splitext(os.path.basename(sl.path()))
+                path = os.path.join(stylesFolder, filename + ".png")
+                img.save(path)
+                if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
+                    size = property("size_dd_expression")
                 else:
-                    strokeColor = getRGBAColor(props["line_color"], alpha)
-            else:
-                strokeColor = color
-            if "width_dd_useexpr" in props and int(props["width_dd_useexpr"]) and int(props["width_dd_active"]):
-                lineWidth = property("width_dd_expression")
-            else:
-                lineWidth = property("line_width")
-            lineWidthUnits = props["line_width_unit"]
-            if 'penstyle' in props:
-                lineStyle = props["penstyle"]
-            else:
-                lineStyle = props["line_style"]
-            offsetValue = sl.offset()
-            if offsetValue:
-                offset = '''geometry: function(feature){
-                              var start = feature.getGeometry().getFirstCoordinate();
-                              var end = feature.getGeometry().getLastCoordinate();
-                              var dx = end[0] - start[0];
-                              var dy = end[1] - start[1];
-                              var rotation = Math.atan2(dy, dx);
-                              var offset = %s;
-                              var x = Math.sin(rotation) * offset;
-                              var y = Math.cos(rotation) * offset;
-                              var geom = feature.getGeometry().clone()
-                              geom.translate(x, y);
-                              return geom;
-                            },''' % (str(offsetValue))
-            else:
-                offset = ""
-            style = "%s stroke: %s" % (offset, getStrokeStyle(strokeColor, lineStyle,
-                                                              lineWidth, lineWidthUnits))
-        elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
-            if props["style"] == "no":
-                fillAlpha = 0
-            else:
-                fillAlpha = alpha
-            if color is None:
-                fillColor =  getRGBAColor(props["color"], fillAlpha)
-                if 'color_border' in props:
-                    borderColor =  getRGBAColor(props["color_border"], alpha)
+                    size = sl.size()
+                style = "image: %s" % getIcon(path, size, sl.sizeUnit())
+            elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
+                if color is None:
+                    if 'color' in props:
+                        strokeColor = getRGBAColor(props["color"], alpha)
+                    else:
+                        strokeColor = getRGBAColor(props["line_color"], alpha)
                 else:
-                    borderColor =  getRGBAColor(props["outline_color"], alpha)
-            else:
-                borderColor = color
-                fillColor = color
-            if 'style_border' in props:
-                borderStyle = props["style_border"]
-            else:
-                borderStyle = props["outline_style"]
-
-            if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"])
-                    and int(props["width_border_dd_active"])):
-                borderWidth = property("width_border_dd_expression")
-            else:
-                borderWidth = property("outline_width")
-            borderWidthUnits = props["outline_width_unit"]
-            x, y = sl.offset().x(), sl.offset().y()
-            if x or y:
-                offset = '''geometry: function(feature){
-                                var geom = feature.getGeometry().clone()
-                                geom.translate(%s, %s);
-                                return geom;
-                            },\n''' % (str(x), str(y))
-            else:
-                offset = ""
-            style = ('''%s stroke: %s,
-                        fill: %s''' %
-                    (offset, getStrokeStyle(borderColor, borderStyle, borderWidth, borderWidthUnits),
-                     getFillStyle(fillColor)))
-        elif isinstance(sl, QgsGradientFillSymbolLayerV2):
-            style = ('''fill: new ol.style.Fill({
-                            color: function() {
-                               var canvas = document.createElement('canvas');
-                               var context = canvas.getContext('2d');
-                               var grad = context.createLinearGradient(0,0,1000,0);
-                               grad.addColorStop(0, %s);
-                               grad.addColorStop(1, %s);
-                               return grad;
-                            }()
-                     })''' %  (getRGBAColor(props["color"], alpha),
-                                 getRGBAColor(props["gradient_color2"], alpha)))
-
-        elif isinstance(sl, QgsPointPatternFillSymbolLayer):
-            if color is None:
-                qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
-                img = sl.subSymbol().asImage(qsize)
-                symbolPath = os.path.join(stylesFolder, "pointPattern_%i.png" % exportedStyles)
-                img.save(symbolPath)
+                    strokeColor = color
+                if "width_dd_useexpr" in props and int(props["width_dd_useexpr"]) and int(props["width_dd_active"]):
+                    lineWidth = property("width_dd_expression")
+                else:
+                    lineWidth = property("line_width")
+                lineWidthUnits = props["line_width_unit"]
+                if 'penstyle' in props:
+                    lineStyle = props["penstyle"]
+                else:
+                    lineStyle = props["line_style"]
+                offsetValue = sl.offset()
+                if offsetValue and geometry is None:
+                    geometry = '''geometry: function(feature){
+                                  var start = feature.getGeometry().getFirstCoordinate();
+                                  var end = feature.getGeometry().getLastCoordinate();
+                                  var dx = end[0] - start[0];
+                                  var dy = end[1] - start[1];
+                                  var rotation = Math.atan2(dy, dx);
+                                  var offset = %s;
+                                  var x = Math.sin(rotation) * offset;
+                                  var y = Math.cos(rotation) * offset;
+                                  var geom = feature.getGeometry().clone()
+                                  geom.translate(x, y);
+                                  return geom;
+                                },\n''' % (str(offsetValue))
+                style = "stroke: %s" % getStrokeStyle(strokeColor, lineStyle,
+                                                      lineWidth, lineWidthUnits)
+            elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
+                if props["style"] == "no":
+                    fillAlpha = 0
+                else:
+                    fillAlpha = alpha
+                if color is None:
+                    fillColor =  getRGBAColor(props["color"], fillAlpha)
+                    if 'color_border' in props:
+                        borderColor =  getRGBAColor(props["color_border"], alpha)
+                    else:
+                        borderColor =  getRGBAColor(props["outline_color"], alpha)
+                else:
+                    borderColor = color
+                    fillColor = color
+                if 'style_border' in props:
+                    borderStyle = props["style_border"]
+                else:
+                    borderStyle = props["outline_style"]
+    
+                if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"])
+                        and int(props["width_border_dd_active"])):
+                    borderWidth = property("width_border_dd_expression")
+                else:
+                    borderWidth = property("outline_width")
+                borderWidthUnits = props["outline_width_unit"]
+                x, y = sl.offset().x(), sl.offset().y()
+                if (x or y) and geometry is None:
+                    geometry = '''geometry: function(feature){
+                                    var geom = feature.getGeometry().clone()
+                                    geom.translate(%s, %s);
+                                    return geom;
+                                },\n''' % (str(x), str(y))
+                style = ('''stroke: %s,
+                            fill: %s''' %
+                        (getStrokeStyle(borderColor, borderStyle, borderWidth, borderWidthUnits),
+                         getFillStyle(fillColor)))
+            elif isinstance(sl, QgsGradientFillSymbolLayerV2):
+                style = ('''fill: new ol.style.Fill({
+                                color: function() {
+                                   var canvas = document.createElement('canvas');
+                                   var context = canvas.getContext('2d');
+                                   var grad = context.createLinearGradient(0,0,1000,0);
+                                   grad.addColorStop(0, %s);
+                                   grad.addColorStop(1, %s);
+                                   return grad;
+                                }()
+                         })''' %  (getRGBAColor(props["color"], alpha),
+                                     getRGBAColor(props["gradient_color2"], alpha)))
+    
+            elif isinstance(sl, QgsPointPatternFillSymbolLayer):
+                if color is None:
+                    qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
+                    img = sl.subSymbol().asImage(qsize)
+                    symbolPath = os.path.join(stylesFolder, "pointPattern_%i.png" % exportedStyles)
+                    img.save(symbolPath)
+                    app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
+                        var patternImg_%(p)i = new Image();
+                        patternImg_%(p)i.src = './data/styles/pointPattern_%(p)i.png';
+                        patternImg_%(p)i.onload = function(){
+                          var canvas = document.createElement('canvas');
+                          var context = canvas.getContext('2d');
+                          var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
+                          patternFill_%(p)i = new ol.style.Fill({
+                                color: pattern
+                              });
+                          lyr_%(layer)s.changed()
+                        };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
+                    style = 'fill: patternFill_%i' % exportedStyles
+                else:
+                    style = '''
+                     fill: defaultSelectionFill,
+                     stroke: defaultSelectionStroke
+                     '''
+            elif isinstance(sl, QgsSVGFillSymbolLayer):
+                sl2 = QgsSvgMarkerSymbolLayerV2()
+                sl2.setPath(sl.svgFilePath())
+                if color is not None:
+                    sl2.setFillColor(QColor(255, 204, 0))
+                    sl2.setOutlineColor(QColor(255, 204, 0))
+                else:
+                    sl2.setFillColor(sl.svgFillColor())
+                    sl2.setOutlineColor(sl.svgOutlineColor())
+                sl2.setSizeUnit(QgsSymbolV2.Pixel)
+                sl2.setSize(sl.patternWidth())
+                newSymbol = QgsMarkerSymbolV2()
+                newSymbol.appendSymbolLayer(sl2)
+                newSymbol.deleteSymbolLayer(0)
+                img = newSymbol.asImage(QSize(sl.patternWidth(), sl.patternWidth()))
+                path = os.path.join(stylesFolder, "patternFill_%i.png" % exportedStyles)
+                img.save(path)
                 app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
-                    var patternImg_%(p)i = new Image();
-                    patternImg_%(p)i.src = './data/styles/pointPattern_%(p)i.png';
-                    patternImg_%(p)i.onload = function(){
-                      var canvas = document.createElement('canvas');
-                      var context = canvas.getContext('2d');
-                      var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
-                      patternFill_%(p)i = new ol.style.Fill({
-                            color: pattern
-                          });
-                      lyr_%(layer)s.changed()
-                    };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
+                        var patternImg_%(p)i = new Image();
+                        patternImg_%(p)i.src = './data/styles/patternFill_%(p)i.png';
+                        patternImg_%(p)i.onload = function(){
+                          var canvas = document.createElement('canvas');
+                          var context = canvas.getContext('2d');
+                          var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
+                          patternFill_%(p)i = new ol.style.Fill({
+                                color: pattern
+                              });
+                          lyr_%(layer)s.changed()
+                        };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
                 style = 'fill: patternFill_%i' % exportedStyles
             else:
-                style = '''
-                 fill: defaultSelectionFill,
-                 stroke: defaultSelectionStroke
-                 '''
-        elif isinstance(sl, QgsSVGFillSymbolLayer):
-            sl2 = QgsSvgMarkerSymbolLayerV2()
-            sl2.setPath(sl.svgFilePath())
-            if color is not None:
-                sl2.setFillColor(QColor(255, 204, 0))
-                sl2.setOutlineColor(QColor(255, 204, 0))
-            else:
-                sl2.setFillColor(sl.svgFillColor())
-                sl2.setOutlineColor(sl.svgOutlineColor())
-            sl2.setSizeUnit(QgsSymbolV2.Pixel)
-            sl2.setSize(sl.patternWidth())
-            newSymbol = QgsMarkerSymbolV2()
-            newSymbol.appendSymbolLayer(sl2)
-            newSymbol.deleteSymbolLayer(0)
-            img = newSymbol.asImage(QSize(sl.patternWidth(), sl.patternWidth()))
-            path = os.path.join(stylesFolder, "patternFill_%i.png" % exportedStyles)
-            img.save(path)
-            app.variables.append('''var patternFill_%(p)i = new ol.style.Fill({});
-                    var patternImg_%(p)i = new Image();
-                    patternImg_%(p)i.src = './data/styles/patternFill_%(p)i.png';
-                    patternImg_%(p)i.onload = function(){
-                      var canvas = document.createElement('canvas');
-                      var context = canvas.getContext('2d');
-                      var pattern = context.createPattern(patternImg_%(p)i, 'repeat');
-                      patternFill_%(p)i = new ol.style.Fill({
-                            color: pattern
-                          });
-                      lyr_%(layer)s.changed()
-                    };''' % ({"layer": safeName(layer.name()), "p": exportedStyles}))
-            style = 'fill: patternFill_%i' % exportedStyles
-        else:
-            style = ""
-        if style:
-            style = style + ",\nzIndex: %i" % sl.renderingPass()
-        styles.append('''new ol.style.Style({
-                            %s
-                        })
-                        ''' % style)
+                style = ""
+            if style:
+                if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2):
+                    zIndex += i 
+                else:
+                    zIndex += sl.renderingPass()
+                style = style + ",\nzIndex: %i" % zIndex
+                if geometry is not None:
+                    style = geometry + style
+            styles.append('''new ol.style.Style({
+                                %s
+                            })
+                            ''' % style)
+    return styles
+   
+def getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None):
+    styles = _getSymbolAsStyle(symbol, folder, layer, app, color, geometry)
     return "[ %s]" % ",".join(styles)
 
 def getShape(props, alpha, folder, color_, app):
     if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
-        size = resolveParameterValue(props["size_dd_expression"], folder, "size_dd_expression", app)
+        size = resolveParameterValue(props["size_dd_expression"], folder, "size_dd_expression")
     else:
         size = str(props["size"])
     units = props["size_unit"]
