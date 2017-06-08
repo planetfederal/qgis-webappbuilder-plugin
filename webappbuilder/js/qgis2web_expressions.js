@@ -637,16 +637,16 @@ function fnc_m(values, context) {
 };
 
 function fnc_point_n(values, context) {
-    return values[0].getCoordinates()[values[1]]
+    return new ol.geom.Point(values[0].getCoordinates()[values[1]]);
 };
 
 function fnc_start_point(values, context) {
-    return values[0].getCoordinates()[0]
+    return new ol.geom.Point(values[0].getCoordinates()[0]);
 };
 
 function fnc_end_point(values, context) {
     coords = values[0].getCoordinates()
-    return coords[coords.length - 1]
+    return new ol.geom.Point(coords[coords.length - 1]);
 };
 
 function fnc_nodes_to_points(values, context) {
