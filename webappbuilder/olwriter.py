@@ -924,6 +924,24 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             geom = 'geometry: %s,\n' % expr
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
+        elif isinstance(sl, QgsArrowSymbolLayer):
+            if "arrow_width_dd_useexpr" in props and int(props["arrow_width_dd_useexpr"]) and int(props["arrow_width_dd_active"]):
+                lineWidth = property("arrow_width_dd_expression")
+            else:
+                lineWidth = property("line_width")
+            lineWidthUnits = sl.arrowWidthUnit()
+            lineWidth = "kilometersFromPixels(%s) " % getMeasure(lineWidth, lineWidthUnits)
+            if sl.isCurved():
+                curve = "bezier(feature.getGeometry())"
+            else:
+                curve = "feature.getGeometry()"
+            geom = '''geometry: function(feature){
+                            var curve = %s;
+                            var width = %s;
+                            return geometryFromGeojson(turf.buffer(curve, width));
+                        },\n''' % (curve, lineWidth)
+            zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
+            styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         else:
             if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
                 style = "image: %s" % getShape(props, alpha, folder, color, app)
@@ -979,7 +997,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                   return geom;
                                 },\n''' % (str(offsetValue))
                 style = "stroke: %s" % getStrokeStyle(strokeColor, lineStyle,
-                                                      lineWidth, lineWidthUnits)
+                                             lineWidth, lineWidthUnits)
             elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
                 if props["style"] == "no":
                     fillAlpha = 0

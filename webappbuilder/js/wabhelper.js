@@ -1,4 +1,9 @@
 
+function kilometersFromPixels(pixels){
+    return pixels * map.getView().getResolution() 
+        * ol.proj.METERS_PER_UNIT[map.getView().getProjection().getUnits()] / 1000.0;
+}
+
 function pixelsFromMapUnits(size) {
     return size / map.getView().getResolution() * unitsConversion;
 };
@@ -150,3 +155,29 @@ function setTextPathStyle (layer, style){
     layer.textPathStyle_ = style;
     layer.changed();
 }
+
+
+
+function geojsonFromGeometry(geom){
+    return {"type": "Feature",
+            "properties": {},
+            "geometry": new ol.format.GeoJSON().writeGeometryObject(geom,
+                        {featureProjection: map.getView().getProjection().getCode(),
+                        dataProjection: "EPSG:4326"})
+            };
+
+};
+
+function geometryFromGeojson(geoj) {
+    if (geoj === undefined){
+        return undefined;
+    }
+    return new ol.format.GeoJSON().readFeature(geoj, 
+                        {featureProjection: map.getView().getProjection().getCode(),
+                        dataProjection: "EPSG:4326"}).getGeometry();
+};
+
+function bezier(line){
+    var geom = geojsonFromGeometry(line);
+    return turf.bezier(geom);
+};

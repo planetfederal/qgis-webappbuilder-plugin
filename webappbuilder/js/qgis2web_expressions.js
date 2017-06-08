@@ -1,19 +1,3 @@
-function geojsonFromGeometry(geom){
-    return new ol.format.GeoJSON().writeGeometryObject(geom,
-                        {featureProjection: map.getView().getProjection().getCode(),
-                        dataProjection: "EPSG:4326"});
-
-};
-
-function geometryFromGeojson(geoj) {
-    if (geoj === undefined){
-        return undefined;
-    }
-    return new ol.format.GeoJSON().readFeature(geoj, 
-                        {featureProjection: map.getView().getProjection().getCode(),
-                        dataProjection: "EPSG:4326"}).getGeometry();
-};
-
 function fnc_azimuth(values, context) {
     return false;
 };
@@ -108,7 +92,7 @@ function fnc_clamp(values, context) {
 };
 
 function fnc_scale_linear(values, context) {
-    return values[3] + ((values[4] - values[3]) * (values[2]-values[0]) / (values[2]- values[1]));
+    return values[3] + ((values[4] - values[3]) * (values[0]-values[1]) / (values[2]- values[1]));
 };
 
 function fnc_scale_exp(values, context) {
@@ -739,8 +723,8 @@ function fnc_translate(values, context) {
 
 function fnc_buffer(values, context) {
     var geom = geojsonFromGeometry(values[0]);
-    var centroid =  turf.buffer(geom, values[1] / 1000.0, "kilometers");
-    return geometryFromGeojson(centroid);
+    var buffer =  turf.buffer(geom, values[1] / 1000.0, "kilometers");
+    return geometryFromGeojson(buffer);
 };
 
 function fnc_centroid(values, context) {
