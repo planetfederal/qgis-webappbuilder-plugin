@@ -179,5 +179,5 @@ function geometryFromGeojson(geoj) {
 
 function bezier(line){
     var geom = geojsonFromGeometry(line);
-    return turf.bezier(geom);
+    return geometryFromGeojson(turf.bezier(geom));
 };

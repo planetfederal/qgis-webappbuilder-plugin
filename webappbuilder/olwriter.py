@@ -928,9 +928,21 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             if "arrow_width_dd_useexpr" in props and int(props["arrow_width_dd_useexpr"]) and int(props["arrow_width_dd_active"]):
                 lineWidth = property("arrow_width_dd_expression")
             else:
-                lineWidth = property("line_width")
-            lineWidthUnits = sl.arrowWidthUnit()
-            lineWidth = "kilometersFromPixels(%s) " % getMeasure(lineWidth, lineWidthUnits)
+                lineWidth = property("arrow_width")
+            lineWidthUnit = sl.arrowWidthUnit()
+            lineWidth = "kilometersFromPixels(%s) " % getMeasure(lineWidth, lineWidthUnit)
+            if "head_length_dd_useexpr" in props and int(props["head_length_dd_useexpr"]) and int(props["head_length_dd_active"]):
+                headLength = property("head_length_dd_expression")
+            else:
+                headLength = property("head_length")
+            headLengthUnit = sl.headLengthUnit()
+            headLength = "kilometersFromPixels(%s) * 1000" % getMeasure(headLength, headLengthUnit)
+            if "head_thickness_dd_useexpr" in props and int(props["head_thickness_dd_useexpr"]) and int(props["head_thickness_dd_active"]):
+                headThickness = property("head_thickness_dd_expression")
+            else:
+                headThickness = property("head_thickness")
+            headThicknessUnit = sl.headThicknessUnit()
+            headThickness = "kilometersFromPixels(%s) * 1000" % getMeasure(headThickness, headThicknessUnit)
             if sl.isCurved():
                 curve = "bezier(feature.getGeometry())"
             else:
@@ -938,8 +950,29 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             geom = '''geometry: function(feature){
                             var curve = %s;
                             var width = %s;
-                            return geometryFromGeojson(turf.buffer(curve, width));
-                        },\n''' % (curve, lineWidth)
+                            if (width > 0){
+                                var length = %s;
+                                var thickness = width * 1000 + %s   
+                                var turfCurve = geojsonFromGeometry(curve);
+                                var dist = turf.lineDistance(turfCurve) - length / 1000.0;
+                                var shortCurve = geometryFromGeojson(turf.lineSliceAlong(turfCurve, 0, dist))
+                                var center = shortCurve.getLastCoordinate();
+                                var last = shortCurve.getCoordinates()[shortCurve.getCoordinates().length - 2]
+                                var tip = curve.getLastCoordinate();
+                                var dx = center[0] - last[0];
+                                var dy = center[1] - last[1];
+                                var angle = Math.atan2(dy, dx) - (Math.PI / 2.0);
+                                var p1 = [center[0] + Math.cos(angle) * thickness,  center[1] + Math.sin(angle) * thickness];
+                                var p2 = [center[0] - Math.cos(angle) * thickness,  center[1] - Math.sin(angle) * thickness];
+                                var arrow = new ol.geom.Polygon([[tip, p1, p2, tip]]);
+                                var buffer = turf.buffer(geojsonFromGeometry(shortCurve), width);
+                                var union = turf.union(geojsonFromGeometry(arrow), buffer);
+                                return geometryFromGeojson(union);
+                            }
+                            else{
+                                return null;
+                            }
+                        },\n''' % (curve, lineWidth, headLength, headThickness)
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         else:
@@ -947,7 +980,6 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 style = "image: %s" % getShape(props, alpha, folder, color, app)
             elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
                 sl2 = sl.clone()
-                selected = ""
                 if color is not None:
                     sl2.setFillColor(QColor(255, 204, 0))
                     sl2.setOutlineColor(QColor(255, 204, 0))

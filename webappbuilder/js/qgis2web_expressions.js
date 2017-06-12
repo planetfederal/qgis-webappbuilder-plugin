@@ -718,7 +718,9 @@ function fnc_within(values, context) {
 };
 
 function fnc_translate(values, context) {
-    return false;
+    geom = values[0].clone();
+    var translated = geom.translate(values[1], values[2]);
+    return translated
 };
 
 function fnc_buffer(values, context) {
