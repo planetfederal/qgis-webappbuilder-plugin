@@ -382,9 +382,9 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
                                 "n": layerName, "name": title,
                                 "min": minResolution, "max": maxResolution,
                                 "id": layer.id(), "crs": layer.crs().authid()}
-            
+
             return js
-                
+
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
             transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
@@ -436,7 +436,7 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
                         });''' % {"opacity": layerOpacity, "n": layerName,
                                   "min": minResolution, "max": maxResolution,
                                   "name": title, "id": layer.id()}
-                        
+
             return js
 
 def resolveParameterValue(v, folder, name):
@@ -920,8 +920,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
         def property(n):
             return resolveParameterValue(props[n], folder, n)
         if isinstance(sl, QgsGeometryGeneratorSymbolLayerV2):
-            expr = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
-            geom = 'geometry: %s,\n' % expr
+            geom = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         elif isinstance(sl, QgsArrowSymbolLayer):
@@ -930,7 +929,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             else:
                 lineWidth = property("arrow_width")
             lineWidthUnit = sl.arrowWidthUnit()
-            lineWidth = "kilometersFromPixels(%s) " % getMeasure(lineWidth, lineWidthUnit)
+            lineWidth = "kilometersFromPixels(%s) * 1000.0 / 2.0 " % getMeasure(lineWidth, lineWidthUnit)
             if "head_length_dd_useexpr" in props and int(props["head_length_dd_useexpr"]) and int(props["head_length_dd_active"]):
                 headLength = property("head_length_dd_expression")
             else:
@@ -943,16 +942,18 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 headThickness = property("head_thickness")
             headThicknessUnit = sl.headThicknessUnit()
             headThickness = "kilometersFromPixels(%s) * 1000" % getMeasure(headThickness, headThicknessUnit)
-            if sl.isCurved():
-                curve = "bezier(feature.getGeometry())"
+            if geometry:
+                curve = geometry
             else:
                 curve = "feature.getGeometry()"
-            geom = '''geometry: function(feature){
+            if sl.isCurved():
+                curve = "bezier(%s)" % curve
+            geom = '''function(feature){
                             var curve = %s;
                             var width = %s;
                             if (width > 0){
                                 var length = %s;
-                                var thickness = width * 1000 + %s   
+                                var thickness = width + %s
                                 var turfCurve = geojsonFromGeometry(curve);
                                 var dist = turf.lineDistance(turfCurve) - length / 1000.0;
                                 var shortCurve = geometryFromGeojson(turf.lineSliceAlong(turfCurve, 0, dist))
@@ -965,14 +966,14 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                 var p1 = [center[0] + Math.cos(angle) * thickness,  center[1] + Math.sin(angle) * thickness];
                                 var p2 = [center[0] - Math.cos(angle) * thickness,  center[1] - Math.sin(angle) * thickness];
                                 var arrow = new ol.geom.Polygon([[tip, p1, p2, tip]]);
-                                var buffer = turf.buffer(geojsonFromGeometry(shortCurve), width);
-                                var union = turf.union(geojsonFromGeometry(arrow), buffer);
-                                return geometryFromGeojson(union);
+                                var buffer = fnc_buffer([shortCurve, width], {});
+                                var union = fnc_union([arrow, buffer], {});
+                                return union;
                             }
                             else{
                                 return null;
                             }
-                        },\n''' % (curve, lineWidth, headLength, headThickness)
+                        }''' % (curve, lineWidth, headLength, headThickness)
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         else:
@@ -1018,7 +1019,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                     lineStyle = props["line_style"]
                 offsetValue = sl.offset()
                 if offsetValue and geometry is None:
-                    geometry = '''geometry: function(feature){
+                    geometry = '''function(feature){
                                   var start = feature.getGeometry().getFirstCoordinate();
                                   var end = feature.getGeometry().getLastCoordinate();
                                   var dx = end[0] - start[0];
@@ -1030,7 +1031,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                   var geom = feature.getGeometry().clone()
                                   geom.translate(x, y);
                                   return geom;
-                                },\n''' % (str(offsetValue))
+                                }''' % (str(offsetValue))
                 style = "stroke: %s" % getStrokeStyle(strokeColor, lineStyle,
                                              lineWidth, lineWidthUnits)
             elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
@@ -1051,7 +1052,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                     borderStyle = props["style_border"]
                 else:
                     borderStyle = props["outline_style"]
-    
+
                 if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"])
                         and int(props["width_border_dd_active"])):
                     borderWidth = property("width_border_dd_expression")
@@ -1060,11 +1061,11 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 borderWidthUnits = props["outline_width_unit"]
                 x, y = sl.offset().x(), sl.offset().y()
                 if (x or y) and geometry is None:
-                    geometry = '''geometry: function(feature){
+                    geometry = '''function(feature){
                                     var geom = feature.getGeometry().clone()
                                     geom.translate(%s, %s);
                                     return geom;
-                                },\n''' % (str(x), str(y))
+                                }''' % (str(x), str(y))
                 style = ('''stroke: %s,
                             fill: %s''' %
                         (getStrokeStyle(borderColor, borderStyle, borderWidth, borderWidthUnits),
@@ -1081,7 +1082,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                 }()
                          })''' %  (getRGBAColor(props["color"], alpha),
                                      getRGBAColor(props["gradient_color2"], alpha)))
-    
+
             elif isinstance(sl, QgsPointPatternFillSymbolLayer):
                 if color is None:
                     qsize = QSize(int(math.floor(float(props["distance_x"]))), int(math.floor(float(props["distance_y"]))))
@@ -1142,13 +1143,13 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 level = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else sl.renderingPass()
                 style = style + ",\nzIndex: %i" % (zIndex + level)
                 if geometry is not None:
-                    style = geometry + style
+                    style = "geometry: %s,\n%s" % (geometry, style)
             styles.append('''new ol.style.Style({
                                 %s
                             })
                             ''' % style)
     return styles
-   
+
 def getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, zIndex=0):
     styles = _getSymbolAsStyle(symbol, folder, layer, app, color, geometry, zIndex)
     if styles:

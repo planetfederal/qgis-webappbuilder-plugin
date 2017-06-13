@@ -724,15 +724,17 @@ function fnc_translate(values, context) {
 };
 
 function fnc_buffer(values, context) {
-    var geom = geojsonFromGeometry(values[0]);
-    var buffer =  turf.buffer(geom, values[1] / 1000.0, "kilometers");
-    return geometryFromGeojson(buffer);
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var buffer = geom.buffer(values[1]);
+    return parser.write(buffer);
 };
 
 function fnc_centroid(values, context) {
-    var geom = geojsonFromGeometry(values[0]);
-    var centroid =  turf.centroid(geom);
-    return geometryFromGeojson(centroid);
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var coord = jsts.algorithm.Centroid.getCentroid(geom)
+    return new ol.geom.Point([coord.x, coord.y])
 };
 
 function fnc_point_on_surface(values, context) {
@@ -798,16 +800,18 @@ function fnc_is_closed(values, context) {
 };
 
 function fnc_convex_hull(values, context) {
-    var geom = geojsonFromGeometry(values[0]);
-    var convex =  turf.convex(geom);
-    return geometryFromGeojson(convex);
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var hull = jsts.algorithm.ConvexHull.getConvexHull(geom)
+    return parser.write(hull)
 };
 
 function fnc_difference(values, context) {
-    var geom = geojsonFromGeometry(values[0]);
-    var geom2 = geojsonFromGeometry(values[1]);
-    var diff =  turf.difference(geom, geom2);
-    return geometryFromGeojson(diff);
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.difference(geom2);
+    return parser.write(diff);
 };
 
 function fnc_distance(values, context) {
@@ -815,10 +819,11 @@ function fnc_distance(values, context) {
 };
 
 function fnc_intersection(values, context) {
-    var geom = geojsonFromGeometry(values[0]);
-    var geom2 = geojsonFromGeometry(values[1]);
-    var intersect =  turf.intersect(geom, geom2);
-    return geometryFromGeojson(intersect);
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.intersection(geom2);
+    return parser.write(diff);
 };
 
 function fnc_sym_difference(values, context) {
@@ -830,7 +835,11 @@ function fnc_combine(values, context) {
 };
 
 function fnc_union(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.union(geom2);
+    return parser.write(diff);
 };
 
 function fnc_geom_to_wkt(values, context) {

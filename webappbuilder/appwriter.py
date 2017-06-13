@@ -52,7 +52,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
         shutil.copy(os.path.join(sdkFolder, "full-debug.js"), dst)
 
     QDir().mkpath(os.path.join(dst, "data"))
-    
+
     jsFolder = os.path.join(os.path.dirname(__file__), "js")
     jsDstFolder = os.path.join(dst, "resources","js")
     shutil.copytree(jsFolder, jsDstFolder)
@@ -410,9 +410,10 @@ def writeHtml(appdef, folder, app, progress, filename):
             if not useViewCrs and epsg not in ["3857", "4326"]:
                 app.scripts.append('<script src="./resources/js/proj4.js"></script>')
                 app.scripts.append('<script src="http://epsg.io/%s.js"></script>' % epsg)
-    
-    app.scripts.append('<script src="./resources/js/wabhelper.js"></script>')            
-    app.scripts.append('<script src="https://npmcdn.com/@turf/turf@4.4.0/turf.min.js"></script>')
+
+    app.scripts.append('<script src="./resources/js/wabhelper.js"></script>')
+    app.scripts.append('<script src="./resources/js/turf.min.js"></script>')
+    app.scripts.append('<script src="https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.4.0/jsts.min.js"></script>')
     app.scripts.append('<script src="./resources/js/qgis2web_expressions.js"></script>')
 
 

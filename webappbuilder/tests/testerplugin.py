@@ -80,7 +80,7 @@ def functionalTests():
         test.addStep("Verify web app in browser", prestep=lambda: _openComparison(n))
         return test
 
-    comparisonTests = ["points", "points2", "osm", "polygons", "labels"]
+    comparisonTests = ["points", "points2", "osm", "polygons", "labels", "arrows"]
     for t in comparisonTests:
         tests.append(_comparisonTest(t))
 
