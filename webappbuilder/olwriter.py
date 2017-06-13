@@ -441,13 +441,9 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
 
 def resolveParameterValue(v, folder, name):
     expFile = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
-    try:
-        v = float(v)
-        return v
-    except:
-        name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
-        name = compile_to_file(v, name, "OpenLayers3", expFile)
-        return "%s(context)" % name
+    name = name + ''.join(i for i in str(uuid.uuid4()) if i.isdigit())
+    name = compile_to_file(v, name, "OpenLayers3", expFile)
+    return "%s(context)" % name
 
 def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
     SELECTION_YELLOW = '"rgba(255, 204, 0, 1)"'
@@ -918,28 +914,23 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
         props = sl.properties()
         exportedStyles += 1
         def property(n):
-            return resolveParameterValue(props[n], folder, n)
+            if ("%s_dd_useexpr" % n) in props and int(props["%s_dd_useexpr" % n]) and int(props["%s_dd_active" % n]):
+                n = "%s_dd_expression" % n
+                return resolveParameterValue(props[n], folder, n)
+            else:
+                return props[n]
         if isinstance(sl, QgsGeometryGeneratorSymbolLayerV2):
             geom = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         elif isinstance(sl, QgsArrowSymbolLayer):
-            if "arrow_width_dd_useexpr" in props and int(props["arrow_width_dd_useexpr"]) and int(props["arrow_width_dd_active"]):
-                lineWidth = property("arrow_width_dd_expression")
-            else:
-                lineWidth = property("arrow_width")
+            lineWidth = property("arrow_width")
             lineWidthUnit = sl.arrowWidthUnit()
             lineWidth = "kilometersFromPixels(%s) * 1000.0 / 2.0 " % getMeasure(lineWidth, lineWidthUnit)
-            if "head_length_dd_useexpr" in props and int(props["head_length_dd_useexpr"]) and int(props["head_length_dd_active"]):
-                headLength = property("head_length_dd_expression")
-            else:
-                headLength = property("head_length")
+            headLength = property("head_length")
             headLengthUnit = sl.headLengthUnit()
             headLength = "kilometersFromPixels(%s) * 1000" % getMeasure(headLength, headLengthUnit)
-            if "head_thickness_dd_useexpr" in props and int(props["head_thickness_dd_useexpr"]) and int(props["head_thickness_dd_active"]):
-                headThickness = property("head_thickness_dd_expression")
-            else:
-                headThickness = property("head_thickness")
+            headThickness = property("head_thickness")
             headThicknessUnit = sl.headThicknessUnit()
             headThickness = "kilometersFromPixels(%s) * 1000" % getMeasure(headThickness, headThicknessUnit)
             if geometry:
@@ -995,28 +986,16 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                     filename = filename + "_selected"
                 path = os.path.join(stylesFolder, filename + ".png")
                 img.save(path)
-                if "size_dd_expression" in props and int(props["size_dd_useexpr"]) and int(props["size_dd_active"]):
-                    size = property("size_dd_expression")
-                else:
-                    size = sl.size()
+                size = property("size")
                 style = "image: %s" % getIcon(path, size, sl.sizeUnit())
             elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
                 if color is None:
-                    if 'color' in props:
-                        strokeColor = getRGBAColor(props["color"], alpha)
-                    else:
-                        strokeColor = getRGBAColor(props["line_color"], alpha)
+                    strokeColor = getRGBAColor(props["line_color"], alpha)
                 else:
                     strokeColor = color
-                if "width_dd_useexpr" in props and int(props["width_dd_useexpr"]) and int(props["width_dd_active"]):
-                    lineWidth = property("width_dd_expression")
-                else:
-                    lineWidth = property("line_width")
+                lineWidth = property("line_width")
                 lineWidthUnits = props["line_width_unit"]
-                if 'penstyle' in props:
-                    lineStyle = props["penstyle"]
-                else:
-                    lineStyle = props["line_style"]
+                lineStyle = property("line_style")
                 offsetValue = sl.offset()
                 if offsetValue and geometry is None:
                     geometry = '''function(feature){
@@ -1041,23 +1020,12 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                     fillAlpha = alpha
                 if color is None:
                     fillColor =  getRGBAColor(props["color"], fillAlpha)
-                    if 'color_border' in props:
-                        borderColor =  getRGBAColor(props["color_border"], alpha)
-                    else:
-                        borderColor =  getRGBAColor(props["outline_color"], alpha)
+                    borderColor =  getRGBAColor(props["outline_color"], alpha)
                 else:
                     borderColor = color
                     fillColor = color
-                if 'style_border' in props:
-                    borderStyle = props["style_border"]
-                else:
-                    borderStyle = props["outline_style"]
-
-                if ("width_border_dd_useexpr" in props and int(props["width_border_dd_useexpr"])
-                        and int(props["width_border_dd_active"])):
-                    borderWidth = property("width_border_dd_expression")
-                else:
-                    borderWidth = property("outline_width")
+                borderStyle = property("outline_style")
+                borderWidth = property("outline_width")
                 borderWidthUnits = props["outline_width_unit"]
                 x, y = sl.offset().x(), sl.offset().y()
                 if (x or y) and geometry is None:
@@ -1230,6 +1198,7 @@ def getStrokeStyle(color, style, width, units="MM"):
         color = '"rgba(0,0,0,0.0)"'
     else:
         width = getMeasure(width, units)
+        print style
         if style != "solid":
             dash = "[6]"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %s})" % (color, dash, width)
