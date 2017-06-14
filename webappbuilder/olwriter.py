@@ -891,16 +891,31 @@ def getLabeling(layer, folder, app, settings):
     return s, followLines
 
 def getRGBAColor(color, alpha):
+    isExpr = False
     try:
         r,g,b,a = color.split(",")
     except:
         color = color.lstrip('#')
-        lv = len(color)
-        r,g,b = tuple(str(int(color[i:i + lv // 3], 16)) for i in range(0, lv, lv // 3))
-        a = 255.0
-    a = float(a) / 255.0
-    return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
+        try:
+            lv = len(color)
+            r,g,b = tuple(str(int(color[i:i + lv // 3], 16)) for i in range(0, lv, lv // 3))
+            a = 255.0
+        except:
+            isExpr = True
+    if isExpr:
+        return "getRGBAColor(%s, %s)" % (color, str(alpha))
+    else:
+        a = float(a) / 255.0
+        return '"rgba(%s)"' % ",".join([r, g, b, str(alpha * a)])
 
+
+
+def symbolProperty(n, folder, props):
+    if ("%s_dd_useexpr" % n) in props and int(props["%s_dd_useexpr" % n]) and int(props["%s_dd_active" % n]):
+        n = "%s_dd_expression" % n
+        return resolveParameterValue(props[n], folder, n)
+    else:
+        return props[n]
 
 def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, zIndex=0):
     global exportedStyles
@@ -913,24 +928,18 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         exportedStyles += 1
-        def property(n):
-            if ("%s_dd_useexpr" % n) in props and int(props["%s_dd_useexpr" % n]) and int(props["%s_dd_active" % n]):
-                n = "%s_dd_expression" % n
-                return resolveParameterValue(props[n], folder, n)
-            else:
-                return props[n]
         if isinstance(sl, QgsGeometryGeneratorSymbolLayerV2):
             geom = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         elif isinstance(sl, QgsArrowSymbolLayer):
-            lineWidth = property("arrow_width")
+            lineWidth = symbolProperty("arrow_width", folder, props)
             lineWidthUnit = sl.arrowWidthUnit()
             lineWidth = "kilometersFromPixels(%s) * 1000.0 / 2.0 " % getMeasure(lineWidth, lineWidthUnit)
-            headLength = property("head_length")
+            headLength = symbolProperty("head_length", folder, props)
             headLengthUnit = sl.headLengthUnit()
             headLength = "kilometersFromPixels(%s) * 1000" % getMeasure(headLength, headLengthUnit)
-            headThickness = property("head_thickness")
+            headThickness = symbolProperty("head_thickness", folder, props)
             headThicknessUnit = sl.headThicknessUnit()
             headThickness = "kilometersFromPixels(%s) * 1000" % getMeasure(headThickness, headThicknessUnit)
             if geometry:
@@ -942,28 +951,9 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             geom = '''function(feature){
                             var curve = %s;
                             var width = %s;
-                            if (width > 0){
-                                var length = %s;
-                                var thickness = width + %s
-                                var turfCurve = geojsonFromGeometry(curve);
-                                var dist = turf.lineDistance(turfCurve) - length / 1000.0;
-                                var shortCurve = geometryFromGeojson(turf.lineSliceAlong(turfCurve, 0, dist))
-                                var center = shortCurve.getLastCoordinate();
-                                var last = shortCurve.getCoordinates()[shortCurve.getCoordinates().length - 2]
-                                var tip = curve.getLastCoordinate();
-                                var dx = center[0] - last[0];
-                                var dy = center[1] - last[1];
-                                var angle = Math.atan2(dy, dx) - (Math.PI / 2.0);
-                                var p1 = [center[0] + Math.cos(angle) * thickness,  center[1] + Math.sin(angle) * thickness];
-                                var p2 = [center[0] - Math.cos(angle) * thickness,  center[1] - Math.sin(angle) * thickness];
-                                var arrow = new ol.geom.Polygon([[tip, p1, p2, tip]]);
-                                var buffer = fnc_buffer([shortCurve, width], {});
-                                var union = fnc_union([arrow, buffer], {});
-                                return union;
-                            }
-                            else{
-                                return null;
-                            }
+                            var length = %s;
+                            var thickness = width + %s;
+                            return arrowPolygon(curve, width, length, thickness);
                         }''' % (curve, lineWidth, headLength, headThickness)
             zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
@@ -986,16 +976,16 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                     filename = filename + "_selected"
                 path = os.path.join(stylesFolder, filename + ".png")
                 img.save(path)
-                size = property("size")
+                size = symbolProperty("size", folder, props)
                 style = "image: %s" % getIcon(path, size, sl.sizeUnit())
             elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
                 if color is None:
-                    strokeColor = getRGBAColor(props["line_color"], alpha)
+                    strokeColor = getRGBAColor(symbolProperty("line_color", folder, props), alpha)
                 else:
                     strokeColor = color
-                lineWidth = property("line_width")
+                lineWidth = symbolProperty("line_width", folder, props)
                 lineWidthUnits = props["line_width_unit"]
-                lineStyle = property("line_style")
+                lineStyle = symbolProperty("line_style", folder, props)
                 offsetValue = sl.offset()
                 if offsetValue and geometry is None:
                     geometry = '''function(feature){
@@ -1019,13 +1009,13 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 else:
                     fillAlpha = alpha
                 if color is None:
-                    fillColor =  getRGBAColor(props["color"], fillAlpha)
-                    borderColor =  getRGBAColor(props["outline_color"], alpha)
+                    fillColor =  getRGBAColor(symbolProperty("color", folder, props), fillAlpha)
+                    borderColor =  getRGBAColor(symbolProperty("outline_color", folder, props), alpha)
                 else:
                     borderColor = color
                     fillColor = color
-                borderStyle = property("outline_style")
-                borderWidth = property("outline_width")
+                borderStyle = symbolProperty("outline_style", folder, props)
+                borderWidth = symbolProperty("outline_width", folder, props)
                 borderWidthUnits = props["outline_width_unit"]
                 x, y = sl.offset().x(), sl.offset().y()
                 if (x or y) and geometry is None:
@@ -1048,8 +1038,8 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                    grad.addColorStop(1, %s);
                                    return grad;
                                 }()
-                         })''' %  (getRGBAColor(props["color"], alpha),
-                                     getRGBAColor(props["gradient_color2"], alpha)))
+                         })''' %  (getRGBAColor(symbolProperty("color", folder, props), alpha),
+                                     getRGBAColor(symbolProperty("gradient_color2", folder, props), alpha)))
 
             elif isinstance(sl, QgsPointPatternFillSymbolLayer):
                 if color is None:
@@ -1133,9 +1123,9 @@ def getShape(props, alpha, folder, color_, app):
     units = props["size_unit"]
     fullSize = getMeasure(size + "/ 2.0", units)
     halfSize = getMeasure(size + "/ 4.0", units)
-    color =  color_ or getRGBAColor(props["color"], alpha)
-    outlineColor = color_ or getRGBAColor(props["outline_color"], alpha)
-    outlineWidth = float(props["outline_width"])
+    color =  color_ or getRGBAColor(symbolProperty("color", folder, props), alpha)
+    outlineColor = color_ or getRGBAColor(symbolProperty("outline_color", folder, props), alpha)
+    outlineWidth = float(symbolProperty("outline_width", folder, props))
     shape = props["name"]
     if "star" in shape.lower():
         return getRegularShape(color, 5,  fullSize, halfSize, outlineColor, outlineWidth)

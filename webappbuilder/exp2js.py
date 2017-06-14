@@ -87,7 +87,7 @@ def handle_condition(node, mapLib):
         whenpart =  QgsExpression(when)
         thenpart = QgsExpression(then)
         whenjs = walkExpression(whenpart.rootNode(), mapLib)
-        thenjs = walkExpression(thenpart.rootNode(), mapLib)
+        thenjs = "null" if thenpart.rootNode() is None else walkExpression(thenpart.rootNode(), mapLib)
         style = "if" if count == 1 else "else if"
         js += """
         %s %s {
