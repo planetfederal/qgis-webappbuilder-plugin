@@ -59,21 +59,24 @@ function %s(context) {
 
 
 def walkExpression(node, mapLib):
-    if node.nodeType() == QgsExpression.ntBinaryOperator:
-        jsExp = handle_binary(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntUnaryOperator:
-        jsExp = handle_unary(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntInOperator:
-        jsExp = handle_in(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntFunction:
-        jsExp = handle_function(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntLiteral:
-        jsExp = handle_literal(node)
-    elif node.nodeType() == QgsExpression.ntColumnRef:
-        jsExp = handle_columnRef(node, mapLib)
-    elif node.nodeType() == QgsExpression.ntCondition:
-        jsExp = handle_condition(node,mapLib)
-    return jsExp
+    try:
+        if node.nodeType() == QgsExpression.ntBinaryOperator:
+            jsExp = handle_binary(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntUnaryOperator:
+            jsExp = handle_unary(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntInOperator:
+            jsExp = handle_in(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntFunction:
+            jsExp = handle_function(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntLiteral:
+            jsExp = handle_literal(node)
+        elif node.nodeType() == QgsExpression.ntColumnRef:
+            jsExp = handle_columnRef(node, mapLib)
+        elif node.nodeType() == QgsExpression.ntCondition:
+            jsExp = handle_condition(node,mapLib)
+        return jsExp
+    except:
+        return "true"
 
 
 def handle_condition(node, mapLib):
@@ -87,7 +90,7 @@ def handle_condition(node, mapLib):
         whenpart =  QgsExpression(when)
         thenpart = QgsExpression(then)
         whenjs = walkExpression(whenpart.rootNode(), mapLib)
-        thenjs = "null" if thenpart.rootNode() is None else walkExpression(thenpart.rootNode(), mapLib)
+        thenjs = walkExpression(thenpart.rootNode(), mapLib)
         style = "if" if count == 1 else "else if"
         js += """
         %s %s {
