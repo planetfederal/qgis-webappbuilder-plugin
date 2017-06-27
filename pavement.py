@@ -183,7 +183,7 @@ def install_devtools():
 
 @task
 def install_tools():
-    """Install development tools"""
+    """Install tools"""
     try:
         import pip
     except:
