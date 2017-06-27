@@ -34,20 +34,47 @@ widgets = ["aboutpanel", "attributestable", "attribution",
            "selectiontools", "timeline", "drawfeature", "zoomcontrols", "zoomslider",
            "zoomtolatlon"]
 
+widgetTestAbout = {"attributestable": "Open Attributes table and verify that it shows up and contains feature data",
+             "attribution": "Check that the attribution widgets is shown in the lower right corner",
+            "bookmarks": "Open the bookmarks menu and select one of the bookmarks. Verify that it zooms to it.",
+            "bookmarks": "Click on the 'next' and 'back' arrows in the bookmarks panel to verify that the map moves accordingly",
+            "charttool": "Open the Chart panel, clicking on the corresponding button. It will be empty. Activate the selection tool and select a few features in the map. Verify that a char is created and shown.",
+            "fullscreen": "Verify that the fullscreen button is added and it works correctly.",
+            "geocoding": "Search for 'Raleigh' in the geocoding panel and verify that selecting a search results causes the map to zoom",
+            "geolocation": "Click on the geolocation icon and verify it zooms to you current location.",
+            "help": "Verify that there is a help button and that it opens the web app help page",
+            "homebutton": "Verify that there is a home button. Move the map view to a different location, and then click on the home button. Verify it return to the original extent.",
+            "layerslist": "Verify that the layers list is correctly added and has content",
+            "legend": "Verify that the legend is correctly added and has content",
+            "links": "Verify links menu is added. Click on 'City of Raleigh' link and verify it opens in a new tab",
+            "measuretools": "Verify that measure tools are added and working correctly.",
+            "mouseposition": "Verify that the mouse position widget is located at the top-left corner, and that it changes its content as you move the mouse over the map.",
+            "overviewmap": "Verify that the overview map is shown in the lower left corner",
+            "print": "Verify print menu is available and contains two options. Chec that both have a correct thumbnail image",
+            "query": "Open the Query panel. Select the 'Building' layer and enter the following filter: 'SHAPE_2_AR > 20000'. Click on 'New' and verify it selects some features in the map",
+            "scalebar": "Verify scalebar is displayed in the lower part of the map.",
+            "selectiontools": "Verify Selection tools are available and they work",
+            "timeline": "Move timeline slider and verify that feature appear and disappear",
+            "zoomcontrols": "Verify zoom controls are available and work correctly.",
+            "zoomslider": "Verify zoom slider is available and work correctly."}
+
 def loadTestProject(name = "base"):
     projectFile = os.path.join(os.path.dirname(__file__), "data", name + ".qgs")
     currentProjectFile  = QgsProject.instance().fileName()
     if os.path.normpath(currentProjectFile) != os.path.normpath(projectFile):
         iface.addProject(projectFile)
 
-def testAppdef(name, process = True):
+def testAppdef(name, process=True, aboutContent=None):
     filename = os.path.join(os.path.dirname(__file__), "data", name + ".appdef")
     appdef = loadAppdef(filename)
+    if aboutContent:
+        content = "<h1>Test instructions</h1><p>%s</p>" % aboutContent
+        appdef["Widgets"]["aboutpanel"] = {"Parameters":{"content": content}}
     if process:
         processAppdef(appdef)
     return appdef
 
-def openWAB(appdef = None):
+def openWAB(appdef=None):
     initialize()
     dlg = MainDialog(appdef, parent=iface.mainWindow())
     dlg.open()
@@ -83,10 +110,8 @@ class SilentProgress():
     def setProgress(_, i):
         pass
 
-def createAppFromTestAppdef(appdefName, checkApp=False, preview=True):
-    appdef = testAppdef(appdefName)
-    if checkApp:
-        problems = checkAppCanBeCreated(appdef)
+def createAppFromTestAppdef(appdefName, preview=True, aboutContent=None):
+    appdef = testAppdef(appdefName, True, aboutContent)
     folder = tempFolderInTempFolder("webappbuilder")
     writeWebApp(appdef, folder, preview, SilentProgress())
     return folder

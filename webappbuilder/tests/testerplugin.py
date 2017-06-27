@@ -12,7 +12,7 @@ import appdefvaliditytest
 import sdkservicetest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
-                                       _resetSdkEndpoint, widgets,
+                                       _resetSdkEndpoint, widgets, widgetTestAbout,
                                        setNetworkTimeout, resetNetworkTimeout,
                                        getWABDialog, hideWAB)
 from qgis.utils import iface
@@ -37,9 +37,9 @@ def functionalTests():
     except:
         return []
 
-    def _createWebApp(n, checkApp=False, preview=True):
+    def _createWebApp(n, preview=True, aboutContent=None):
         global webAppFolder
-        webAppFolder = createAppFromTestAppdef(n, checkApp, preview)
+        webAppFolder = createAppFromTestAppdef(n, preview, aboutContent)
 
     def _test(n):
         test = Test("Verify '%s' tutorial" % n)
@@ -54,18 +54,20 @@ def functionalTests():
 
 
     def _testWidget(n):
+        aboutContent = widgetTestAbout.get(n, None)
         test = Test("Verify '%s' widget" % n)
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
-        test.addStep("Creating web app", lambda: _createWebApp(n, preview=True))
+        test.addStep("Creating web app", lambda: _createWebApp(n, True, aboutContent))
         test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
                     "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
         return test
 
     for w in widgets:
         for i in ["", "2", "3"]:
-            f = os.path.join(appdefFolder, "%s%s.appdef" % (w, i))
+            testName = w+i
+            f = os.path.join(appdefFolder, "%s.appdef" % testName)
             if os.path.exists(f):
-                tests.append(_testWidget(w))
+                tests.append(_testWidget(testName))
 
     def _openComparison(n):
         webbrowser.open_new("file:///" + os.path.dirname(__file__).replace("\\","/")
@@ -95,8 +97,7 @@ def functionalTests():
     unsupportedSymbologyTest = Test("Verify warning for unsupported symbology")
     unsupportedSymbologyTest.addStep("Load project", lambda: loadTestProject())
     unsupportedSymbologyTest.addStep("Open WAB", openWAB)
-    unsupportedSymbologyTest.addStep("Click on 'Preview'. Verify a warning about unsupported symbology is shown.\n"
-                         "Verify it shows a warning.")
+    unsupportedSymbologyTest.addStep("Click on 'Preview'. Verify a warning about unsupported symbology is shown.")
     unsupportedSymbologyTest.setCleanup(closeWAB)
     tests.append(unsupportedSymbologyTest)
 

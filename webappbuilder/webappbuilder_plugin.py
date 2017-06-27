@@ -29,8 +29,6 @@ class WebAppBuilderPlugin:
             from qgistester.tests import addTestModule
             addTestModule(testerplugin, "Web App Builder")
         except:
-            import traceback
-            traceback.print_exc()
             pass
         readSettings()
 
