@@ -78,7 +78,7 @@ class Bookmarks(WebAppWidget):
 
     def checkProblems(self, appdef, problems, forPreview):
         if len(self._parameters["bookmarks"]) == 0:
-            problems.append("Bookmarks widget added, but no bookmarks have been defined"
+            problems.append("Bookmarks widget added, but no bookmarks have been defined. "
                         "You should configure the bookmarks widget and define at least one bookmark")
 
 
