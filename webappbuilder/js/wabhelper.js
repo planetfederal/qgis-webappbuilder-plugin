@@ -180,24 +180,29 @@ function bezier(line){
 };
 
 function arrowPolygon(curve,width,length, thickness){
-    if (width > 0){
-        var turfCurve = geojsonFromGeometry(curve);
-        var dist = turf.lineDistance(turfCurve) - length / 1000.0;
-        var shortCurve = geometryFromGeojson(turf.lineSliceAlong(turfCurve, 0, dist))
-        var center = shortCurve.getLastCoordinate();
-        var last = shortCurve.getCoordinates()[shortCurve.getCoordinates().length - 2]
-        var tip = curve.getLastCoordinate();
-        var dx = center[0] - last[0];
-        var dy = center[1] - last[1];
-        var angle = Math.atan2(dy, dx) - (Math.PI / 2.0);
-        var p1 = [center[0] + Math.cos(angle) * thickness,  center[1] + Math.sin(angle) * thickness];
-        var p2 = [center[0] - Math.cos(angle) * thickness,  center[1] - Math.sin(angle) * thickness];
-        var arrow = new ol.geom.Polygon([[tip, p1, p2, tip]]);
-        var buffer = fnc_buffer([shortCurve, width], {});
-        var union = fnc_union([arrow, buffer], {});
-        return union;
+    try{
+        if (width > 0){
+            var turfCurve = geojsonFromGeometry(curve);
+            var dist = turf.lineDistance(turfCurve) - length / 1000.0;
+            var shortCurve = geometryFromGeojson(turf.lineSliceAlong(turfCurve, 0, dist))
+            var center = shortCurve.getLastCoordinate();
+            var last = shortCurve.getCoordinates()[shortCurve.getCoordinates().length - 2]
+            var tip = curve.getLastCoordinate();
+            var dx = center[0] - last[0];
+            var dy = center[1] - last[1];
+            var angle = Math.atan2(dy, dx) - (Math.PI / 2.0);
+            var p1 = [center[0] + Math.cos(angle) * thickness,  center[1] + Math.sin(angle) * thickness];
+            var p2 = [center[0] - Math.cos(angle) * thickness,  center[1] - Math.sin(angle) * thickness];
+            var arrow = new ol.geom.Polygon([[tip, p1, p2, tip]]);
+            var buffer = fnc_buffer([shortCurve, width], {});
+            var union = fnc_union([arrow, buffer], {});
+            return union;
+        }
+        else{
+            return null;
+        }
     }
-    else{
+    catch(e){
         return null;
     }
 }
