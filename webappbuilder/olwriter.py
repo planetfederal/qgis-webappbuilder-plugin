@@ -1126,39 +1126,40 @@ def getShape(props, alpha, folder, color_, app):
     color =  color_ or getRGBAColor(symbolProperty("color", folder, props), alpha)
     outlineColor = color_ or getRGBAColor(symbolProperty("outline_color", folder, props), alpha)
     outlineWidth = float(symbolProperty("outline_width", folder, props))
+    outlineStyle = symbolProperty("outline_style", folder, props)
     shape = props["name"]
     if "star" in shape.lower():
-        return getRegularShape(color, 5,  fullSize, halfSize, outlineColor, outlineWidth)
+        return getRegularShape(color, 5,  fullSize, halfSize, outlineColor, outlineWidth, outlineStyle)
     elif "triangle" in shape.lower():
-        return getRegularShape(color, 3,  fullSize, None, outlineColor, outlineWidth)
+        return getRegularShape(color, 3,  fullSize, None, outlineColor, outlineWidth, outlineStyle)
     elif "diamond" == shape.lower():
-        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth)
+        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth, outlineStyle)
     elif "pentagon" == shape.lower():
-        return getRegularShape(color, 5,  fullSize, None, outlineColor, outlineWidth)
-    elif "rectangle" == shape.lower():
-        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth, 3.14159 / 4.0)
+        return getRegularShape(color, 5,  fullSize, None, outlineColor, outlineWidth, outlineStyle)
+    elif shape.lower() in ["rectangle", "square"]:
+        return getRegularShape(color, 4,  fullSize, None, outlineColor, outlineWidth, outlineStyle, 3.14159 / 4.0)
     elif "cross" == shape.lower():
-        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth)
+        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth, outlineStyle)
     elif "cross2" == shape.lower():
-        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth, 3.14159 / 4.0)
+        return getRegularShape(color, 4,  fullSize, 0, outlineColor, outlineWidth, outlineStyle, 3.14159 / 4.0)
     else:
-        return getCircle(color, fullSize, outlineColor, outlineWidth)
+        return getCircle(color, fullSize, outlineColor, outlineWidth, outlineStyle)
 
-def getCircle(color, size, outlineColor, outlineWidth):
+def getCircle(color, size, outlineColor, outlineWidth, outlineStyle):
     return ("new ol.style.Circle({radius: %s, stroke: %s, fill: %s})" %
-                (str(size), getStrokeStyle(outlineColor, "solid", outlineWidth),
+                (str(size), getStrokeStyle(outlineColor, outlineStyle, outlineWidth),
                  getFillStyle(color)))
 
-def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth, angle = 0):
+def getRegularShape(color, points, radius1, radius2, outlineColor, outlineWidth, outlineStyle, angle = 0):
     if radius2 is None:
         return ("new ol.style.RegularShape({points: %s, radius: %s, stroke: %s, fill: %s, angle: %s})" %
                 (str(points), str(radius1),
-                 getStrokeStyle(outlineColor, "solid", outlineWidth),
+                 getStrokeStyle(outlineColor, outlineStyle, outlineWidth),
                  getFillStyle(color), str(angle)))
     else:
         return ("new ol.style.RegularShape({points: %s, radius1: %s, radius2: %s, stroke: %s, fill: %s, angle: %s})" %
                 (str(points), str(radius1), str(radius2),
-                 getStrokeStyle(outlineColor, "solid", outlineWidth),
+                 getStrokeStyle(outlineColor, outlineStyle, outlineWidth),
                  getFillStyle(color), angle))
 
 def getIcon(path, size, units):

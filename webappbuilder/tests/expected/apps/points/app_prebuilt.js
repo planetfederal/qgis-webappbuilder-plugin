@@ -28,13 +28,13 @@ var defaultSelectionStroke = new ol.style.Stroke({
                         var value = '';
                         
                         function rules_points(value) {
-                            ruleStyles = [];
+                            var ruleStyles = [];
                             // Start of if blocks and style check logic
-                            matchFound = false;
+                            var matchFound = false;
                             if (pointsrule0_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(5.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(5) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
@@ -43,14 +43,14 @@ var defaultSelectionStroke = new ol.style.Stroke({
                   src: "./data/styles/plane.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule1_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(30.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(30) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
@@ -59,14 +59,14 @@ zIndex: 0
                   src: "./data/styles/amenity=airport.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule2_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(5.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(5) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
@@ -75,142 +75,142 @@ zIndex: 0
                   src: "./data/styles/landuse_coniferous.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule3_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(10/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,1.0)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(10/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,1.0)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ,new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(0,0,0,1.0)"})}),
+                            })
+                            ,new ol.style.Style({
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(0,0,0,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule4_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(154,25,240,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(154,25,240,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule5_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(4/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"})}),
+                                image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(4/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"}), angle: 0.7853975}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule6_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(202,109,108,1.0)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(202,109,108,1.0)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule7_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(43,86,228,1.0)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(43,86,228,1.0)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule8_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(211,236,141,1.0)"}), angle: 0.7853975}),
+                                image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(211,236,141,1.0)"}), angle: 0.7853975}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule9_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(224,126,165,1.0)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(224,126,165,1.0)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule10_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 5, radius1: pixelsFromMm(4/ 2.0), radius2: pixelsFromMm(4/ 4.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 5, radius1: pixelsFromMm(4/ 2.0), radius2: pixelsFromMm(4/ 4.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(227,26,28,1.0)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule11_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(20/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(70,205,171,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(20/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(70,205,171,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule12_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(5/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(3.0)}), fill: new ol.style.Fill({color: "rgba(47,219,56,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(5/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(3.0)}), fill: new ol.style.Fill({color: "rgba(47,219,56,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule13_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(11/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(173,30,216,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(11/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: [6], width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(173,30,216,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule14_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,38,241,1.0)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(32,217,19,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,38,241,1.0)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(32,217,19,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: size_dd_expression664281249679431789799641_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression05937559448197203993_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
 zIndex: 1
-                        })
-                        ,new ol.style.Style({
-                            image: new ol.style.Circle({radius: size_dd_expression689806345333010876659_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
+                            })
+                            ,new ol.style.Style({
+                                image: new ol.style.Circle({radius: size_dd_expression15490147374429463818514_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression79927052462887498944230_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression768878408524776499649_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule18_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMapUnits(1/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(192,81,229,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMapUnits(1/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(192,81,229,1.0)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule19_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMapUnits(2.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMapUnits(2) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
@@ -219,8 +219,8 @@ zIndex: 0
                   src: "./data/styles/accommodation_camping.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                             if (!matchFound) {
@@ -244,199 +244,199 @@ zIndex: 0
                         var value = '';
                         
                         function rules_points(value) {
-                            ruleStyles = [];
+                            var ruleStyles = [];
                             // Start of if blocks and style check logic
-                            matchFound = false;
+                            var matchFound = false;
                             if (pointsrule0_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(5.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(5) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
                   size:[100,100],
-                  src: "./data/styles/plane.png",
+                  src: "./data/styles/plane_selected.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule1_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(30.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(30) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
                   size:[100,100],
-                  src: "./data/styles/amenity=airport.png",
+                  src: "./data/styles/amenity=airport_selected.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule2_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMm(5.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMm(5) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
                   size:[100,100],
-                  src: "./data/styles/landuse_coniferous.png",
+                  src: "./data/styles/landuse_coniferous_selected.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule3_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(10/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(10/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ,new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                            })
+                            ,new ol.style.Style({
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule4_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule5_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(4/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(4/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0.7853975}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule6_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 4, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule7_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule8_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0.7853975}),
+                                image: new ol.style.RegularShape({points: 4, radius1: pixelsFromMm(2/ 2.0), radius2: 0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0.7853975}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule9_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 3, radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule10_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.RegularShape({points: 5, radius1: pixelsFromMm(4/ 2.0), radius2: pixelsFromMm(4/ 4.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
+                                image: new ol.style.RegularShape({points: 5, radius1: pixelsFromMm(4/ 2.0), radius2: pixelsFromMm(4/ 4.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"}), angle: 0}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule11_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(20/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(20/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule12_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(5/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(3.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(5/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(3.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule13_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(11/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(11/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: [6], width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule14_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(2/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(1.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: size_dd_expression38874189844079872448988_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression296816830440827103627_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 1
-                        })
-                        ,new ol.style.Style({
-                            image: new ol.style.Circle({radius: size_dd_expression8825543554059140830358_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                            })
+                            ,new ol.style.Style({
+                                image: new ol.style.Circle({radius: size_dd_expression93407304499725925032_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression5552287407620752302_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression0243209549847564755157_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule18_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Circle({radius: pixelsFromMapUnits(1/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMapUnits(1/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                     if (pointsrule19_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                            image: new ol.style.Icon({
-                  scale: pixelsFromMapUnits(2.0) / 100.0,
+                                image: new ol.style.Icon({
+                  scale: pixelsFromMapUnits(2) / 100.0,
                   anchorOrigin: 'top-left',
                   anchorXUnits: 'fraction',
                   anchorYUnits: 'fraction',
                   anchor: [0.5, 0.5],
                   size:[100,100],
-                  src: "./data/styles/accommodation_camping.png",
+                  src: "./data/styles/accommodation_camping_selected.png",
             }),
 zIndex: 0
-                        })
-                        ]);
+                            })
+                            ]);
                       matchFound = true;
                     }
                             if (!matchFound) {
@@ -467,36 +467,36 @@ zIndex: 0
                                  ];
                         var allStyles = [];
                         
-        var labelContext = {
-            feature: feature,
-            variables: {},
-            layer: 'lyr_labels'
-        };
-        if (feature.get("text") !== null) {
-            var labelText = String(feature.get("text"));
-        } else {
-            var labelText = "";
-        }
-        var key = value + "_" + labelText + "_" + String(resolution);
-        if (!textStyleCache_labels[key]){
-            var size = 12.0 * 2;
-            var font = 'normal normal ' + String(size) + 'px "MS Shell Dlg 2",sans-serif'
-            var text = new ol.style.Text({
-                  font: font,
-                  text: labelText,
-                  fill: new ol.style.Fill({
-                    color: "rgba(0, 0, 0, 255)"
-                  }),
-                  textBaseline: "middle",
-                  textAlign: "start",
-                  rotation: -0.0,
-                  offsetX: 0,
-                  offsetY: 0 
-                });
-            textStyleCache_labels[key] = new ol.style.Style({zIndex: 1000, text: text});
-        }
-        allStyles.push(textStyleCache_labels[key]);
-        
+            var labelContext = {
+                feature: feature,
+                variables: {},
+                layer: 'lyr_labels'
+            };
+            if (feature.get("text") !== null) {
+                var labelText = String(feature.get("text"));
+            } else {
+                var labelText = "";
+            }
+            var key = value + "_" + labelText + "_" + String(resolution);
+            if (!textStyleCache_labels[key]){
+                var size = 12.0 * 2;
+                var font = 'normal normal ' + String(size) + 'px "MS Shell Dlg 2",sans-serif'
+                var text = new ol.style.Text({
+                      font: font,
+                      text: labelText,
+                      fill: new ol.style.Fill({
+                        color: "rgba(0, 0, 0, 255)"
+                      }),
+                      textBaseline: "middle",
+                      textAlign: "start",
+                      rotation: -0.0,
+                      offsetX: 0.0,
+                      offsetY: 0.0 
+                    });
+                textStyleCache_labels[key] = new ol.style.Style({zIndex: 1000, text: text});
+            }
+            allStyles.push(textStyleCache_labels[key]);
+            
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
@@ -512,36 +512,36 @@ zIndex: 0
                                  ];
                         var allStyles = [];
                         
-        var labelContext = {
-            feature: feature,
-            variables: {},
-            layer: 'lyr_labels'
-        };
-        if (feature.get("text") !== null) {
-            var labelText = String(feature.get("text"));
-        } else {
-            var labelText = "";
-        }
-        var key = value + "_" + labelText + "_" + String(resolution);
-        if (!textStyleCache_labels[key]){
-            var size = 12.0 * 2;
-            var font = 'normal normal ' + String(size) + 'px "MS Shell Dlg 2",sans-serif'
-            var text = new ol.style.Text({
-                  font: font,
-                  text: labelText,
-                  fill: new ol.style.Fill({
-                    color: "rgba(0, 0, 0, 255)"
-                  }),
-                  textBaseline: "middle",
-                  textAlign: "start",
-                  rotation: -0.0,
-                  offsetX: 0,
-                  offsetY: 0 
-                });
-            textStyleCache_labels[key] = new ol.style.Style({zIndex: 1000, text: text});
-        }
-        allStyles.push(textStyleCache_labels[key]);
-        
+            var labelContext = {
+                feature: feature,
+                variables: {},
+                layer: 'lyr_labels'
+            };
+            if (feature.get("text") !== null) {
+                var labelText = String(feature.get("text"));
+            } else {
+                var labelText = "";
+            }
+            var key = value + "_" + labelText + "_" + String(resolution);
+            if (!textStyleCache_labels[key]){
+                var size = 12.0 * 2;
+                var font = 'normal normal ' + String(size) + 'px "MS Shell Dlg 2",sans-serif'
+                var text = new ol.style.Text({
+                      font: font,
+                      text: labelText,
+                      fill: new ol.style.Fill({
+                        color: "rgba(0, 0, 0, 255)"
+                      }),
+                      textBaseline: "middle",
+                      textAlign: "start",
+                      rotation: -0.0,
+                      offsetX: 0.0,
+                      offsetY: 0.0 
+                    });
+                textStyleCache_labels[key] = new ol.style.Style({zIndex: 1000, text: text});
+            }
+            allStyles.push(textStyleCache_labels[key]);
+            
                         allStyles.push.apply(allStyles, style);
                         return allStyles;
                     };
@@ -565,13 +565,9 @@ var lyr_points = new ol.layer.Vector({
                     attributes: ["n"],
                     geometryType: "Point"
                 });
-var lyr_points_overview = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                     
-                    style: style_points});
 points_geojson_callback = function(geojson) {
                               lyr_points.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
-                              lyr_points_overview.setSource(lyr_points.getSource());
+                              
                         };
 var lyr_labels = new ol.layer.Vector({
                     opacity: 1.0,
@@ -588,21 +584,17 @@ var lyr_labels = new ol.layer.Vector({
                     attributes: ["fid", "text"],
                     geometryType: "Point"
                 });
-var lyr_labels_overview = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                     
-                    style: style_labels});
 labels_geojson_callback = function(geojson) {
                               lyr_labels.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
-                              lyr_labels_overview.setSource(lyr_labels.getSource());
+                              
                         };
 
 lyr_points.setVisible(true);
 lyr_labels.setVisible(true);
 var layersList = [lyr_points,lyr_labels];
 var layersMap  = {'lyr_points':lyr_points,'lyr_labels':lyr_labels};
-var view = new ol.View({extent: [-2499149.213994, -157926.341301, 4461581.773247, 1976943.578698], maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
-var originalExtent = [-2499149.213994, -157926.341301, 4461581.773247, 1976943.578698];
+var view = new ol.View({ maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
+var originalExtent = [-1708016.525890, -157926.341301, 3670449.085143, 1976943.578698];
 var unitsConversion = 111325.0;
 
 var map = new ol.Map({
@@ -611,13 +603,7 @@ var map = new ol.Map({
   controls: []
 });
 
-function pixelsFromMapUnits(size) {
-    return size / map.getView().getResolution() * unitsConversion;
-};
 
-function pixelsFromMm(size) {
-    return 96 / 25.4 * size;
-};
 
 var BasicApp = React.createClass({
   childContextTypes: {
@@ -660,7 +646,7 @@ var BasicApp = React.createClass({
     this._toggle(document.getElementById('chart-panel'));
   },
   render: function() {
-    var toolbarOptions = {showMenuIconButton: false, title:"My Web App"};
+    var toolbarOptions = {title:"My Web App"};
     return React.createElement("div", {id: 'content'},
       React.createElement(Header, toolbarOptions ),
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}
