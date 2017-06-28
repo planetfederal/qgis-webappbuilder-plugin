@@ -181,11 +181,11 @@ zIndex: 0
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression05937559448197203993_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression602397418154851_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
 zIndex: 1
                             })
                             ,new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression15490147374429463818514_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression30386277748948485373044788_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
 zIndex: 0
                             })
                             ]);
@@ -193,7 +193,7 @@ zIndex: 0
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression768878408524776499649_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression1417438348589744323_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
 zIndex: 0
                             })
                             ]);
@@ -397,11 +397,11 @@ zIndex: 0
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression296816830440827103627_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression09042451328992097_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 1
                             })
                             ,new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression93407304499725925032_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression5602642072428989927326_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
                             })
                             ]);
@@ -409,7 +409,7 @@ zIndex: 0
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression0243209549847564755157_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression85224109448494762984525_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
                             })
                             ]);
@@ -594,7 +594,7 @@ lyr_labels.setVisible(true);
 var layersList = [lyr_points,lyr_labels];
 var layersMap  = {'lyr_points':lyr_points,'lyr_labels':lyr_labels};
 var view = new ol.View({ maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
-var originalExtent = [-1708016.525890, -157926.341301, 3670449.085143, 1976943.578698];
+var originalExtent = [-668533.619056, -153242.592601, 2020699.186460, 901730.351902];
 var unitsConversion = 111325.0;
 
 var map = new ol.Map({

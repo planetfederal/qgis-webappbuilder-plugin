@@ -91,20 +91,8 @@ function fnc_clamp(values, context) {
     return false;
 };
 
-// Operators
-
-// Record
-
-// String
-
-// TimeManager
-
-// Variables
-
-
-
 function fnc_scale_linear(values, context) {
-    return values[3] + ((values[4] - values[3]) * (values[2]-values[0]) / (values[2]- values[1]));
+    return values[3] + ((values[4] - values[3]) * (values[0]-values[1]) / (values[2]- values[1]));
 };
 
 function fnc_scale_exp(values, context) {
@@ -407,7 +395,7 @@ function fnc_upper(values, context) {
 };
 
 function fnc_title(values, context) {
-    return values[0].split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ')
+    return values[0].split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
 function fnc_trim(values, context) {
@@ -633,16 +621,16 @@ function fnc_m(values, context) {
 };
 
 function fnc_point_n(values, context) {
-    return values[0].getCoordinates()[values[1]]
+    return new ol.geom.Point(values[0].getCoordinates()[values[1]]);
 };
 
 function fnc_start_point(values, context) {
-    return values[0].getCoordinates()[0]
+    return new ol.geom.Point(values[0].getCoordinates()[0]);
 };
 
 function fnc_end_point(values, context) {
     coords = values[0].getCoordinates()
-    return coords[coords.length - 1]
+    return new ol.geom.Point(coords[coords.length - 1]);
 };
 
 function fnc_nodes_to_points(values, context) {
@@ -706,7 +694,7 @@ function fnc_disjoint(values, context) {
 };
 
 function fnc_intersects(values, context) {
-    return false;
+    return fnc_intersection(values, context) != undefined;
 };
 
 function fnc_touches(values, context) {
@@ -730,19 +718,29 @@ function fnc_within(values, context) {
 };
 
 function fnc_translate(values, context) {
-    return false;
+    geom = values[0].clone();
+    var translated = geom.translate(values[1], values[2]);
+    return translated
 };
 
 function fnc_buffer(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var buffer = geom.buffer(values[1]);
+    return parser.write(buffer);
 };
 
 function fnc_centroid(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var coord = jsts.algorithm.Centroid.getCentroid(geom)
+    return new ol.geom.Point([coord.x, coord.y])
 };
 
 function fnc_point_on_surface(values, context) {
-    return false;
+    var geom = geojsonFromGeometry(values[0]);
+    var pt =  turf.pointOnSurface(geom);
+    return geometryFromGeojson(pt);
 };
 
 function fnc_reverse(values, context) {
@@ -802,11 +800,18 @@ function fnc_is_closed(values, context) {
 };
 
 function fnc_convex_hull(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var hull = jsts.algorithm.ConvexHull.getConvexHull(geom)
+    return parser.write(hull)
 };
 
 function fnc_difference(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.difference(geom2);
+    return parser.write(diff);
 };
 
 function fnc_distance(values, context) {
@@ -814,7 +819,11 @@ function fnc_distance(values, context) {
 };
 
 function fnc_intersection(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.intersection(geom2);
+    return parser.write(diff);
 };
 
 function fnc_sym_difference(values, context) {
@@ -826,7 +835,11 @@ function fnc_combine(values, context) {
 };
 
 function fnc_union(values, context) {
-    return false;
+    var parser = new jsts.io.OL3Parser();
+    var geom = parser.read(values[0]);
+    var geom2 = parser.read(values[1]);
+    var diff = geom.union(geom2);
+    return parser.write(diff);
 };
 
 function fnc_geom_to_wkt(values, context) {
@@ -1051,7 +1064,7 @@ function pointsrule14_eval_expression(context) {
 }
 
 
-function size_dd_expression664281249679431789799641_eval_expression(context) {
+function size_dd_expression602397418154851_eval_expression(context) {
     // n
 
     var feature = context.feature;
@@ -1060,7 +1073,7 @@ function size_dd_expression664281249679431789799641_eval_expression(context) {
 }
 
 
-function size_dd_expression689806345333010876659_eval_expression(context) {
+function size_dd_expression30386277748948485373044788_eval_expression(context) {
     // n
 
     var feature = context.feature;
@@ -1069,7 +1082,7 @@ function size_dd_expression689806345333010876659_eval_expression(context) {
 }
 
 
-function size_dd_expression38874189844079872448988_eval_expression(context) {
+function size_dd_expression09042451328992097_eval_expression(context) {
     // n
 
     var feature = context.feature;
@@ -1078,7 +1091,7 @@ function size_dd_expression38874189844079872448988_eval_expression(context) {
 }
 
 
-function size_dd_expression8825543554059140830358_eval_expression(context) {
+function size_dd_expression5602642072428989927326_eval_expression(context) {
     // n
 
     var feature = context.feature;
@@ -1096,7 +1109,7 @@ function pointsrule16_eval_expression(context) {
 }
 
 
-function size_dd_expression79927052462887498944230_eval_expression(context) {
+function size_dd_expression1417438348589744323_eval_expression(context) {
     // x($geometry)
 
     var feature = context.feature;
@@ -1105,7 +1118,7 @@ function size_dd_expression79927052462887498944230_eval_expression(context) {
 }
 
 
-function size_dd_expression5552287407620752302_eval_expression(context) {
+function size_dd_expression85224109448494762984525_eval_expression(context) {
     // x($geometry)
 
     var feature = context.feature;
