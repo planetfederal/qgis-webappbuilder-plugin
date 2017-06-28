@@ -733,7 +733,7 @@ def getLabeling(layer, folder, app, settings):
         js = js.strip()
         labelText = js
     else:
-        labelText = 'feature.get("%s")' % labelField.replace('"', '\\"')
+        labelText = 'getFeatureAttribute(feature, "%s")' % labelField.replace('"', '\\"')
 
     try:
         useExpr = False
@@ -860,7 +860,7 @@ def getLabeling(layer, folder, app, settings):
             if (%(label)s !== null%(labelRes)s) {
                 var labelText = String(%(label)s);
             } else {
-                var labelText = "";
+                var labelText = " ";
             }
             var key = value + "_" + labelText + "_" + String(resolution);
             if (!textStyleCache_%(layerName)s[key]){

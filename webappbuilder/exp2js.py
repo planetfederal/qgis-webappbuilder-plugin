@@ -188,7 +188,7 @@ def handle_function(node, mapLib):
 
 
 def handle_columnRef(node, mapLib):
-    return "feature.get('%s') " % node.name()
+    return "getFeatureAttribute(feature, '%s') " % node.name()
 
 def compile_to_file(exp, name=None, mapLib=None, filename="expressions.js"):
     """

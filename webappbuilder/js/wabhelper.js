@@ -231,3 +231,13 @@ function getRGBAColor(color, alpha){
     return "rgba(" +  [r, g, b, a].join(",") + ")";
 
 }
+
+function getFeatureAttribute(feature, attr){
+    var value = feature.get(attr);
+    if (value == null){
+        return null;
+    }
+    else{
+        return value;
+    }
+}
