@@ -79,7 +79,8 @@ def functionalTests():
         test = Test("Symbology test '%s'" % n)
         test.addStep("Setting up project", lambda: loadTestProject(n))
         test.addStep("Creating web app", lambda: _createWebApp(n))
-        test.addStep("Verify web app in browser", prestep=lambda: _openComparison(n))
+        test.addStep("Compare web app with expected app in browser",
+                     prestep=lambda: _openComparison(n))
         return test
 
     comparisonTests = ["points", "points2", "osm", "polygons", "labels", "arrows"]
@@ -120,7 +121,7 @@ def functionalTests():
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(nodataTest)
 
-    createEmpyAppTest = Test("Verify creating an app with no layers")
+    createEmpyAppTest = Test("Verify preview an app with no layers")
     createEmpyAppTest.addStep("Load project", iface.newProject)
     createEmpyAppTest.addStep("Open WAB", lambda: openWAB())
     createEmpyAppTest.addStep("Create an app preview and check it is correctly created")
@@ -131,7 +132,7 @@ def functionalTests():
     wrongEndpointTest.addStep("Load project", iface.newProject)
     wrongEndpointTest.addStep("Load project", _setWrongSdkEndpoint)
     wrongEndpointTest.addStep("Open WAB", lambda: openWAB())
-    wrongEndpointTest.addStep("Try to create an app preview and check it complains of a wrong URL")
+    wrongEndpointTest.addStep("Try to create an app and check it complains of a wrong URL")
     wrongEndpointTest.setCleanup(_resetSdkEndpoint)
     tests.append(wrongEndpointTest)
 
@@ -154,7 +155,7 @@ def functionalTests():
         denyCompilationTest.addStep("Create an EMPTY app and check it complains of a permission denied")
         denyCompilationTest.setCleanup(closeWAB)
         tests.append(denyCompilationTest)
-        localTimeoutCompilationTest = Test("Verfiy compilation timeout due to local settings")
+        localTimeoutCompilationTest = Test("Verify compilation timeout due to local settings")
         localTimeoutCompilationTest.addStep("Reset project", iface.newProject)
         localTimeoutCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
@@ -166,7 +167,7 @@ def functionalTests():
         localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
         tests.append(localTimeoutCompilationTest)
 
-        successCompilationTest = Test("Verfiy successful compilation with EnterpriseTestDesktop")
+        successCompilationTest = Test("Verify successful compilation with EnterpriseTestDesktop")
         successCompilationTest.addStep("Reset project", iface.newProject)
         successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
