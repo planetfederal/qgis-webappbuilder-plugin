@@ -347,7 +347,7 @@ def writeJsx(appdef, folder, app, progress):
             return ""
 
     values = {"@IMPORTS@": "\n".join(app.imports),
-              "@TABS@": join(app.tabs),
+              "@TABS@": "\n".join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
