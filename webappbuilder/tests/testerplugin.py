@@ -203,6 +203,16 @@ def functionalTests():
         successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
         successCompilationTest.setCleanup(closeWAB)
         tests.append(successCompilationTest)
+        
+        wrongTierCompilationTest = Test("Verify cannot compile with wrong tier")
+        wrongTierCompilationTest.addStep("Reset project", iface.newProject)
+        wrongTierCompilationTest.addStep('Enter BasicTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
+                                    'Check that Connect is logged showing BasicTestDesktop@boundlessgeo.com in the bottom',
+                            prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+        wrongTierCompilationTest.addStep("Open WAB", lambda: openWAB())
+        wrongTierCompilationTest.addStep("Try to create an app and verify it fails", isVerifyStep=True)
+        wrongTierCompilationTest.setCleanup(closeWAB)
+        tests.append(successCompilationTest)
 
         # test stopCompilationTest
         def checkStartoStopButton(text=None):
