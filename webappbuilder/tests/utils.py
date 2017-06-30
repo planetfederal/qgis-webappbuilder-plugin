@@ -5,6 +5,7 @@
 #
 import os
 import re
+import shutil
 import codecs
 import tempfile
 from qgis.utils import iface
@@ -109,10 +110,18 @@ class SilentProgress():
         pass
     def setProgress(_, i):
         pass
+    def oscillate(_):
+        pass
 
 def createAppFromTestAppdef(appdefName, preview=True, aboutContent=None):
     appdef = testAppdef(appdefName, True, aboutContent)
-    folder = tempFolderInTempFolder("webappbuilder")
+    if preview:
+        folder = tempFolderInTempFolder("webappbuilder")
+    else:
+        folder = os.environ["WEB_APP_OUTPUT_FOLDER"]
+        appFolder = os.path.join(folder, "webapp")
+        if os.path.exists(appFolder):
+            shutil.rmtree(appFolder)
     writeWebApp(appdef, folder, preview, SilentProgress())
     return folder
 

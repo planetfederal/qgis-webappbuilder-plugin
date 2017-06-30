@@ -1,0 +1,124 @@
+{
+    "Base layers": [], 
+    "Groups": {
+        "points of interest": {
+            "isGroupExpanded": true, 
+            "layers": [
+                "Parks", 
+                "landmarks"
+            ], 
+            "showContent": true
+        }
+    }, 
+    "Layers": [
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Raleigh downtown", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Streets", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Census_blocks_2010", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "Parks", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }, 
+        {
+            "allowSelection": true, 
+            "clusterColor": "#3399CC", 
+            "clusterDistance": 0, 
+            "layer": "landmarks", 
+            "popup": "", 
+            "showInControls": true, 
+            "showInOverview": true, 
+            "singleTile": false, 
+            "timeInfo": null, 
+            "visible": true
+        }
+    ], 
+    "Settings": {
+        "Add permalink functionality": true, 
+        "App view CRS": "EPSG:3857", 
+        "Extent": "Canvas extent", 
+        "Group base layers": true, 
+        "Logo": "", 
+        "Max zoom level": "32", 
+        "Min zoom level": "1", 
+        "Minify JavaScript": false, 
+        "Open hyperlinks in": "Same window/tab", 
+        "Precision for GeoJSON export": "2", 
+        "Restrict to extent": false, 
+        "Show popups on hover": false, 
+        "Theme": "tabbed", 
+        "Title": "My Web App", 
+        "Use JSONP for WFS connections": false, 
+        "Use layer scale dependent visibility": true, 
+        "Use view CRS for WFS connections": true
+    }, 
+    "Widgets": {
+        "geocoding": {
+            "Parameters": {
+                "maxResults": 5, 
+                "zoom": 10
+            }
+        }, 
+        "layerslist": {
+            "Parameters": {
+                "allowFiltering": true, 
+                "allowReordering": false, 
+                "allowStyling": true, 
+                "downloadFormat": "GeoJSON", 
+                "includeLegend": true, 
+                "showDownload": false, 
+                "showNew": true, 
+                "showOpacity": false, 
+                "showTable": true, 
+                "showUpload": true, 
+                "showZoomTo": false, 
+                "tipLabel": "Layers"
+            }
+        }, 
+        "legend": {
+            "Parameters": {
+                "showExpandedOnStartup": false, 
+                "size": 20
+            }
+        }
+    }
+}

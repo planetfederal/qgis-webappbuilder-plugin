@@ -18,7 +18,8 @@ from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
 from qgis.utils import iface
 from PyQt4.QtTest import QTest
 from PyQt4.QtGui import QMessageBox
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, QEventLoop
+from webappbuilder.utils import getConnectAuthCfg, topics
 
 try:
     from qgis.core import QGis
@@ -27,6 +28,9 @@ except ImportError:
 
 webAppFolder = None
 
+def settings():
+    return  {"WEB_APP_OUTPUT_FOLDER": ""}
+    
 def functionalTests():
     # create TestCase instance to use Assert methods
     tc = unittest.TestCase('__init__')
@@ -41,17 +45,9 @@ def functionalTests():
         global webAppFolder
         webAppFolder = createAppFromTestAppdef(n, preview, aboutContent)
 
-    def _test(n):
-        test = Test("Verify '%s' tutorial" % n)
-        test.addStep("Setting up project", lambda: loadTestProject(n))
-        test.addStep("Creating web app", lambda: _createWebApp(n))
-        test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
-                    "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
-        return test
-    tests = [_test("bakeries"), _test("schools"), _test("fires")]
+    tests = []
 
     appdefFolder = os.path.join(os.path.dirname(__file__), "data")
-
 
     def _testWidget(n):
         aboutContent = widgetTestAbout.get(n, None)
@@ -86,6 +82,37 @@ def functionalTests():
     comparisonTests = ["points", "points2", "osm", "polygons", "labels", "arrows"]
     for t in comparisonTests:
         tests.append(_comparisonTest(t))
+
+    def _createWebAppCompiled(n): 
+        from pubsub import pub
+        def endWriteWebAppListener(success, reason):
+            from pubsub import pub
+            pub.unsubscribe(endWriteWebAppListener, topics.endWriteWebApp)
+            loop.exit()
+        loop = QEventLoop()
+        pub.subscribe(endWriteWebAppListener , topics.endWriteWebApp)
+        _createWebApp(n, False)
+        loop.exec_(flags = QEventLoop.ExcludeUserInputEvents)
+
+    def _openComparisonCompiled(n):
+        webbrowser.open_new("file:///" + os.path.dirname(__file__).replace("\\","/")
+                            + "/expected/apps/%s/index_debug.html" % n)
+        webbrowser.open_new("http://localhost/webapp/index.html")
+
+    def _checkConnect():
+        getConnectAuthCfg()
+
+    def _comparisonTestCompiled(n):
+        test = Test("Compiled app test '%s'" % n)
+        test.addStep("Setting up project", lambda: loadTestProject("widgets"))
+        test.addStep("Creating web app", lambda: _createWebAppCompiled(n), prestep = _checkConnect)
+        test.addStep("Compare web app with expected app in browser",
+                     prestep=lambda: _openComparisonCompiled(n))
+        return test
+
+    comparisonTestsCompiled = ["basic", "tabbed"]
+    for t in comparisonTestsCompiled:
+        tests.append(_comparisonTestCompiled(t))
 
     unconfiguredBookmarksTest = Test("Verify bookmarks widget cannot be used if no bookmarks defined")
     unconfiguredBookmarksTest.addStep("Load project", lambda: loadTestProject())
