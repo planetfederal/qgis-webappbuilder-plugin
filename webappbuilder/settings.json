@@ -7,13 +7,6 @@
      "default": "https://api.boundlessgeo.io/v1/websdk",
 	 "group": "General"
 	},
-	{"name":"tokenendpoint",
-	 "label": "Connect authentication endpoint",
-	 "description": "The URL of the Connect portal authentication service",
-	 "type": "string",
-     "default": "https://api.boundlessgeo.io/v1/token/",
-	 "group": "General"
- 	},
 	{"name":"overwritewarning",
      "label": "Warn when output folder exists",
      "description": "If output webapp folder exists, ask permission to overwrite it",

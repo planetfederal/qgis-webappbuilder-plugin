@@ -67,7 +67,6 @@ def checkSDKServerVersion():
 
 	token = utils.getToken()
 
-
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
 
