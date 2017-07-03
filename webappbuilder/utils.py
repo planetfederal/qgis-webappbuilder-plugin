@@ -21,8 +21,6 @@ from qgiscommons.networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
-#authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
-#wabCompilerUrl = "http://localhost:8080/package/"
 
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint").rstrip("/") + "/package")
@@ -207,6 +205,8 @@ __cachedToken = None
 def resetCachedToken():
     global __cachedToken
     __cachedToken = None
+    from boundlessconnect import connect
+    connect.resetToken()
 
 def getToken():
     """
@@ -252,9 +252,6 @@ def sdkVersion():
     with open(path) as f:
         package = json.load(f)
     return package["version"]
-
-def checkEndpoint():
-    return True
 
 def isPermissionDenied(message=None):
 	'''Check message if it contain NetworkAccessManager excetpion related to
