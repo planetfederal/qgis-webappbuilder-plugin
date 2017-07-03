@@ -934,7 +934,7 @@ function pointsrule0_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 2);
+    return (getFeatureAttribute(feature, 'n')  == 2);
 }
 
 
@@ -943,7 +943,7 @@ function pointsrule1_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 3);
+    return (getFeatureAttribute(feature, 'n')  == 3);
 }
 
 
@@ -952,7 +952,7 @@ function pointsrule2_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 4);
+    return (getFeatureAttribute(feature, 'n')  == 4);
 }
 
 
@@ -961,7 +961,7 @@ function pointsrule3_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 5);
+    return (getFeatureAttribute(feature, 'n')  == 5);
 }
 
 
@@ -970,7 +970,7 @@ function pointsrule4_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 6);
+    return (getFeatureAttribute(feature, 'n')  == 6);
 }
 
 
@@ -979,7 +979,7 @@ function pointsrule5_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 7);
+    return (getFeatureAttribute(feature, 'n')  == 7);
 }
 
 
@@ -988,7 +988,7 @@ function pointsrule6_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 8);
+    return (getFeatureAttribute(feature, 'n')  == 8);
 }
 
 
@@ -997,7 +997,7 @@ function pointsrule7_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 9);
+    return (getFeatureAttribute(feature, 'n')  == 9);
 }
 
 
@@ -1006,7 +1006,7 @@ function pointsrule8_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 10);
+    return (getFeatureAttribute(feature, 'n')  == 10);
 }
 
 
@@ -1015,7 +1015,7 @@ function pointsrule9_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 11);
+    return (getFeatureAttribute(feature, 'n')  == 11);
 }
 
 
@@ -1024,7 +1024,7 @@ function pointsrule10_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 12);
+    return (getFeatureAttribute(feature, 'n')  == 12);
 }
 
 
@@ -1033,7 +1033,7 @@ function pointsrule11_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 13);
+    return (getFeatureAttribute(feature, 'n')  == 13);
 }
 
 
@@ -1042,7 +1042,7 @@ function pointsrule12_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 14);
+    return (getFeatureAttribute(feature, 'n')  == 14);
 }
 
 
@@ -1051,7 +1051,7 @@ function pointsrule13_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 15);
+    return (getFeatureAttribute(feature, 'n')  == 15);
 }
 
 
@@ -1060,43 +1060,43 @@ function pointsrule14_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 16);
+    return (getFeatureAttribute(feature, 'n')  == 16);
 }
 
 
-function size_dd_expression602397418154851_eval_expression(context) {
+function size_dd_expression90346134269221763423_eval_expression(context) {
     // n
 
     var feature = context.feature;
     
-    return feature.get('n') ;
+    return getFeatureAttribute(feature, 'n') ;
 }
 
 
-function size_dd_expression30386277748948485373044788_eval_expression(context) {
+function size_dd_expression19925148205611244_eval_expression(context) {
     // n
 
     var feature = context.feature;
     
-    return feature.get('n') ;
+    return getFeatureAttribute(feature, 'n') ;
 }
 
 
-function size_dd_expression09042451328992097_eval_expression(context) {
+function size_dd_expression18973520488091312255_eval_expression(context) {
     // n
 
     var feature = context.feature;
     
-    return feature.get('n') ;
+    return getFeatureAttribute(feature, 'n') ;
 }
 
 
-function size_dd_expression5602642072428989927326_eval_expression(context) {
+function size_dd_expression207058114704911206593_eval_expression(context) {
     // n
 
     var feature = context.feature;
     
-    return feature.get('n') ;
+    return getFeatureAttribute(feature, 'n') ;
 }
 
 
@@ -1105,11 +1105,11 @@ function pointsrule16_eval_expression(context) {
 
     var feature = context.feature;
     
-    return ((feature.get('n')  > 50) && (((feature.get('n')  / 10) - fnc_round([(feature.get('n')  / 10)], context)) == 0));
+    return ((getFeatureAttribute(feature, 'n')  > 50) && (((getFeatureAttribute(feature, 'n')  / 10) - fnc_round([(getFeatureAttribute(feature, 'n')  / 10)], context)) == 0));
 }
 
 
-function size_dd_expression1417438348589744323_eval_expression(context) {
+function size_dd_expression694735488896353489_eval_expression(context) {
     // x($geometry)
 
     var feature = context.feature;
@@ -1118,7 +1118,7 @@ function size_dd_expression1417438348589744323_eval_expression(context) {
 }
 
 
-function size_dd_expression85224109448494762984525_eval_expression(context) {
+function size_dd_expression5290362403639304656_eval_expression(context) {
     // x($geometry)
 
     var feature = context.feature;
@@ -1132,7 +1132,7 @@ function pointsrule17_eval_expression(context) {
 
     var feature = context.feature;
     
-    return ((feature.get('n')  > 50) && (fnc_right([fnc_to_string([feature.get('n') ], context),1], context) == '4'));
+    return ((getFeatureAttribute(feature, 'n')  > 50) && (fnc_right([fnc_to_string([getFeatureAttribute(feature, 'n') ], context),1], context) == '4'));
 }
 
 
@@ -1141,7 +1141,7 @@ function pointsrule18_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 58);
+    return (getFeatureAttribute(feature, 'n')  == 58);
 }
 
 
@@ -1150,5 +1150,5 @@ function pointsrule19_eval_expression(context) {
 
     var feature = context.feature;
     
-    return (feature.get('n')  == 88);
+    return (getFeatureAttribute(feature, 'n')  == 88);
 }
