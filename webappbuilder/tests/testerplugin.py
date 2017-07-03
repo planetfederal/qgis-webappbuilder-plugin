@@ -212,7 +212,7 @@ def functionalTests():
         wrongTierCompilationTest.addStep("Open WAB", lambda: openWAB())
         wrongTierCompilationTest.addStep("Try to create an app and verify it fails", isVerifyStep=True)
         wrongTierCompilationTest.setCleanup(closeWAB)
-        tests.append(successCompilationTest)
+        tests.append(wrongTierCompilationTest)
 
         # test stopCompilationTest
         def checkStartoStopButton(text=None):
