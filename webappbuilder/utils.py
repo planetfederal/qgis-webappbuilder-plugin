@@ -21,18 +21,12 @@ from qgiscommons.networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
-#authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"
-#wabCompilerUrl = "http://localhost:8080/package/"
 
 def wabCompilerUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint").rstrip("/") + "/package")
 
 def wabVersionUrl():
     return urllib.parse.unquote(pluginSetting("sdkendpoint").rstrip("/") + "/version")
-
-
-def authUrl():
-    return urllib.parse.unquote(pluginSetting("tokenendpoint"))
 
 class topics:
     """Class to store PyPubSub topics shared among various parts of code."""
@@ -211,6 +205,8 @@ __cachedToken = None
 def resetCachedToken():
     global __cachedToken
     __cachedToken = None
+    from boundlessconnect import connect
+    connect.resetToken()
 
 def getToken():
     """
@@ -220,6 +216,12 @@ def getToken():
     The return value is a token string or Exception. This is cached and returned
     every call or request again if cache is empty
     """
+    try:
+        from boundlessconnect import connect
+    except:
+        msg = "You need to log in via Connect plugin but it is not installed or enabled"
+        raise Exception(msg)
+    
     global __cachedToken
     if __cachedToken:
         return __cachedToken
@@ -236,35 +238,12 @@ def getToken():
     if not usr and not pwd:
         raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
 
-    # prepare data for the token request
-    httpAuth = base64.b64encode('{}:{}'.format(usr.strip(), pwd.strip())).decode("ascii")
-    headers = {}
-    headers["Authorization"] = "Basic {}".format(httpAuth)
-    headers["Content-Type"] = "application/json"
-
-    # request token in synchronous way => block GUI
-    nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
-    try:
-        res, resText = nam.request(authUrl(), method="GET", headers=headers)
-    except Exception as e:
-        if nam.http_call_result.status_code in [401, 403]:
-            raise Exception("Permission denied with current Connect credentials")
-        else:
-            raise e
-
-    # todo: check res code in case not authorization
-    if not res.ok:
-        raise Exception("Cannot get token: {}".format(res.reason))
-
-    # parse token from resText
-    resDict = json.loads(str(resText))
-    try:
-        __cachedToken = resDict["token"]
-    except:
-        pass
-
-    if not __cachedToken:
+    token = connect.getToken(usr, pwd)
+    
+    if token is None:
         raise Exception("Cannot get authentication token")
+    else:
+        __cachedToken = token
 
     return __cachedToken
 
@@ -273,9 +252,6 @@ def sdkVersion():
     with open(path) as f:
         package = json.load(f)
     return package["version"]
-
-def checkEndpoint():
-    return True
 
 def isPermissionDenied(message=None):
 	'''Check message if it contain NetworkAccessManager excetpion related to
