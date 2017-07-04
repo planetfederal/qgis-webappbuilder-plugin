@@ -46,7 +46,7 @@ class LayersList(WebAppWidget):
                                         allowFiltering:%s,
                                         downloadFormat:'%s', showUpload:%s, map:map,
                                         includeLegend:%s, allowStyling:%s, showTable:%s})))'''
-                            % (idx, idx, p("tipLabel"), p("showOpacity"),p("showDownload"), p("showZoomTo"),
+                            % (idx, idx, self._parameters["tipLabel"], p("showOpacity"),p("showDownload"), p("showZoomTo"),
                                p("allowReordering"), p("allowFiltering"),
                                self._parameters["downloadFormat"][0], p("showUpload"),
                                 p("includeLegend"), p("allowStyling"), p("showTable")))
