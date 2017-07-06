@@ -30,7 +30,7 @@ webAppFolder = None
 
 def settings():
     return  {"WEB_APP_OUTPUT_FOLDER": ""}
-    
+
 def functionalTests():
     # create TestCase instance to use Assert methods
     tc = unittest.TestCase('__init__')
@@ -83,7 +83,7 @@ def functionalTests():
     for t in comparisonTests:
         tests.append(_comparisonTest(t))
 
-    def _createWebAppCompiled(n): 
+    def _createWebAppCompiled(n):
         from pubsub import pub
         def endWriteWebAppListener(success, reason):
             from pubsub import pub
@@ -165,7 +165,7 @@ def functionalTests():
 
     wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
     wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
-    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", checkApp=True))
+    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval"))
     wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
@@ -203,7 +203,7 @@ def functionalTests():
         successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
         successCompilationTest.setCleanup(closeWAB)
         tests.append(successCompilationTest)
-        
+
         wrongTierCompilationTest = Test("Verify cannot compile with wrong tier")
         wrongTierCompilationTest.addStep("Reset project", iface.newProject)
         wrongTierCompilationTest.addStep('Enter BasicTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
