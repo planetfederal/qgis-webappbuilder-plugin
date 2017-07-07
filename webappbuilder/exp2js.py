@@ -209,7 +209,6 @@ def is_expression_supported(expr):
     with open(path) as f:
         lines = f.readlines()
     used = [str(e) for e in re.findall("[a-zA-Z]{2,}?\(", expr)]
-    print used
     unsupported = []
     for i, line in enumerate(lines):
         for func in used:

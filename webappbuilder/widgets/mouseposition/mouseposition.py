@@ -28,9 +28,7 @@ class MousePosition(WebAppWidget):
         else:
             fmt = "ol.coordinate.createStringXY(4)"
         s = json.dumps(params)
-        print s
         s = s[:-1] + ', "coordinateFormat": {}'.format(fmt) + s[-1]
-        print s
         s = s.replace('"%s"' % fmt, fmt)
         app.ol3controls.append("new ol.control.MousePosition(%s)" % s)
 
