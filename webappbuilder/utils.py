@@ -9,15 +9,11 @@ from qgis.core import *
 from qgis.gui import *
 import qgis.utils
 import qgis
-import subprocess
-import uuid
-import base64
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
-import inspect
 import codecs
 import json
-from qgiscommons.networkaccessmanager import NetworkAccessManager
+from qgiscommons.network.networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
@@ -221,7 +217,7 @@ def getToken():
     except:
         msg = "You need to log in via Connect plugin but it is not installed or enabled"
         raise Exception(msg)
-    
+
     global __cachedToken
     if __cachedToken:
         return __cachedToken
@@ -239,7 +235,7 @@ def getToken():
         raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
 
     token = connect.getToken(usr, pwd)
-    
+
     if token is None:
         raise Exception("Cannot get authentication token")
     else:
