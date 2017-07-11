@@ -1,5 +1,6 @@
 future
 requests
 pypubsub==3.3
+qgiscommons
 
 # test requirements
