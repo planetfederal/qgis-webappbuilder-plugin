@@ -15,7 +15,7 @@ from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
 from qgiscommons.files import removeTempFolder
-from qgiscommons.gui import addHelpMenu, removeHelpMenu
+from qgiscommons.gui import addHelpMenu, removeHelpMenu, addAboutMenu, removeAboutMenu
 from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
 import utils
 
@@ -42,13 +42,14 @@ class WebAppBuilderPlugin:
 
         addSettingsMenu("Web App Builder", self.iface.addPluginToWebMenu)
         addHelpMenu("Web App Builder", self.iface.addPluginToWebMenu)
+        addAboutMenu("Web App Builder", self.iface.addPluginToWebMenu)
 
     def unload(self):
         self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
-        self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
-        removeSettingsMenu("Web App Builder", self.iface.addPluginToWebMenu)
-        removeHelpMenu("Web App Builder", self.iface.addPluginToWebMenu)
+        removeSettingsMenu("Web App Builder", self.iface.removePluginWebMenu)
+        removeHelpMenu("Web App Builder", self.iface.removePluginWebMenu)
+        removeAboutMenu("Web App Builder", self.iface.removePluginWebMenu)
         removeTempFolder()
 
         try:
