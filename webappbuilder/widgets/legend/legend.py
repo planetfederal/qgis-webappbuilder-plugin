@@ -1,12 +1,17 @@
-from webappbuilder.webbappwidget import WebAppWidget
 import os
+import json
+import re
+import shutil
+
 from PyQt4.QtGui import QIcon
 from PyQt4.Qt import QDir, QSize
 from qgis.core import *
-import json
-import re
-import requests
-import shutil
+
+from qgiscommons.settings import pluginSetting
+from qgiscommons.network.networkaccessmanager import NetworkAccessManager
+
+from webappbuilder.webbappwidget import WebAppWidget
+
 
 class Legend(WebAppWidget):
 
@@ -92,10 +97,10 @@ class Legend(WebAppWidget):
                 styles = re.search(r"styles=(.*?)(?:&|$)", source).groups(0)[0]
                 fullUrl = ("%s?LAYER=%s&STYLES=%s&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=%i&HEIGHT=%i"
                            % (url, layerName, styles, size, size))
-                response = requests.get(fullUrl, stream=True)
+                nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
+                response, content = nam.request(fullUrl)
                 symbolPath = os.path.join(legendFolder, "%i_0.png" % ilayer)
                 with open(symbolPath, 'wb') as f:
-                    shutil.copyfileobj(response.raw, f)
-                del response
+                    f.write(content)
                 appendSymbol("", os.path.basename(symbolPath))
         return symbols
