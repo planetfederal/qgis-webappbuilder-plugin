@@ -16,7 +16,6 @@ from utils import *
 import utils
 from json.encoder import JSONEncoder
 import json
-import requests
 from settings import webAppWidgets
 import viewer
 import xml.etree.ElementTree as ET
