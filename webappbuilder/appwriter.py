@@ -24,7 +24,7 @@ from qgis.utils import plugins_metadata_parser
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons.files import tempFilenameInTempFolder
 from qgiscommons.settings import pluginSetting
-from qgiscommons.network.networkccessmanager import NetworkAccessManager, RequestsExceptionUserAbort
+from qgiscommons.network.networkaccessmanager import NetworkAccessManager, RequestsExceptionUserAbort
 from webbappwidget import WebAppWidget
 
 __anam = None # AsycnNetworkAccessmanager instance
