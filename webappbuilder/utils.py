@@ -201,7 +201,10 @@ __cachedToken = None
 def resetCachedToken():
     global __cachedToken
     __cachedToken = None
-    from boundlessconnect import connect
+    try:
+        from boundlessconnect import connect
+    except:
+        return
     connect.resetToken()
 
 def getToken():
