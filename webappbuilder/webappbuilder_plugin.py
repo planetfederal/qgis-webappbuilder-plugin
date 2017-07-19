@@ -16,7 +16,8 @@ from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
 from qgiscommons.files import removeTempFolder
 from qgiscommons.gui import addHelpMenu, removeHelpMenu, addAboutMenu, removeAboutMenu
-from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
+from qgiscommons.settings import readSettings, pluginSetting
+from qgiscommons.gui.settings import addSettingsMenu, removeSettingsMenu
 import utils
 
 class WebAppBuilderPlugin:
