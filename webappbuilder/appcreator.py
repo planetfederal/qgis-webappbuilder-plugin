@@ -22,8 +22,8 @@ import xml.etree.ElementTree as ET
 import importlib
 from exp2js import is_expression_supported
 
-from qgiscommons.settings import pluginSetting
-from qgiscommons.network.networkaccessmanager import NetworkAccessManager
+from qgiscommons2.ettings import pluginSetting
+from qgiscommons2.etwork.networkaccessmanager import NetworkAccessManager
 
 
 class VersionMismatchError(Exception):

@@ -7,8 +7,8 @@ from PyQt4.QtGui import QIcon
 from PyQt4.Qt import QDir, QSize
 from qgis.core import *
 
-from qgiscommons.settings import pluginSetting
-from qgiscommons.network.networkaccessmanager import NetworkAccessManager
+from qgiscommons2.ettings import pluginSetting
+from qgiscommons2.etwork.networkaccessmanager import NetworkAccessManager
 
 from webappbuilder.webbappwidget import WebAppWidget
 
