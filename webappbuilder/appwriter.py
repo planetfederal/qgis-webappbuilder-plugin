@@ -23,8 +23,8 @@ from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
 from requests.packages.urllib3.filepost import encode_multipart_formdata
-from qgiscommons.files import tempFilenameInTempFolder
-from qgiscommons.settings import pluginSetting
+from qgiscommons2.files import tempFilenameInTempFolder
+from qgiscommons2.settings import pluginSetting
 from webbappwidget import WebAppWidget
 
 __anam = None # AsycnNetworkAccessmanager instance

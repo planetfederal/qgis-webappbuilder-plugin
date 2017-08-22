@@ -17,7 +17,7 @@ options(
     plugin=Bunch(
         name='webappbuilder',
         sdkversion="1.0.2",
-        ext_libs=path('webappbuilder/ext-libs'),
+        ext_libs=path('webappbuilder/extlibs'),
         ext_src=path('webappbuilder/ext-src'),
         source_dir=path('webappbuilder'),
         package_dir=path('.'),
@@ -97,14 +97,14 @@ def setup(options):
     path(os.path.join(mapboxPath, "lib-mapboxgl-qgis-master", "mapboxgl", "mapboxgl.py")).copy2("./webappbuilder")
     shutil.rmtree(mapboxPath)
 
-    tmpCommonsPath = path(__file__).dirname() / "qgiscommons"
-    dst = ext_libs / "qgiscommons"
+    tmpCommonsPath = path(__file__).dirname() / "qgiscommons2"
+    dst = ext_libs / "qgiscommons2"
     if dst.exists():
         dst.rmtree()
     r = requests.get("https://github.com/boundlessgeo/lib-qgis-commons/archive/master.zip", stream=True)
     z = zipfile.ZipFile(StringIO.StringIO(r.content))
     z.extractall(path=tmpCommonsPath.abspath())
-    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons"
+    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons2"
     src.copytree(dst.abspath())
     tmpCommonsPath.rmtree()
 
@@ -196,7 +196,7 @@ def pep8(args):
     ignore = ['E203', 'E121', 'E122', 'E123', 'E124', 'E125', 'E126', 'E127',
         'E128', 'E402']
     styleguide = pep8.StyleGuide(ignore=ignore,
-                                 exclude=['*/ext-libs/*', '*/ext-src/*'],
+                                 exclude=['*/extlibs/*', '*/ext-src/*'],
                                  repeat=True, max_line_length=79,
                                  parse_argv=args)
     styleguide.input_dir(options.plugin.source_dir)

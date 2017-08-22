@@ -15,9 +15,9 @@ from qgis.core import *
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
-from qgiscommons.files import removeTempFolder
+from qgiscommons2.files import removeTempFolder
 
-from qgiscommons.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
+from qgiscommons2.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
 import utils
 
 class WebAppBuilderPlugin:

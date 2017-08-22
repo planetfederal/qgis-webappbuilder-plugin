@@ -4,7 +4,7 @@
 # This code is licensed under the GPL 2.0 license.
 #
 from webappbuilder.appwriter import *
-from qgiscommons.files import *
+from qgiscommons2.files import *
 import unittest
 import sys
 import shutil

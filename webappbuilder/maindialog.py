@@ -29,13 +29,13 @@ import webbrowser
 from treesettingsitem import TreeSettingItem
 from functools import partial
 from settings import webAppWidgets
-from qgiscommons.gui import askForFiles, askForFolder
-from qgiscommons.settings import pluginSetting
+from qgiscommons2.gui import askForFiles, askForFolder
+from qgiscommons2.settings import pluginSetting
 import traceback
 from treelayeritem import TreeLayerItem, TreeGroupItem
 from exceptions import WrongValueException
 from PyQt4 import uic
-from qgiscommons.files import tempFolderInTempFolder
+from qgiscommons2.files import tempFolderInTempFolder
 
 consolidateInstalled = True
 try:

@@ -17,8 +17,8 @@ from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import inspect
 import codecs
 import json
-from qgiscommons.networkaccessmanager import NetworkAccessManager
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.networkaccessmanager import NetworkAccessManager
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
 #authEndpointUrl = "https://api.dev.boundlessgeo.io/v1/token/"

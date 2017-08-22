@@ -15,12 +15,12 @@ from webappbuilder.appcreator import processAppdef
 from webappbuilder.appcreator import createApp
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.appwriter import writeWebApp
-from qgiscommons.files import tempFolderInTempFolder
+from qgiscommons2.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
 from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import Qt, QSettings
-from qgiscommons.settings import setPluginSetting, pluginSetting
+from qgiscommons2.settings import setPluginSetting, pluginSetting
 
 AUTHDB_MASTERPWD = 'password'
 AUTHM = None
