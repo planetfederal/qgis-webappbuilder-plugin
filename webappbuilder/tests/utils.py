@@ -49,7 +49,7 @@ widgetTestAbout = {"attributestable": "Open Attributes table and verify that it 
             "legend": "Verify that the legend is correctly added and has content",
             "links": "Verify links menu is added. Click on 'City of Raleigh' link and verify it opens in a new tab",
             "measuretools": "Verify that measure tools are added and working correctly.",
-            "mouseposition": "Verify that the mouse position widget is located at the top-left corner, and that it changes its content as you move the mouse over the map.",
+            "mouseposition": "Verify that the mouse position widget is located at the top-right corner, and that it changes its content as you move the mouse over the map.",
             "overviewmap": "Verify that the overview map is shown in the lower left corner",
             "print": "Verify print menu is available and contains two options. Chec that both have a correct thumbnail image",
             "query": "Open the Query panel. Select the 'Building' layer and enter the following filter: 'SHAPE_2_AR > 20000'. Click on 'New' and verify it selects some features in the map",

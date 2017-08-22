@@ -30,7 +30,7 @@ webAppFolder = None
 
 def settings():
     return  {"WEB_APP_OUTPUT_FOLDER": ""}
-    
+
 def functionalTests():
     # create TestCase instance to use Assert methods
     tc = unittest.TestCase('__init__')
@@ -51,7 +51,7 @@ def functionalTests():
 
     def _testWidget(n):
         aboutContent = widgetTestAbout.get(n, None)
-        test = Test("Verify '%s' widget" % n)
+        test = Test("Verify '%s' widget" % n, "Widget tests")
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
         test.addStep("Creating web app", lambda: _createWebApp(n, True, aboutContent))
         test.addStep("Verify web app in browser", prestep=lambda: webbrowser.open_new(
@@ -72,7 +72,7 @@ def functionalTests():
                             + "/webapp/index_debug.html")
 
     def _comparisonTest(n):
-        test = Test("Symbology test '%s'" % n)
+        test = Test("Symbology test '%s'" % n, "Symbology tests")
         test.addStep("Setting up project", lambda: loadTestProject(n))
         test.addStep("Creating web app", lambda: _createWebApp(n))
         test.addStep("Compare web app with expected app in browser",
@@ -83,7 +83,7 @@ def functionalTests():
     for t in comparisonTests:
         tests.append(_comparisonTest(t))
 
-    def _createWebAppCompiled(n): 
+    def _createWebAppCompiled(n):
         from pubsub import pub
         def endWriteWebAppListener(success, reason):
             from pubsub import pub
@@ -103,7 +103,7 @@ def functionalTests():
         getConnectAuthCfg()
 
     def _comparisonTestCompiled(n):
-        test = Test("Compiled app test '%s'" % n)
+        test = Test("Compiled app test '%s'" % n, "Compiled app tests")
         test.addStep("Setting up project", lambda: loadTestProject("widgets"))
         test.addStep("Creating web app", lambda: _createWebAppCompiled(n), prestep = _checkConnect)
         test.addStep("Compare web app with expected app in browser",
@@ -165,14 +165,14 @@ def functionalTests():
 
     wmsTimeinfoTest = Test("Verify that spatio-temporal WMS layers supported")
     wmsTimeinfoTest.addStep("Load project", lambda: loadTestProject("wms-timeinfo-interval"))
-    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval", checkApp=True))
+    wmsTimeinfoTest.addStep("Creating web app", lambda: _createWebApp("wms-timeinfo-interval"))
     wmsTimeinfoTest.addStep("Verify web app in browser.", prestep=lambda: webbrowser.open_new(
                              "file:///" + webAppFolder.replace("\\","/") + "/webapp/index_debug.html"))
     tests.append(wmsTimeinfoTest )
 
     try:
         from boundlessconnect.tests.testerplugin import _startConectPlugin
-        denyCompilationTest = Test("Verify deny compilation for invalid Connect credentials")
+        denyCompilationTest = Test("Verify deny compilation for invalid Connect credentials", "SDK Connection tests")
         denyCompilationTest.addStep("Reset project", iface.newProject)
         denyCompilationTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button.\n'
                                 'Check that Connect shows Warning message complaining about only open access permissions.'
@@ -182,7 +182,8 @@ def functionalTests():
         denyCompilationTest.addStep("Create an EMPTY app and check it complains of a permission denied")
         denyCompilationTest.setCleanup(closeWAB)
         tests.append(denyCompilationTest)
-        localTimeoutCompilationTest = Test("Verify compilation timeout due to local settings")
+        
+        localTimeoutCompilationTest = Test("Verify compilation timeout due to local settings", "SDK Connection tests")
         localTimeoutCompilationTest.addStep("Reset project", iface.newProject)
         localTimeoutCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
@@ -194,7 +195,7 @@ def functionalTests():
         localTimeoutCompilationTest.setCleanup(resetNetworkTimeout)
         tests.append(localTimeoutCompilationTest)
 
-        successCompilationTest = Test("Verify successful compilation with EnterpriseTestDesktop")
+        successCompilationTest = Test("Verify successful compilation with EnterpriseTestDesktop", "SDK Connection tests")
         successCompilationTest.addStep("Reset project", iface.newProject)
         successCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',
@@ -203,8 +204,8 @@ def functionalTests():
         successCompilationTest.addStep("Create an EMPTY app and check it successfully ends", isVerifyStep=True)
         successCompilationTest.setCleanup(closeWAB)
         tests.append(successCompilationTest)
-        
-        wrongTierCompilationTest = Test("Verify cannot compile with wrong tier")
+
+        wrongTierCompilationTest = Test("Verify cannot compile with wrong tier", "SDK Connection tests")
         wrongTierCompilationTest.addStep("Reset project", iface.newProject)
         wrongTierCompilationTest.addStep('Enter BasicTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing BasicTestDesktop@boundlessgeo.com in the bottom',
@@ -212,7 +213,7 @@ def functionalTests():
         wrongTierCompilationTest.addStep("Open WAB", lambda: openWAB())
         wrongTierCompilationTest.addStep("Try to create an app and verify it fails", isVerifyStep=True)
         wrongTierCompilationTest.setCleanup(closeWAB)
-        tests.append(successCompilationTest)
+        tests.append(wrongTierCompilationTest)
 
         # test stopCompilationTest
         def checkStartoStopButton(text=None):
@@ -224,7 +225,7 @@ def functionalTests():
             dlg = getWABDialog()
             QTest.mouseClick(dlg.buttonCreateOrStopApp, Qt.LeftButton)
 
-        stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user")
+        stopCompilationTest = Test("Verify stop compilation with EnterpriseTestDesktop user", "SDK Connection tests")
         stopCompilationTest.addStep("Reset project", iface.newProject)
         stopCompilationTest.addStep('Enter EnterpriseTestDesktop Connect credentials and accept dialog by pressing "Login" button.\n'
                                     'Check that Connect is logged showing EnterpriseTestDesktop@boundlessgeo.com in the bottom',

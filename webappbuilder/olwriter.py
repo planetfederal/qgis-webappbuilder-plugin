@@ -1189,7 +1189,6 @@ def getStrokeStyle(color, style, width, units="MM"):
         color = '"rgba(0,0,0,0.0)"'
     else:
         width = getMeasure(width, units)
-        print style
         if style != "solid":
             dash = "[6]"
     return "new ol.style.Stroke({color: %s, lineDash: %s, width: %s})" % (color, dash, width)

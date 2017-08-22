@@ -49,7 +49,7 @@ since the WebSDK service is not used. Credentials are also not needed.
 .. warning::
    
    **The preview mechanism is not suitable for production-ready
-   applications**, since it uses a prebuilt copy of the full WebSDK. Whish
+   applications**, since it uses a prebuilt copy of the full WebSDK, which
    means that the applications has a very large dependency (5+MB) and its
    performance is limited due to how the library is used and included in the app.
 

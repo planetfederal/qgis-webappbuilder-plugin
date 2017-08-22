@@ -16,15 +16,19 @@ from utils import *
 import utils
 from json.encoder import JSONEncoder
 import json
-import requests
 from settings import webAppWidgets
 import viewer
 import xml.etree.ElementTree as ET
 import importlib
 from exp2js import is_expression_supported
 
+from qgiscommons.settings import pluginSetting
+from qgiscommons.network.networkaccessmanager import NetworkAccessManager
+
+
 class VersionMismatchError(Exception):
 	pass
+
 
 # need a global where to store parameters to be used in PyPubSub listener
 # because PyPubSub does not support persistence of lambda functions
@@ -61,12 +65,9 @@ def createApp(appdef, folder, forPreview, progress):
 		endWriteWebAppListener(False, traceback.format_exc())
 
 def checkSDKServerVersion():
-	if not utils.checkEndpoint():
-		return "Provided endpoint does not seem to be a valid SDK service endpoint"
 	localVersion = utils.sdkVersion()
 
 	token = utils.getToken()
-
 
 	headers = {}
 	headers["authorization"] = "Bearer {}".format(token)
@@ -124,13 +125,14 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 			if getSize(applayer.layer) > MAXSIZE:
 				problems.append("Layer %s might be too big for being loaded directly from a file." % applayer.layer.name())
 
+        nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
 			try:
 				source = layer.source()
 				url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0] + "?REQUEST=GetCapabilities"
-				r = run(lambda: requests.get(url, headers={"origin": "null"}))
+				r, content = run(lambda: nam.request(url, headers={"origin": "null"}))
 				cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
 				if cors not in ["null", "*"]:
 					problems.append("Server for layer %s is not allowed to accept cross-origin requests."
@@ -147,12 +149,12 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 			url = url + "?service=WFS&version=1.1.0&REQUEST=GetCapabilities"
 			try:
 				if jsonp:
-					r = run(lambda: requests.get(url))
-					if "text/javascript" not in r.text:
+					r, content = run(lambda: nam.request(url))
+					if "text/javascript" not in r.headers.values():
 						problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
 									% layer.name())
 				else:
-					r = run(lambda: requests.get(url, headers={"origin": "null"}))
+					r, content = run(lambda: nam.request(url, headers={"origin": "null"}))
 					cors = r.headers.get("Access-Control-Allow-Origin", "").lower()
 					if cors not in ["null", "*"]:
 						problems.append("Server for layer %s is not allowed to accept cross-origin requests." % layer.name())
@@ -214,8 +216,8 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 					source = layer.source()
 					url = re.search(r"url=(.*?)(?:&|$)", source).groups(0)[0]
 					layernames = re.search(r"layers=(.*?)(?:&|$)", source).groups(0)[0]
-					r = requests.get(url + "?service=WMS&request=GetCapabilities")
-					root = ET.fromstring(re.sub('\\sxmlns="[^"]+"', '', r.text))
+					r, content = nam.request(url + "?service=WMS&request=GetCapabilities")
+					root = ET.fromstring(re.sub('\\sxmlns="[^"]+"', '', r.content))
 					for layerElement in root.iter('Layer'):
 						name = layerElement.find("Name").text
 						if name == layernames:

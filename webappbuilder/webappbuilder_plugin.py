@@ -4,7 +4,6 @@
 # This code is licensed under the GPL 2.0 license.
 #
 import os
-import webbrowser
 import traceback
 
 from PyQt4.QtCore import *
@@ -16,8 +15,9 @@ from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
 from webappbuilder.settings import initialize
 from qgiscommons2.files import removeTempFolder
-
-from qgiscommons2.settings import addSettingsMenu, removeSettingsMenu, readSettings, pluginSetting
+from qgiscommons2.gui import addHelpMenu, removeHelpMenu, addAboutMenu, removeAboutMenu
+from qgiscommons2.settings import readSettings, pluginSetting
+from qgiscommons2.gui.settings import addSettingsMenu, removeSettingsMenu
 import utils
 
 class WebAppBuilderPlugin:
@@ -38,22 +38,19 @@ class WebAppBuilderPlugin:
         self.action.setObjectName("startWebAppBuilder")
         self.action.triggered.connect(self.run)
 
-        helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
-        self.helpAction = QAction(helpIcon, "Web App Builder Help", self.iface.mainWindow())
-        self.helpAction.setObjectName("webAppBuilderHelp")
-        self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
-
         self.iface.addWebToolBarIcon(self.action)
         self.iface.addPluginToWebMenu("Web App Builder", self.action)
-        self.iface.addPluginToWebMenu("Web App Builder", self.helpAction)
 
         addSettingsMenu("Web App Builder", self.iface.addPluginToWebMenu)
+        addHelpMenu("Web App Builder", self.iface.addPluginToWebMenu)
+        addAboutMenu("Web App Builder", self.iface.addPluginToWebMenu)
 
     def unload(self):
         self.iface.removeWebToolBarIcon(self.action)
         self.iface.removePluginWebMenu("Web App Builder", self.action)
-        self.iface.removePluginWebMenu("Web App Builder", self.helpAction)
-        removeSettingsMenu("Web App Builder")
+        removeSettingsMenu("Web App Builder", self.iface.removePluginWebMenu)
+        removeHelpMenu("Web App Builder", self.iface.removePluginWebMenu)
+        removeAboutMenu("Web App Builder", self.iface.removePluginWebMenu)
         removeTempFolder()
 
         try:

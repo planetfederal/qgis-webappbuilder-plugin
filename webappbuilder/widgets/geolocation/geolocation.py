@@ -7,7 +7,7 @@ class Geolocation(WebAppWidget):
     buttonIndex = 4
     buttonArea = WebAppWidget.BUTTON_AREA_LEFT
     cssName = "geolocation-control"
-    
+
     levels = ["Current zoom"]
     levels.extend((str(s) for s in range(1,25)))
     _parameters = {"zoom": ("Current zoom", tuple(levels))}
@@ -16,7 +16,6 @@ class Geolocation(WebAppWidget):
         try:
             zoom = ", zoom: %i" % int(self._parameters["zoom"][0])
         except Exception,e:
-            print e
             zoom =""
         app.panels.append('''React.createElement("div", {id:'geolocation-control'},
                                     React.createElement(Geolocation, {tooltipPosition: 'bottom-right', map:map%s})

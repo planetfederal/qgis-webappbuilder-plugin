@@ -25,5 +25,3 @@ Documentation content:
    baselayers
    troubleshooting
    settingsconf
-
-.. _connect_portal: https:

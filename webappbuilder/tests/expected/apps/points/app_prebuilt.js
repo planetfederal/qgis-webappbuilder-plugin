@@ -181,11 +181,11 @@ zIndex: 0
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression602397418154851_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression90346134269221763423_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(80,149,51,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(80,149,51,1.0)"})}),
 zIndex: 1
                             })
                             ,new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression30386277748948485373044788_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression19925148205611244_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255,0,0,0.0)"})}),
 zIndex: 0
                             })
                             ]);
@@ -193,7 +193,7 @@ zIndex: 0
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression1417438348589744323_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression694735488896353489_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(0,0,0,1.0)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(147,235,224,1.0)"})}),
 zIndex: 0
                             })
                             ]);
@@ -397,11 +397,11 @@ zIndex: 0
                     }
                     if (pointsrule16_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression09042451328992097_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression18973520488091312255_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 1
                             })
                             ,new ol.style.Style({
-                                image: new ol.style.Circle({radius: size_dd_expression5602642072428989927326_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: size_dd_expression207058114704911206593_eval_expression(context)/ 2.0, stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(2.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
                             })
                             ]);
@@ -409,7 +409,7 @@ zIndex: 0
                     }
                     if (pointsrule17_eval_expression(context)) {
                       ruleStyles.push.apply(ruleStyles, [ new ol.style.Style({
-                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression85224109448494762984525_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
+                                image: new ol.style.Circle({radius: pixelsFromMm(size_dd_expression5290362403639304656_eval_expression(context)/ 2.0), stroke: new ol.style.Stroke({color: "rgba(255, 204, 0, 1)", lineDash: null, width: pixelsFromMm(0.0)}), fill: new ol.style.Fill({color: "rgba(255, 204, 0, 1)"})}),
 zIndex: 0
                             })
                             ]);
@@ -472,10 +472,10 @@ zIndex: 0
                 variables: {},
                 layer: 'lyr_labels'
             };
-            if (feature.get("text") !== null) {
-                var labelText = String(feature.get("text"));
+            if (getFeatureAttribute(feature, "text") !== null) {
+                var labelText = String(getFeatureAttribute(feature, "text"));
             } else {
-                var labelText = "";
+                var labelText = " ";
             }
             var key = value + "_" + labelText + "_" + String(resolution);
             if (!textStyleCache_labels[key]){
@@ -517,10 +517,10 @@ zIndex: 0
                 variables: {},
                 layer: 'lyr_labels'
             };
-            if (feature.get("text") !== null) {
-                var labelText = String(feature.get("text"));
+            if (getFeatureAttribute(feature, "text") !== null) {
+                var labelText = String(getFeatureAttribute(feature, "text"));
             } else {
-                var labelText = "";
+                var labelText = " ";
             }
             var key = value + "_" + labelText + "_" + String(resolution);
             if (!textStyleCache_labels[key]){
@@ -593,9 +593,9 @@ lyr_points.setVisible(true);
 lyr_labels.setVisible(true);
 var layersList = [lyr_points,lyr_labels];
 var layersMap  = {'lyr_points':lyr_points,'lyr_labels':lyr_labels};
-var view = new ol.View({ maxZoom: 32, minZoom: 1, projection: 'EPSG:3857'});
-var originalExtent = [-668533.619056, -153242.592601, 2020699.186460, 901730.351902];
-var unitsConversion = 111325.0;
+var view = new ol.View({extent: [-17.871984, -1.376469, 30.018694, 8.073531], maxZoom: 32, minZoom: 1, projection: 'EPSG:4326'});
+var originalExtent = [-17.871984, -1.376469, 30.018694, 8.073531];
+var unitsConversion = 1.0;
 
 var map = new ol.Map({
   layers: layersList,
@@ -646,7 +646,7 @@ var BasicApp = React.createClass({
     this._toggle(document.getElementById('chart-panel'));
   },
   render: function() {
-    var toolbarOptions = {title:"My Web App"};
+    var toolbarOptions = {title:"Points"};
     return React.createElement("div", {id: 'content'},
       React.createElement(Header, toolbarOptions ),
       React.createElement(MapPanel, {useHistory: true, extent: originalExtent, id: 'map', map: map}

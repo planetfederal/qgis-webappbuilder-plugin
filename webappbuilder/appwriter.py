@@ -21,10 +21,10 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
-from asyncnetworkccessmanager import AsyncNetworkAccessManager, RequestsExceptionUserAbort
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons2.files import tempFilenameInTempFolder
 from qgiscommons2.settings import pluginSetting
+from qgiscommons2.network.networkaccessmanager import NetworkAccessManager, RequestsExceptionUserAbort
 from webbappwidget import WebAppWidget
 
 __anam = None # AsycnNetworkAccessmanager instance
@@ -239,7 +239,7 @@ def appSDKification(folder, progress):
     if __anam:
         del __anam
         __anam = None
-    __anam = AsyncNetworkAccessManager(debug=pluginSetting("logresponse"))
+    __anam = NetworkAccessManager(debug=pluginSetting("logresponse"))
     __anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
     __anam.reply.finished.connect( lambda: manageFinished(__anam, zipFileName, folder, progress) )
 
@@ -347,7 +347,7 @@ def writeJsx(appdef, folder, app, progress):
             return ""
 
     values = {"@IMPORTS@": "\n".join(app.imports),
-              "@TABS@": "\n".join(app.tabs),
+              "@TABS@": ",\n".join(app.tabs),
                 "@OL3CONTROLS@": ",\n".join(app.ol3controls),
                 "@PANELS@": join(app.panels),
                 "@MAPPANELS@": join(app.mappanels),
