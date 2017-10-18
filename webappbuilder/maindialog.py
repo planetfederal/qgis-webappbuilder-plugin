@@ -564,16 +564,6 @@ class MainDialog(BASE, WIDGET):
             appdef = self.createAppDefinition()
             problems = checkAppCanBeCreated(appdef)
             if pluginSetting("compileinserver"):
-                # reset credential token in case related credentials are changed
-                try:
-                    utils.resetCachedToken()
-                except ImportError:
-                    QMessageBox.warning(self, "Cannot compile in server",
-                                        "To compile the WebApp in the server, the Connect plugin is needed\n."
-                                        "Connect plugin could not be found. Install it or disable the 'Use SDK Service to compile app' option in the plugin settings",
-                                        QMessageBox.Close)
-                    return
-
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 try:
                     checkSDKServerVersion()

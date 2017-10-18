@@ -76,6 +76,8 @@ class WebAppBuilderPlugin:
                 elif pluginSetting("askreload") == "Open last configuration":
                     appdef = loadAppdef(appdefFile)
         initialize()
+        # reset credential token in case related credentials are changed
+        utils.resetCachedToken()
         try:
             dlg = MainDialog(appdef)
             dlg.exec_()
