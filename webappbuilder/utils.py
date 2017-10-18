@@ -204,8 +204,9 @@ def resetCachedToken():
     try:
         from boundlessconnect import connect
     except:
-        return
-    connect.resetToken()
+        pass
+    else:
+        connect.resetToken()
 
 def getToken():
     """
