@@ -125,7 +125,7 @@ def checkAppCanBeCreated(appdef, forPreview=False):
 			if getSize(applayer.layer) > MAXSIZE:
 				problems.append("Layer %s might be too big for being loaded directly from a file." % applayer.layer.name())
 
-        nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
+	nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
 	for applayer in layers:
 		layer = applayer.layer
 		if layer.providerType().lower() == "wms":
