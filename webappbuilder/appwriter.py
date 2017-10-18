@@ -171,7 +171,7 @@ def manageFinished(netManager, zipFileName, folder, progress):
         return
 
     with open(zipFileName, 'wb') as newZipContent:
-        newZipContent.write( result.text )
+        newZipContent.write(result.content)
 
     # unzip new content as new compiled web app
     try:
