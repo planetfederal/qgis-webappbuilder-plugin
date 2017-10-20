@@ -15,6 +15,7 @@ services, various controls, and other interactivity.
 Documentation content:
 
 .. toctree::
+   :glob:
    :maxdepth: 1
 
    installation
@@ -24,4 +25,4 @@ Documentation content:
    wabandwebsdk
    baselayers
    troubleshooting
-   settingsconf
+   *
