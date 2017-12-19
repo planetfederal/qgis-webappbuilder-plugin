@@ -5,8 +5,6 @@
 #
 import sys
 import os
-from pubsub import pub
-import pubsub
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -16,13 +14,10 @@ from collections import defaultdict
 from qgis.utils import iface
 from appcreator import (
     createApp,
-    stopAppCreation,
     AppDefProblemsDialog,
     loadAppdef,
     saveAppdef,
-    checkAppCanBeCreated,
-    checkSDKServerVersion,
-    VersionMismatchError)
+    checkAppCanBeCreated)
 import settings
 from types import MethodType
 import webbrowser
@@ -83,12 +78,8 @@ class MainDialog(BASE, WIDGET):
             self.buttonSaveComplete.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
             self.buttonSaveComplete.clicked.connect(self.saveComplete)
 
-        self.buttonPreview = QPushButton("Preview")
+        self.buttonPreview = QPushButton("Create")
         self.buttonPreview.setIcon(icon("preview.gif"))
-
-        self.onCreatingApp = False
-        self.buttonCreateOrStopApp = QPushButton(self.tr("CreateApp"))
-        self.buttonCreateOrStopApp.setIcon(icon("export.png"))
 
         self.buttonHelp = self.buttonBox.button(QDialogButtonBox.Help)
         self.buttonHelp.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
@@ -101,11 +92,9 @@ class MainDialog(BASE, WIDGET):
         if consolidateInstalled:
             self.buttonBox.addButton(self.buttonSaveComplete, QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.buttonPreview, QDialogButtonBox.ActionRole)
-        self.buttonBox.addButton(self.buttonCreateOrStopApp, QDialogButtonBox.ActionRole)
 
         self.buttonOpen.clicked.connect(self.openAppdef)
         self.buttonSave.clicked.connect(self.saveAppdef)
-        self.buttonCreateOrStopApp.clicked.connect(self.createOrStopApp)
         self.buttonPreview.clicked.connect(self.preview)
         self.buttonBox.helpRequested.connect(self.showHelp)
 
@@ -451,23 +440,11 @@ class MainDialog(BASE, WIDGET):
         self.settingsTree.resizeColumnToContents(0)
         self.settingsTree.resizeColumnToContents(1)
 
-    def setButtonsEnabled(self, status, excludeList=None):
-        """Set enable status for all buttons in self.buttonBox escluding that
-        in the excludeList.
-        """
-        for button in self.buttonBox.buttons():
-            if excludeList and button in excludeList:
-                continue
-            button.setEnabled(status)
-
-    def endFunctionListener(self, success, reason):
-        from pubsub import pub
-        pub.unsubscribe(self.endFunctionListener, utils.topics.endFunction)
+    def resetProgress(self):
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
-        self.setButtonsEnabled(status=True)
         # to solve module unload error
         from PyQt4.QtGui import QApplication
         QApplication.restoreOverrideCursor()
@@ -479,23 +456,9 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setValue(0)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
-            pub.subscribe(self.endFunctionListener, utils.topics.endFunction)
             return f()
-        except Exception as ex:
-            self.endFunctionListener(False, str(ex))
-
-
-    def endCreatePreviewListener(self, success, reason):
-        from pubsub import pub
-        pub.unsubscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-        if success:
-            path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
-            webbrowser.open_new(path)
-        else:
-            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
-            QApplication.restoreOverrideCursor()
-            QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
-                                 "Could not create web app.\nCheck the QGIS log for more details.")
+        finally:
+            self.resetProgress()
 
     def preview(self):
         try:
@@ -508,121 +471,17 @@ class MainDialog(BASE, WIDGET):
             dlg.exec_()
             if not dlg.ok:
                 return
+
+        self.currentFolder = tempFolderInTempFolder("webappbuilder")
         try:
-            self.currentFolder = tempFolderInTempFolder("webappbuilder")
-            pub.subscribe(self.endCreatePreviewListener, utils.topics.endFunction)
-            try:
-                self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
-            except:
-                QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.CRITICAL)
-                self.endCreatePreviewListener(False, traceback.format_exc())
-        except WrongValueException:
-            pass
+            self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
+            webbrowser.open_new(path)
+        except Exception as ex:
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(traceback.format_exc()), level=QgsMessageLog.CRITICAL)
+            QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
+                             "Could not create web app.\nCheck the QGIS log for more details.")
 
-    def endCreateAppListener(self, success, reason):
-        self.onCreatingApp = False
-
-        # reset button status and cursor
-        self.buttonCreateOrStopApp.setText(self.createAppButtonText)
-        QApplication.restoreOverrideCursor()
-
-        from pubsub import pub
-        pub.unsubscribe(self.endCreateAppListener, utils.topics.endFunction)
-        if success:
-            if pluginSetting("compileinserver"):
-                QMessageBox.information(self, self.tr("Web app"),
-                                     self.tr("Web app was correctly created and built."))
-            else:
-                QMessageBox.information(self, self.tr("Web app"),
-                                     self.tr("Web app file were correctly created.\n"
-                                     "A web app can be built from them using Boundless WebSDK"))
-        elif reason:
-            QgsMessageLog.logMessage("WebAppBuilder: {}".format(reason), level=QgsMessageLog.CRITICAL)
-            if 'Request cancelled by user' in reason:
-                # do nothing
-                pass
-            elif 'Cannot post preview webapp: Network error #5: Operation canceled' in reason:
-                QMessageBox.critical(self, self.tr("Error creating web app"),
-                                self.tr("Network error due to a timeout.\n"
-                                "Please configure a longer timeout going to:\n"
-                                "Settings->Options->Network->Timeout for network requests (ms)."))
-            elif 'Permission denied' in reason:
-                QMessageBox.critical(self, self.tr("Error creating web app"),
-                                self.tr("Permission denied with current Connect credentials"))
-            else:
-                QMessageBox.critical(self, self.tr("Error creating web app"),
-                                self.tr("Could not create web app.\nCheck the QGIS log for more details."))
-
-    def createOrStopApp(self):
-        # check if app is compiling
-        if self.onCreatingApp:
-            stopAppCreation()
-            return
-
-        # start compilation
-        try:
-            appdef = self.createAppDefinition()
-            problems = checkAppCanBeCreated(appdef)
-            if pluginSetting("compileinserver"):
-                try:
-                    from boundlessconnect import connect
-                except ImportError:
-                    QMessageBox.warning(self, "Cannot compile in server",
-                                        "To compile the WebApp in the server, the Connect plugin is needed.\n"
-                                        "Connect plugin could not be found. Install it or disable the 'Use SDK Service to compile app' option in the plugin settings",
-                                        QMessageBox.Close)
-                    return
-
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                try:
-                    checkSDKServerVersion()
-                except VersionMismatchError, e:
-                    problems.append(str(e))
-                except Exception, e:
-                    QApplication.restoreOverrideCursor()
-                    QMessageBox.warning(self, "Problem checking SDK version", str(e),
-                                        QMessageBox.Close)
-                    return
-
-                QApplication.restoreOverrideCursor()
-
-                # check if able to login via connect credentials
-                try:
-                    utils.getConnectAuthCfg()
-                except Exception as ex:
-                    errMessage = str(ex)
-                    QMessageBox.warning(self, "Need Connect credentials", errMessage,
-                                            QMessageBox.Close)
-                    return
-            if problems:
-                dlg = AppDefProblemsDialog(problems)
-                dlg.exec_()
-                if not dlg.ok:
-                    return
-            # now ask where to store app
-            folder = askForFolder(self, "Select folder to store app")
-            if folder:
-                if os.path.exists(os.path.join(folder, "webapp")) and pluginSetting("overwritewarning"):
-                    ret = QMessageBox.warning(self, "Output folder", " The selected folder already contains a 'webapp' subfolder.\n"
-                                        "Do you confirm that you want to overwrite it?",
-                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                    if ret == QMessageBox.No:
-                        return
-
-                # set buttons status
-                self.setButtonsEnabled(status=False, excludeList=[self.buttonCreateOrStopApp])
-                self.createAppButtonText = self.buttonCreateOrStopApp.text()
-                self.buttonCreateOrStopApp.setText(self.tr("Stop"))
-
-                try:
-                    pub.subscribe(self.endCreateAppListener, utils.topics.endFunction)
-                    self.onCreatingApp = True
-                    self._run(lambda: createApp(appdef, folder, False, self.progress))
-                except Exception as ex:
-                    self.endCreateAppListener(False, traceback.format_exc())
-
-        except WrongValueException:
-            pass
 
     def createAppDefinition(self):
         layers, groups = self.getLayersAndGroups()

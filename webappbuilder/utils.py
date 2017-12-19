@@ -13,25 +13,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import codecs
 import json
-from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
 from qgiscommons2.settings import pluginSetting, setPluginSetting
 import urllib.parse
 
-
-def wabCompilerUrl():
-    return urllib.parse.unquote(pluginSetting("sdkendpoint").rstrip("/") + "/package")
-
-def wabVersionUrl():
-    return urllib.parse.unquote(pluginSetting("sdkendpoint").rstrip("/") + "/version")
-
-class topics:
-    """Class to store PyPubSub topics shared among various parts of code."""
-    endFunction = "endFunction"
-    endWriteWebApp = "endWriteWebApp"
-    endAppSDKification = "endAppSDKification"
-
-    def __init__():
-        pass
 
 MULTIPLE_SELECTION_DISABLED = 0
 MULTIPLE_SELECTION_ALT_KEY = 1
@@ -157,7 +141,6 @@ def findProjectLayerByName(name):
         if mapLayer.name() == name:
             return mapLayer
 
-
 def run(f):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     try:
@@ -165,28 +148,7 @@ def run(f):
     finally:
         QApplication.restoreOverrideCursor()
 
-def getConnectAuthCfg():
-    """try to get connect plugin auth configuration.
-    """
-    authcfg = None
-    # check if Connect plugin is istalled
-    try:
-        qgis.utils.plugins["boundlessconnect"]
-        from boundlessconnect.plugins import boundlessRepoName
-        from pyplugin_installer.installer_data import reposGroup
-    except:
-        msg = "You need to log in via Connect plugin but it is not installed or enabled"
-        raise Exception(msg)
 
-    # check if auth setting is available in connect plugin
-    settings = QSettings()
-    settings.beginGroup(reposGroup)
-    authcfg = settings.value(boundlessRepoName + '/authcfg', '')
-    if not authcfg:
-        msg = "You need to login via Connect plugin"
-        raise Exception(msg)
-
-    return authcfg
 
 def getCredentialsFromAuthDb(authcfg):
     credentials = (None, None)
@@ -197,78 +159,8 @@ def getCredentialsFromAuthDb(authcfg):
 
     return credentials
 
-__cachedToken = None
-def resetCachedToken():
-    global __cachedToken
-    __cachedToken = None
-    try:
-        from boundlessconnect import connect
-    except:
-        pass
-    else:
-        connect.resetToken()
-
-def getToken():
-    """
-    Function to get a access token from endpoint sending "custom" basic auth.
-    Parameters
-
-    The return value is a token string or Exception. This is cached and returned
-    every call or request again if cache is empty
-    """
-    try:
-        from boundlessconnect import connect
-    except:
-        msg = "You need to log in via Connect plugin but it is not installed or enabled"
-        raise Exception(msg)
-
-    global __cachedToken
-    if __cachedToken:
-        return __cachedToken
-
-    # start with a clean cache
-    __cachedToken = None
-
-    # get authcfg to point to saved credentials in QGIS Auth manager
-    authcfg = getConnectAuthCfg()
-    if not authcfg:
-        raise Exception("Connect authcfg is empty")
-
-    usr, pwd = getCredentialsFromAuthDb(authcfg)
-    if not usr and not pwd:
-        raise Exception("Cannot find stored credentials with authcfg = {}".format(authcfg))
-
-    token = connect.getToken(usr, pwd)
-
-    if token is None:
-        raise Exception("Cannot get authentication token")
-    else:
-        __cachedToken = token
-
-    return __cachedToken
-
 def sdkVersion():
     path = os.path.join(os.path.dirname(__file__), "package.json")
     with open(path) as f:
         package = json.load(f)
     return package["version"]
-
-def isPermissionDenied(message=None):
-	'''Check message if it contain NetworkAccessManager excetpion related to
-	a permission denied.
-	'''
-	# TODO: better management of error code parsing delegating to utils or
-	#       some NetworkAccessManager static method
-	if not message:
-		return False
-
-	pattern = re.match(r'(.*)Network error #(\d+3)(.*)', message)
-	if not pattern:
-		return False
-
-	try:
-		errorCode = pattern.group(2)
-		if errorCode in ['401', '403']:
-			return True
-	except:
-		return False

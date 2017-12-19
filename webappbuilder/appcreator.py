@@ -7,8 +7,7 @@ import os
 import re
 import codecs
 import traceback
-from pubsub import pub
-from appwriter import writeWebApp, stopWritingWebApp
+from appwriter import writeWebApp
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -29,78 +28,12 @@ from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
 class VersionMismatchError(Exception):
 	pass
 
-
-# need a global where to store parameters to be used in PyPubSub listener
-# because PyPubSub does not support persistence of lambda functions
-__appdef = None
-def endWriteWebAppListener(success, reason):
-	from pubsub import pub
-	pub.unsubscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
-
-	if success:
-		from PyQt4.QtCore import *
-		projFile = QgsProject.instance().fileName()
-		if projFile:
-			appdefFile =  projFile + ".appdef"
-			saveAppdef(__appdef, appdefFile)
-
-	# communicate end of function
-	pub.sendMessage(utils.topics.endFunction, success=success, reason=reason)
-
-def stopAppCreation():
-	stopWritingWebApp()
-
 def createApp(appdef, folder, forPreview, progress):
-	# save to global __appdef to patch a PyPubSub limitation that does not allow
-	# to register a lambda function as listener (weak reference is unregistered
-	# as soon the lambda is out of scope)
-	global __appdef
-	__appdef = appdef
-
-	viewer.shutdown()
-	pub.subscribe(endWriteWebAppListener , utils.topics.endWriteWebApp)
-	try:
-		writeWebApp(appdef, folder, forPreview, progress)
-	except Exception as ex:
-		endWriteWebAppListener(False, traceback.format_exc())
-
-def checkSDKServerVersion():
-	localVersion = utils.sdkVersion()
-
-	token = utils.getToken()
-
-	headers = {}
-	headers["authorization"] = "Bearer {}".format(token)
-
-	nam = NetworkAccessManager(debug=pluginSetting("logresponse"))
-	try:
-		resp, text = nam.request(wabVersionUrl(), headers=headers)
-	except Exception as e:
-		# check if 401/403 => probably token expired
-		permissionDenied = utils.isPermissionDenied( str(e) )
-		if not permissionDenied:
-			raise e
-		else:
-			# renew token and try again
-			utils.resetCachedToken()
-			token = utils.getToken()
-
-			# retry call
-			headers["authorization"] = "Bearer {}".format(token)
-			try:
-				resp, text = nam.request(wabVersionUrl(), headers=headers)
-			except Exception as e:
-				# check if 401/403 => probably token expired
-				permissionDenied = utils.isPermissionDenied( str(e) )
-				if not permissionDenied:
-					raise e
-				else:
-					raise Exception("Permission denied with current Connect credentials")
-
-	remoteVersion = json.loads(text)["boundless-sdk"]
-	if localVersion != remoteVersion:
-		raise VersionMismatchError("The server SDK version (%s) is different from the expected version (%s)" % (remoteVersion, localVersion))
-
+	writeWebApp(appdef, folder, forPreview, progress)
+	projFile = QgsProject.instance().fileName()
+	if projFile:
+		appdefFile =  projFile + ".appdef"
+		saveAppdef(appdef, appdefFile)
 
 def checkAppCanBeCreated(appdef, forPreview=False):
 	##viewCrs = appdef["Settings"]["App view CRS"]

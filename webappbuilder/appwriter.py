@@ -8,7 +8,6 @@ import os
 import shutil
 import zipfile
 import uuid
-from pubsub import pub
 from qgis.core import *
 from qgis.utils import iface
 from PyQt4.QtCore import *
@@ -21,27 +20,13 @@ from olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
-from requests.packages.urllib3.filepost import encode_multipart_formdata
 from qgiscommons2.files import tempFilenameInTempFolder
 from qgiscommons2.settings import pluginSetting
-from qgiscommons2.network.networkaccessmanager import NetworkAccessManager, RequestsExceptionUserAbort
 from webbappwidget import WebAppWidget
 
-__anam = None # AsycnNetworkAccessmanager instance
-def stopWritingWebApp():
-    global __anam
-    if __anam:
-        __anam.abort()
-        del __anam
-        __anam = None
 
-# global var to count how many time PermissionDenied received => can be due to
-# token renewal
-__appSDKification_doAgain = False
+
 def writeWebApp(appdef, folder, forPreview, progress):
-    """WriteApp end is notified using
-    pub.sendMessage(utils.topics.endWriteWebApp, success=[True, False], reason=[str|None])
-    """
     progress.setText("Copying resources files")
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
@@ -105,143 +90,14 @@ def writeWebApp(appdef, folder, forPreview, progress):
     baseTarget = "_self" if appdef["Settings"]["Open hyperlinks in"] == 0 else "_blank"
     _app.scripts.append("<base target='%s'>" % baseTarget)
 
-    if forPreview:
-        app = _app.newInstance()
-        writeJs(appdef, dst, app, progress)
-        app.scriptsbody.extend(['<script src="full-debug.js"></script>',
-                                '<script src="app_prebuilt.js"></script>'])
-        for layer in appdef["Layers"]:
-            if layer.layer.type() == layer.layer.VectorLayer:
-                app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
-        writeHtml(appdef, dst, app, progress, "index_debug.html")
-        pub.sendMessage(utils.topics.endWriteWebApp, success=True, reason=None)
-
-    else:
-        app = _app.newInstance()
-        writeJsx(appdef, dst, app, progress)
-
-        app = _app.newInstance()
-        app.scriptsbody.extend(['<script src="/loader.js"></script>',
-                                '<script src="/build/app-debug.js"></script>'])
-        writeHtml(appdef, dst, app, progress, "index.html")
-
-        if pluginSetting("compileinserver"):
-            # apply SDK compilation to the saved webapp
-            pub.subscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
-            try:
-                global __appSDKification_doAgain
-                __appSDKification_doAgain = False
-                appSDKification(dst, progress)
-            except Exception as e:
-                pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
-        else:
-            pub.sendMessage(utils.topics.endWriteWebApp, success=True, reason=None)
-
-def endAppSDKificationListener(success, reason):
-    from pubsub import pub
-    pub.unsubscribe(endAppSDKificationListener, utils.topics.endAppSDKification)
-    pub.sendMessage(utils.topics.endWriteWebApp, success=success, reason=reason)
-
-# prepare callback to manage post result
-def manageFinished(netManager, zipFileName, folder, progress):
-    '''Callback used to manage result of web app upload to compilator.
-    manageFinished can be triggered by slot => any Exception is not trapped
-    by a standard try:catch => real termination is managed sending signals
-    '''
-    result = netManager.httpResult()
-
-    # manage errors
-    if not result.ok:
-        # manage 'Host requires authentication' due to token expiration
-        global __appSDKification_doAgain
-        if (result.status_code in [401, 403]) and (not __appSDKification_doAgain):
-            try:
-                __appSDKification_doAgain = True
-                appSDKification(folder, progress)
-                return
-            except Exception as e:
-                pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
-
-        # manage all other errors
-        if isinstance(result.exception, RequestsExceptionUserAbort):
-            msg = "Request cancelled by user: {}".format(result.reason)
-        else:
-            msg = "Cannot build webapp: " + result.reason
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
-        return
-
-    with open(zipFileName, 'wb') as newZipContent:
-        newZipContent.write(result.content)
-
-    # unzip new content as new compiled web app
-    try:
-        with zipfile.ZipFile(zipFileName, 'r') as zf:
-            zf.extractall(folder)
-    except:
-        msg = "Could not unzip webapp {} in folder {}".format(zipFileName, folder)
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
-        return
-
-    pub.sendMessage(utils.topics.endAppSDKification, success=True, reason=None)
-
-def appSDKification(folder, progress):
-    ''' zip app folder and send to WAB compiler to apply SDK compilation.
-    The returned zip will be the official webapp
-    '''
-    progress.oscillate()
-
-    progress.setText("Get Authorization token")
-    try:
-        global __appSDKification_doAgain
-        if __appSDKification_doAgain:
-            QgsMessageLog.logMessage("Renew token in case of it is expired and retry", level=QgsMessageLog.WARNING)
-            utils.resetCachedToken()
-        token = utils.getToken()
-    except Exception as e:
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=str(e))
-        return
-
-    # zip folder to send for compiling
-    progress.setText("Preparing data to compile")
-    zipFileName = tempFilenameInTempFolder("webapp.zip", "webappbuilder")
-    try:
-        with zipfile.ZipFile(zipFileName, "w") as zf:
-            relativeFrom = os.path.dirname(folder)
-            for dirname, subdirs, files in os.walk(folder):
-                # exclude data folder
-                if 'data' in subdirs:
-                    subdirs.remove('data')
-                if relativeFrom in dirname:
-                    zf.write(dirname, dirname[len(relativeFrom):])
-                for filename in files:
-                    fiename = os.path.join(dirname, filename)
-                    zf.write(fiename, fiename[len(relativeFrom):])
-    except:
-        msg = "Could not zip webapp folder: {}".format(folder)
-        pub.sendMessage(utils.topics.endAppSDKification, success=False, reason=msg)
-        return
-
-    # prepare data for WAB compiling request
-    with open(zipFileName, 'rb') as f:
-        fileContent = f.read()
-    fields = { 'file': (os.path.basename(zipFileName), fileContent) }
-    payload, content_type = encode_multipart_formdata(fields)
-
-    headers = {}
-    headers["authorization"] = "Bearer {}".format(token)
-    headers["Content-Type"] = content_type
-
-    # prepare request (as in NetworkAccessManager) but without blocking request
-    # do http post
-    progress.setText("Wait compilation")
-
-    global __anam
-    if __anam:
-        del __anam
-        __anam = None
-    __anam = NetworkAccessManager(debug=pluginSetting("logresponse"))
-    __anam.request(utils.wabCompilerUrl(), method='POST', body=payload, headers=headers, blocking=False)
-    __anam.reply.finished.connect( lambda: manageFinished(__anam, zipFileName, folder, progress) )
+    app = _app.newInstance()
+    writeJs(appdef, dst, app, progress)
+    app.scriptsbody.extend(['<script src="full-debug.js"></script>',
+                            '<script src="app_prebuilt.js"></script>'])
+    for layer in appdef["Layers"]:
+        if layer.layer.type() == layer.layer.VectorLayer:
+            app.scriptsbody.append('<script src="./data/lyr_%s.js"></script>' % safeName(layer.layer.name()))
+    writeHtml(appdef, dst, app, progress, "index_debug.html")
 
 def writeJs(appdef, folder, app, progress):
     layers = appdef["Layers"]

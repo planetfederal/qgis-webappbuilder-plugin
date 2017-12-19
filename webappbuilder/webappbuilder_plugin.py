@@ -77,16 +77,6 @@ class WebAppBuilderPlugin:
                     appdef = loadAppdef(appdefFile)
         initialize()
         # reset credential token in case related credentials are changed
-        utils.resetCachedToken()
-        try:
-            dlg = MainDialog(appdef)
-            dlg.exec_()
-        except:
-            dlg.progressBar.setMaximum(100)
-            dlg.progressBar.setValue(0)
-            dlg.progressBar.setVisible(False)
-            dlg.progressLabel.setVisible(False)
-            QApplication.restoreOverrideCursor()
+        dlg = MainDialog(appdef)
+        dlg.exec_()
 
-            QgsMessageLog.logMessage(traceback.format_exc(), "WebAppBuilder", level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(self.iface.mainWindow(), "Unmanaged error. See QGIS log for more details.")
