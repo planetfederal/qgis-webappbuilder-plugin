@@ -508,7 +508,7 @@ function fnc_concat(values, context) {
 };
 
 function fnc_strpos(values, context) {
-    return values[0].indeOf(values[1]);
+    return values[0].indexOf(values[1]);
 };
 
 function fnc_left(values, context) {
