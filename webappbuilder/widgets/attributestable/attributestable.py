@@ -45,7 +45,7 @@ class AttributesTable(WebAppWidget):
     def description(self):
         return "Attributes table"
 
-    def checkProblems(self, appdef, problems, forPreview):
+    def checkProblems(self, appdef, problems):
         layers = appdef["Layers"]
         nonVectorLayers = 0
         for applayer in layers:

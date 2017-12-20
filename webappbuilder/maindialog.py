@@ -465,7 +465,7 @@ class MainDialog(BASE, WIDGET):
             appdef = self.createAppDefinition()
         except WrongValueException:
             return
-        problems = checkAppCanBeCreated(appdef, True)
+        problems = checkAppCanBeCreated(appdef)
         if problems:
             dlg = AppDefProblemsDialog(problems)
             dlg.exec_()
@@ -474,12 +474,12 @@ class MainDialog(BASE, WIDGET):
 
         self.currentFolder = tempFolderInTempFolder("webappbuilder")
         try:
-            self._run(lambda: createApp(appdef, self.currentFolder, True, self.progress))
+            self._run(lambda: createApp(appdef, self.currentFolder, self.progress))
             path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
             webbrowser.open_new(path)
         except Exception as ex:
             QgsMessageLog.logMessage("WebAppBuilder: {}".format(traceback.format_exc()), level=QgsMessageLog.CRITICAL)
-            QMessageBox.critical(iface.mainWindow(), "Error creating preview web app",
+            QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                              "Could not create web app.\nCheck the QGIS log for more details.")
 
 

@@ -28,22 +28,21 @@ from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
 class VersionMismatchError(Exception):
 	pass
 
-def createApp(appdef, folder, forPreview, progress):
-	writeWebApp(appdef, folder, forPreview, progress)
+def createApp(appdef, folder, progress):
+	writeWebApp(appdef, folder, progress)
 	projFile = QgsProject.instance().fileName()
 	if projFile:
 		appdefFile =  projFile + ".appdef"
 		saveAppdef(appdef, appdefFile)
 
-def checkAppCanBeCreated(appdef, forPreview=False):
-	##viewCrs = appdef["Settings"]["App view CRS"]
+def checkAppCanBeCreated(appdef):
 	jsonp = appdef["Settings"]["Use JSONP for WFS connections"]
 	problems = []
 	layers = appdef["Layers"]
 
 	widgets = appdef["Widgets"].values()
 	for w in widgets:
-		w.checkProblems(appdef, problems, forPreview)
+		w.checkProblems(appdef, problems)
 
 	themeModule = importlib.import_module("webappbuilder.themes." + appdef["Settings"]["Theme"])
 	themeModule.checkProblems(appdef, problems)

@@ -82,7 +82,7 @@ def replaceInTemplate(template, values):
         s = s.replace(name, value)
     return s
 
-def exportLayers(layers, folder, progress, precision, crsid, forPreview):
+def exportLayers(layers, folder, progress, precision, crsid):
     progress.setText("Writing local layer files")
     destCrs = QgsCoordinateReferenceSystem(crsid)
     layersFolder = os.path.join(folder, "data")
@@ -90,7 +90,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
     reducePrecision = re.compile(r"([0-9]+\.[0-9]{%s})([0-9]+)" % precision)
     removeSpaces = lambda txt:'"'.join( it if i%2 else ''.join(it.split())
                          for i,it in enumerate(txt.split('"')))
-    ext = "js" if forPreview else "json"
+    ext = "js"
     regexp = re.compile(r'"geometry":.*?null\}')
     for i, appLayer in enumerate(layers):
         layer = appLayer.layer
@@ -100,8 +100,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
             with codecs.open(path, encoding="utf-8") as f:
                 lines = f.readlines()
             with codecs.open(path, "w", encoding="utf-8") as f:
-                if forPreview:
-                    f.write("%s_geojson_callback(" % safeName(layer.name()))
+                f.write("%s_geojson_callback(" % safeName(layer.name()))
                 for line in lines:
                     line = reducePrecision.sub(r"\1", line)
                     line = line.strip("\n\t ")
@@ -114,8 +113,7 @@ def exportLayers(layers, folder, progress, precision, crsid, forPreview):
                         line = line.replace("]]", "]")
                     line = regexp.sub(r'"geometry":null', line)
                     f.write(line)
-                if forPreview:
-                    f.write(");")
+                f.write(");")
         elif layer.type() == layer.RasterLayer:
             destFile = os.path.join(layersFolder, safeName(layer.name()) + ".png").replace("\\", "/")
             img = layer.previewAsImage(QSize(layer.width(),layer.height()))
@@ -147,7 +145,6 @@ def run(f):
         return f()
     finally:
         QApplication.restoreOverrideCursor()
-
 
 
 def getCredentialsFromAuthDb(authcfg):

@@ -18,11 +18,8 @@ Documentation content:
    :glob:
    :maxdepth: 1
 
-   installation
    usage
    controls
-   wab_hosting
-   wabandwebsdk
    baselayers
    troubleshooting
    *

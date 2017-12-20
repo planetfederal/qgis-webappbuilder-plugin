@@ -26,15 +26,14 @@ from webbappwidget import WebAppWidget
 
 
 
-def writeWebApp(appdef, folder, forPreview, progress):
+def writeWebApp(appdef, folder, progress):
     progress.setText("Copying resources files")
     dst = os.path.join(folder, "webapp")
     if os.path.exists(dst):
         shutil.rmtree(dst)
     QDir().mkpath(dst)
     sdkFolder = os.path.join(os.path.dirname(__file__), "websdk_full")
-    if forPreview:
-        shutil.copy(os.path.join(sdkFolder, "full-debug.js"), dst)
+    shutil.copy(os.path.join(sdkFolder, "full-debug.js"), dst)
 
     QDir().mkpath(os.path.join(dst, "data"))
 
@@ -48,7 +47,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
     layers = appdef["Layers"]
     exportLayers(layers, dst, progress,
                  appdef["Settings"]["Precision for GeoJSON export"],
-                 appdef["Settings"]["App view CRS"], forPreview)
+                 appdef["Settings"]["App view CRS"])
 
     class App():
         tabs = []
@@ -79,7 +78,7 @@ def writeWebApp(appdef, folder, forPreview, progress):
 
     _app = App()
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], _app, progress)
-    writeLayersAndGroups(appdef, dst, _app, forPreview, progress)
+    writeLayersAndGroups(appdef, dst, _app, progress)
 
     widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
     for w in widgets:
@@ -292,7 +291,7 @@ def writeHtml(appdef, folder, app, progress, filename):
     with codecs.open(indexFilepath, "w", encoding="utf-8") as f:
         f.write(html)
 
-def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
+def writeLayersAndGroups(appdef, folder, app, progress):
     base = appdef["Base layers"]
     layers = appdef["Layers"]
     groups = appdef["Groups"]
@@ -331,7 +330,7 @@ def writeLayersAndGroups(appdef, folder, app, forPreview, progress):
     for i, layer in enumerate(layers):
         layerTitle = layer.layer.name() if layer.showInControls else None
         showInOverview = "overviewmap" in widgets and layer.showInOverview
-        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, forPreview, showInOverview))
+        layerVars.append(layerToJavascript(layer, appdef["Settings"], layerTitle, showInOverview))
         progress.setProgress(int((i+1)*100.0/len(layers)))
     layerVars = "\n".join(layerVars)
     groupVars = ""

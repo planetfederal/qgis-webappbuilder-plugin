@@ -102,9 +102,7 @@ class Print(WebAppWidget):
 
         app.variables.append("var printLayouts = %s;" % json.dumps(layoutDefs))
 
-    def checkProblems(self, appdef, problems, forPreview):
+    def checkProblems(self, appdef, problems):
         composers = iface.activeComposers()
         if len(composers) == 0:
             problems.append("Print widget has been added to the web app, but no print composer is defined in the current project")
-        if forPreview:
-            problems.append("Print widget might not work correctly in preview mode.")

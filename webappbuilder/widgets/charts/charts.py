@@ -48,7 +48,7 @@ class ChartTool(WebAppWidget):
         dlg.exec_()
         self._parameters["charts"] = dlg.charts
 
-    def checkProblems(self, appdef, problems, forPreview):
+    def checkProblems(self, appdef, problems):
         widgetNames = [w.name() for w in appdef["Widgets"].values()]
         charts = self._parameters["charts"]
         if len(charts) == 0:

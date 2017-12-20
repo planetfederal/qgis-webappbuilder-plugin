@@ -9,19 +9,13 @@ using Web App Builder or the resulting Web Apps are not being built correctly.
 Common problems
 ---------------
 
-Previewed app is empty
+App is empty
 ......................
 
 You may be using a layer symbology renderer or a Symbol layer
 type that is not supported. Check for warning when you click preview, and
 see :ref:`limitations` for a list of supported renderers and symbols.
 
-Compiled app is empty
-.....................
-
-If the preview app looks good, but your compiled app is empty, make sure you
-are serving it using a web server like Apache or IIS. Opening a compiled app
-directly from your computer won't work.
 
 Some layers are not rendering well
 ..................................
@@ -29,10 +23,10 @@ Some layers are not rendering well
 If some layers are styled with a blue outline, this means you are using a QGIS
 expression that is not supported by WAB. See :ref:`supported_functions`.
 
-Raster layers are now showing in preview
+Raster layers are now showing
 ........................................
 
-Raster layers will not be visible if you open the previewed web app directly
+Raster layers will not be visible if you open the web app directly
 from the file system. Instead, the Web App must be served using a web server
 like Apache, IIS, or any other.
 
@@ -110,44 +104,6 @@ Known limitations
   should use web services for publishing those layers.
 * OGC service layers that are not served by geoserver with CORS/JSONP enabled
   will not render properly.
-
-Asking for help
----------------
-
-Web App Builder is failing?
-...........................
-
-If Web App Builder is failing and you already discarded all the possible
-reasons from the :ref:`common_problems` and :ref:`limitations` sections,
-please contact the Boundless Support team, providing the following information:
-
-* Full report output from the Boundless Reporting Tool plugin (see
-  Reporting tool usage for instructions) for the affected machine;
-* A copy of the error message(s).
-
-Getting empty or incomplete Web Apps?
-.....................................
-
-If WAB is returning empty web apps or one of its components is not working
-properly, and you already discarded all the possible reasons from the
-:ref:`common_problems` and :ref:`limitations` sections, please contact the
-Boundless team providing:
-
-* a sample of your QGIS project (including sample data);
-* the Web App Builder settings used (as a saved :file:`*.appdef` file);
-* and the resulting failing app.
-
-For this purpose, we suggest you install the QConsolidate plugin from QGIS's
-plugin manager.
-
-With the QConsolidate plugin installed, a new button named :guilabel:`Save
-Complete Project` is added to the WAB dialog (you may need to reload QGIS).
-
-.. figure:: img/save_complete_project.png
-
-Clicking this button will bundle the QGIs project, data, WAB app settings and
-the resulting web app in one ZIP file, ready for you to send to our support
-team.
 
 .. _supported_functions:
 

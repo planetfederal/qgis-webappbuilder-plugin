@@ -68,7 +68,7 @@ class LayersList(WebAppWidget):
     def iconFile(self):
         return os.path.join(os.path.dirname(__file__), "layer-list.png")
 
-    def checkProblems(self, appdef, problems, forPreview):
+    def checkProblems(self, appdef, problems):
         if len(appdef["Layers"]) == 0:
             problems.append("Layer list widget added, but no layers have been included.")
 

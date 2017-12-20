@@ -36,12 +36,10 @@ allowing the user to manage your app definitions, as shown below:
      - Opens an existing app definitions file (``.appdef``)
    * - Save
      - Saves the current app definitions to a file (``.appdef``)
-   * - Preview
-     - Shows a preview of the app
    * - Help
      - Brings up the help dialog
    * - Create app
-     - Generates the complete app
+     - Generates the web app
    * - Close
      - Closes the dialog
 
@@ -61,55 +59,12 @@ Preview
 The :guilabel:`Preview` button creates the web app in a temporary
 folder and loads it on your default internet browser.
 
-.. note::
-
-   **This preview web app is based on a precompiled version of Web SDK and is
-   not ready for production**, but only for preview and debugging purposes.
-
-Create App
-~~~~~~~~~~
-
-The :guilabel:`Create App` button creates a fully functional web app
-using the *Boundless WebSDK* service.
-
-The user is prompt for a folder to store the web app. After the folder is
-chosen, an uncompiled version of the web app is stored in it.
-
-*Boundless WebSDK* is offered as an online service to Boundless customers, so
-you will need to be connected to the internet and use your Boundless Connect
-credentials (for more information `see <https://connect.boundlessgeo
-.com/docs/desktop/plugins/connect/usage.html#boundless-connect-panel>`_ ).
-
-You will be prompted to enter the credentials on the first time you use
-WebSDK in a QGIS session.
-
-During compilation, a progress bar shows the compilation status. At any time,
-the user can cancel the compilation by clicking :guilabel:`Stop`.
-
-.. figure:: img/stop_compilation.png
-
-When the compilation process is successfully finished, a dialog opens
-informing so, and the user can find the compiled Web App in the chosen folder.
-
-.. figure:: img/compilation_sucess.png
-
-As an alternative, if you do not have access to the WebSDK service provided by
-Boundless, you can tell Web App Builder to just create the intermediate files, 
-and you can build them later manually with a local installation of WebSDK. 
-Usage of WebSDK is not described here. Please refer to the SDK documentation.
-
-To disable compilation of the web app files in the WebSDK servide, disable the 
-*UseSDK service to compile app*.
-
-Even if the WebSDK service is used, the source files (in .jsx format) will be 
-left in the specified folder, so advanced users can modify them later anb rebuild 
-them manually if needed.
 
 .. note::
 
    To fully work, the created app must be served using a web server like Apache,
    IIS, or any other. Otherwise, some layers will not show up correctly.
-   Check :ref:`hosting_wab` for some hosting suggestions.
+
 
 Description tab
 ---------------

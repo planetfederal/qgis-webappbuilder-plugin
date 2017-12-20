@@ -166,7 +166,7 @@ def _geomType(geometryType):
     types = {QGis.Point: "Point", QGis.Line: "Line", QGis.Polygon: "Polygon"}
     return types.get(geometryType, "Point")
 
-def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
+def layerToJavascript(applayer, settings, title, showInOverview):
     viewCrs = settings["App view CRS"]
     jsonp = settings["Use JSONP for WFS connections"]
     useStrategy = not applayer.singleTile
@@ -216,13 +216,7 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
                                 layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
                                 timeInfo, popup, jsonp, useStrategy, showInOverview)
         else:
-            if forPreview:
-                source = ""
-            else:
-                source = '''{
-                            format: new ol.format.GeoJSON(),
-                            url: './data/lyr_%s.json'
-                            }''' % layerName
+            source = ""
             if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
                 js =  ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
@@ -332,14 +326,13 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
                     style: style_%(n)s});''' %  {"n":layerName,"min":
                             minResolution, "max": maxResolution, "source": source})
 
-            if forPreview:
-                clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
-                overview = ("lyr_%(n)s_overview%(cs)s.setSource(lyr_%(n)s%(cs)s.getSource());"
-                            % {"n": layerName, "cs": clusterSource} if showInOverview else "")
-                js += '''\n%(n)s_geojson_callback = function(geojson) {
-                              lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
-                              %(overview)s
-                        };''' % {"n": layerName, "cs": clusterSource, "overview": overview}
+            clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
+            overview = ("lyr_%(n)s_overview%(cs)s.setSource(lyr_%(n)s%(cs)s.getSource());"
+                        % {"n": layerName, "cs": clusterSource} if showInOverview else "")
+            js += '''\n%(n)s_geojson_callback = function(geojson) {
+                          lyr_%(n)s.getSource()%(cs)s.addFeatures(new ol.format.GeoJSON().readFeatures(geojson));
+                          %(overview)s
+                    };''' % {"n": layerName, "cs": clusterSource, "overview": overview}
             return js
 
     elif layer.type() == layer.RasterLayer:

@@ -1,12 +1,4 @@
 [
-	{"name":"sdkendpoint",
-	 "label": "SDK Service Endpoint",
-	 "description": "The URL of the WebSDK server",
-	 "type": "string",
-     "#default": "http://localhost:8080/package/",
-     "default": "https://api.boundlessgeo.io/v1/websdk",
-	 "group": "General"
-	},
 	{"name":"overwritewarning",
      "label": "Warn when output folder exists",
      "description": "If output webapp folder exists, ask permission to overwrite it",
@@ -20,20 +12,6 @@
      "type": "choice",
      "default": "Ask",
      "options": ["Ask", "Open last configuration", "Open new configuration"],
-     "group": "General"
-    },
-    {"name":"compileinserver",
-     "label": "Use SDK Service to compile app",
-     "description": "True if the generated JSX file should be compiled using the remote SDK service.",
-     "type": "bool",
-     "default": true,
-     "group": "General"
-    },
-    {"name":"logresponse",
-     "label": "Log SDK Service response",
-     "description": "Add the full response of the SDK Service to the QGIS log when there are issues. Useful for troubleshooting.",
-     "type": "bool",
-     "default": false,
      "group": "General"
     }
 ]
