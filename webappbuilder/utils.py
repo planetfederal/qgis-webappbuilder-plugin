@@ -14,7 +14,6 @@ from PyQt4.QtGui import QFileDialog, QApplication, QCursor
 import codecs
 import json
 from qgiscommons2.settings import pluginSetting, setPluginSetting
-import urllib.parse
 
 
 MULTIPLE_SELECTION_DISABLED = 0
@@ -146,15 +145,6 @@ def run(f):
     finally:
         QApplication.restoreOverrideCursor()
 
-
-def getCredentialsFromAuthDb(authcfg):
-    credentials = (None, None)
-    if authcfg:
-        authConfig = QgsAuthMethodConfig()
-        if QgsAuthManager.instance().loadAuthenticationConfig(authcfg, authConfig, True):
-            credentials = (authConfig.config('username'), authConfig.config('password'))
-
-    return credentials
 
 def sdkVersion():
     path = os.path.join(os.path.dirname(__file__), "package.json")
