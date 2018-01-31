@@ -387,7 +387,8 @@ def layerToJavascript(applayer, settings, title, forPreview, showInOverview):
 
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
-            transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
+            layerCrs = provider.crs() if provider.crs().isValid() else QgsCoordinateReferenceSystem("EPSG:4326")
+            transform = QgsCoordinateTransform(layerCrs, QgsCoordinateReferenceSystem(viewCrs))
             extent = transform.transform(provider.extent())
             sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                     extent.xMaximum(), extent.yMaximum())
