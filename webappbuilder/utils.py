@@ -3,14 +3,21 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import object
 import os
 import re
 from qgis.core import *
 from qgis.gui import *
 import qgis.utils
 import qgis
-from PyQt4.QtCore import *
-from PyQt4.QtGui import QFileDialog, QApplication, QCursor
+from qgis.PyQt.QtCore import QDir, QSize, QSettings
+from qgis.PyQt.QtWidgets import QFileDialog, QApplication
+from qgis.PyQt.QtGui import QCursor
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsVectorFileWriter,
+                       QgsProject,
+                       QgsWkbTypes
+                      )
 import codecs
 import json
 from qgiscommons2.settings import pluginSetting, setPluginSetting
@@ -23,32 +30,17 @@ MULTIPLE_SELECTION_SHIFT_KEY = 2
 MULTIPLE_SELECTION_NO_KEY = 3
 
 
-try:
-    from qgis.core import QGis
-    TYPE_MAP = {
-        QGis.WKBPoint: 'Point',
-        QGis.WKBLineString: 'LineString',
-        QGis.WKBPolygon: 'Polygon',
-        QGis.WKBMultiPoint: 'MultiPoint',
-        QGis.WKBMultiLineString: 'MultiLineString',
-        QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
-    QGisPoint = QGis.WKBPoint
+TYPE_MAP = {
+    QgsWkbTypes.Point: 'Point',
+    QgsWkbTypes.LineString: 'LineString',
+    QgsWkbTypes.Polygon: 'Polygon',
+    QgsWkbTypes.MultiPoint: 'MultiPoint',
+    QgsWkbTypes.MultiLineString: 'MultiLineString',
+    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+   }
+QGisPoint = QgsWkbTypes.Point
 
-except ImportError:
-    from qgis.core import Qgis as QGis
-    from qgis.core import QgsWkbTypes
-    TYPE_MAP = {
-        QgsWkbTypes.Point: 'Point',
-        QgsWkbTypes.LineString: 'LineString',
-        QgsWkbTypes.Polygon: 'Polygon',
-        QgsWkbTypes.MultiPoint: 'MultiPoint',
-        QgsWkbTypes.MultiLineString: 'MultiLineString',
-        QgsWkbTypes.MultiPolygon: 'MultiPolygon',
-    }
-    QGisPoint = QgsWkbTypes.Point
-
-class Layer():
+class Layer(object):
 
     def __init__(self, layer, visible, popup, clusterDistance, clusterColor,
                  allowSelection, showInOverview, timeInfo, showInControls,
@@ -67,7 +59,7 @@ class Layer():
     @staticmethod
     def fromDict(d):
         layer = Layer(*[None] * 10)
-        for a, b in d.iteritems():
+        for a, b in d.items():
             setattr(layer, a, b)
         layer.layer = findProjectLayerByName(layer.layer)
         return layer
@@ -78,7 +70,7 @@ def replaceInTemplate(template, values):
     with codecs.open(path, encoding="utf-8") as f:
         lines = f.readlines()
     s = "".join(lines)
-    for name,value in values.iteritems():
+    for name,value in values.items():
         s = s.replace(name, value)
     return s
 
@@ -105,7 +97,7 @@ def exportLayers(layers, folder, progress, precision, crsid):
                     line = reducePrecision.sub(r"\1", line)
                     line = line.strip("\n\t ")
                     line = removeSpaces(line)
-                    if layer.wkbType()==QGis.WKBMultiPoint:
+                    if layer.wkbType()==QgsWkbTypes.MultiPoint:
                         line = line.replace("MultiPoint", "Point")
                         line = line.replace("[ [", "[")
                         line = line.replace("] ]", "]")

@@ -1,7 +1,9 @@
-from webappbuilder.webbappwidget import WebAppWidget
+
 import os
-from PyQt4.QtGui import QIcon
-from PyQt4.Qt import QDir
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtGui import QIcon
+
+from webappbuilder.webbappwidget import WebAppWidget
 from webappbuilder.utils import safeName, replaceInTemplate
 import shutil
 import codecs
@@ -27,7 +29,7 @@ class Help(WebAppWidget):
             QDir().mkpath(helpFolder)
         content = ""
         sections = ""
-        for widget in appdef["Widgets"].values():
+        for widget in list(appdef["Widgets"].values()):
             helpContent = widget.widgetHelp()
             if helpContent is not None:
                 helpImageFiles = widget.widgetHelpFiles()

@@ -3,9 +3,12 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.Qt import QIcon, QDir
+from __future__ import absolute_import
+from builtins import object
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QDir
 import os
-from parameditor import ParametersEditorDialog
+from .parameditor import ParametersEditorDialog
 import inspect
 import shutil
 import codecs
@@ -51,7 +54,7 @@ class WebAppWidget(object):
     def parameters(self):
         if self._parameters:
             params = self._parameters.copy()
-            for k, v, in params.iteritems():
+            for k, v, in params.items():
                 if isinstance(v, tuple):
                     params[k] = v[0]
             return params
@@ -63,7 +66,7 @@ class WebAppWidget(object):
         self._parameters = copy.deepcopy(self.defaultParameters)
 
     def setParameters(self, params):
-        for paramName, value in params.iteritems():
+        for paramName, value in params.items():
             if paramName in self._parameters:
                 if isinstance(self._parameters[paramName], tuple):
                     self._parameters[paramName] = (value, self._parameters[paramName][1])

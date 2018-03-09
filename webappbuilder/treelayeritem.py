@@ -3,15 +3,20 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
 import os
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QComboBox, QLabel, QColorDialog
+from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsWkbTypes
 from qgis.core import *
-from popupeditor import PopupEditorDialog
-from utils import *
-from exceptions import WrongValueException
+from .popupeditor import PopupEditorDialog
+from .utils import *
+from .exceptions import WrongValueException
 from qgis.utils import iface
-from timeinfodialog import TimeInfoDialog
+from .timeinfodialog import TimeInfoDialog
 
 groupIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "group.gif"))
 layerIcon = QIcon(os.path.join(os.path.dirname(__file__), "icons", "layer.png"))
@@ -68,9 +73,9 @@ class TreeLayerItem(QTreeWidgetItem):
         self.layer = layer
         self.setText(0, layer.name())
         if layer.type() == layer.VectorLayer:
-            if layer.geometryType() == QGis.Point:
+            if layer.geometryType() == QgsWkbTypes.Point:
                 icon = pointIcon
-            elif layer.geometryType() == QGis.Line:
+            elif layer.geometryType() == QgsWkbTypes.LineString:
                 icon = lineIcon
             else:
                 icon = polygonIcon
@@ -95,7 +100,7 @@ class TreeLayerItem(QTreeWidgetItem):
             self.allowSelectionItem.setCheckState(0, Qt.Checked)
             self.allowSelectionItem.setText(0, "Allow selection on this layer")
             self.addChild(self.allowSelectionItem)
-            if layer.geometryType() == QGis.Point:
+            if layer.geometryType() == QgsWkbTypes.Point:
                 self.clusterItem = QTreeWidgetItem(self)
                 self.clusterItem.setCheckState(0, Qt.Unchecked)
                 self.clusterItem.setText(0, "Cluster points")
@@ -117,7 +122,7 @@ class TreeLayerItem(QTreeWidgetItem):
                         self.clusterColor = color.name()
                         self.clusterColorLabel.setText("<font style='background-color:%s; color:%s'>dummy</font> <a href='#'>Edit</a>"
                                                % (self.clusterColor, self.clusterColor))
-                self.clusterColorLabel.connect(self.clusterColorLabel, SIGNAL("linkActivated(QString)"), editColor)
+                self.clusterColorLabel.linkActivated.connect(editColor)
 
                 self.addChild(self.clusterItem)
         if layer.providerType().lower() == "wms" or layer.type() == layer.VectorLayer:
@@ -127,12 +132,12 @@ class TreeLayerItem(QTreeWidgetItem):
             self.popupLabel.setText("<a href='#'>Edit</a>")
             tree.setItemWidget(self.popupItem, 1, self.popupLabel)
             def editPopup():
-                fields = ([f.name() for f in layer.pendingFields()]
+                fields = ([f.name() for f in layer.fields()]
                                 if layer.type() == layer.VectorLayer else [])
                 dlg = PopupEditorDialog(self.popup, fields)
                 dlg.exec_()
                 self.popup = dlg.text.strip()
-            self.popupLabel.connect(self.popupLabel, SIGNAL("linkActivated(QString)"), editPopup)
+            self.popupLabel.linkActivated.connect(editPopup)
             self.addChild(self.popupItem)
 
         if layer.type() == layer.VectorLayer:
@@ -146,7 +151,7 @@ class TreeLayerItem(QTreeWidgetItem):
                 dlg.exec_()
                 if dlg.ok:
                     self.timeInfo = dlg.timeInfo
-            self.timeInfoLabel.connect(self.timeInfoLabel, SIGNAL("linkActivated(QString)"), editTimeInfo)
+            self.timeInfoLabel.linkActivated.connect(editTimeInfo)
             self.addChild(self.timeInfoItem)
 
         self.singleTileItem = QTreeWidgetItem(self)
@@ -161,7 +166,7 @@ class TreeLayerItem(QTreeWidgetItem):
 
     def toggleChildren(self):
         disabled = self.checkState(0) == Qt.Unchecked
-        for i in xrange(self.childCount()):
+        for i in range(self.childCount()):
             subitem = self.child(i)
             subitem.setDisabled(disabled)
         try:
@@ -281,7 +286,7 @@ class TreeGroupItem(QTreeWidgetItem):
 
     def setShowContent(self, showContent):
         return self.showContentItem.setCheckState(0, Qt.Checked if showContent else Qt.Unchecked)
-    
+
     def isGroupExpanded(self):
         return self.isGroupExpandedItem.checkState(0) == Qt.Checked
 

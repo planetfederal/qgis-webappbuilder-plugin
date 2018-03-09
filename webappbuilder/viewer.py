@@ -3,8 +3,11 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-import SimpleHTTPServer
-import SocketServer
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+import http.server
+import socketserver
 import os
 import webbrowser
 import threading
@@ -18,7 +21,7 @@ def openWebApp(folder):
     global server
     if server is None:
         os.chdir(folder)
-        server = SocketServer.TCPServer(("", PORT), SimpleHTTPServer.SimpleHTTPRequestHandler)
+        server = socketserver.TCPServer(("", PORT), http.server.SimpleHTTPRequestHandler)
         thread = threading.Thread(target = server.serve_forever)
         thread.daemon = True
         thread.start()

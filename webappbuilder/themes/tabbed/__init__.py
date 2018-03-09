@@ -3,7 +3,7 @@ def checkProblems(appdef, problems):
            "geocoding", "layerslist"]
 
     for w in widgetsInTab:
-        if w in appdef["Widgets"].keys():
+        if w in list(appdef["Widgets"].keys()):
             return
 
     problems.append("Tabbed them is used, but no component that requires the tab panel is used.")

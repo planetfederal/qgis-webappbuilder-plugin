@@ -3,11 +3,12 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
 import unittest
 import sys
-import utils
+from . import utils
 import os
-from utils import *
+from .utils import *
 
 
 class SettingsTest(unittest.TestCase):

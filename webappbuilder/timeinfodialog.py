@@ -4,9 +4,9 @@
 # This code is licensed under the GPL 2.0 license.
 #
 from qgis.core import *
-from PyQt4 import QtCore, QtGui, uic
+from qgis.PyQt import QtCore, QtGui, uic
 
-from PyQt4.QtCore import QDateTime
+from qgis.PyQt.QtCore import QDateTime
 import os
 
 
@@ -21,12 +21,12 @@ class TimeInfoDialog(BASE, WIDGET):
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.timeInfo = timeInfo
         self.ok = False
-        fields = [f.name() for f in layer.pendingFields()]
+        fields = [f.name() for f in layer.fields()]
         self.toDateAttributeComboBox.addItems(fields)
         self.fromDateAttributeComboBox.addItems(fields)
         if timeInfo is None:
             self.radioButtonNoTimeInfo.setChecked(True)
-        elif isinstance(timeInfo[0], basestring):
+        elif isinstance(timeInfo[0], str):
             self.fromDateAttributeComboBox.setCurrentIndex(self.fromDateAttributeComboBox.findText(timeInfo[0]))
             self.toDateAttributeComboBox.setCurrentIndex(self.toDateAttributeComboBox.findText(timeInfo[1]))
             self.radioButtonFeatureTimeInfo.setChecked(True)

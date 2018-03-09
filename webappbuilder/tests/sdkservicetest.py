@@ -3,6 +3,8 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import object
 from webappbuilder.appwriter import *
 from qgiscommons2.files import *
 import unittest
@@ -12,14 +14,14 @@ import os
 import re
 from webappbuilder import utils
 from pubsub import pub
-from PyQt4.QtCore import QEventLoop
+from qgis.PyQt.QtCore import QEventLoop
 try:
     from qgis.core import QGis
 except ImportError:
     from qgis.core import Qgis as QGis
 
 
-class Progress():
+class Progress(object):
     def setText(_, text):
         pass
     def setProgress(_, i):

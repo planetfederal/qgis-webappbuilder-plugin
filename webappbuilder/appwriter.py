@@ -3,6 +3,9 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
+from builtins import str
+from builtins import object
 import codecs
 import os
 import shutil
@@ -10,19 +13,21 @@ import zipfile
 import uuid
 from qgis.core import *
 from qgis.utils import iface
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtSvg import *
-from utils import *
-import utils
-from settings import *
-from olwriter import exportStyles, layerToJavascript
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import *
+from qgis.PyQt.QtSvg import *
+
+from .utils import *
+from . import utils
+from .settings import *
+from .olwriter import exportStyles, layerToJavascript
 from collections import OrderedDict
 from operator import attrgetter
 from qgis.utils import plugins_metadata_parser
 from qgiscommons2.files import tempFilenameInTempFolder
 from qgiscommons2.settings import pluginSetting
-from webbappwidget import WebAppWidget
+from .webbappwidget import WebAppWidget
 
 
 
@@ -49,7 +54,7 @@ def writeWebApp(appdef, folder, progress):
                  appdef["Settings"]["Precision for GeoJSON export"],
                  appdef["Settings"]["App view CRS"])
 
-    class App():
+    class App(object):
         tabs = []
         ol3controls = []
         tools = []
@@ -80,7 +85,7 @@ def writeWebApp(appdef, folder, progress):
     exportStyles(layers, dst, appdef["Settings"], "timeline" in appdef["Widgets"], _app, progress)
     writeLayersAndGroups(appdef, dst, _app, progress)
 
-    widgets = sorted(appdef["Widgets"].values(), key=attrgetter('order'))
+    widgets = sorted(list(appdef["Widgets"].values()), key=attrgetter('order'))
     for w in widgets:
         w.write(appdef, dst, _app, progress)
 
@@ -112,8 +117,8 @@ def writeJs(appdef, folder, app, progress):
 
     canvas = iface.mapCanvas()
     canvasCrs = canvas.mapSettings().destinationCrs()
-    conversionNumerator = 111325.0 if canvasCrs.mapUnits() == QGis.Degrees else 1
-    conversionDenominator = 111325.0 if crs.mapUnits() == QGis.Degrees else 1
+    conversionNumerator = 111325.0 if canvasCrs.mapUnits() == QgsUnitTypes.DistanceDegrees else 1
+    conversionDenominator = 111325.0 if crs.mapUnits() == QgsUnitTypes.DistanceDegrees else 1
     conversion = conversionNumerator / conversionDenominator
     app.variables.append("var unitsConversion = %s;" % str(conversion))
 
@@ -188,8 +193,8 @@ def writeJsx(appdef, folder, app, progress):
 
     canvas = iface.mapCanvas()
     canvasCrs = canvas.mapSettings().destinationCrs()
-    conversionNumerator = 111325.0 if canvasCrs.mapUnits() == QGis.Degrees else 1
-    conversionDenominator = 111325.0 if crs.mapUnits() == QGis.Degrees else 1
+    conversionNumerator = 111325.0 if canvasCrs.mapUnits() == QgsUnitTypes.Degrees else 1
+    conversionDenominator = 111325.0 if crs.mapUnits() == QgsUnitTypes.Degrees else 1
     conversion = conversionNumerator / conversionDenominator
     app.variables.append("var unitsConversion = %s;" % str(conversion))
 
@@ -235,7 +240,7 @@ def writeCss(appdef, folder, widgets):
         css = f.read()
     left = offset
     right = offset
-    widgets = sorted(appdef["Widgets"].values(), key=attrgetter('buttonIndex'))
+    widgets = sorted(list(appdef["Widgets"].values()), key=attrgetter('buttonIndex'))
     for w in widgets:
         buttonArea = w.buttonAreaForTheme(theme)
         if buttonArea == WebAppWidget.BUTTON_AREA_LEFT:
@@ -280,8 +285,8 @@ def writeHtml(appdef, folder, app, progress, filename):
     values = {"@VERSION@": plugins_metadata_parser["webappbuilder"].get("general","version"),
               "@SDKVERSION@": utils.sdkVersion(),
               "@TITLE@": appdef["Settings"]["Title"],
-              "@SCRIPTS@": "\n".join(OrderedDict((item,None) for item in app.scripts).keys()),
-              "@SCRIPTSBODY@": "\n".join(OrderedDict((item,None) for item in app.scriptsbody).keys())
+              "@SCRIPTS@": "\n".join(list(OrderedDict((item,None) for item in app.scripts).keys())),
+              "@SCRIPTSBODY@": "\n".join(list(OrderedDict((item,None) for item in app.scriptsbody).keys()))
              }
 
     template = os.path.join(os.path.dirname(__file__), "templates", "index.html")
@@ -335,7 +340,7 @@ def writeLayersAndGroups(appdef, folder, app, progress):
     layerVars = "\n".join(layerVars)
     groupVars = ""
     groupedLayers = {}
-    for group, groupDef in groups.iteritems():
+    for group, groupDef in groups.items():
         groupLayers = groupDef["layers"]
         groupVars +=  ('''var %s = new ol.layer.Group({
                                 layers: [%s],
@@ -397,14 +402,18 @@ def bounds(useCanvas, layers, crsid):
     if useCanvas:
         canvas = iface.mapCanvas()
         canvasCrs = canvas.mapSettings().destinationCrs()
-        transform = QgsCoordinateTransform(canvasCrs, QgsCoordinateReferenceSystem(crsid))
+        transform = QgsCoordinateTransform(canvasCrs,
+                                           QgsCoordinateReferenceSystem(crsid),
+                                           QgsProject.instance())
         try:
             extent = transform.transform(canvas.extent())
         except:
             extent = None
     if extent is None:
         for layer in layers:
-            transform = QgsCoordinateTransform(layer.layer.crs(), QgsCoordinateReferenceSystem(crsid))
+            transform = QgsCoordinateTransform(layer.layer.crs(),
+                                               QgsCoordinateReferenceSystem(crsid),
+                                               QgsProject.instance())
             try:
                 layerExtent = transform.transform(layer.layer.extent())
                 if extent is None:
@@ -416,7 +425,9 @@ def bounds(useCanvas, layers, crsid):
 
     if extent is None:
         extent = QgsRectangle(-180, -90, 180, 90)
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("ESPG:4326"), QgsCoordinateReferenceSystem(crsid))
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("ESPG:4326"),
+                                           QgsCoordinateReferenceSystem(crsid),
+                                           QgsProject.instance())
         extent = transform.transform(extent)
 
     return "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),

@@ -1,6 +1,20 @@
+from builtins import str
 from webappbuilder.webbappwidget import WebAppWidget
 import os
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt.QtCore import Qt, QMetaObject
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QHBoxLayout,
+                                 QDialogButtonBox,
+                                 QTableWidget,
+                                 QAbstractItemView,
+                                 QPushButton,
+                                 QHeaderView,
+                                 QTableWidgetItem,
+                                 QVBoxLayout,
+                                 QLabel,
+                                 QLineEdit
+                                )
 
 class Links(WebAppWidget):
 
@@ -9,14 +23,14 @@ class Links(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         links = self._parameters["links"]
         items = []
-        for name, url in links.iteritems():
+        for name, url in links.items():
             items.append('React.createElement(MenuItem, {primaryText: "%s", href:"%s"})' % (name, url))
         app.tools.append('''React.createElement(IconMenu, {anchorOrigin: {horizontal: 'right', vertical: 'bottom'}, targetOrigin: {horizontal: 'right', vertical: 'top'}, iconButtonElement: React.createElement(Button, {buttonType: 'Icon', iconClassName: "headerIcons ms ms-link", tooltip: "Links"})},
                                         %s
                                     )''' % ",\n".join(items))
 
     def icon(self):
-        return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
+        return QIcon(os.path.join(os.path.dirname(__file__), "links.png"))
 
     def iconFile(self):
         return os.path.join(os.path.dirname(__file__), "links.png")
@@ -32,9 +46,9 @@ class Links(WebAppWidget):
 
 
 
-class LinksDialog(QtGui.QDialog):
+class LinksDialog(QDialog):
     def __init__(self, links):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        QDialog.__init__(self, None, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.links = dict(links)
         self.ok = False
         self.setupUi()
@@ -42,25 +56,25 @@ class LinksDialog(QtGui.QDialog):
     def setupUi(self):
         self.resize(500, 350)
         self.setWindowTitle("Links")
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Vertical)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.table = QtGui.QTableWidget()
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setOrientation(Qt.Vertical)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.table = QTableWidget()
         self.table.verticalHeader().setVisible(False)
-        self.table.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.addRowButton = QtGui.QPushButton()
+        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.addRowButton = QPushButton()
         self.addRowButton.setText("Add link")
-        self.editRowButton = QtGui.QPushButton()
+        self.editRowButton = QPushButton()
         self.editRowButton.setText("Edit link")
-        self.removeRowButton = QtGui.QPushButton()
+        self.removeRowButton = QPushButton()
         self.removeRowButton.setText("Remove link")
-        self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
-        self.buttonBox.addButton(self.editRowButton, QtGui.QDialogButtonBox.ActionRole)
-        self.buttonBox.addButton(self.removeRowButton, QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.addRowButton, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.editRowButton, QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.removeRowButton, QDialogButtonBox.ActionRole)
         self.setTableContent()
         self.horizontalLayout.addWidget(self.table)
         self.horizontalLayout.addWidget(self.buttonBox)
@@ -70,7 +84,7 @@ class LinksDialog(QtGui.QDialog):
         self.editRowButton.clicked.connect(self.editRow)
         self.addRowButton.clicked.connect(self.addRow)
         self.removeRowButton.clicked.connect(self.removeRow)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QMetaObject.connectSlotsByName(self)
         self.editRowButton.setEnabled(False)
         self.removeRowButton.setEnabled(False)
 
@@ -80,16 +94,16 @@ class LinksDialog(QtGui.QDialog):
         self.table.setColumnWidth(0, 200)
         self.table.setColumnWidth(1, 200)
         self.table.setHorizontalHeaderLabels(["Name", "URL"])
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         self.table.setRowCount(len(self.links))
         for i, name in enumerate(self.links):
             url = self.links[name]
             self.table.setRowHeight(i, 22)
-            item = QtGui.QTableWidgetItem(name, 0)
-            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            item = QTableWidgetItem(name, 0)
+            item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             self.table.setItem(i, 0, item)
-            item = QtGui.QTableWidgetItem(url, 0)
-            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            item = QTableWidgetItem(url, 0)
+            item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             self.table.setItem(i, 1, item)
 
         self.table.itemSelectionChanged.connect(self.selectionChanged)
@@ -129,7 +143,7 @@ class LinksDialog(QtGui.QDialog):
         self.ok = True
         self.close()
 
-class NewLinkDialog(QtGui.QDialog):
+class NewLinkDialog(QDialog):
 
     def __init__(self, name = None, url = None, parent = None):
         super(NewLinkDialog, self).__init__(parent)
@@ -140,29 +154,29 @@ class NewLinkDialog(QtGui.QDialog):
 
     def initGui(self):
         self.setWindowTitle('New link')
-        layout = QtGui.QVBoxLayout()
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Close)
+        layout = QVBoxLayout()
+        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
 
-        horizontalLayout = QtGui.QHBoxLayout()
+        horizontalLayout = QHBoxLayout()
         horizontalLayout.setSpacing(30)
         horizontalLayout.setMargin(0)
-        nameLabel = QtGui.QLabel('Link name')
+        nameLabel = QLabel('Link name')
         nameLabel.setMinimumWidth(120)
         nameLabel.setMaximumWidth(120)
-        self.nameBox = QtGui.QLineEdit()
+        self.nameBox = QLineEdit()
         if self.name is not None:
             self.nameBox.setText(self.name)
         horizontalLayout.addWidget(nameLabel)
         horizontalLayout.addWidget(self.nameBox)
         layout.addLayout(horizontalLayout)
 
-        horizontalLayout = QtGui.QHBoxLayout()
+        horizontalLayout = QHBoxLayout()
         horizontalLayout.setSpacing(30)
         horizontalLayout.setMargin(0)
-        urlLabel = QtGui.QLabel('Url')
+        urlLabel = QLabel('Url')
         urlLabel.setMinimumWidth(120)
         urlLabel.setMaximumWidth(120)
-        self.urlBox = QtGui.QLineEdit()
+        self.urlBox = QLineEdit()
         if self.url is not None:
             self.urlBox.setText(self.url)
         horizontalLayout.addWidget(urlLabel)
@@ -178,14 +192,14 @@ class NewLinkDialog(QtGui.QDialog):
         self.resize(400, 200)
 
     def okPressed(self):
-        self.name = unicode(self.nameBox.text()).strip()
+        self.name = str(self.nameBox.text()).strip()
         if self.name == "":
             self.nameBox.setStyleSheet("QLineEdit{background: yellow}")
             return
         else:
             self.nameBox.setStyleSheet("QLineEdit{background: white}")
 
-        self.url = unicode(self.urlBox.text()).strip()
+        self.url = str(self.urlBox.text()).strip()
         if self.url == "":
             self.urlBox.setStyleSheet("QLineEdit{background: yellow}")
             return

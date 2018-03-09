@@ -5,10 +5,9 @@
 #
 from qgis.utils import iface
 from qgis.core import *
-from PyQt4 import QtGui, QtCore
+from qgis.PyQt import QtGui, QtCore
 import subprocess
 import os
-import traceback
 
 
 class ExecutorThread(QtCore.QThread):
@@ -42,7 +41,7 @@ class ExecutorThread(QtCore.QThread):
             #if proc.returncode:
             self.exception= Exception("Error while building using Node.js:\n%s" % "".join(lines))
             self.finished.emit()
-        except Exception, e:
+        except Exception as e:
             self.exception = e
             self.finished.emit()
 

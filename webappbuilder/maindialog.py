@@ -3,33 +3,57 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
+from builtins import range
+from builtins import object
 import sys
 import os
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
-import utils
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import (QApplication,
+                                 QPushButton,
+                                 QDialogButtonBox,
+                                 QFileDialog,
+                                 QMessageBox,
+                                 QToolButton,
+                                 QMenu,
+                                 QAction,
+                                 QLabel,
+                                 QHBoxLayout,
+                                 QSpacerItem,
+                                 QSizePolicy,
+                                 QTreeWidgetItem
+                                )
+from qgis.core import (QgsApplication,
+                       QgsMessageLog,
+                       Qgis,
+                       QgsProject,
+                       QgsLayerTreeGroup,
+                       QgsLayerTreeLayer
+                      )
+from qgis.utils import iface
+from . import utils
 from collections import defaultdict
 from qgis.utils import iface
-from appcreator import (
+from .appcreator import (
     createApp,
     AppDefProblemsDialog,
     loadAppdef,
     saveAppdef,
     checkAppCanBeCreated)
-import settings
+from . import settings
 from types import MethodType
 import webbrowser
-from treesettingsitem import TreeSettingItem
+from .treesettingsitem import TreeSettingItem
 from functools import partial
-from settings import webAppWidgets
+from .settings import webAppWidgets
 from qgiscommons2.gui import askForFiles, askForFolder
 from qgiscommons2.settings import pluginSetting
 import traceback
-from treelayeritem import TreeLayerItem, TreeGroupItem
-from exceptions import WrongValueException
-from PyQt4 import uic
+from .treelayeritem import TreeLayerItem, TreeGroupItem
+from .exceptions import WrongValueException
+from qgis.PyQt import uic
 from qgiscommons2.files import tempFolderInTempFolder
 
 consolidateInstalled = True
@@ -38,7 +62,7 @@ try:
 except:
     consolidateInstalled = False
 
-from consolidate import consolidate
+from .consolidate import consolidate
 
 
 # Adding so that our UI files can find resources_rc.py
@@ -107,7 +131,7 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
 
-        class Progress():
+        class Progress(object):
             def setText(_, text):
                 self.progressLabel.setText(text)
                 QApplication.processEvents()
@@ -132,21 +156,21 @@ class MainDialog(BASE, WIDGET):
 
     def collapseLayers(self):
         self.layersTree.collapseAll()
-        for i in xrange(self.layersTree.topLevelItemCount()):
+        for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if isinstance(item, TreeGroupItem):
                 item.setExpanded(True)
 
     def filterLayers(self):
         text = self.filterLayersBox.text()
-        for i in xrange(self.layersTree.topLevelItemCount()):
+        for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if isinstance(item, TreeLayerItem):
                 itemText = item.text(0)
                 item.setHidden(text != "" and text not in itemText)
             else:
                 groupVisible = False
-                for j in xrange(item.childCount()):
+                for j in range(item.childCount()):
                     subitem = item.child(j)
                     subitemText = subitem.text(0)
                     hidden = text != "" and text not in subitemText
@@ -156,7 +180,7 @@ class MainDialog(BASE, WIDGET):
                 item.setHidden(not groupVisible)
 
     def selectLogo(self):
-        img = QFileDialog.getOpenFileName(self, "Select image file")
+        img, __, __ = QFileDialog.getOpenFileName(self, "Select image file")
         if img:
             self.logoBox.setText(img)
 
@@ -185,7 +209,7 @@ class MainDialog(BASE, WIDGET):
         try:
             self.titleBox.setText(appdef["Settings"]["Title"])
             self.logoBox.setText(appdef["Settings"]["Logo"])
-            for button, widgetName in self.widgetButtons.iteritems():
+            for button, widgetName in self.widgetButtons.items():
                 if widgetName in appdef["Widgets"]:
                     button.setChecked(True)
                     button.webAppWidget.setParameters(appdef["Widgets"][widgetName]["Parameters"])
@@ -197,16 +221,16 @@ class MainDialog(BASE, WIDGET):
                 if name in appdef["Settings"]:
                     self.settingsItems[name].setValue(appdef["Settings"][name])
             theme = appdef["Settings"]["Theme"]
-            for button, themeName in self.themesButtons.iteritems():
+            for button, themeName in self.themesButtons.items():
                 if themeName == theme:
                     button.click()
             baseLayers = appdef["Base layers"]
-            for button, name in self.baseLayers.iteritems():
+            for button, name in self.baseLayers.items():
                 button.setChecked(name in baseLayers)
-            for button, name in self.baseOverlays.iteritems():
+            for button, name in self.baseOverlays.items():
                 button.setChecked(name in baseLayers)
             items = []
-            for i in xrange(self.layersTree.topLevelItemCount()):
+            for i in range(self.layersTree.topLevelItemCount()):
                 item = self.layersTree.topLevelItem(i)
                 if isinstance(item, TreeLayerItem):
                     items.append(item)
@@ -216,7 +240,7 @@ class MainDialog(BASE, WIDGET):
                         item.setIsGroupExpanded(appdef["Groups"][item.text(0)]["isGroupExpanded"])
                     except:
                         pass
-                    for j in xrange(item.childCount()):
+                    for j in range(item.childCount()):
                         subitem = item.child(j)
                         if isinstance(subitem, TreeLayerItem):
                             items.append(subitem)
@@ -234,7 +258,7 @@ class MainDialog(BASE, WIDGET):
                 else:
                     item.setCheckState(0, Qt.Unchecked)
 
-        except Exception, e:
+        except Exception as e:
             QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
             QMessageBox.warning(iface.mainWindow(), "Error loading app definition",
                 "App definition could not be loaded.\nCheck QGIS log for more details")
@@ -292,7 +316,7 @@ class MainDialog(BASE, WIDGET):
             row = i / 5
             col = i % 5
             self.gridLayoutWidgets.addWidget(button, row, col, 1, 1)
-            button.mousePressEvent = MethodType(_mousePressEvent, button, QToolButton)
+            button.mousePressEvent = MethodType(_mousePressEvent, button)
             self.widgetButtons[button] = w.name()
         spacerItem3 = QSpacerItem(20, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.gridLayoutWidgets.addItem(spacerItem3, row + 1, 0, 1, 1)
@@ -300,7 +324,7 @@ class MainDialog(BASE, WIDGET):
     def populateThemes(self):
         self.themesButtons = {}
         basePath = os.path.join(os.path.dirname(__file__), "themes")
-        themes = [o for o in os.listdir(basePath) if os.path.isdir(os.path.join(basePath,o))]
+        themes = [o for o in os.listdir(basePath) if os.path.isdir(os.path.join(basePath,o)) and "__" not in o]
         for i, theme in enumerate(themes):
             button = QToolButton()
             button.setText('')
@@ -338,7 +362,7 @@ class MainDialog(BASE, WIDGET):
 
     def populateBaseLayers(self):
         self.baseLayers = {}
-        layers = sorted([lay for lay in settings.baseLayers.keys()])
+        layers = sorted([lay for lay in list(settings.baseLayers.keys())])
         for i, layer in enumerate(layers):
             button = QToolButton()
             filename = os.path.join(os.path.dirname(__file__), "baselayers", layer.lower().replace(" ", "") + ".png")
@@ -366,7 +390,7 @@ class MainDialog(BASE, WIDGET):
             col = i % 3
             self.gridLayoutBaseLayers.addWidget(button, row, col, 1, 1)
             self.baseLayers[button] = layer
-        layers = sorted([lay for lay in settings.baseOverlays.keys()])
+        layers = sorted([lay for lay in list(settings.baseOverlays.keys())])
         self.baseOverlays = {}
         for i, layer in enumerate(layers):
             button = QToolButton()
@@ -430,7 +454,7 @@ class MainDialog(BASE, WIDGET):
         self.settingsItems = defaultdict(dict)
         item = QTreeWidgetItem()
         item.setText(0, "Settings")
-        for param, value in settings.appSettings.iteritems():
+        for param, value in settings.appSettings.items():
             subitem = TreeSettingItem(item, self.settingsTree, param, value)
             item.addChild(subitem)
             self.settingsItems[param] = subitem
@@ -446,7 +470,7 @@ class MainDialog(BASE, WIDGET):
         self.progressBar.setVisible(False)
         self.progressLabel.setVisible(False)
         # to solve module unload error
-        from PyQt4.QtGui import QApplication
+        from qgis.PyQt.QtWidgets import QApplication
         QApplication.restoreOverrideCursor()
 
     def _run(self, f):
@@ -478,7 +502,7 @@ class MainDialog(BASE, WIDGET):
             path = "file:///" + self.currentFolder.replace("\\","/") + "/webapp/index_debug.html"
             webbrowser.open_new(path)
         except Exception as ex:
-            QgsMessageLog.logMessage("WebAppBuilder: {}".format(traceback.format_exc()), level=QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage("WebAppBuilder: {}".format(traceback.format_exc()), level=Qgis.Critical)
             QMessageBox.critical(iface.mainWindow(), "Error creating web app",
                              "Could not create web app.\nCheck the QGIS log for more details.")
 
@@ -506,7 +530,7 @@ class MainDialog(BASE, WIDGET):
 
     def getWidgets(self):
         widgets = {}
-        for button, name in self.widgetButtons.iteritems():
+        for button, name in self.widgetButtons.items():
             if button.isChecked():
                 widgets[name] = button.webAppWidget
         return widgets
@@ -523,7 +547,7 @@ class MainDialog(BASE, WIDGET):
     def getSettings(self):
         try:
             title = self._getValue(self.titleBox, True)
-        except WrongValueException, e:
+        except WrongValueException as e:
             self.tabPanel.setCurrentIndex(0)
         for b in self.themesButtons:
             if b.isChecked():
@@ -540,9 +564,9 @@ class MainDialog(BASE, WIDGET):
                       "Theme": themeName
                       }
         try:
-            for param, item in self.settingsItems.iteritems():
+            for param, item in self.settingsItems.items():
                 parameters[param] = item.value()
-        except WrongValueException, e:
+        except WrongValueException as e:
             self.tabPanel.setCurrentIndex(5)
 
         return parameters
@@ -550,14 +574,14 @@ class MainDialog(BASE, WIDGET):
     def getLayersAndGroups(self):
         layers = []
         groups = {}
-        for i in xrange(self.layersTree.topLevelItemCount()):
+        for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if isinstance(item, TreeLayerItem):
                 if item.checkState(0) == Qt.Checked:
                     layers.append(item.appLayer())
             elif isinstance(item, TreeGroupItem):
                 groupLayers = []
-                for j in xrange(item.childCount()):
+                for j in range(item.childCount()):
                     subitem = item.child(j)
                     if isinstance(subitem, TreeLayerItem) and subitem.checkState(0) == Qt.Checked:
                         layers.append(subitem.appLayer())

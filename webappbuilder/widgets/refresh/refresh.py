@@ -1,17 +1,23 @@
+from builtins import str
+from builtins import range
 from webappbuilder.webbappwidget import WebAppWidget
 import os
-from PyQt4 import QtCore, QtGui
 import json
-from qgis.core import *
 from webappbuilder.utils import findProjectLayerByName, findLayerByName, safeName
 
+from qgis.PyQt.QtCore import Qt, QMetaObject
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QDialog, QHBoxLayout, QDialogButtonBox, QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem
+from qgis.core import QgsProject, QgsMapLayer
+
+from webappbuilder.webbappwidget import WebAppWidget
 class Refresh(WebAppWidget):
 
     _parameters = {"layers":{}}
 
     def write(self, appdef, folder, app, progress):
         refresh = []
-        for lyr, interval in self._parameters["layers"].iteritems():
+        for lyr, interval in self._parameters["layers"].items():
             layer = findProjectLayerByName(lyr)
             if layer.dataProvider().name().lower() == "wms":
                 refresh.append('''window.setInterval(function(){
@@ -29,7 +35,7 @@ class Refresh(WebAppWidget):
 
 
     def icon(self):
-        return QtGui.QIcon(os.path.join(os.path.dirname(__file__), "refresh.png"))
+        return QIcon(os.path.join(os.path.dirname(__file__), "refresh.png"))
 
     def iconFile(self):
         return os.path.join(os.path.dirname(__file__), "refresh.png")
@@ -48,15 +54,15 @@ class Refresh(WebAppWidget):
         layers = self._parameters["layers"]
         if len(layers) == 0:
             problems.append("Refresh layers component added, but it has no layers configured to be refreshed.")
-        for name, interval in layers.iteritems():
+        for name, interval in layers.items():
             layer = findLayerByName(name, appdef["Layers"])
             if layer is None:
                 problems.append("Refresh layers  component is configured to refresh a layer (%s) that is not added to web app." % name)
 
 
-class RefreshDialog(QtGui.QDialog):
+class RefreshDialog(QDialog):
     def __init__(self, layers):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        QDialog.__init__(self, None, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.layers = dict(layers)
         self.ok = False
         self.setupUi()
@@ -64,23 +70,23 @@ class RefreshDialog(QtGui.QDialog):
     def setupUi(self):
         self.resize(500, 350)
         self.setWindowTitle("Refresh layers")
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Vertical)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.table = QtGui.QTableWidget()
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setOrientation(Qt.Vertical)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.table = QTableWidget()
         self.table.verticalHeader().setVisible(False)
-        self.table.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setTableContent()
         self.horizontalLayout.addWidget(self.table)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.setLayout(self.horizontalLayout)
         self.buttonBox.rejected.connect(self.close)
         self.buttonBox.accepted.connect(self.okPressed)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QMetaObject.connectSlotsByName(self)
 
 
     def setTableContent(self):
@@ -89,39 +95,39 @@ class RefreshDialog(QtGui.QDialog):
         self.table.setColumnWidth(0, 200)
         self.table.setColumnWidth(1, 200)
         self.table.setHorizontalHeaderLabels(["Layer", "Refresh interval (ms)"])
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
         allLayers = QgsProject.instance().layerTreeRoot().findLayers()
         wmsLayers = [layer.layer() for layer in allLayers
                      if layer.layer().type() !=  QgsMapLayer.PluginLayer and layer.layer().dataProvider().name().lower() in ["wms", "wfs"]]
         self.table.setRowCount(len(wmsLayers))
         for i, layer in enumerate(wmsLayers):
             self.table.setRowHeight(i, 22)
-            itemLayer = QtGui.QTableWidgetItem(layer.name())
-            itemLayer.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsUserCheckable)
+            itemLayer = QTableWidgetItem(layer.name())
+            itemLayer.setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable)
             self.table.setItem(i, 0, itemLayer)
-            itemInterval = QtGui.QTableWidgetItem("")
-            itemInterval.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable)
+            itemInterval = QTableWidgetItem("")
+            itemInterval.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
             if layer.name() in self.layers:
                 value = str(self.layers[layer.name()])
-                itemLayer.setCheckState(QtCore.Qt.Checked)
+                itemLayer.setCheckState(Qt.Checked)
             else:
                 value = "3000"
-                itemLayer.setCheckState(QtCore.Qt.Unchecked)
-            lineEdit = QtGui.QLineEdit()
+                itemLayer.setCheckState(Qt.Unchecked)
+            lineEdit = QLineEdit()
             lineEdit.setText(value)
             self.table.setCellWidget(i, 1, lineEdit)
 
     def okPressed(self):
         self.layers = {}
-        for i in xrange(self.table.rowCount()):
+        for i in range(self.table.rowCount()):
             item = self.table.item(i, 0)
-            item.setBackground(QtCore.Qt.white)
-            if item.checkState() == QtCore.Qt.Checked:
+            item.setBackground(Qt.white)
+            if item.checkState() == Qt.Checked:
                 try:
                     interval = int(self.table.cellWidget(i, 1).text())
                     self.layers[item.text()] = interval
                 except:
-                    item.setBackground(QtCore.Qt.yellow)
+                    item.setBackground(Qt.yellow)
                     return
         self.ok = True
         self.close()

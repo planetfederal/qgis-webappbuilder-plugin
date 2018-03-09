@@ -1,10 +1,11 @@
+from builtins import str
 import os
 import json
 import re
 import shutil
 
-from PyQt4.QtGui import QIcon
-from PyQt4.Qt import QDir, QSize
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import *
 
 from qgiscommons2.settings import pluginSetting
@@ -65,25 +66,25 @@ class Legend(WebAppWidget):
         def appendSymbol(title, href):
             symbols.append({'title': title, 'href':href})
         if layer.type() == layer.VectorLayer:
-            renderer = layer.rendererV2()
-            if isinstance(renderer, QgsSingleSymbolRendererV2):
+            renderer = layer.renderer()
+            if isinstance(renderer, QgsSingleSymbolRenderer):
                     img = renderer.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_0.png" % (ilayer))
                     img.save(symbolPath)
                     appendSymbol("",  os.path.basename(symbolPath))
-            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 for isymbol, cat in enumerate(renderer.categories()):
                     img = cat.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     appendSymbol(cat.label(), os.path.basename(symbolPath))
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 for isymbol, ran in enumerate(renderer.ranges()):
                     img = ran.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))
                     img.save(symbolPath)
                     appendSymbol("%s-%s" % (ran.lowerValue(), ran.upperValue()), os.path.basename(symbolPath))
-            elif isinstance(renderer, QgsRuleBasedRendererV2):
+            elif isinstance(renderer, QgsRuleBasedRenderer):
                 for isymbol, rule in enumerate(renderer.rootRule().children()):
                     img = rule.symbol().asImage(qsize)
                     symbolPath = os.path.join(legendFolder, "%i_%i.png" % (ilayer, isymbol))

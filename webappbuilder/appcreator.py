@@ -3,23 +3,26 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
+from builtins import str
 import os
 import re
 import codecs
-import traceback
-from appwriter import writeWebApp
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from .appwriter import writeWebApp
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import *
+
 from qgis.core import *
-from utils import *
-import utils
+from .utils import *
+from qgis.core import QgsWkbTypes
 from json.encoder import JSONEncoder
 import json
-from settings import webAppWidgets
-import viewer
+from .settings import webAppWidgets
+from . import viewer
 import xml.etree.ElementTree as ET
 import importlib
-from exp2js import is_expression_supported
+from .exp2js import is_expression_supported
 
 from qgiscommons2.settings import pluginSetting
 from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
@@ -40,7 +43,7 @@ def checkAppCanBeCreated(appdef):
 	problems = []
 	layers = appdef["Layers"]
 
-	widgets = appdef["Widgets"].values()
+	widgets = list(appdef["Widgets"].values())
 	for w in widgets:
 		w.checkProblems(appdef, problems)
 
@@ -48,8 +51,8 @@ def checkAppCanBeCreated(appdef):
 	themeModule.checkProblems(appdef, problems)
 
 	def getSize(lyr):
-		ptsInFeature = 1 if lyr.geometryType() == QGis.Point else 10 #quick estimate...
-		return lyr.featureCount() * (ptsInFeature + lyr.pendingFields().size())
+		ptsInFeature = 1 if lyr.geometryType() == QgsWkbTypes.Point else 10 #quick estimate...
+		return lyr.featureCount() * (ptsInFeature + lyr.fields().size())
 
 	MAXSIZE = 30000
 	for applayer in layers:
@@ -82,7 +85,7 @@ def checkAppCanBeCreated(appdef):
 			try:
 				if jsonp:
 					r, content = run(lambda: nam.request(url))
-					if "text/javascript" not in r.headers.values():
+					if "text/javascript" not in list(r.headers.values()):
 						problems.append("Server for layer %s does not support JSONP. WFS layer won't be correctly loaded in Web App."
 									% layer.name())
 				else:
@@ -96,9 +99,9 @@ def checkAppCanBeCreated(appdef):
 
 		if layer.type() != layer.VectorLayer:
 			continue
-		renderer = applayer.layer.rendererV2()
-		allowed = [QgsSingleSymbolRendererV2, QgsCategorizedSymbolRendererV2,
-					QgsGraduatedSymbolRendererV2, QgsHeatmapRenderer, QgsRuleBasedRendererV2]
+		renderer = applayer.layer.renderer()
+		allowed = [QgsSingleSymbolRenderer, QgsCategorizedSymbolRenderer,
+					QgsGraduatedSymbolRenderer, QgsHeatmapRenderer, QgsRuleBasedRenderer]
 		try:
 			allowed.append(QgsNullSymbolRenderer)
 		except:
@@ -108,7 +111,7 @@ def checkAppCanBeCreated(appdef):
 							"Only single symbol, categorized, graduated, heatmap and rule-based renderers are supported."
 						"This layer will not be correctly styled in the web app."
 						% layer.name())
-		if isinstance(renderer, QgsRuleBasedRendererV2):
+		if isinstance(renderer, QgsRuleBasedRenderer):
 			rules = renderer.rootRule().children()
 			for	rule in rules:
 				expr = rule.filterExpression()
@@ -117,11 +120,8 @@ def checkAppCanBeCreated(appdef):
 					problems.append("The expression '%s' has unsupported functions: %s"
 								% (expr, ", ".join(unsupported)))
 
-		if layer.hasLabelsEnabled():
-			problems.append("Layer %s uses old-style labeling. Labels might not be correctly rendered in the web app."
-						% layer.name())
 		if str(layer.customProperty("labeling/enabled")).lower() == "true":
-			if unicode(layer.customProperty("labeling/isExpression")).lower() == "true":
+			if str(layer.customProperty("labeling/isExpression")).lower() == "true":
 				expr = layer.customProperty("labeling/fieldName")
 				unsupported = is_expression_supported(expr)
 				if unsupported:
@@ -179,12 +179,12 @@ class DefaultEncoder(JSONEncoder):
 		return o.__dict__
 
 def saveAppdef(appdef, filename):
-	toSave = {k:v for k,v in appdef.iteritems() if k != "Widgets"}
+	toSave = {k:v for k,v in appdef.items() if k != "Widgets"}
 	for group in toSave["Groups"]:
 		toSave["Groups"][group]["layers"] = [layer.name()
 								for layer in toSave["Groups"][group]["layers"]]
 	toSave["Widgets"] = {}
-	for wName, w in appdef["Widgets"].iteritems():
+	for wName, w in appdef["Widgets"].items():
 		toSave["Widgets"][wName] = {"Parameters":w.parameters()}
 	layers = []
 	for layer in toSave["Layers"]:
@@ -199,7 +199,7 @@ def loadAppdef(filename):
 		with codecs.open(filename, encoding="utf-8") as f:
 			data = json.load(f)
 		return data
-	except Exception, e:
+	except Exception as e:
 		return None
 
 '''
@@ -210,7 +210,7 @@ based on the content of the current project.
 '''
 def processAppdef(appdef):
 	newWidgets = {}
-	for w, props in appdef["Widgets"].iteritems():
+	for w, props in appdef["Widgets"].items():
 		obj = webAppWidgets[w]
 		obj.setParameters(props["Parameters"])
 		newWidgets[w] = obj
@@ -220,7 +220,7 @@ def processAppdef(appdef):
 		newLayers.append(Layer.fromDict(layer))
 	appdef["Layers"] = newLayers
 	newGroups = {}
-	for groupName, group in appdef["Groups"].iteritems():
+	for groupName, group in appdef["Groups"].items():
 		newGroups[groupName] = {}
 		groupLayers = []
 		for layer in group["layers"]:
@@ -264,8 +264,8 @@ class AppDefProblemsDialog(QDialog):
 		layout.addWidget(buttonBox)
 		self.setLayout(layout)
 
-		self.connect(buttonBox, SIGNAL("rejected()"), self.close)
-		self.connect(buttonBox, SIGNAL("accepted()"), self.okPressed)
+		buttonBox.rejected.connect(self.close)
+		buttonBox.accepted.connect(self.okPressed)
 
 		self.setMinimumWidth(400)
 		self.setMinimumHeight(400)

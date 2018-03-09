@@ -3,6 +3,8 @@
 # https://github.com/NathanW2/qgs2js
 #===============================================================================
 
+from builtins import str
+from builtins import range
 from qgis.core import QgsExpression
 import re, json
 import os
@@ -164,13 +166,13 @@ def handle_in(node, mapLib):
 def handle_literal(node):
     val = node.value()
     quote = ""
-    if isinstance(val, basestring):
+    if isinstance(val, str):
         quote = "'"
         val = val.replace("\n", "\\n")
     elif val is None:
         val = "null"
 
-    return "%s%s%s" % (quote, unicode(val), quote)
+    return "%s%s%s" % (quote, str(val), quote)
 
 
 def handle_function(node, mapLib):

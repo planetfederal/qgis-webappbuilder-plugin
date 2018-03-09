@@ -1,12 +1,19 @@
-from webappbuilder.webbappwidget import WebAppWidget
+from builtins import str
 import os
-from PyQt4.QtGui import QIcon, QImage, QPainter
-from PyQt4.Qt import QDir, QSize, Qt
-from qgis.core import *
-import json
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter
+from qgis.core import (QgsLayoutItemLegend,
+                       QgsLayoutItemShape,
+                       QgsLayoutItemScaleBar,
+                       QgsLayoutItemLabel,
+                       QgsLayoutItemMap,
+                       QgsLayoutItemPicture
+                      )
 from qgis.utils import iface
-import shutil
+from webappbuilder.webbappwidget import WebAppWidget
 from webappbuilder.utils import safeName
+import json
+import shutil
 import uuid
 
 class Print(WebAppWidget):
@@ -58,9 +65,9 @@ class Print(WebAppWidget):
             layoutDef["thumbnail"] = "%s_thumbnail.png" % layoutSafeName
             layoutDef["name"] = name
             layoutDef["elements"] = elements
-            for item in composition.items():
+            for item in list(composition.items()):
                 element = None
-                if isinstance(item, (QgsComposerLegend, QgsComposerShape, QgsComposerScaleBar, QgsComposerArrow)):
+                if isinstance(item, (QgsLayoutItemLegend, QgsLayoutItemShape, QgsLayoutItemScaleBar)):
                     element = getBasicInfo(item)
                     for dpi in dpis:
                         dpmm = dpi / 25.4
@@ -73,12 +80,12 @@ class Print(WebAppWidget):
                         painter.end()
                         img.save(os.path.join(printFolder, "%s_%s_%s.png" %
                                 (layoutSafeName, element["id"], str(dpi))))
-                elif isinstance(item, QgsComposerLabel):
+                elif isinstance(item, QgsLayoutItemLabel):
                     element = getBasicInfo(item)
                     element["name"] = item.text()
                     element["size"] = item.font().pointSize()
                     element["font"] = item.font().rawName()
-                elif isinstance(item, QgsComposerMap):
+                elif isinstance(item, QgsLayoutItemMap):
                     element = getBasicInfo(item)
                     grid = item.grid()
                     if grid is not None:
@@ -87,7 +94,7 @@ class Print(WebAppWidget):
                         element["grid"]["intervalY"] = grid.intervalY()
                         element["grid"]["crs"] = grid.crs().authid()
                         element["grid"]["annotationEnabled"] = grid.annotationEnabled()
-                elif isinstance(item, QgsComposerPicture):
+                elif isinstance(item, QgsLayoutItemPicture):
                     filename = os.path.basename(item.picturePath())
                     if os.path.exists(filename):
                         element = getBasicInfo(item)

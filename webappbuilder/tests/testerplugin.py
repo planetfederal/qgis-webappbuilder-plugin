@@ -3,22 +3,23 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
 import unittest
 import webbrowser
 import os
-import settingstest
-import widgetstest
-import appdefvaliditytest
-import sdkservicetest
+from . import settingstest
+from . import widgetstest
+from . import appdefvaliditytest
+from . import sdkservicetest
 from webappbuilder.tests.utils import (loadTestProject, createAppFromTestAppdef,
                                        openWAB, closeWAB, testAppdef, _setWrongSdkEndpoint,
                                        _resetSdkEndpoint, widgets, widgetTestAbout,
                                        setNetworkTimeout, resetNetworkTimeout,
                                        getWABDialog, hideWAB)
 from qgis.utils import iface
-from PyQt4.QtTest import QTest
-from PyQt4.QtGui import QMessageBox
-from PyQt4.QtCore import Qt, QEventLoop
+from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import Qt, QEventLoop
 from webappbuilder.utils import getConnectAuthCfg, topics
 
 try:

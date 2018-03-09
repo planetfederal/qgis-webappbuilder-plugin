@@ -1,6 +1,8 @@
+from builtins import str
+from builtins import range
 from webappbuilder.webbappwidget import WebAppWidget
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 class Geolocation(WebAppWidget):
 
@@ -15,7 +17,7 @@ class Geolocation(WebAppWidget):
     def write(self, appdef, folder, app, progress):
         try:
             zoom = ", zoom: %i" % int(self._parameters["zoom"][0])
-        except Exception,e:
+        except Exception as e:
             zoom =""
         app.panels.append('''React.createElement("div", {id:'geolocation-control'},
                                     React.createElement(Geolocation, {tooltipPosition: 'bottom-right', map:map%s})

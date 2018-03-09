@@ -3,6 +3,8 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import str
+from builtins import range
 import os
 import copy
 from qgis.core import *
@@ -21,7 +23,7 @@ def loadWidgets():
         for f in glob.glob(folder + "/*.py"):
             moduleName = os.path.splitext(os.path.basename(f))[0]
             pkgName = os.path.basename(folder)
-            module = importlib.import_module("." + moduleName, package="webappbuilder.widgets." + pkgName)
+            module = importlib.import_module("webappbuilder.widgets.%s.%s" % (pkgName, moduleName))
             for c in inspect.getmembers(module):
                 if inspect.isclass(c[1]):
                     bases = [b.__name__ for b in c[1].__bases__]
@@ -64,7 +66,7 @@ baseLayers = loadBaseLayers()
 baseOverlays = loadBaseOverlays()
 webAppWidgets = loadWidgets()
 
-zoomLevels = list((str(i) for i in xrange(1,33)))
+zoomLevels = list((str(i) for i in range(1,33)))
 precisionLevels = list((str(i) for i in range(6)))
 defaultAppSettings = {
                 "Use layer scale dependent visibility": True,
@@ -86,7 +88,7 @@ defaultAppSettings = {
 
 def initialize():
     global appSettings
-    for w in webAppWidgets.values():
+    for w in list(webAppWidgets.values()):
         w.resetParameters()
     appSettings = copy.deepcopy(defaultAppSettings)
 

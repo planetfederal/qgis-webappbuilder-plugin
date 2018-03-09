@@ -3,9 +3,10 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
 import unittest
 import sys
-import utils
+from . import utils
 from webappbuilder.appcreator import checkAppCanBeCreated
 from webappbuilder.tests.utils import testAppdef
 

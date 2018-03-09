@@ -3,6 +3,7 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from builtins import object
 import os
 import re
 import shutil
@@ -18,8 +19,8 @@ from webappbuilder.appwriter import writeWebApp
 from qgiscommons2.files import tempFolderInTempFolder
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.settings import initialize
-from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import Qt, QSettings
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtCore import Qt, QSettings
 from qgiscommons2.settings import setPluginSetting, pluginSetting
 
 AUTHDB_MASTERPWD = 'password'
@@ -105,7 +106,7 @@ def getWABDialog():
             return child
     return None
 
-class SilentProgress():
+class SilentProgress(object):
     def setText(_, text):
         pass
     def setProgress(_, i):

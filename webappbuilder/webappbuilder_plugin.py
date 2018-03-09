@@ -3,13 +3,14 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import absolute_import
+from builtins import object
 import os
-import traceback
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
-from qgis.core import *
+from qgis.core import QgsApplication, QgsProject
 
 from webappbuilder.maindialog import MainDialog
 from webappbuilder.appcreator import loadAppdef
@@ -18,9 +19,9 @@ from qgiscommons2.files import removeTempFolder
 from qgiscommons2.gui import addHelpMenu, removeHelpMenu, addAboutMenu, removeAboutMenu
 from qgiscommons2.settings import readSettings, pluginSetting
 from qgiscommons2.gui.settings import addSettingsMenu, removeSettingsMenu
-import utils
+from . import utils
 
-class WebAppBuilderPlugin:
+class WebAppBuilderPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface

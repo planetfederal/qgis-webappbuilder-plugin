@@ -3,18 +3,22 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from utils import *
-import urlparse
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from .utils import *
+import urllib.parse
 from qgis.core import *
 import traceback
-from string import digits
 import math
-import codecs
 import uuid
 import json
+import os
 from webappbuilder.exp2js import compile_to_file
-from PyQt4.QtCore import QSize
-from PyQt4.QtGui import QColor
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
 
 exportedStyles = 0
 
@@ -24,7 +28,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
     layerName = safeName(layer.name())
     layerId = layer.id()
-    geometryType = layer.wkbType()
+    wkbType = layer.wkbType()
     if useStrategy:
         strategy = "strategy: ol.loadingstrategy.tile(new ol.tilegrid.createXYZ({maxZoom: 19}))"
         bbox = "&bbox=' + extent.join(',') + ',%s" % viewCrs
@@ -72,12 +76,11 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                      "layerCrs": layerCrs, "strategy": strategy, "bbox": bbox})
 
     GEOM_TYPE_NAME = {
-        QGis.WKBPoint: 'Point',
-        QGis.WKBLineString: 'LineString',
-        QGis.WKBPolygon: 'Polygon',
-        QGis.WKBMultiPoint: 'MultiPoint',
-        QGis.WKBMultiLineString: 'MultiLineString',
-        QGis.WKBMultiPolygon: 'MultiPolygon',
+        QgsWkbTypes.Point: 'Point',
+        QgsWkbTypes.LineString: 'LineString',
+        QgsWkbTypes.MultiPoint: 'MultiPoint',
+        QgsWkbTypes.MultiLineString: 'MultiLineString',
+        QgsWkbTypes.MultiPolygon: 'MultiPolygon',
     }
 
     featurePrefix = ("'%s'" % typeName.split(":")[0]) if ":" in typeName else "undefined"
@@ -89,14 +92,14 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
                     featurePrefix: %(featurePrefix)s,
                     url: '%(url)s'
                   },
-                  isWFST:%(wfst)s,''' % {"geomType": GEOM_TYPE_NAME[geometryType],
+                  isWFST:%(wfst)s,''' % {"geomType": GEOM_TYPE_NAME[wkbType],
                           "url": url, "geomName": "the_geom",
                           "featureType": typeName.split(":")[-1], "ns": "",
                           "featurePrefix": featurePrefix,
                           "wfst": wfst #TODO: fill NS
                           }
 
-    if clusterDistance > 0 and geometryType== QGis.WKBPoint:
+    if clusterDistance > 0 and wkbType== QgsWkbTypes.Point:
         vectorLayer = ('''var cluster_%(layerName)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: wfsSource_%(layerName)s
@@ -163,7 +166,7 @@ def _getWfsLayer(url, title, layer, typeName, min, max, clusterDistance,
 
 
 def _geomType(geometryType):
-    types = {QGis.Point: "Point", QGis.Line: "Line", QGis.Polygon: "Polygon"}
+    types = {QgsWkbTypes.PointGeometry: "Point", QgsWkbTypes.LineGeometry: "Line", QgsWkbTypes.PolygonGeometry: "Polygon"}
     return types.get(geometryType, "Point")
 
 def layerToJavascript(applayer, settings, title, showInOverview):
@@ -174,7 +177,7 @@ def layerToJavascript(applayer, settings, title, showInOverview):
     useViewCrs = settings["Use view CRS for WFS connections"]
     layer = applayer.layer
 
-    title = '"%s"' % unicode(title) if title is not None else "null"
+    title = '"%s"' % str(title) if title is not None else "null"
     if useViewCrs:
         layerCrs = viewCrs
     else:
@@ -182,7 +185,7 @@ def layerToJavascript(applayer, settings, title, showInOverview):
     if scaleVisibility and layer.hasScaleBasedVisibility():
         scaleToResolution = 3571.42
         crs = QgsCoordinateReferenceSystem(settings["App view CRS"])
-        if crs.mapUnits() == QGis.Degrees:
+        if crs.mapUnits() == QgsUnitTypes.DistanceDegrees:
             scaleToResolution = scaleToResolution * 111325
         minResolution = "\nminResolution:%s,\n" % str(layer.minimumScale() / scaleToResolution)
         maxResolution = "maxResolution:%s,\n" % str(layer.maximumScale() / scaleToResolution)
@@ -196,28 +199,28 @@ def layerToJavascript(applayer, settings, title, showInOverview):
     layerName = safeName(layer.name())
     if layer.type() == layer.VectorLayer:
         geometryType = _geomType(layer.geometryType())
-        attributes = [f.name() for f in layer.pendingFields()]
+        attributes = [f.name() for f in layer.fields()]
         try:
             timeInfo = ('{start:%s,end:%s}' % (int(applayer.timeInfo[0]), int(applayer.timeInfo[1]))
                                 if applayer.timeInfo is not None else "null")
         except:
-            timeInfo = '{start:"%s",end:"%s"}' % (unicode(applayer.timeInfo[0]), unicode(applayer.timeInfo[1]))
+            timeInfo = '{start:"%s",end:"%s"}' % (str(applayer.timeInfo[0]), str(applayer.timeInfo[1]))
 
-        layerOpacity = 1 - (layer.layerTransparency() / 100.0)
+        layerOpacity = layer.opacity()
         if layer.providerType().lower() == "wfs":
             datasourceUri = QgsDataSourceURI(layer.source())
             url = datasourceUri.param("url") or layer.source().split("?")[0]
             typeName = datasourceUri.param("typename")
             if not bool(typeName):
-                parsed = urlparse.urlparse(layer.source())
-                typeName = ",".join(urlparse.parse_qs(parsed.query)['TYPENAME'])
+                parsed = urllib.parse.urlparse(layer.source())
+                typeName = ",".join(urllib.parse.parse_qs(parsed.query)['TYPENAME'])
             return _getWfsLayer(url, title, layer, typeName,
                                 minResolution, maxResolution, applayer.clusterDistance,
                                 layerCrs, viewCrs, layerOpacity, applayer.allowSelection,
                                 timeInfo, popup, jsonp, useStrategy, showInOverview)
         else:
             source = ""
-            if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point:
+            if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.PointGeometry:
                 js =  ('''var cluster_%(n)s = new ol.source.Cluster({
                     distance: %(dist)s,
                     source: new ol.source.Vector(%(source)s),
@@ -246,8 +249,8 @@ def layerToJavascript(applayer, settings, title, showInOverview):
                     source: cluster_%(n)s, %(min)s %(max)s
                     style: style_%(n)s});''' %  {"n":layerName,"min":
                             minResolution, "max": maxResolution, "source": source})
-            elif isinstance(layer.rendererV2(), QgsHeatmapRenderer):
-                renderer = layer.rendererV2()
+            elif isinstance(layer.renderer(), QgsHeatmapRenderer):
+                renderer = layer.renderer()
                 hmRadius = renderer.radius()
                 colorRamp = renderer.colorRamp()
                 hmStart = colorRamp.color1().name()
@@ -326,7 +329,7 @@ def layerToJavascript(applayer, settings, title, showInOverview):
                     style: style_%(n)s});''' %  {"n":layerName,"min":
                             minResolution, "max": maxResolution, "source": source})
 
-            clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QGis.Point else ""
+            clusterSource = ".getSource()" if applayer.clusterDistance > 0 and layer.geometryType() == QgsWkbTypes.PointGeometry else ""
             overview = ("lyr_%(n)s_overview%(cs)s.setSource(lyr_%(n)s%(cs)s.getSource());"
                         % {"n": layerName, "cs": clusterSource} if showInOverview else "")
             js += '''\n%(n)s_geojson_callback = function(geojson) {
@@ -380,7 +383,8 @@ def layerToJavascript(applayer, settings, title, showInOverview):
 
         elif layer.providerType().lower() == "gdal":
             provider = layer.dataProvider()
-            transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs))
+            transform = QgsCoordinateTransform(provider.crs(), QgsCoordinateReferenceSystem(viewCrs),
+                                               QgsProject.instance())
             extent = transform.transform(provider.extent())
             sExtent = "[%f, %f, %f, %f]" % (extent.xMinimum(), extent.yMinimum(),
                                     extent.xMaximum(), extent.yMaximum())
@@ -460,7 +464,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
             layer: 'lyr_%s'
         };''' % safeName(layer.name())
         try:
-            renderer = layer.rendererV2()
+            renderer = layer.renderer()
             try:
                 isNull = isinstance(renderer, QgsNullSymbolRenderer)
             except:
@@ -473,13 +477,13 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 style = '''var style = [
                                    new ol.style.Style({})
                                  ];'''
-            elif isinstance(renderer, QgsSingleSymbolRendererV2):
+            elif isinstance(renderer, QgsSingleSymbolRenderer):
                 symbol = renderer.symbol()
                 style = "var style = %s;" % getSymbolAsStyle(symbol, folder, layer, app)
                 value = 'var value = "";'
                 selectionStyle = "var style = " + getSymbolAsStyle(symbol,
                                     folder, layer, app, SELECTION_YELLOW)
-            elif isinstance(renderer, QgsCategorizedSymbolRendererV2):
+            elif isinstance(renderer, QgsCategorizedSymbolRenderer):
                 defs += "var categories_%s = function(){ return {" % safeName(layer.name())
                 cats = []
                 for cat in renderer.categories():
@@ -494,7 +498,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 value = 'var value = feature.get("%s");' %  renderer.classAttribute()
                 style = '''var style = categories_%s()[value];'''  % (safeName(layer.name()))
                 selectionStyle = '''var style = categoriesSelected_%s[value]'''  % (safeName(layer.name()))
-            elif isinstance(renderer, QgsGraduatedSymbolRendererV2):
+            elif isinstance(renderer, QgsGraduatedSymbolRenderer):
                 varName = "ranges_" + safeName(layer.name())
                 defs += "var %s = function(){ return [" % varName
                 ranges = []
@@ -526,7 +530,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                             }
                             ''' % {"v": varName}
 
-            elif isinstance(renderer, QgsRuleBasedRendererV2):
+            elif isinstance(renderer, QgsRuleBasedRenderer):
                 template = """
                         function rules_%(n)s(value) {
                             var ruleStyles = [];
@@ -551,7 +555,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 for count, rule in enumerate(rules):
                     styleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app)
                     selectionStyleCode = getSymbolAsStyle(rule.symbol(), folder, layer, app, SELECTION_YELLOW)
-                    name = "".join((safeName(layer.name()), "rule", unicode(count)))
+                    name = "".join((safeName(layer.name()), "rule", str(count)))
                     exp = rule.filterExpression()
                     if rule.isElse():
                         elsejs = styleCode
@@ -587,7 +591,7 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                 cannotWriteStyle = True
 
             if (appLayer.clusterDistance > 0 and layer.type() == layer.VectorLayer
-                                        and layer.geometryType() == QGis.Point):
+                                        and layer.geometryType() == QgsWkbTypes.PointGeometry):
                 cluster = '''var features = feature.get('features');
                             var size = 0;
                             for (var i = 0, ii = features.length; i < ii; ++i) {
@@ -672,8 +676,8 @@ def exportStyles(layers, folder, settings, addTimeInfo, app, progress):
                     }''' % {"style": selectionStyle,  "layerName": safeName(layer.name()),
                             "value": value, "cluster": cluster,
                              "labels":_labels, "context": context}
-        except Exception, e:
-            QgsMessageLog.logMessage(traceback.format_exc(), level=QgsMessageLog.WARNING)
+        except Exception as e:
+            QgsMessageLog.logMessage(traceback.format_exc(), level=Qgis.Warning)
             cannotWriteStyle = True
 
         if cannotWriteStyle:
@@ -717,7 +721,7 @@ def getLabeling(layer, folder, app, settings):
         return "", False
 
     labelField = layer.customProperty("labeling/fieldName")
-    if unicode(layer.customProperty(
+    if str(layer.customProperty(
             "labeling/isExpression")).lower() == "true":
         exprFilename = os.path.join(folder, "resources", "js", "qgis2web_expressions.js")
         name = compile_to_file(labelField, "label_%s" % safeName(layer.name()),
@@ -801,7 +805,7 @@ def getLabeling(layer, folder, app, settings):
     fontStyle = "italic" if str(layer.customProperty("labeling/fontItalic")).lower() == "true" else "normal"
     font = layer.customProperty("labeling/fontFamily")
 
-    if str(layer.customProperty("labeling/placement")) in ["2", "3"] and layer.geometryType() == QGis.Line:
+    if str(layer.customProperty("labeling/placement")) in ["2", "3"] and layer.geometryType() == QgsWkbTypes.LineGeometry:
         s = '''function setTextPathStyle_%(layerName)s(){
                 setTextPathStyle(lyr_%(layerName)s, function (feature){
                     var labelContext = {
@@ -915,15 +919,15 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
     if symbol is None:
         return []
     styles = []
-    alpha = symbol.alpha()
+    alpha = symbol.opacity()
     stylesFolder = os.path.join(folder, "data", "styles")
-    for i in xrange(symbol.symbolLayerCount()):
+    for i in range(symbol.symbolLayerCount()):
         sl = symbol.symbolLayer(i)
         props = sl.properties()
         exportedStyles += 1
-        if isinstance(sl, QgsGeometryGeneratorSymbolLayerV2):
+        if isinstance(sl, QgsGeometryGeneratorSymbolLayer):
             geom = resolveParameterValue(sl.geometryExpression(), folder, "geomgenerator")
-            zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
+            zIndex = i if isinstance(layer.renderer(), QgsSingleSymbolRenderer) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         elif isinstance(sl, QgsArrowSymbolLayer):
             lineWidth = symbolProperty("arrow_width", folder, props)
@@ -948,19 +952,19 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                             var thickness = width + %s;
                             return arrowPolygon(curve, width, length, thickness);
                         }''' % (curve, lineWidth, headLength, headThickness)
-            zIndex = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else 0
+            zIndex = i if isinstance(layer.renderer(), QgsSingleSymbolRenderer) else 0
             styles.extend(_getSymbolAsStyle(sl.subSymbol(), folder, layer, app, color, geom, zIndex))
         else:
-            if isinstance(sl, QgsSimpleMarkerSymbolLayerV2):
+            if isinstance(sl, QgsSimpleMarkerSymbolLayer):
                 style = "image: %s" % getShape(props, alpha, folder, color, app)
-            elif isinstance(sl, QgsSvgMarkerSymbolLayerV2):
+            elif isinstance(sl, QgsSvgMarkerSymbolLayer):
                 sl2 = sl.clone()
                 if color is not None:
                     sl2.setFillColor(QColor(255, 204, 0))
                     sl2.setOutlineColor(QColor(255, 204, 0))
-                sl2.setSizeUnit(QgsSymbolV2.Pixel)
+                sl2.setSizeUnit(QgsSymbol.Pixel)
                 sl2.setSize(100)
-                newSymbol = QgsMarkerSymbolV2()
+                newSymbol = QgsMarkerSymbol()
                 newSymbol.appendSymbolLayer(sl2)
                 newSymbol.deleteSymbolLayer(0)
                 img = newSymbol.asImage(QSize(100, 100))
@@ -971,7 +975,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 img.save(path)
                 size = symbolProperty("size", folder, props)
                 style = "image: %s" % getIcon(path, size, sl.sizeUnit())
-            elif isinstance(sl, QgsSimpleLineSymbolLayerV2):
+            elif isinstance(sl, QgsSimpleLineSymbolLayer):
                 if color is None:
                     strokeColor = getRGBAColor(symbolProperty("line_color", folder, props), alpha)
                 else:
@@ -996,7 +1000,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                                 }''' % (str(offsetValue))
                 style = "stroke: %s" % getStrokeStyle(strokeColor, lineStyle,
                                              lineWidth, lineWidthUnits)
-            elif isinstance(sl, QgsSimpleFillSymbolLayerV2):
+            elif isinstance(sl, QgsSimpleFillSymbolLayer):
                 if props["style"] == "no":
                     fillAlpha = 0
                 else:
@@ -1021,7 +1025,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                             fill: %s''' %
                         (getStrokeStyle(borderColor, borderStyle, borderWidth, borderWidthUnits),
                          getFillStyle(fillColor)))
-            elif isinstance(sl, QgsGradientFillSymbolLayerV2):
+            elif isinstance(sl, QgsGradientFillSymbolLayer):
                 style = ('''fill: new ol.style.Fill({
                                 color: function() {
                                    var canvas = document.createElement('canvas');
@@ -1059,7 +1063,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                      stroke: defaultSelectionStroke
                      '''
             elif isinstance(sl, QgsSVGFillSymbolLayer):
-                sl2 = QgsSvgMarkerSymbolLayerV2()
+                sl2 = QgsSvgMarkerSymbolLayer()
                 sl2.setPath(sl.svgFilePath())
                 if color is not None:
                     sl2.setFillColor(QColor(255, 204, 0))
@@ -1067,9 +1071,9 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
                 else:
                     sl2.setFillColor(sl.svgFillColor())
                     sl2.setOutlineColor(sl.svgOutlineColor())
-                sl2.setSizeUnit(QgsSymbolV2.Pixel)
+                sl2.setSizeUnit(QgsSymbol.Pixel)
                 sl2.setSize(sl.patternWidth())
-                newSymbol = QgsMarkerSymbolV2()
+                newSymbol = QgsMarkerSymbol()
                 newSymbol.appendSymbolLayer(sl2)
                 newSymbol.deleteSymbolLayer(0)
                 img = newSymbol.asImage(QSize(sl.patternWidth(), sl.patternWidth()))
@@ -1091,7 +1095,7 @@ def _getSymbolAsStyle(symbol, folder, layer, app, color = None, geometry=None, z
             else:
                 style = ""
             if style:
-                level = i if isinstance(layer.rendererV2(), QgsSingleSymbolRendererV2) else sl.renderingPass()
+                level = i if isinstance(layer.renderer(), QgsSingleSymbolRenderer) else sl.renderingPass()
                 style = style + ",\nzIndex: %i" % (zIndex + level)
                 if geometry is not None:
                     style = "geometry: %s,\n%s" % (geometry, style)
