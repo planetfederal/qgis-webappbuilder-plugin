@@ -170,6 +170,16 @@ def install_devtools():
 
     pip.main(['install', '-r', 'requirements-dev.txt'])
 
+@task
+def install_tools():
+    """Install tools"""
+    try:
+        import pip
+    except:
+        error('FATAL: Unable to import pip, please install it first!')
+        sys.exit(1)
+
+    pip.main(['install', '-r', 'requirements.txt'])
 
 @task
 @consume_args
