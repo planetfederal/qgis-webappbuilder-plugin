@@ -15,7 +15,7 @@ To check for formatting errors use
 
     paver pep8
 
-to automatically format you code run following command **before** issuing
+to automatically format your code, run the following command **before** issuing
 `git commit`
 
     paver autopep8
@@ -23,7 +23,7 @@ to automatically format you code run following command **before** issuing
 Pull Requests
 -------------
 
-Pull requests are welcome,:
+Pull requests are welcome:
 
 * For small changes (under a file in size) a committer can apply the fix on
 your behalf.
