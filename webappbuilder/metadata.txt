@@ -1,14 +1,14 @@
 [general]
 name=Web App Builder
 description=Easily create web applications based on OpenLayers and the Boundless WebSDK
-about=<p>Easily create and configure web applications based on layers, map compositions and bookmarks, using the Web App Builder plugin as a front end for the Boundless WebSDK. In addition to including web services, you can also choose from a variety of widgets such as a layer chooser, scale bars, feature identify, and more. Local data can also be published from the QGIS instance into remote GeoServer and PostGIS instances.</p>
+about=<p>Easily create and configure web applications based on layers, map compositions and bookmarks, using the Web App Builder plugin as a front end for the Boundless WebSDK. In addition to including web services, you can also choose from a variety of widgets such as a layer chooser, scale bars, feature identify, and more.</p>
 category=Web
-version=0.99
+version=1.0
 qgisMinimumVersion=3.0
 
 author=Boundless (Victor Olaya)
 email=volaya@boundlessgeo.com
-roles=desktop-qgis-plugin-wab
+
 icon=icons/desktop.svg
 
 tags=boundless,openlayers, websdk, javascript
